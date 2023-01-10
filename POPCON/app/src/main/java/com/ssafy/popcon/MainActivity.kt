@@ -1,4 +1,4 @@
-package com.example.popcon
+package com.ssafy.popcon
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
