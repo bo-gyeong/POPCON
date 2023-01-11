@@ -23,11 +23,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_naver_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="네이버로 시작"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/btn_naver_login"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_kakao_login" />
