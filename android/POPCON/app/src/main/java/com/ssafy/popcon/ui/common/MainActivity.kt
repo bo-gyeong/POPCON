@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
                 binding.tabLayoutBottomNavigation.selectedItemId = item.itemId
             }
         }
-
     }
 
     fun hideBottomNav(state: Boolean) {
