@@ -1,4 +1,4 @@
-package com.example.popcon
+package com.ssafy.popcon
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
