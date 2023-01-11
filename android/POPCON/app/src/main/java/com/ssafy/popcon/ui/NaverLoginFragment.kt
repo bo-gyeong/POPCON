@@ -19,6 +19,7 @@ import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.databinding.FragmentLoginBinding
+import java.util.*
 
 private const val TAG = "NaverLoginFragment_싸피"
 class NaverLoginFragment : Fragment() {
@@ -55,6 +56,9 @@ class NaverLoginFragment : Fragment() {
 
         binding.btnKakaoWithdraw.setOnClickListener {
             kakaoWithdraw()
+        }
+        binding.btnNonmemberLogin.setOnClickListener{
+            nonMemberLogin()
         }
     }
 
@@ -173,6 +177,15 @@ class NaverLoginFragment : Fragment() {
 
             NaverIdLoginSDK.authenticate(requireContext(), oAuthLoginCallback)
         }
+    }
+
+    // 비회원 로그인 : UUID 생성 후 리텅
+    private fun nonMemberLogin() {
+        val userUUID = UUID.randomUUID().toString()
+
+        // 서버에게 생성한 UUID 전송할 레트로핏 코드
+        Log.d(TAG, "nonMemberLogin: $userUUID")
+        //
     }
 
     override fun onDestroy() {
