@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+
         android:name="com.ssafy.popcon.config.ApplicationClass"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -22,8 +23,10 @@
             android:windowSoftInputMode="adjustPan|adjustUnspecified">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <data android:host="oauth"
+                    android:scheme="kakao${KAKAO_API_KEY}"/>
             </intent-filter>
 
             <meta-data
