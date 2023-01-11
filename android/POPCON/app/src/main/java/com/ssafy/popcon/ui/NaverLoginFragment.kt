@@ -12,6 +12,9 @@ import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.popcon.BuildConfig
+import androidx.navigation.fragment.findNavController
+import com.ssafy.popcon.R
+import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.databinding.FragmentLoginBinding
 
@@ -37,6 +40,14 @@ class NaverLoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //로그인 된 상태인지 확인
+        var user = ApplicationClass.sharedPreferencesUtil.getUser()
+
+        //로그인 상태 확인. id가 있다면 로그인 된 상태
+        if (user.email != "") {//있음
+            findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
+        }
+
         Log.d("TAG", "onViewCreated: ")
         binding.run {
             binding.btnNaverLogin.setOnClickListener {
@@ -47,7 +58,8 @@ class NaverLoginFragment : Fragment() {
                             NidProfileCallback<NidProfileResponse> {
                             override fun onSuccess(result: NidProfileResponse) {
                                 email = result.profile?.email.toString()
-                                Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
+
+                                findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
                             }
 
                             override fun onError(errorCode: Int, message: String) {
