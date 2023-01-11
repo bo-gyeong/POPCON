@@ -3,6 +3,7 @@ package com.ssafy.popcon.ui.common
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,9 +19,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var checkPermission: CheckPermission
 
     val PERMISSION_REQUEST_CODE = 8
-    val CALL_REQUEST = 100
-    val POSITION_REQUEST = 500
-    val GALLERY_REQUEST = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +42,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val runtimePermissions = arrayOf(
+        Manifest.permission.CALL_PHONE,
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.CALL_PHONE,
         Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     // 위치, 갤러리, 전화 권한
@@ -68,22 +65,14 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when(requestCode){
-            CALL_REQUEST -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    //권한 승인
-                } else{
-                    checkPermission.requestPermission()
-                }
-            }
-            POSITION_REQUEST -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    //권한 승인
-                } else{
-                    checkPermission.requestPermission()
-                }
-            }
-            GALLERY_REQUEST -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            PERMISSION_REQUEST_CODE -> {
+                if (grantResults.size > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[3] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[4] == PackageManager.PERMISSION_GRANTED
+                ){
                     //권한 승인
                 } else{
                     checkPermission.requestPermission()
