@@ -32,4 +32,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_kakao_login" />
 
+    <Button
+        android:id="@+id/btn_nonmember_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="비회원 로그인"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_naver_login">
+
+    </Button>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
