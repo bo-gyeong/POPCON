@@ -30,6 +30,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkPermissions(){
+        // 위치, 갤러리, 전화
+
+    }
+
     fun hideBottomNav(state: Boolean) {
         if (state) binding.tabLayoutBottomNavigation.visibility = View.GONE
         else binding.tabLayoutBottomNavigation.visibility = View.VISIBLE

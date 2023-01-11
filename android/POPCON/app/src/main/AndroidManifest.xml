@@ -9,6 +9,8 @@
     <!-- 갤러리 권한-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- 전화 권한-->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name="com.ssafy.popcon.config.ApplicationClass"
