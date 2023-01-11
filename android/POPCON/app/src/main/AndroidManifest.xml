@@ -15,7 +15,9 @@
         android:theme="@style/Theme.POPCON"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.common.MainActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|adjustUnspecified"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
