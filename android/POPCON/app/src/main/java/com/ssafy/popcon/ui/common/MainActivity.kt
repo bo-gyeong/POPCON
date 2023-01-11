@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 
