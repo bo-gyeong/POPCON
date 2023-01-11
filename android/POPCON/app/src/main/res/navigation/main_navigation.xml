@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/naverLoginFragment"
-        android:name="com.ssafy.popcon.ui.NaverLoginFragment"
+        android:name="com.ssafy.popcon.ui.login.LoginFragment"
         android:label="NaverLoginFragment"
         tools:layout="@layout/fragment_login">
         <action
@@ -19,14 +19,17 @@
     </fragment>
     <fragment
         android:id="@+id/addFragment"
-        android:name="com.ssafy.popcon.ui.AddFragment"
-        android:label="AddFragment" />
+        android:name="com.ssafy.popcon.ui.add.AddFragment"
+        android:label="AddFragment"
+        tools:layout="@layout/fragment_add" />
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.ssafy.popcon.ui.HomeFragment"
-        android:label="HomeFragment" />
+        android:name="com.ssafy.popcon.ui.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.ssafy.popcon.ui.MapFragment"
-        android:label="MapFragment" />
+        android:name="com.ssafy.popcon.ui.map.MapFragment"
+        android:label="MapFragment"
+        tools:layout="@layout/fragment_map" />
 </navigation>

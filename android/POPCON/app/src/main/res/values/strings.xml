@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">POPCON</string>
+    <string name="unit_currency">%s원</string>
+    <string name="due_date">%s 까지</string>
 </resources>
