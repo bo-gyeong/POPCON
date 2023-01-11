@@ -24,6 +24,7 @@ import java.util.*
 private const val TAG = "NaverLoginFragment_싸피"
 class NaverLoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
+    private var userUUID : String = ""
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     lateinit var mainActivity:MainActivity
@@ -181,8 +182,8 @@ class NaverLoginFragment : Fragment() {
 
     // 비회원 로그인 : UUID 생성 후 리텅
     private fun nonMemberLogin() {
-        val userUUID = UUID.randomUUID().toString()
-
+        if(userUUID == "")
+            userUUID = UUID.randomUUID().toString()
         // 서버에게 생성한 UUID 전송할 레트로핏 코드
         Log.d(TAG, "nonMemberLogin: $userUUID")
         //
