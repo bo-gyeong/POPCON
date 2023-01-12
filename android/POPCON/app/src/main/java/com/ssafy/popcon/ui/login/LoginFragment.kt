@@ -122,6 +122,7 @@ class LoginFragment : Fragment() {
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
                                 Log.d(TAG, "kakaoLogin: ${user?.kakaoAccount?.email}")
+                                findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
                             }
                         }
                     }

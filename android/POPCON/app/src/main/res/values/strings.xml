@@ -4,7 +4,7 @@
     <string name="due_date">%s 까지</string>
 
     <!--    fragment_add-->
-    <string name="regi_coupon">쿠폰 등록하기</string>
+    <string name="regi_coupon">쿠폰 등록하기 (%1$d/%2$d)</string>
     <string name="coupon_img">상품 이미지</string>
     <string name="barcode_img">바코드 이미지</string>
     <string name="original_see">쿠폰 원본 보기</string>
