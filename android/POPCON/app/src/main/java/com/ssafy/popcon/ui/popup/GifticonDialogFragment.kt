@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import com.ssafy.popcon.databinding.DialogShakeBinding
+import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.util.ShakeDetector
 
-class GifticonPopup : Fragment() {
+class GifticonDialogFragment : DialogFragment() {
     private lateinit var binding: DialogShakeBinding
 
     override fun onCreateView(
@@ -19,5 +22,11 @@ class GifticonPopup : Fragment() {
         binding = DialogShakeBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Toast.makeText(requireContext(), "popup", Toast.LENGTH_SHORT).show()
     }
 }

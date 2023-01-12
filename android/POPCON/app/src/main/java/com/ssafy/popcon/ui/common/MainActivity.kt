@@ -6,23 +6,17 @@ import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
-import com.ssafy.popcon.util.ShakeDetector.*
 import com.ssafy.popcon.util.Utils.navigationHeight
 import com.ssafy.popcon.util.Utils.setStatusBarTransparent
-import com.ssafy.popcon.util.Utils.statusBarHeight
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -39,6 +33,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setNavBar()
+        checkPermissions()
+    }
+
+    private fun setNavBar() {
         this.setStatusBarTransparent()
         binding.innerContainer.setPadding(
             0,
@@ -58,20 +57,6 @@ class MainActivity : AppCompatActivity() {
                 binding.tabLayoutBottomNavigation.selectedItemId = item.itemId
             }
         }
-        checkPermissions()
-    }
-
-    fun setShakeSensor(context: Context) {//센서
-        sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        shakeDetector = ShakeDetector()
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI)
-
-        shakeDetector.setOnShakeListener(object : OnShakeListener {
-            override fun onShake(count: Int) {
-                Toast.makeText(context, "Shake", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 
     private val runtimePermissions = arrayOf(
@@ -120,9 +105,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        sensorManager = this.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        shakeDetector = ShakeDetector()
-        sensorManager.unregisterListener(shakeDetector)
+        removeShakeSensor(this, ShakeDetector())
         super.onPause()
+    }
+    fun setShakeSensor(context: Context, shakeDetector: ShakeDetector) {//센서
+        sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI)
+    }
+
+    fun removeShakeSensor(context: Context, shakeDetector: ShakeDetector) {
+        sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager.unregisterListener(shakeDetector)
     }
 }

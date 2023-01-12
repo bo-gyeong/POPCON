@@ -42,6 +42,6 @@
     </fragment>
     <fragment
         android:id="@+id/gifticonPopup"
-        android:name="com.ssafy.popcon.ui.popup.GifticonPopup"
+        android:name="com.ssafy.popcon.ui.popup.GifticonDialogFragment"
         android:label="GifticonPopup" />
 </navigation>
