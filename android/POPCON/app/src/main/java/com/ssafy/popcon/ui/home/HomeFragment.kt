@@ -11,6 +11,7 @@ import com.ssafy.popcon.databinding.FragmentHomeBinding
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.util.Utils.setStatusBarTransparent
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -29,6 +30,7 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        requireActivity().setStatusBarTransparent()
         setGifticonAdapter()
         return binding.root
     }
