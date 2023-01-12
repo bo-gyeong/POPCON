@@ -26,7 +26,7 @@
         android:id="@+id/homeFragment"
         android:name="com.ssafy.popcon.ui.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_gifticonPopup"
             app:destination="@id/gifticonPopup" />
@@ -35,7 +35,7 @@
         android:id="@+id/mapFragment"
         android:name="com.ssafy.popcon.ui.map.MapFragment"
         android:label="MapFragment"
-        tools:layout="@layout/fragment_map" >
+        tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_mapFragment_to_gifticonPopup"
             app:destination="@id/gifticonPopup" />

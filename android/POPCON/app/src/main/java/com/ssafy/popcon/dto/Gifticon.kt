@@ -12,5 +12,5 @@ data class Gifticon(
 
 data class Brand(
     val name : String,
-    val logoUrl : String
+    val logoUrl : String?
 )

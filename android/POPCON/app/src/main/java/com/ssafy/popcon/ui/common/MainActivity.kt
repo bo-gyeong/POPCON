@@ -20,6 +20,9 @@ import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.ShakeDetector.*
+import com.ssafy.popcon.util.Utils.navigationHeight
+import com.ssafy.popcon.util.Utils.setStatusBarTransparent
+import com.ssafy.popcon.util.Utils.statusBarHeight
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -35,6 +38,14 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        this.setStatusBarTransparent()
+        binding.innerContainer.setPadding(
+            0,
+            0,
+            0,
+            this.navigationHeight()
+        )
 
         val navHosFragment =
             supportFragmentManager.findFragmentById(R.id.frame_layout_main) as NavHostFragment
@@ -109,6 +120,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
+        sensorManager = this.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        shakeDetector = ShakeDetector()
         sensorManager.unregisterListener(shakeDetector)
         super.onPause()
     }
