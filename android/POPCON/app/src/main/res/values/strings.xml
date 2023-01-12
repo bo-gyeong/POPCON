@@ -5,8 +5,8 @@
 
     <!--    fragment_add-->
     <string name="regi_coupon">쿠폰 등록하기</string>
-    <string name="coupon_img">상품 이미지 등록</string>
-    <string name="barcode_img">바코드 이미지 등록</string>
+    <string name="coupon_img">상품 이미지</string>
+    <string name="barcode_img">바코드 이미지</string>
     <string name="original_see">쿠폰 원본 보기</string>
     <string name="product_name">이름</string>
     <string name="product_brand">브랜드</string>

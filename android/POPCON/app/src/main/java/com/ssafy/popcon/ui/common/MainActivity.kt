@@ -1,12 +1,14 @@
 package com.ssafy.popcon.ui.common
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -17,6 +19,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.ui.add.AddFragment
+import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.ShakeDetector.*
@@ -27,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accelerometer: Sensor
     private lateinit var shakeDetector: ShakeDetector
     private lateinit var checkPermission: CheckPermission
+    private var permissionGranted = false
 
     val PERMISSION_REQUEST_CODE = 8
 
@@ -63,6 +69,24 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    // 프래그먼트 바꾸기
+    fun changeFragment(idx:Int){
+        when(idx){
+            //home으로 이동
+            0 -> {
+                binding.tabLayoutBottomNavigation.selectedItemId = R.id.homeFragment
+            }
+            //add로 이동
+            1 -> {
+                binding.tabLayoutBottomNavigation.selectedItemId = R.id.addFragment
+            }
+            //map으로 이동
+            2 -> {
+                binding.tabLayoutBottomNavigation.selectedItemId = R.id.mapFragment
+            }
+        }
+    }
+
     private val runtimePermissions = arrayOf(
         Manifest.permission.CALL_PHONE,
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -96,6 +120,7 @@ class MainActivity : AppCompatActivity() {
                     && grantResults[4] == PackageManager.PERMISSION_GRANTED
                 ) {
                     //권한 승인
+                    permissionGranted = true
                 } else {
                     checkPermission.requestPermission()
                 }
@@ -109,7 +134,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        sensorManager.unregisterListener(shakeDetector)
+//        sensorManager.unregisterListener(shakeDetector)
         super.onPause()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        checkPermissions()
     }
 }

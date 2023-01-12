@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
 import android.util.Log
+import android.view.KeyEvent
 import androidx.core.app.ActivityCompat
 
 class CheckPermission(private val context: Context) {
@@ -26,8 +27,10 @@ class CheckPermission(private val context: Context) {
     fun requestPermission(){
         val alert = AlertDialog.Builder(context)
 
-        alert.setTitle("궏한이 필요합니다.")
+        alert.setTitle("권한이 필요합니다.")
         alert.setMessage("설정으로 이동합니다.")
+        alert.setCancelable(false)
+
         alert.setPositiveButton("확인"){ dialogInterface, i ->
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 .setData(Uri.parse("package:" + context.packageName))
@@ -35,9 +38,8 @@ class CheckPermission(private val context: Context) {
             context.startActivity(intent)
             dialogInterface.cancel()
         }
-
         alert.setNegativeButton("취소"){ dialogInterface, i ->
-            dialogInterface.cancel()
+            alert.show()
         }
         alert.show()
     }

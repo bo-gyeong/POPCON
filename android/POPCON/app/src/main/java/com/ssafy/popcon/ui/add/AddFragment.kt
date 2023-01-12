@@ -1,17 +1,21 @@
 package com.ssafy.popcon.ui.add
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore.Images
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.util.CheckPermission
 
 class AddFragment : Fragment() {
     private lateinit var binding: FragmentAddBinding
@@ -42,13 +46,23 @@ class AddFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        openGalleryFirst()
 
+        binding.btnRegi.setOnClickListener {
+            //유효성 검사
+            mainActivity.changeFragment(0)
+        }
     }
 
-    private fun openGallery(){
+    private fun openGalleryFirst(){
         val intent = Intent(Intent.ACTION_PICK)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         startActivityForResult(intent, REQ_CODE_SELECT_IMAGE)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mainActivity.hideBottomNav(false)
     }
 }
