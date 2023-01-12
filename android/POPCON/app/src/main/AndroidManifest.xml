@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 갤러리 권한-->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- 전화 권한-->
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
@@ -34,8 +34,10 @@
             </intent-filter>
 
             <intent-filter>
-                <data android:host="oauth"
-                    android:scheme="kakao${KAKAO_API_KEY}"/>
+                <data
+                    android:host="oauth"
+                    android:scheme="kakao${KAKAO_API_KEY}" />
+
             </intent-filter>
 
             <meta-data

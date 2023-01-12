@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui
+package com.ssafy.popcon.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater

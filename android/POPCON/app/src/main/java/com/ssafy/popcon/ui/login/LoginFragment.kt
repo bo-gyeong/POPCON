@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui
+package com.ssafy.popcon.ui.login
 
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +11,6 @@ import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import androidx.navigation.fragment.findNavController
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
@@ -26,7 +25,7 @@ import java.util.*
 
 private const val TAG = "NaverLoginFragment_싸피"
 
-class NaverLoginFragment : Fragment() {
+class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private var userUUID : String = ""
 

@@ -45,6 +45,6 @@ class ApplicationClass : Application() {
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
 
-        //akeRetrofit(SERVER_URL)
+        //make Retrofit(SERVER_URL)
     }
 }

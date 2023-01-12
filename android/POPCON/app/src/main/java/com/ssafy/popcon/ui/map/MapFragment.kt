@@ -1,21 +1,21 @@
-package com.ssafy.popcon.ui
+package com.ssafy.popcon.ui.map
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.ssafy.popcon.databinding.FragmentAddBinding
+import com.ssafy.popcon.databinding.FragmentMapBinding
 
-class AddFragment : Fragment() {
-    private lateinit var binding: FragmentAddBinding
+class MapFragment : Fragment() {
+    private lateinit var binding: FragmentMapBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAddBinding.inflate(inflater, container, false)
+        binding = FragmentMapBinding.inflate(inflater, container, false)
 
         return binding.root
     }
