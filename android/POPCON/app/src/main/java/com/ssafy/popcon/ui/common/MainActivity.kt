@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     // 위치, 갤러리, 전화 권한
-    private fun checkPermissions(){
+    private fun checkPermissions() {
         checkPermission = CheckPermission(this)
 
         if (!checkPermission.runtimeCheckPermission(this, *runtimePermissions)) {
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode){
+        when (requestCode) {
             PERMISSION_REQUEST_CODE -> {
                 if (grantResults.size > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -72,9 +73,9 @@ class MainActivity : AppCompatActivity() {
                     && grantResults[2] == PackageManager.PERMISSION_GRANTED
                     && grantResults[3] == PackageManager.PERMISSION_GRANTED
                     && grantResults[4] == PackageManager.PERMISSION_GRANTED
-                ){
+                ) {
                     //권한 승인
-                } else{
+                } else {
                     checkPermission.requestPermission()
                 }
             }
