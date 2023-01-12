@@ -1,22 +1,31 @@
 package com.ssafy.popcon.ui.common
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.util.CheckPermission
+import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.util.ShakeDetector.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
+    private lateinit var sensorManager: SensorManager
+    private lateinit var accelerometer: Sensor
+    private lateinit var shakeDetector: ShakeDetector
     private lateinit var checkPermission: CheckPermission
 
     val PERMISSION_REQUEST_CODE = 8
@@ -38,8 +47,20 @@ class MainActivity : AppCompatActivity() {
                 binding.tabLayoutBottomNavigation.selectedItemId = item.itemId
             }
         }
-
         checkPermissions()
+    }
+
+    fun setShakeSensor(context: Context) {//센서
+        sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        shakeDetector = ShakeDetector()
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI)
+
+        shakeDetector.setOnShakeListener(object : OnShakeListener {
+            override fun onShake(count: Int) {
+                Toast.makeText(context, "Shake", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private val runtimePermissions = arrayOf(
@@ -85,5 +106,10 @@ class MainActivity : AppCompatActivity() {
     fun hideBottomNav(state: Boolean) {
         if (state) binding.tabLayoutBottomNavigation.visibility = View.GONE
         else binding.tabLayoutBottomNavigation.visibility = View.VISIBLE
+    }
+
+    override fun onPause() {
+        sensorManager.unregisterListener(shakeDetector)
+        super.onPause()
     }
 }
