@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_homeFragment_to_gifticonPopup"
             app:destination="@id/gifticonPopup" />
+        <action
+            android:id="@+id/action_homeFragment_to_addFragment"
+            app:destination="@id/addFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -43,6 +46,9 @@
         <action
             android:id="@+id/action_mapFragment_to_gifticonPopup"
             app:destination="@id/gifticonPopup" />
+        <action
+            android:id="@+id/action_mapFragment_to_addFragment"
+            app:destination="@id/addFragment" />
     </fragment>
     <fragment
         android:id="@+id/gifticonPopup"

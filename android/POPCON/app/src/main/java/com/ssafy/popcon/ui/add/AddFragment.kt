@@ -120,8 +120,9 @@ class AddFragment : Fragment() {
         return true
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
+
         mainActivity.hideBottomNav(false)
         isShow = false
     }

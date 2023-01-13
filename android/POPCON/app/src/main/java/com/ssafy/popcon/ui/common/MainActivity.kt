@@ -9,10 +9,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.ui.add.AddFragment
+import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.Utils.navigationHeight
@@ -27,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     val PERMISSION_REQUEST_CODE = 8
 
-    companion object{
+    companion object {
         val shakeDetector = ShakeDetector()
     }
 
@@ -56,12 +61,33 @@ class MainActivity : AppCompatActivity() {
         val navController = navHosFragment.navController
 
         NavigationUI.setupWithNavController(binding.tabLayoutBottomNavigation, navController)
-        /*binding.tabLayoutBottomNavigation.setOnNavigationItemReselectedListener { item ->
-            // 재선택시 다시 랜더링 하지 않기 위해 수정
-            if (binding.tabLayoutBottomNavigation.selectedItemId != item.itemId) {
-                binding.tabLayoutBottomNavigation.selectedItemId = item.itemId
+
+        // 재선택시 다시 렌더링 하지 않기 위해 수정
+        binding.tabLayoutBottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.addFragment -> {
+                    if (binding.tabLayoutBottomNavigation.selectedItemId == R.id.homeFragment) {
+                        navController.navigate(R.id.action_homeFragment_to_addFragment)
+                    } else if (binding.tabLayoutBottomNavigation.selectedItemId == R.id.mapFragment) {
+                        navController.navigate(R.id.action_mapFragment_to_addFragment)
+                    }
+                }
+                R.id.homeFragment -> {
+                    changeFragment(HomeFragment())
+                }
+                R.id.mapFragment -> {
+                    changeFragment(MapFragment())
+                }
             }
-        }*/
+            true
+        }
+    }
+
+    private fun changeFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frame_layout_main, fragment)
+            .commit()
     }
 
     private val runtimePermissions = arrayOf(
