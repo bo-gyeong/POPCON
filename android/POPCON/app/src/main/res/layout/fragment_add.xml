@@ -3,16 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="30dp"
-    android:layout_marginStart="12dp"
-    android:layout_marginEnd="12dp"
-    android:layout_marginBottom="12dp"
+    android:layout_margin="12dp"
     android:fitsSystemWindows="true">
 
     <TextView
         android:id="@+id/tv_regi_coupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text="@string/regi_coupon"
         android:textColor="@color/popcon_black_03"
         android:textSize="30sp"
@@ -81,6 +79,7 @@
                                     app:layout_constraintRight_toRightOf="parent"/>
 
                                 <ImageView
+                                    android:id="@+id/iv_coupon_img_plus"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
                                     android:scaleType="centerCrop"
@@ -135,6 +134,7 @@
                                     app:layout_constraintRight_toRightOf="parent"/>
 
                                 <ImageView
+                                    android:id="@+id/iv_barcode_img_plus"
                                     android:layout_width="50dp"
                                     android:layout_height="50dp"
                                     android:scaleType="centerCrop"
@@ -216,6 +216,27 @@
 
                         <EditText
                             android:id="@+id/et_product_brand"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/popcon_grey_09"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/barcode"
+                            android:textColor="@color/popcon_black_03"
+                            android:textSize="15sp"/>
+
+                        <EditText
+                            android:id="@+id/et_barcode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/popcon_grey_09"/>
