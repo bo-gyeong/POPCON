@@ -30,6 +30,7 @@ class AddFragment : Fragment() {
     lateinit var mainActivity: MainActivity
     val REQ_CODE_SELECT_IMAGE = 1000
     lateinit var imgUris:ArrayList<Uri>
+    var imgNum = 1
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -70,6 +71,13 @@ class AddFragment : Fragment() {
         binding.cvBarcodeImg.setOnClickListener {
             openGallery()
         }
+
+        binding.btnOriginalSee.setOnClickListener {
+            // 몇 번째 이미지인지 확인하기
+            if (imgUris.size != 0){
+                seeOriginalImg(imgUris[imgNum-1])
+            }
+        }
     }
 //https://rlg1133.tistory.com/74 이미지 크롭
     // https://velog.io/@jinny_0422/Android%EB%B6%88%EB%9F%AC%EC%98%A8ImageCrop%ED%95%98%EA%B8%B0
@@ -93,7 +101,7 @@ class AddFragment : Fragment() {
                             binding.etDate.setText("2023..01.01")
                             binding.ivCouponImgPlus.visibility = View.GONE
                             binding.ivBarcodeImgPlus.visibility = View.GONE
-                            binding.tvRegiCoupon.text = String.format(resources.getString(R.string.regi_coupon), (i+1) , clipData.itemCount)
+                            binding.tvRegiCoupon.text = String.format(resources.getString(R.string.regi_coupon), imgNum , clipData.itemCount)
                         }
                     }
                 }
@@ -116,7 +124,13 @@ class AddFragment : Fragment() {
         result.launch(intent)
     }
 
-    private fun cropImg(uri:Uri){
+    private fun cropImg(imgUri:Uri){
+    }
+
+    private fun seeOriginalImg(imgUri:Uri){
+        OriginalImgDialogFragment(imgUri).show(
+            childFragmentManager, "OriginalDialog"
+        )
     }
 
     // 유효성 검사
