@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -16,12 +18,14 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentMapBinding
+import com.ssafy.popcon.dto.MapApiResult
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
 
-private const val TAG = "MapFragment 지원"
+private const val TAG = "MapFragment 싸피 지원"
 
 class MapFragment : Fragment() {
     private lateinit var binding: FragmentMapBinding
@@ -53,14 +57,14 @@ class MapFragment : Fragment() {
         moveMapUserToPosition(mapView)
 
         // 트래킹모드
-//        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+//        mapView.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOff
 //        mapView.setShowCurrentLocationMarker(true) // 트래킹모드일 경우, 현재 위치 파란색 동그라미로 표시
 
         // 위치 업데이트 버튼 클릭시 화면 가운데를 현재 위치 변경
         binding.btnUpdatePosition.setOnClickListener {
             moveMapUserToPosition(mapView)
         }
-        
+
         // 마커 추가
         var currentMarker = MapPOIItem()
         currentMarker.apply {
@@ -71,22 +75,34 @@ class MapFragment : Fragment() {
         mapView.addPOIItem(currentMarker)
 
 
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return // 권한 요청 받으라는데 안 받을거임
-        }
-        
+        var starbucksLatitudeResult = ArrayList<MapApiResult>()
+        starbucksLatitudeResult.add(MapApiResult("구미 인동점", 36.1079891, 128.418535))
+        starbucksLatitudeResult.add(MapApiResult("구미 인의점", 36.1079891, 128.418535))
 
+        for(starbucks in starbucksLatitudeResult){
+            var tempMarker = MapPOIItem()
+            tempMarker.apply {
+                itemName = starbucks.itemName
+                mapPoint = MapPoint.mapPointWithGeoCoord(starbucks.X!!.toDouble(), starbucks.Y!!.toDouble())
+                markerType = MapPOIItem.MarkerType.CustomImage
+                customImageResourceId = R.drawable.starbucks
+                isCustomImageAutoscale = true
+//                isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
+//                setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+            }
+            mapView.addPOIItem(tempMarker)
+        }
+//        for(starbucks in starbucksLatitudeResult){
+//            var tempMarker = MapPOIItem()
+//            Log.d(TAG, "onViewCreated: ${starbucks.mapPointGeoCoord.latitude}, ${starbucks.mapPointGeoCoord.longitude}")
+//
+//            tempMarker.mapPoint = starbucks
+//            tempMarker.markerType = MapPOIItem.MarkerType.RedPin
+//            mapView.addPOIItem(MapPOIItem())
+//        }
     }
-    
-    private fun moveMapUserToPosition(mapView : MapView){
+
+    private fun moveMapUserToPosition(mapView: MapView) {
         // 현재 위치로 중심점 변경
         mapView.setMapCenterPointAndZoomLevel(
             MapPoint.mapPointWithGeoCoord(
@@ -94,6 +110,7 @@ class MapFragment : Fragment() {
                 getLongitude
             ), 3, true
         )
+        Log.d(TAG, "moveMapUserToPosition: $getLatitude, $getLongitude")
     }
 
     // 위에 *몇 초 간격과 몇미터를 이동 했을 때 호출 되는 부분에 대한 필요한 정보, 주기적으로 위치 업데이트하는 경우 사용
@@ -147,17 +164,12 @@ class MapFragment : Fragment() {
                         locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                     getLongitude = location?.longitude!!
                     getLatitude = location?.latitude!!
-                    Log.d(TAG, "getUserLocation: GPS --> lon : $getLongitude, lat : $getLatitude")
                 }
                 isNetworkEnable -> {
                     val location =
                         locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
                     getLongitude = location?.longitude!!
                     getLatitude = location?.latitude!!
-                    Log.d(
-                        TAG,
-                        "getUserLocation: Network  --> lon : $getLongitude, lat : $getLatitude"
-                    )
                 }
             }
         }
