@@ -17,9 +17,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.util.CheckPermission
 
 class AddFragment : Fragment() {
@@ -55,7 +57,9 @@ class AddFragment : Fragment() {
         openGalleryFirst()
 
         binding.btnRegi.setOnClickListener {
-            //유효성 검사
+//            if (chkEffectiveness()){ // 유효성검사
+//                mainActivity.changeFragment(0)
+//            }
             mainActivity.changeFragment(0)
         }
 
@@ -96,6 +100,7 @@ class AddFragment : Fragment() {
             }
         }
 
+    // add탭 클릭하자마자 나오는 갤러리
     private fun openGalleryFirst(){
         val intent = Intent(Intent.ACTION_PICK)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
@@ -103,6 +108,7 @@ class AddFragment : Fragment() {
         result.launch(intent)
     }
 
+    // cardView를 클릭했을 때 나오는 갤러리
     private fun openGallery(){
         val intent = Intent(Intent.ACTION_PICK)
         intent.putExtra("crop", true)
@@ -110,7 +116,17 @@ class AddFragment : Fragment() {
         result.launch(intent)
     }
 
+    private fun cropImg(uri:Uri){
+    }
 
+    // 유효성 검사
+    private fun chkEffectiveness():Boolean{
+        if(binding.ivBarcodeImg.drawable==null || binding.ivCouponImg.drawable==null
+            || binding.etDate.text==null || binding.etBarcode.text==null){
+            return false
+        }
+        return true
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
