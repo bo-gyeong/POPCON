@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.FragmentMapBinding
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 
 class MapFragment : Fragment() {
     private lateinit var binding: FragmentMapBinding

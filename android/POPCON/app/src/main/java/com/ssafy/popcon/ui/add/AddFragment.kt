@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 
 class AddFragment : Fragment() {
     private lateinit var binding: FragmentAddBinding
@@ -27,6 +29,7 @@ class AddFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         mainActivity.hideBottomNav(true)
+        isShow = true
     }
 
     override fun onCreateView(
@@ -50,7 +53,7 @@ class AddFragment : Fragment() {
         }
     }
 
-    private fun openGalleryFirst(){
+    private fun openGalleryFirst() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
@@ -60,5 +63,6 @@ class AddFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         mainActivity.hideBottomNav(false)
+        isShow = false
     }
 }

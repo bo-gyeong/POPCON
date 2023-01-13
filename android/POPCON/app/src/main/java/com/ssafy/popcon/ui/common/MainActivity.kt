@@ -22,11 +22,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sensorManager: SensorManager
     private lateinit var accelerometer: Sensor
-    private lateinit var shakeDetector: ShakeDetector
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
 
     val PERMISSION_REQUEST_CODE = 8
+
+    companion object{
+        val shakeDetector = ShakeDetector()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,12 +56,12 @@ class MainActivity : AppCompatActivity() {
         val navController = navHosFragment.navController
 
         NavigationUI.setupWithNavController(binding.tabLayoutBottomNavigation, navController)
-        binding.tabLayoutBottomNavigation.setOnNavigationItemReselectedListener { item ->
+        /*binding.tabLayoutBottomNavigation.setOnNavigationItemReselectedListener { item ->
             // 재선택시 다시 랜더링 하지 않기 위해 수정
             if (binding.tabLayoutBottomNavigation.selectedItemId != item.itemId) {
                 binding.tabLayoutBottomNavigation.selectedItemId = item.itemId
             }
-        }
+        }*/
     }
 
     private val runtimePermissions = arrayOf(
@@ -111,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 
     //앱이 실행중 아닐때 흔들기 제거
     override fun onPause() {
-        removeShakeSensor(this, ShakeDetector())
+        removeShakeSensor(this)
         super.onPause()
     }
 
@@ -124,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //흔들기 제거
-    private fun removeShakeSensor(context: Context, shakeDetector: ShakeDetector) {
+    fun removeShakeSensor(context: Context) {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensorManager.unregisterListener(shakeDetector)
 

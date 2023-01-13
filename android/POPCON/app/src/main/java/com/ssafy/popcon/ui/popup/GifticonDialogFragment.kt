@@ -16,6 +16,11 @@ class GifticonDialogFragment : DialogFragment() {
         var isShow = false;
     }
 
+    override fun onStart() {
+        super.onStart()
+        isShow = true
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,7 +28,6 @@ class GifticonDialogFragment : DialogFragment() {
     ): View? {
         binding = DialogShakeBinding.inflate(inflater, container, false)
 
-        isShow = true
         return binding.root
     }
 
