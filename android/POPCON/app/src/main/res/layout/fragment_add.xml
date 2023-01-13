@@ -3,13 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="12dp">
+    android:layout_marginTop="30dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="12dp"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/tv_regi_coupon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/regi_coupon"
+        android:textColor="@color/popcon_black_03"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/l_regi"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="?attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_regi"
+        app:layout_constraintTop_toBottomOf="@+id/tv_regi_coupon"
+        app:layout_constraintVertical_weight="9">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -26,36 +43,27 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/tv_regi_coupon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="쿠폰 등록하기"
-                        android:textColor="@color/popcon_black_03"
-                        android:textSize="30sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"/>
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/l_coupon_img"
                         android:layout_width="match_parent"
                         android:layout_height="180dp"
                         android:layout_marginTop="10dp"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_regi_coupon"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent">
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cv_product_img"
-                            android:layout_width="150dp"
+                            android:layout_width="0dp"
                             android:layout_height="150dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginStart="4dp"
                             android:layout_marginEnd="4dp"
                             android:layout_marginBottom="8dp"
                             app:cardCornerRadius="12dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toLeftOf="@id/cv_barcode_img"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintHorizontal_weight="1">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -65,7 +73,7 @@
 
                                 <ImageView
                                     android:id="@+id/iv_coupon_img"
-                                    android:layout_width="100dp"
+                                    android:layout_width="0dp"
                                     android:layout_height="100dp"
                                     android:scaleType="centerCrop"
                                     app:layout_constraintBottom_toTopOf="@+id/tv_coupon_img"
@@ -86,7 +94,8 @@
                                     android:id="@+id/tv_coupon_img"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="상품 이미지 등록"
+                                    android:text="@string/coupon_img"
+                                    android:textSize="11sp"
                                     android:layout_marginTop="10dp"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintRight_toRightOf="parent"
@@ -98,7 +107,7 @@
 
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cv_barcode_img"
-                            android:layout_width="200dp"
+                            android:layout_width="0dp"
                             android:layout_height="150dp"
                             android:layout_marginTop="8dp"
                             android:layout_marginStart="4dp"
@@ -106,17 +115,19 @@
                             android:layout_marginBottom="8dp"
                             app:cardCornerRadius="12dp"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintRight_toRightOf="parent">
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toRightOf="@id/cv_product_img"
+                            app:layout_constraintHorizontal_weight="2">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
                                 android:padding="10dp"
                                 android:layout_gravity="center">
 
                                 <ImageView
                                     android:id="@+id/iv_barcode_img"
-                                    android:layout_width="180dp"
+                                    android:layout_width="0dp"
                                     android:layout_height="100dp"
                                     android:scaleType="centerCrop"
                                     app:layout_constraintBottom_toTopOf="@+id/tv_barcode_img"
@@ -137,7 +148,8 @@
                                     android:id="@+id/tv_barcode_img"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="바코드 이미지 등록"
+                                    android:text="@string/barcode_img"
+                                    android:textSize="11sp"
                                     android:layout_marginTop="10dp"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintRight_toRightOf="parent"
@@ -153,7 +165,7 @@
                         android:id="@+id/btn_original_see"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="쿠폰 원본 보기"
+                        android:text="@string/original_see"
                         android:textSize="16sp"
                         android:background="@drawable/shape_round_grey"
                         app:layout_constraintTop_toBottomOf="@+id/l_coupon_img"
@@ -177,11 +189,12 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="이름"
+                            android:text="@string/product_name"
                             android:textColor="@color/popcon_black_03"
                             android:textSize="15sp"/>
 
                         <EditText
+                            android:id="@+id/et_product_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/popcon_grey_09"/>
@@ -197,11 +210,12 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="브랜드"
+                            android:text="@string/product_brand"
                             android:textColor="@color/popcon_black_03"
                             android:textSize="15sp"/>
 
                         <EditText
+                            android:id="@+id/et_product_brand"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/popcon_grey_09"/>
@@ -217,14 +231,15 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="유효기간"
+                            android:text="@string/date"
                             android:textColor="@color/popcon_black_03"
                             android:textSize="15sp"/>
 
                         <EditText
+                            android:id="@+id/et_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="number"
+                            android:inputType="datetime"
                             android:backgroundTint="@color/popcon_grey_09"/>
 
                     </LinearLayout>
@@ -238,14 +253,16 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="메모"
+                            android:text="@string/memo"
                             android:textColor="@color/popcon_black_03"
                             android:textSize="15sp"/>
 
                         <EditText
+                            android:id="@+id/et_write_memo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="메모를 남겨보세요."
+                            android:hint="@string/write_memo"
+                            android:text="x\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\n"
                             android:backgroundTint="@color/popcon_grey_09"/>
 
                     </LinearLayout>
@@ -262,12 +279,15 @@
         android:id="@+id/btn_regi"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="등록하기"
+        android:layout_margin="10dp"
+        android:text="@string/regi"
         android:textStyle="bold"
         android:textSize="20sp"
         android:background="@drawable/shape_round_orange"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/l_regi"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_weight="1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
