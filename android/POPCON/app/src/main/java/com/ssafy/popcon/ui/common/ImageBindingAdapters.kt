@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import androidx.core.view.isGone
 import androidx.databinding.BindingAdapter
 import androidx.databinding.BindingConversion
 
@@ -13,6 +14,8 @@ fun loadImage(view: ImageView, imageUrl: String?) {
         GlideApp.with(view)
             .load(imageUrl)
             .into(view)
+    } else {
+        view.isGone = true
     }
 }
 

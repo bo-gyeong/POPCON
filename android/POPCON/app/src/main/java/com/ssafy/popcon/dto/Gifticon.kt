@@ -8,9 +8,15 @@ data class Gifticon(
     val productUrl: String,
     val barcodeUrl: String?,
     val date: String,
+    val badge: Badge?
 )
 
 data class Brand(
     val name : String,
-    val logoUrl : String
+    val logoUrl : String?
+)
+
+data class Badge(
+    val content : String,
+    val color : String
 )
