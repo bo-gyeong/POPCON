@@ -127,6 +127,10 @@ class AddFragment : Fragment() {
     private fun cropImg(imgUri:Uri){
     }
 
+    private fun makeImgList(){
+        binding.rvCouponList.
+    }
+
     private fun seeOriginalImg(imgUri:Uri){
         OriginalImgDialogFragment(imgUri).show(
             childFragmentManager, "OriginalDialog"
