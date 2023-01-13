@@ -1,6 +1,5 @@
 package com.ssafy.popcon.ui.popup
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.ssafy.popcon.databinding.DialogShakeBinding
-import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.util.ShakeDetector
 
 class GifticonDialogFragment : DialogFragment() {
     private lateinit var binding: DialogShakeBinding
 
+    //팝업창 떠있는지 확인하는 변수
     companion object {
         var isShow = false;
     }

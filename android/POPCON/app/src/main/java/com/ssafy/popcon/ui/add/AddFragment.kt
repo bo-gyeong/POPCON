@@ -1,21 +1,17 @@
 package com.ssafy.popcon.ui.add
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore.Images
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.util.CheckPermission
 
 class AddFragment : Fragment() {
     private lateinit var binding: FragmentAddBinding
@@ -50,7 +46,7 @@ class AddFragment : Fragment() {
 
         binding.btnRegi.setOnClickListener {
             //유효성 검사
-            mainActivity.changeFragment(0)
+            findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
     }
 

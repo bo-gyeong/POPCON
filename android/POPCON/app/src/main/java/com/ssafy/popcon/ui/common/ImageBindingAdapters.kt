@@ -8,6 +8,7 @@ import androidx.core.view.isGone
 import androidx.databinding.BindingAdapter
 import androidx.databinding.BindingConversion
 
+//이미지 url -> view
 @BindingAdapter("imageUrl")
 fun loadImage(view: ImageView, imageUrl: String?) {
     if (!imageUrl.isNullOrEmpty()) {
@@ -19,11 +20,13 @@ fun loadImage(view: ImageView, imageUrl: String?) {
     }
 }
 
+//색상 -> background 사용
 @BindingConversion
 fun convertToColorDrawable(color: String): Drawable {
     return ColorDrawable(Color.parseColor(color))
 }
 
+//이미지 url -> 동그라미 표시
 @BindingAdapter("circleImageUrl")
 fun loadCircleImage(view: ImageView, imageUrl: String?) {
     if (!imageUrl.isNullOrEmpty()) {

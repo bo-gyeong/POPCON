@@ -47,6 +47,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
         val gifticonList = mutableListOf<Gifticon>()
         gifticonList.add(
@@ -169,6 +170,7 @@ class HomeFragment : Fragment() {
         gifticonAdapter.submitList(gifticonList)
     }
 
+    //홈화면 켜지면 센서 설정
     private fun setSensor() {
         shakeDetector = ShakeDetector()
         shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {

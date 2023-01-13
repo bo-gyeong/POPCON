@@ -1,14 +1,11 @@
 package com.ssafy.popcon.ui.common
 
 import android.Manifest
-import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -16,9 +13,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
-import com.ssafy.popcon.ui.add.AddFragment
-import com.ssafy.popcon.ui.home.HomeFragment
-import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.Utils.navigationHeight
@@ -44,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
     }
 
+    //navigation bar 설정
     private fun setNavBar() {
         this.setStatusBarTransparent()
         binding.innerContainer.setPadding(
@@ -66,24 +61,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 프래그먼트 바꾸기
-    fun changeFragment(idx: Int) {
-        when (idx) {
-            //home으로 이동
-            0 -> {
-                binding.tabLayoutBottomNavigation.selectedItemId = R.id.homeFragment
-            }
-            //add로 이동
-            1 -> {
-                binding.tabLayoutBottomNavigation.selectedItemId = R.id.addFragment
-            }
-            //map으로 이동
-            2 -> {
-                binding.tabLayoutBottomNavigation.selectedItemId = R.id.mapFragment
-            }
-        }
-    }
-
     private val runtimePermissions = arrayOf(
         Manifest.permission.CALL_PHONE,
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -101,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //권한 요청
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -125,16 +103,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //하단바 숨기기
     fun hideBottomNav(state: Boolean) {
         if (state) binding.tabLayoutBottomNavigation.visibility = View.GONE
         else binding.tabLayoutBottomNavigation.visibility = View.VISIBLE
     }
 
+    //앱이 실행중 아닐때 흔들기 제거
     override fun onPause() {
         removeShakeSensor(this, ShakeDetector())
         super.onPause()
     }
 
+    //흔들기 설정
     fun setShakeSensor(context: Context, shakeDetector: ShakeDetector) {//센서
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
@@ -142,12 +123,14 @@ class MainActivity : AppCompatActivity() {
         sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 
-    fun removeShakeSensor(context: Context, shakeDetector: ShakeDetector) {
+    //흔들기 제거
+    private fun removeShakeSensor(context: Context, shakeDetector: ShakeDetector) {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensorManager.unregisterListener(shakeDetector)
 
         super.onPause()
     }
+
 
     override fun onRestart() {
         super.onRestart()
