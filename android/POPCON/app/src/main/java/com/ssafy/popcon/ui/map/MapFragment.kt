@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.FragmentMapBinding
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -60,7 +61,7 @@ class MapFragment : Fragment() {
         binding.btnUpdatePosition.setOnClickListener {
             moveMapUserToPosition(mapView)
         }
-        
+
         // 마커 추가
         var currentMarker = MapPOIItem()
         currentMarker.apply {
@@ -82,11 +83,11 @@ class MapFragment : Fragment() {
         ) {
             return // 권한 요청 받으라는데 안 받을거임
         }
-        
+
 
     }
-    
-    private fun moveMapUserToPosition(mapView : MapView){
+
+    private fun moveMapUserToPosition(mapView: MapView) {
         // 현재 위치로 중심점 변경
         mapView.setMapCenterPointAndZoomLevel(
             MapPoint.mapPointWithGeoCoord(
@@ -168,7 +169,5 @@ class MapFragment : Fragment() {
         // 프래그먼트가 hide 상태인 경우 = 사용자가 볼 수 없는 경우 = 실시간 사용자 위치 트래킹 종료
         locationManager.removeUpdates(gpsLocationListener)
     }
-
-
 }
 
