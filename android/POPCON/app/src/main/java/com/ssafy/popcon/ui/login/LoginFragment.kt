@@ -122,6 +122,7 @@ class LoginFragment : Fragment() {
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
                                 Log.d(TAG, "kakaoLogin: ${user?.kakaoAccount?.email}")
+                                findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
                             }
                         }
                     }
@@ -129,6 +130,16 @@ class LoginFragment : Fragment() {
             } else {
                 // 카카오 계정으로 로그인
                 UserApiClient.instance.loginWithKakaoAccount(mainActivity, callback = kakaoCallback)
+            }
+        }
+    }
+
+    fun kakaoLogout(){
+        UserApiClient.instance.logout { error ->
+            if (error != null){
+                Log.e(TAG, "kakaoLogout: 로그아웃 실패, SDK에서 토큰 삭제됨", error)
+            } else{
+                Log.e(TAG, "kakaoLogout: 로그아웃 성공, SDK에서 토큰 삭제됨")
             }
         }
     }
