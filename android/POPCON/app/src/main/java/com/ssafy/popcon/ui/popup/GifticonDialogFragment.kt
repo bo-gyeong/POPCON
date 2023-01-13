@@ -14,6 +14,10 @@ import com.ssafy.popcon.util.ShakeDetector
 class GifticonDialogFragment : DialogFragment() {
     private lateinit var binding: DialogShakeBinding
 
+    companion object {
+        var isShow = false;
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -21,6 +25,7 @@ class GifticonDialogFragment : DialogFragment() {
     ): View? {
         binding = DialogShakeBinding.inflate(inflater, container, false)
 
+        isShow = true
         return binding.root
     }
 
@@ -28,5 +33,10 @@ class GifticonDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Toast.makeText(requireContext(), "popup", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isShow = false
     }
 }

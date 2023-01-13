@@ -7,7 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentHomeBinding
@@ -16,7 +19,10 @@ import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.util.ShakeDetector
+
+private const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -167,7 +173,11 @@ class HomeFragment : Fragment() {
         shakeDetector = ShakeDetector()
         shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
             override fun onShake(count: Int) {
-                activity?.let { GifticonDialogFragment().show(it.supportFragmentManager, "popup") }
+                if (!isShow) {
+                    activity?.let {
+                        GifticonDialogFragment().show(it.supportFragmentManager, "popup")
+                    }
+                }
             }
         })
 

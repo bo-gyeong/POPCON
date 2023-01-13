@@ -2,6 +2,7 @@ package com.ssafy.popcon.util
 
 import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
