@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.dto.MapApiResult
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -78,6 +79,18 @@ class MapFragment : Fragment() {
         var starbucksLatitudeResult = ArrayList<MapApiResult>()
         starbucksLatitudeResult.add(MapApiResult("구미 인동점", 36.1079891, 128.418535))
         starbucksLatitudeResult.add(MapApiResult("구미 인의점", 36.1079891, 128.418535))
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return // 권한 요청 받으라는데 안 받을거임
+        }
+
 
         for(starbucks in starbucksLatitudeResult){
             var tempMarker = MapPOIItem()
@@ -180,7 +193,5 @@ class MapFragment : Fragment() {
         // 프래그먼트가 hide 상태인 경우 = 사용자가 볼 수 없는 경우 = 실시간 사용자 위치 트래킹 종료
         locationManager.removeUpdates(gpsLocationListener)
     }
-
-
 }
 

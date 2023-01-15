@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.core.view.WindowCompat
 
 object Utils {
+    //상태바 투명처리
     fun Activity.setStatusBarTransparent() {
         window.apply {
             setFlags(
@@ -20,13 +21,7 @@ object Utils {
         }
     }
 
-    fun Context.statusBarHeight(): Int {
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-
-        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId)
-        else 0
-    }
-
+    //하단바 높이 구하기
     fun Context.navigationHeight(): Int {
         val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
 

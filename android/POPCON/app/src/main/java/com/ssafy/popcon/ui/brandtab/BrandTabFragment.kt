@@ -52,6 +52,30 @@ class BrandTabFragment : Fragment() {
         )
         brandList.add(
             Brand(
+                "이디야",
+                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+            )
+        )
+        brandList.add(
+            Brand(
+                "이디야",
+                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+            )
+        )
+        brandList.add(
+            Brand(
+                "이디야",
+                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+            )
+        )
+        brandList.add(
+            Brand(
+                "이디야",
+                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+            )
+        )
+        brandList.add(
+            Brand(
                 "히스토리",
                 ""
             )

@@ -20,14 +20,16 @@ import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentLoginBinding
+import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import java.util.*
 
 private const val TAG = "NaverLoginFragment_싸피"
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-    private var userUUID : String = ""
+    private var userUUID: String = ""
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     lateinit var mainActivity: MainActivity
@@ -52,6 +54,11 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //자동로그인
+        if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
+            findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
+        }
+
         init()
 
         binding.run {
@@ -62,7 +69,7 @@ class LoginFragment : Fragment() {
         binding.btnKakaoWithdraw.setOnClickListener {
             kakaoWithdraw()
         }
-        binding.btnNonmemberLogin.setOnClickListener{
+        binding.btnNonmemberLogin.setOnClickListener {
             nonMemberLogin()
         }
     }
@@ -154,6 +161,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    //네이버로그인
     private fun naverLogin() {
         binding.btnNaverLogin.setOnClickListener {
             val oAuthLoginCallback = object : OAuthLoginCallback {
@@ -164,7 +172,8 @@ class LoginFragment : Fragment() {
                         override fun onSuccess(result: NidProfileResponse) {
                             email = result.profile?.email.toString()
 
-                            Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
+                            SharedPreferencesUtil(requireContext()).addUser(User(email, 2))
+                            //Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
                             findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
                         }
 
@@ -201,7 +210,7 @@ class LoginFragment : Fragment() {
 
     // 비회원 로그인 : UUID 생성 후 리텅
     private fun nonMemberLogin() {
-        if(userUUID == "")
+        if (userUUID == "")
             userUUID = UUID.randomUUID().toString()
         // 서버에게 생성한 UUID 전송할 레트로핏 코드
         Log.d(TAG, "nonMemberLogin: $userUUID")

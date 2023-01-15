@@ -15,5 +15,6 @@
     <string name="memo">메모</string>
     <string name="write_memo">메모를 남겨보세요.</string>
     <string name="regi">등록하기</string>
+    <string name="sign_naver">네이버로 시작하기</string>
 
 </resources>

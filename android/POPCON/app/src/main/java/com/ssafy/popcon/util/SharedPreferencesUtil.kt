@@ -9,13 +9,15 @@ class SharedPreferencesUtil(context: Context) {
     var preferences: SharedPreferences =
         context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
 
-    fun addUser(user: User) {//로그인 유저 정보
+    //로그인 유저 추가
+    fun addUser(user: User) {
         val editor = preferences.edit()
         editor.putString("id", user.email)
         editor.putInt("type", user.type)
         editor.apply()
     }
 
+    //로그인 유저 받기
     fun getUser(): User {
         val id = preferences.getString("id", "")
         return if (id != "") {
@@ -26,8 +28,8 @@ class SharedPreferencesUtil(context: Context) {
         }
     }
 
+    //preference 지우기
     fun deleteUser() {
-        //preference 지우기
         val editor = preferences.edit()
         editor.clear()
         editor.apply()
