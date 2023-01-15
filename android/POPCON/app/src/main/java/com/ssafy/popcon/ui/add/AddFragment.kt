@@ -9,22 +9,28 @@ import android.provider.MediaStore.Images
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.bumptech.glide.Glide
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentAddBinding
+import com.ssafy.popcon.dto.GifticonImg
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 
-class AddFragment : Fragment() {
+class AddFragment : Fragment(), onItemClick {
     private lateinit var binding: FragmentAddBinding
 
-    lateinit var mainActivity: MainActivity
+    private lateinit var mainActivity: MainActivity
+    private lateinit var addImgAdapter: AddImgAdapter
     val REQ_CODE_SELECT_IMAGE = 1000
-    lateinit var imgUris: ArrayList<Uri>
-    var imgNum = 1
+    lateinit var imgUris:ArrayList<GifticonImg>
+    var imgNum = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,9 +64,9 @@ class AddFragment : Fragment() {
         }
 
         binding.btnOriginalSee.setOnClickListener {
-            // 몇 번째 이미지인지 확인하기
-            if (imgUris.size != 0) {
-                seeOriginalImg(imgUris[imgNum - 1])
+
+            if (imgUris.size != 0){
+                seeOriginalImg(imgUris[imgNum].imgUri)
             }
         }
     }
@@ -77,27 +83,33 @@ class AddFragment : Fragment() {
                     if (clipData != null) {
                         imgUris = ArrayList()
 
-                        for (i in 0 until clipData.itemCount) {
-                            imgUris.add(clipData.getItemAt(i).uri)
-
-                            Glide.with(this).load(imgUris[i]).centerCrop().into(binding.ivCouponImg)
-                            Glide.with(this).load(imgUris[i]).centerCrop()
-                                .into(binding.ivBarcodeImg)
-                            binding.etProductName.setText("상품이름")
-                            binding.etProductBrand.setText("브랜드")
-                            binding.etDate.setText("2023..01.01")
-                            binding.ivCouponImgPlus.visibility = View.GONE
-                            binding.ivBarcodeImgPlus.visibility = View.GONE
-                            binding.tvRegiCoupon.text = String.format(
-                                resources.getString(R.string.regi_coupon),
-                                imgNum,
-                                clipData.itemCount
-                            )
+                        for (i in 0 until clipData.itemCount){
+                            imgUris.add(GifticonImg(clipData.getItemAt(i).uri))
                         }
+                        fillContent(0)
                     }
+                    makeImgList()
                 }
             }
         }
+
+    // View 값 채우기
+    fun fillContent(idx: Int){
+        imgNum = idx
+
+        Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivCouponImg)
+        Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivBarcodeImg)
+        binding.etProductName.setText("상품이름${idx}")
+        binding.etProductBrand.setText("브랜드")
+        binding.etDate.setText("2023..01.01")
+        binding.ivCouponImgPlus.visibility = View.GONE
+        binding.ivBarcodeImgPlus.visibility = View.GONE
+        binding.tvRegiCoupon.text = String.format(resources.getString(R.string.regi_coupon), idx+1 , imgUris.size)
+    }
+
+    override fun onClick(idx: Int) {
+        fillContent(idx)
+    }
 
     // add탭 클릭하자마자 나오는 갤러리
     private fun openGalleryFirst() {
@@ -118,7 +130,20 @@ class AddFragment : Fragment() {
     private fun cropImg(imgUri: Uri) {
     }
 
-    private fun seeOriginalImg(imgUri: Uri) {
+    // 상단 리사이클러뷰 만들기
+    private fun makeImgList(){
+        addImgAdapter = AddImgAdapter(imgUris, this)
+
+        binding.rvCouponList.apply {
+            adapter = addImgAdapter
+            layoutManager = LinearLayoutManager(this.context, RecyclerView.HORIZONTAL, false)
+            adapter!!.stateRestorationPolicy =
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
+    }
+
+    // 이미지 원본보기
+    private fun seeOriginalImg(imgUri:Uri){
         OriginalImgDialogFragment(imgUri).show(
             childFragmentManager, "OriginalDialog"
         )
