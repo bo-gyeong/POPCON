@@ -48,6 +48,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="11bd13dc31cb51f3e909e8952dc87827" />

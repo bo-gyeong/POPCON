@@ -18,6 +18,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
+    <TextView
+        android:id="@+id/tv_regi_img_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="5dp"
+        android:text="@string/regi_img_count"
+        android:textColor="@color/popcon_grey_05"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tv_regi_coupon"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_coupon_list"
         android:layout_width="match_parent"
