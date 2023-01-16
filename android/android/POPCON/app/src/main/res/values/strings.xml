@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">POPCON</string>
+    <string name="unit_currency">%s원</string>
+    <string name="due_date">%s 까지</string>
+
+    <!--    fragment_add-->
+    <string name="regi_coupon">쿠폰 등록하기</string>
+    <string name="regi_img_count">(%1$d/%2$d)</string>
+    <string name="coupon_img">상품 이미지</string>
+    <string name="barcode_img">바코드 이미지</string>
+    <string name="original_see">쿠폰 원본 보기</string>
+    <string name="product_name">이름</string>
+    <string name="product_brand">브랜드</string>
+    <string name="barcode">바코드번호</string>
+    <string name="date">유효기간</string>
+    <string name="memo">메모</string>
+    <string name="write_memo">메모를 남겨보세요.</string>
+    <string name="regi">등록하기</string>
+    <string name="sign_naver">네이버로 시작하기</string>
+
+</resources>
