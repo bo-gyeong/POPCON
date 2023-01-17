@@ -12,11 +12,31 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:padding="24dp"
+        android:layout_height="wrap_content">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/photoViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/photoPreviewPager"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/photoViewPager" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--<androidx.viewpager2.widget.ViewPager2
+        &lt;!&ndash;<androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager_dialog"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -35,8 +55,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewpager_dialog"
             app:tabGravity="center"
-            app:tabIndicatorHeight="0dp" />-->
-        <androidx.constraintlayout.widget.ConstraintLayout
+            app:tabIndicatorHeight="0dp" />&ndash;&gt;
+        &lt;!&ndash;<androidx.constraintlayout.widget.ConstraintLayout
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/popup_detail"
@@ -128,9 +148,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_expDate" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>&ndash;&gt;
 
-        <androidx.recyclerview.widget.RecyclerView
+        &lt;!&ndash;<androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_gifticon_use"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -140,7 +160,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_detail"
-            tools:listitem="@layout/item_gifticon_slider" />
+            tools:listitem="@layout/item_gifticon_slider" />&ndash;&gt;
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>-->
 </layout>

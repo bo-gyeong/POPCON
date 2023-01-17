@@ -1,17 +1,12 @@
 package com.ssafy.popcon.ui.popup
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ssafy.popcon.databinding.ItemGifticonSliderBinding
 import com.ssafy.popcon.databinding.ItemHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.home.GiftconAdapter
 
 class GifticonUseAdapter() :
     ListAdapter<Gifticon, GifticonUseAdapter.GifticonViewHolder>(GifticonDiffCallback()) {

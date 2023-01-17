@@ -6,18 +6,15 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnScrollChangeListener
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
-import java.util.stream.IntStream.range
 
 class GifticonDialogFragment : DialogFragment() {
 
@@ -73,18 +70,30 @@ class GifticonDialogFragment : DialogFragment() {
         Toast.makeText(requireContext(), "popup", Toast.LENGTH_SHORT).show()
         setList()
         //setViewPager()
-        setUseAdapter()
+        //setUseAdapter()
+        test()
+    }
 
-        binding.rvGifticonUse.setOnScrollChangeListener(object : OnScrollChangeListener {
+    fun test(){
+        val photoPreviewAdapter = PhotoPreviewAdapter(childFragmentManager, useList)
+        val gifticonViewAdapter = GifticonViewAdapter(childFragmentManager, useList)
 
-            @RequiresApi(Build.VERSION_CODES.N)
-            override fun onScrollChange(p0: View?, p1: Int, p2: Int, p3: Int, p4: Int) {
-                for (i in range(0, useList.size)) {
-                    binding.gifticon = useAdapter.getItem(i) as Gifticon?
-                }
-            }
+        binding.photoPreviewPager.adapter = photoPreviewAdapter
+        binding.photoPreviewPager.addOnPageChangeListener(
+            OnSyncPageChangeListener(
+                binding.photoViewPager,
+                binding.photoPreviewPager
+            )
+        )
 
-        })
+        binding.photoViewPager.adapter = gifticonViewAdapter
+        binding.photoViewPager.offscreenPageLimit = photoPreviewAdapter.sidePreviewCount * 2 + 1
+        binding.photoViewPager.addOnPageChangeListener(
+            OnSyncPageChangeListener(
+                binding.photoPreviewPager,
+                binding.photoViewPager
+            )
+        )
     }
 
     fun setDetail() {
@@ -111,8 +120,8 @@ class GifticonDialogFragment : DialogFragment() {
     }*/
 
     //팝업창 아래 기프티콘 사용 목록 어댑터
-    private fun setUseAdapter() {
-        useAdapter = GifticonUseAdapter(useList)
+    /*private fun setUseAdapter() {
+        useAdapter = GifticonUseAdapter()
 
         binding.rvGifticonUse.apply {
             adapter = useAdapter
@@ -121,7 +130,7 @@ class GifticonDialogFragment : DialogFragment() {
         }
 
         useAdapter.submitList(useList)
-    }
+    }*/
 
     private fun setList() {
         useList.add(

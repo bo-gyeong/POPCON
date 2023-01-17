@@ -13,14 +13,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/popup_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_product_image"
             imageUrl="@{gifticon.productUrl}"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:scaleType="centerInside"
+            android:scaleType="fitCenter"
             android:src="@drawable/product"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,8 +30,8 @@
             android:id="@+id/iv_barcode_image"
             imageUrl="@{gifticon.barcodeUrl}"
             android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:scaleType="centerInside"
+            android:layout_height="100dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/barcode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,12 +80,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="26dp"
             android:layout_marginBottom="7dp"
+            android:background="@{gifticon.badge.color}"
             android:paddingStart="7dp"
             android:paddingTop="1dp"
             android:paddingEnd="7dp"
             android:paddingBottom="1dp"
             android:text="@{gifticon.badge.content}"
-            android:background="@{gifticon.badge.color}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/popcon_grey_02" />

@@ -23,6 +23,7 @@ fun loadImage(view: ImageView, imageUrl: String?) {
 //색상 -> background 사용
 @BindingConversion
 fun convertToColorDrawable(color: String): Drawable {
+
     return ColorDrawable(Color.parseColor(color))
 }
 
