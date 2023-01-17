@@ -1,14 +1,14 @@
 package com.ssafy.popcon.ui.add
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.provider.MediaStore.Images
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,7 +35,6 @@ class AddFragment : Fragment(), onItemClick {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var addImgAdapter: AddImgAdapter
-    val REQ_CODE_SELECT_IMAGE = 1000
     private lateinit var imgUris:ArrayList<GifticonImg>
     private val delImgIdx = ArrayList<Int>()
     var imgNum = 0
@@ -90,10 +89,8 @@ class AddFragment : Fragment(), onItemClick {
         }
     }
 
-    private lateinit var tmp: Uri
-
     private val result =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { it ->
             when (it.resultCode) {
                 Activity.RESULT_OK -> {
                     val clipData = it.data!!.clipData
@@ -104,34 +101,12 @@ class AddFragment : Fragment(), onItemClick {
                         for (i in 0 until clipData.itemCount){
                             imgUris.add(GifticonImg(clipData.getItemAt(i).uri))
                         }
-//                        Glide.with(this).load(imgUris[0].imgUri).centerCrop().into(binding.ivCouponImg)
-//                        Glide.with(this).load(imgUris[0].imgUri).centerCrop().into(binding.ivBarcodeImg)
-                        fillContent(0, true)
+                        fillContent(0)
                     } else{  //이미지 크롭
-                        //val extras = it.data!!.extras
-                        //val cropImgUri = getImgUri(requireContext(), extras!!.get("data") as Bitmap)
-                        //val cropImgUri = getImgUri(requireContext(), extras!!.get("data") as Bitmap)
-                        //imgUris.set(imgNum, GifticonImg(cropImgUri))
+                        imgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
 
-
-                        //imgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
-
-                        Log.d("Tkvl", ": ${imgUris[imgNum].imgUri}")
-
-                        imgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))  //Uri.parse(getPath(Crop.getOutput(it.data)))
-                        Log.d("Tkvl", ": ${imgUris[imgNum].imgUri}")
                         delImgIdx.add(imgNum)
-                        //binding.ivCouponImg.setImageURI(imgUris[imgNum])
-                        fillContent(imgNum, false)
-                        binding.ivCouponImg.setImageURI(imgUris[imgNum].imgUri)
-                        binding.ivBarcodeImg.setImageURI(imgUris[imgNum].imgUri)
-                        //Glide.with(this).load(imgUris[imgNum].imgUri).centerCrop().into(binding.ivBarcodeImg)
-
-
-//                        val file = File(imgUris[imgNum].imgUri.path!!)
-//                        if (file.exists()){
-//                            file.delete()
-//                        }
+                        fillContent(imgNum)
                     }
                     makeImgList()
                 }
@@ -144,13 +119,11 @@ class AddFragment : Fragment(), onItemClick {
         }
 
     // View 값 채우기
-    private fun fillContent(idx: Int, first:Boolean){
+    private fun fillContent(idx: Int){
         imgNum = idx
 
-        if (first){
-            Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivCouponImg)
-            Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivBarcodeImg)
-        }
+        Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivCouponImg)
+        Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivBarcodeImg)
         binding.etProductName.setText("상품이름${idx}")
         binding.etProductBrand.setText("브랜드")
         binding.etDate.setText("2023..01.01")
@@ -160,7 +133,7 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     override fun onClick(idx: Int) {
-        fillContent(idx, true)
+        fillContent(idx)
     }
 
     // add탭 클릭하자마자 나오는 갤러리
@@ -173,25 +146,41 @@ class AddFragment : Fragment(), onItemClick {
 
     // cardView를 클릭했을 때 나오는 갤러리
     private fun openGallery(idx: Int) {
-        /**
-        val intent = Intent("com.android.camera.action.CROP")
-        intent.putExtra("crop", true)
-        intent.putExtra("outputX", 250)
-        intent.putExtra("outputY", 170)
-        intent.putExtra("scale", true)**/
-        //intent.putExtra("return-data", true)
-        //intent.putExtra("output", imgUris[idx].imgUri)
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, imgUris[idx].imgUri)  // 기존 이미지에서 수정
-
-        tmp = Images.Media.EXTERNAL_CONTENT_URI
-        //intent.setDataAndType(imgUris[idx].imgUri, "image/*")
-        val destination = Uri.fromFile(File(requireContext().cacheDir, "cropped"))
-        //val res = Crop.of(imgUris[idx].imgUri, destination).start(mainActivity)
+        val bitmap = uriToBitmap(imgUris[idx].imgUri)
+        val destination = saveFile("popconImg", bitmap)
         val crop = Crop.of(imgUris[idx].imgUri, destination)
 
-        //copyFile(File(getPath(imgUris[idx].imgUri)), File(getPath(imgUris[idx].imgUri))) // copy
-
         result.launch(crop.getIntent(mainActivity))
+    }
+
+    // 크롭한 이미지 저장
+    private fun saveFile(fileName:String, bitmap: Bitmap):Uri?{
+        val values = ContentValues()
+        values.put(Images.Media.DISPLAY_NAME, fileName)
+        values.put(Images.Media.MIME_TYPE, "image/jpeg")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(Images.Media.IS_PENDING, 1)
+        }
+
+        val uri = requireContext().contentResolver.insert(Images.Media.EXTERNAL_CONTENT_URI, values)
+        if (uri != null) {
+            val descriptor = requireContext().contentResolver.openFileDescriptor(uri, "w")
+
+            if (descriptor != null) {
+                val fos = FileOutputStream(descriptor.fileDescriptor)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                fos.close()
+                descriptor.close()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    values.clear()
+                    values.put(Images.Media.IS_PENDING, 0)
+                    requireContext().contentResolver.update(uri, values, null, null)
+                }
+            }
+        }
+        return uri
     }
 
     // 이미지 절대경로 가져오기
@@ -205,49 +194,16 @@ class AddFragment : Fragment(), onItemClick {
         return cursor.getString(idx)
     }
 
-    fun imageExternalSave(context: Context, bitmap: Bitmap, path: String): Boolean {
-        val state = Environment.getExternalStorageState()
-        if (Environment.MEDIA_MOUNTED == state) {
-
-            val rootPath =
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                    .toString()
-            val dirName = "/" + path
-            val fileName = System.currentTimeMillis().toString() + ".png"
-            val savePath = File(rootPath + dirName)
-            savePath.mkdirs()
-
-            val file = File(savePath, fileName)
-            if (file.exists()) file.delete()
-
-            try {
-                val out = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-                out.flush()
-                out.close()
-
-                //갤러리 갱신
-                context.sendBroadcast(
-                    Intent(
-                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                        Uri.parse("file://" + Environment.getExternalStorageDirectory())
-                    )
-                )
-
-                return true
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+    // uri -> bitmap
+    private fun uriToBitmap(uri:Uri): Bitmap{
+        lateinit var bitmap:Bitmap
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, uri))
+        } else{
+            bitmap = Images.Media.getBitmap(requireContext().contentResolver, uri)
         }
-        return false
-    }
 
-    // bitmap to uri
-    private fun getImgUri(context: Context, bitMapImg:Bitmap): Uri{
-        val bytes = ByteArrayOutputStream()
-        bitMapImg.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = Images.Media.insertImage(context.contentResolver, bitMapImg, "PopConImg", null)
-        return Uri.parse(path)
+        return bitmap
     }
 
     // 크롭되면서 새로 생성된 이미지 삭제
@@ -296,48 +252,5 @@ class AddFragment : Fragment(), onItemClick {
 
         mainActivity.hideBottomNav(false)
         isShow = false
-    }
-
-
-    /**
-     * @author pppdw
-     * @description 크롭을 위해 사진을 복사한다.
-     * @return
-     */
-    fun copyFile(srcFile: File?, destFile: File): Boolean {
-        var result = false
-        result = try {
-            val `in`: InputStream = FileInputStream(srcFile)
-            try {
-                copyToFile(`in`, destFile)
-            } finally {
-                `in`.close()
-            }
-        } catch (e: IOException) {
-            false
-        }
-        return result
-    }
-
-    /**
-     * @author : pppdw
-     * @description : DestFile을 소스스트림에 복사한다 (데이터밸류)
-     */
-    private fun copyToFile(inputStream: InputStream, destFile: File): Boolean {
-        return try {
-            val out: OutputStream = FileOutputStream(destFile)
-            try {
-                val buffer = ByteArray(4096)
-                var bytesRead: Int
-                while (inputStream.read(buffer).also { bytesRead = it } >= 0) {
-                    out.write(buffer, 0, bytesRead)
-                }
-            } finally {
-                out.close()
-            }
-            true
-        } catch (e: IOException) {
-            false
-        }
     }
 }
