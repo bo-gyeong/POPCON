@@ -28,7 +28,7 @@
 
 
             <ImageView
-                android:id="@+id/iv_promotion_image"
+                android:id="@+id/iv_product_preview"
                 imageUrl="@{gifitcon.productUrl}"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
@@ -47,7 +47,7 @@
                 android:layout_marginTop="15dp"
                 android:text="@{gifitcon.brand.name}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_promotion_image"
+                app:layout_constraintTop_toBottomOf="@id/iv_product_preview"
                 tools:text="스타벅스" />
 
             <TextView

@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.common.MainActivity">
 
-
     <!--  fragment가 들어갈 container  -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frame_layout_main"
@@ -15,38 +14,52 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/l_fab_container"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/inner_container"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/main_navigation" />
+
+    <!--    Material Design + Style 지정 완료   -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/inner_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/tab_layout_bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--  하단 바  -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/l_fab_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBaseline_toBottomOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBaseline_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frame_layout_main">
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:backgroundTint="@color/popcon_white"
             app:fabAlignmentMode="center"
-            android:layout_gravity="center"
             app:fabCradleVerticalOffset="0dp">
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/l_bottom_navigation_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:elevation="5dp"
                 android:layout_gravity="center"
                 android:layout_marginRight="15dp"
+                android:elevation="5dp"
                 android:outlineAmbientShadowColor="@android:color/transparent"
                 android:outlineSpotShadowColor="@android:color/transparent"
                 app:layout_constraintTop_toBottomOf="@+id/frame_layout_main"

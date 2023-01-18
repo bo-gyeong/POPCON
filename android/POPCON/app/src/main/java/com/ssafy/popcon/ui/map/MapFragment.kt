@@ -1,9 +1,9 @@
 package com.ssafy.popcon.ui.map
 
 import android.Manifest
+import android.content.Context.LOCATION_SERVICE
 import android.R.attr.*
 import android.content.Context
-import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -16,7 +16,6 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,11 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.dto.MapBrandLogo
+import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
+import com.ssafy.popcon.util.ShakeDetector
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -34,8 +38,7 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
-
-private const val TAG = "MapFragment 싸피 지원"
+private const val TAG = "MapFragment 지원"
 
 class MapFragment : Fragment() {
     private lateinit var binding: FragmentMapBinding
@@ -44,6 +47,7 @@ class MapFragment : Fragment() {
     private var getLatitude: Double = 0.0
     private lateinit var internalStorage: String
     private lateinit var fileName: String
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,14 +57,18 @@ class MapFragment : Fragment() {
         return binding.root
     }
 
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // imgUrl to Drawable할때 필요해요!
-        val policy = ThreadPolicy.Builder().permitAll().build()
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
+        setSensor()
+
         internalStorage = requireContext().filesDir.toString() + "/brandLogo"
+
 
         // 맵 띄우기
         val mapView = MapView(requireContext())
@@ -79,6 +87,7 @@ class MapFragment : Fragment() {
             moveMapUserToPosition(mapView)
         }
 
+
         // 현 위치 마커 추가
         var currentMarker = MapPOIItem()
         currentMarker.apply {
@@ -88,6 +97,18 @@ class MapFragment : Fragment() {
         }
         mapView.addPOIItem(currentMarker)
 
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return // 권한 요청 받으라는데 안 받을거임
+        }
 
         // 나중에 서버에서 받아올 가게 정보
         var storeResult = ArrayList<MapBrandLogo>()
@@ -109,7 +130,6 @@ class MapFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
             )
         )
-
 
         // 1. 내부저장소에 로고만 저장할 폴더 없으면 만들기
         val path = File("$internalStorage")
@@ -214,7 +234,6 @@ class MapFragment : Fragment() {
         return BitmapDrawable(Resources.getSystem(), x)
     }
 
-
     private fun moveMapUserToPosition(mapView: MapView) {
         // 현재 위치로 중심점 변경
         mapView.setMapCenterPointAndZoomLevel(
@@ -286,12 +305,25 @@ class MapFragment : Fragment() {
         }
     }
 
-
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         // 프래그먼트가 hide 상태인 경우 = 사용자가 볼 수 없는 경우 = 실시간 사용자 위치 트래킹 종료
         locationManager.removeUpdates(gpsLocationListener)
     }
 
+    //화면 켜지면 센서 설정
+    private fun setSensor() {
+        shakeDetector = ShakeDetector()
+        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
+            override fun onShake(count: Int) {
+                if (!isShow) {
+                    activity?.let {
+                        GifticonDialogFragment().show(it.supportFragmentManager, "popup")
+                    }
+                }
+            }
+        })
 
+        MainActivity().setShakeSensor(requireContext(), shakeDetector)
+    }
 }

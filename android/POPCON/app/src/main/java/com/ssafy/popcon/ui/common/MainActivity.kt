@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     val PERMISSION_REQUEST_CODE = 8
 
     companion object {
-        val shakeDetector = ShakeDetector()
+        var shakeDetector = ShakeDetector()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -171,7 +171,6 @@ class MainActivity : AppCompatActivity() {
 
         super.onPause()
     }
-
 
     override fun onRestart() {
         super.onRestart()

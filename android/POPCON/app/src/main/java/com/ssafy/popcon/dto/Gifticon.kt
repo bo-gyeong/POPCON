@@ -1,5 +1,7 @@
 package com.ssafy.popcon.dto
 
+import java.io.Serializable
+
 data class Gifticon(
     val number: String,
     val brand: Brand,
@@ -9,7 +11,7 @@ data class Gifticon(
     val barcodeUrl: String?,
     val date: String,
     val badge: Badge?
-)
+) : Serializable
 
 data class Brand(
     val name : String,
