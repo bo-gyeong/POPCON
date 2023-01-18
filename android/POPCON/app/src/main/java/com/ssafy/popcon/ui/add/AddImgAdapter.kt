@@ -1,10 +1,12 @@
 package com.ssafy.popcon.ui.add
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
+import android.widget.ListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.ssafy.popcon.R
+import com.bumptech.glide.Glide
 import com.ssafy.popcon.databinding.ItemAddImgBinding
 import com.ssafy.popcon.dto.GifticonImg
 
@@ -25,7 +27,7 @@ class AddImgAdapter(var imgUriList: ArrayList<GifticonImg>, _onItemClick: onItem
                 notifyItemRemoved(bindingAdapterPosition)
 
                 if (imgUriList.size == 0){
-                    binding.root.findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+                    //홈화면으로
                 } else{
                     onItemClick.onClick(0)
                 }

@@ -7,6 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.common.MainActivity">
 
+    <!--  fragment가 들어갈 container  -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frame_layout_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -32,5 +33,49 @@
             app:menu="@menu/bottom_nav" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--  하단 바  -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/l_fab_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout_main">
 
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/popcon_white"
+            app:fabAlignmentMode="center"
+            app:fabCradleVerticalOffset="0dp">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/l_bottom_navigation_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                android:elevation="5dp"
+                android:outlineAmbientShadowColor="@android:color/transparent"
+                android:outlineSpotShadowColor="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/frame_layout_main"
+                app:menu="@menu/bottom_nav" />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|bottom"
+            android:src="@drawable/ic_baseline_add_24"
+            app:backgroundTint="@color/popcon_orange"
+            app:layout_anchor="@+id/bottom_app_bar"
+            app:layout_anchorGravity="center" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

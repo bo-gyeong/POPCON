@@ -1,29 +1,17 @@
 package com.ssafy.popcon.ui.add
 
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.provider.MediaStore.Images
-import android.provider.MediaStore.getMediaUri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
-import androidx.activity.result.component1
-import androidx.activity.result.component2
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.loader.content.CursorLoader
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,8 +22,6 @@ import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.GifticonImg
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
-import java.io.ByteArrayOutputStream
-import java.io.File
 
 class AddFragment : Fragment(), onItemClick {
     private lateinit var binding: FragmentAddBinding
@@ -43,8 +29,7 @@ class AddFragment : Fragment(), onItemClick {
     private lateinit var mainActivity: MainActivity
     private lateinit var addImgAdapter: AddImgAdapter
     val REQ_CODE_SELECT_IMAGE = 1000
-    private lateinit var imgUris: ArrayList<GifticonImg>
-    private val delImgIdx = ArrayList<Int>()
+    lateinit var imgUris:ArrayList<GifticonImg>
     var imgNum = 0
 
     override fun onAttach(context: Context) {
@@ -71,65 +56,45 @@ class AddFragment : Fragment(), onItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        imgUris = ArrayList()
         openGalleryFirst()
 
-        binding.cvProductImg.setOnClickListener {
-            openGallery(imgNum)
-        }
-
-        binding.cvBarcodeImg.setOnClickListener {
-            openGallery(imgNum)
-        }
-
         binding.btnRegi.setOnClickListener {
-            for (i in 0 until delImgIdx.size) {
-                delCropImg(delImgIdx[i])
-            }
             //유효성 검사
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
         }
 
         binding.btnOriginalSee.setOnClickListener {
-            if (imgUris.size != 0) {
+
+            if (imgUris.size != 0){
                 seeOriginalImg(imgUris[imgNum].imgUri)
             }
         }
     }
 
+    //https://rlg1133.tistory.com/74 이미지 크롭
+    // https://velog.io/@jinny_0422/Android%EB%B6%88%EB%9F%AC%EC%98%A8ImageCrop%ED%95%98%EA%B8%B0
+    // https://philosopher-chan.tistory.com/1258
     private val result =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             when (it.resultCode) {
                 Activity.RESULT_OK -> {
                     val clipData = it.data!!.clipData
 
-                    if (clipData != null) {  //첫 add
+                    if (clipData != null) {
                         imgUris = ArrayList()
 
-                        for (i in 0 until clipData.itemCount) {
+                        for (i in 0 until clipData.itemCount){
                             imgUris.add(GifticonImg(clipData.getItemAt(i).uri))
                         }
                         fillContent(0)
-                    } else {  //이미지 크롭
-                        val extras = it.data!!.extras
-                        val cropImgUri = getImgUri(requireContext(), extras!!.get("data") as Bitmap)
-                        imgUris.set(imgNum, GifticonImg(cropImgUri))
-                        delImgIdx.add(imgNum)
-                        fillContent(imgNum)
                     }
                     makeImgList()
-                }
-                Activity.RESULT_CANCELED -> {
-                    if (imgUris.size == 0) { // add탭 클릭 후 이미지 선택 안하고 뒤로가기 클릭 시
-                        binding.root.findNavController()
-                            .navigate(R.id.action_addFragment_to_homeFragment)
-                    }
                 }
             }
         }
 
     // View 값 채우기
-    fun fillContent(idx: Int) {
+    fun fillContent(idx: Int){
         imgNum = idx
 
         Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivCouponImg)
@@ -139,8 +104,7 @@ class AddFragment : Fragment(), onItemClick {
         binding.etDate.setText("2023..01.01")
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
-        binding.tvRegiImgCount.text =
-            String.format(resources.getString(R.string.regi_img_count), idx + 1, imgUris.size)
+        binding.tvRegiCoupon.text = String.format(resources.getString(R.string.regi_coupon), idx+1 , imgUris.size)
     }
 
     override fun onClick(idx: Int) {
@@ -156,45 +120,18 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // cardView를 클릭했을 때 나오는 갤러리
-    private fun openGallery(idx: Int) {
-        val intent = Intent("com.android.camera.action.CROP")
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
         intent.putExtra("crop", true)
-        intent.putExtra("outputX", 125)
-        intent.putExtra("outputY", 170)
-        intent.putExtra("scale", true)
-        intent.putExtra("return-data", true)
-        intent.setDataAndType(imgUris[idx].imgUri, "image/*")
-
+        intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         result.launch(intent)
     }
 
-    // 이미지 절대경로 가져오기
-    private fun getPath(uri: Uri): String {
-        val data: Array<String> = arrayOf(Images.Media.DATA)
-        val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
-        val cursor = cursorLoader.loadInBackground()
-        val idx = cursor!!.getColumnIndexOrThrow(Images.Media.DATA)
-        cursor.moveToFirst()
-
-        return cursor.getString(idx)
-    }
-
-    // bitmap to uri
-    private fun getImgUri(context: Context, bitMapImg: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitMapImg.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = Images.Media.insertImage(context.contentResolver, bitMapImg, "PopConImg", null)
-        return Uri.parse(path)
-    }
-
-    // 크롭되면서 새로 생성된 이미지 삭제
-    private fun delCropImg(idx: Int) {
-        val file = File(getPath(imgUris[idx].imgUri))
-        file.delete()
+    private fun cropImg(imgUri: Uri) {
     }
 
     // 상단 리사이클러뷰 만들기
-    private fun makeImgList() {
+    private fun makeImgList(){
         addImgAdapter = AddImgAdapter(imgUris, this)
 
         binding.rvCouponList.apply {
@@ -206,7 +143,7 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // 이미지 원본보기
-    private fun seeOriginalImg(imgUri: Uri) {
+    private fun seeOriginalImg(imgUri:Uri){
         OriginalImgDialogFragment(imgUri).show(
             childFragmentManager, "OriginalDialog"
         )
@@ -220,12 +157,6 @@ class AddFragment : Fragment(), onItemClick {
             return false
         }
         return true
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("Tkvl", "onDestroy: ")
-        //parentFragmentManager.beginTransaction().remove(this).commit()
     }
 
     override fun onDestroy() {

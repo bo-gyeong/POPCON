@@ -1,23 +1,16 @@
 package com.ssafy.popcon.ui.popup
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.view.ViewCompat
-import androidx.core.view.isGone
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
@@ -112,11 +105,6 @@ class GifticonDialogFragment : DialogFragment() {
                 }
             }
         })
-    }
-
-
-    private fun setTopAdapter() {
-
     }
 
     private fun setList() {

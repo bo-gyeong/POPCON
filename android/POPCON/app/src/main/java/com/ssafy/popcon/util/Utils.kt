@@ -2,7 +2,6 @@ package com.ssafy.popcon.util
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.view.WindowManager
@@ -29,6 +28,4 @@ object Utils {
         return if (resourceId > 0) resources.getDimensionPixelSize(resourceId)
         else 0
     }
-
-
 }

@@ -25,8 +25,8 @@ class GiftconAdapter :
     inner class GifticonViewHolder(private val binding: ItemHomeGifticonBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(gifticon: Gifticon) {
-            binding.gifitcon = gifticon
+        fun bind(gifitcon: Gifticon) {
+            binding.gifitcon = gifitcon
             binding.executePendingBindings()
         }
     }

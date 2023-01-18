@@ -17,6 +17,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_brand_tab" />
 
+        <ImageView
+            android:id="@+id/iv_brand_logo_test"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"
             android:name="com.ssafy.popcon.ui.brandtab.BrandTabFragment"

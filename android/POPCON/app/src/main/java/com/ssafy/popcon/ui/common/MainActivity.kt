@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,6 +24,8 @@ import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.Utils.navigationHeight
 import com.ssafy.popcon.util.Utils.setStatusBarTransparent
 
+private const val TAG = "MainActivity 메인"
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sensorManager: SensorManager
@@ -33,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     val PERMISSION_REQUEST_CODE = 8
 
     companion object {
-        val shakeDetector = ShakeDetector()
+        var shakeDetector = ShakeDetector()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,35 +51,39 @@ class MainActivity : AppCompatActivity() {
 
     //navigation bar 설정
     private fun setNavBar() {
-        this.setStatusBarTransparent()
-        binding.innerContainer.setPadding(
+        this.setStatusBarTransparent() // 투명 상태 바
+        binding.lBottomNavigationView.setPadding(
             0,
             0,
             0,
             this.navigationHeight()
         )
-
         val navHosFragment =
             supportFragmentManager.findFragmentById(R.id.frame_layout_main) as NavHostFragment
         val navController = navHosFragment.navController
 
-        NavigationUI.setupWithNavController(binding.tabLayoutBottomNavigation, navController)
+        NavigationUI.setupWithNavController(binding.lBottomNavigationView, navController)
 
         // 재선택시 다시 렌더링 하지 않기 위해 수정
-        binding.tabLayoutBottomNavigation.setOnItemSelectedListener { item ->
+        binding.lBottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.addFragment -> {
-                    if (binding.tabLayoutBottomNavigation.selectedItemId == R.id.homeFragment) {
+                    Log.d(TAG, "setNavBar: addFragment")
+                    if (binding.lBottomNavigationView.selectedItemId == R.id.homeFragment) {
                         navController.navigate(R.id.action_homeFragment_to_addFragment)
-                    } else if (binding.tabLayoutBottomNavigation.selectedItemId == R.id.mapFragment) {
+                    } else if (binding.lBottomNavigationView.selectedItemId == R.id.mapFragment) {
                         navController.navigate(R.id.action_mapFragment_to_addFragment)
                     }
                 }
                 R.id.homeFragment -> {
-                    changeFragment(HomeFragment())
+                    Log.d(TAG, "setNavBar: 홈")
+                    if (binding.lBottomNavigationView.selectedItemId != R.id.homeFragment)
+                        changeFragment(HomeFragment())
                 }
                 R.id.mapFragment -> {
-                    changeFragment(MapFragment())
+                    Log.d(TAG, "setNavBar: 맵")
+                    if (binding.lBottomNavigationView.selectedItemId != R.id.mapFragment)
+                        changeFragment(MapFragment())
                 }
             }
             true
@@ -134,8 +141,13 @@ class MainActivity : AppCompatActivity() {
 
     //하단바 숨기기
     fun hideBottomNav(state: Boolean) {
-        if (state) binding.tabLayoutBottomNavigation.visibility = View.GONE
-        else binding.tabLayoutBottomNavigation.visibility = View.VISIBLE
+        if (state) {
+            binding.lBottomNavigationView.visibility = View.GONE
+            binding.lFabContainer.visibility = View.GONE
+        } else {
+            binding.lBottomNavigationView.visibility = View.VISIBLE
+            binding.lFabContainer.visibility = View.VISIBLE
+        }
     }
 
     //앱이 실행중 아닐때 흔들기 제거

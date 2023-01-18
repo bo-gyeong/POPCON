@@ -128,9 +128,7 @@ class LoginFragment : Fragment() {
                         // 로그인 성공
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
-                                email = user?.kakaoAccount?.email.toString()
-                                SharedPreferencesUtil(requireContext()).addUser(User(email, 1))
-
+                                Log.d(TAG, "kakaoLogin: ${user?.kakaoAccount?.email}")
                                 findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
                             }
                         }

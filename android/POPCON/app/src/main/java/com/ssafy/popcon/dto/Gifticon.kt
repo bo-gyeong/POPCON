@@ -22,3 +22,11 @@ data class Badge(
     val content : String,
     val color : String
 )
+
+data class MapBrandLogo(
+    val brand : String,
+    val itemName : String,
+    val X : Double,
+    val Y : Double,
+    val brandLogo : String
+)
