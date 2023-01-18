@@ -85,9 +85,13 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        binding.btnFab.setOnClickListener{
+            changeFragment(AddFragment())
+        }
     }
 
-    private fun changeFragment(fragment: Fragment) {
+    fun changeFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frame_layout_main, fragment)

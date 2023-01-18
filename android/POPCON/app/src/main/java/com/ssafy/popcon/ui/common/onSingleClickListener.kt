@@ -19,8 +19,3 @@ abstract class onSingleClickListener: View.OnClickListener {
         }
     }
 }
-
-//fun View.setOnSingleClickListener(): onSingleClickListener{
-//    val listener = View.OnClickListener { onSingleClick(it) }
-//    setOnClickListener(listener)
-//}

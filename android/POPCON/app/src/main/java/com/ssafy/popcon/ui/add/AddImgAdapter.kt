@@ -7,13 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ItemAddImgBinding
 import com.ssafy.popcon.dto.GifticonImg
+import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.home.HomeFragment
 
 class AddImgAdapter(var imgUriList: ArrayList<GifticonImg>, _onItemClick: onItemClick):
     RecyclerView.Adapter<AddImgAdapter.AddImgViewHolder>() {
     private lateinit var binding: ItemAddImgBinding
+    private lateinit var mainActivity: MainActivity
     private val onItemClick = _onItemClick
 
-    inner class AddImgViewHolder(private val binding: ItemAddImgBinding, private val parent:ViewGroup):
+    inner class AddImgViewHolder(private val binding: ItemAddImgBinding):
         RecyclerView.ViewHolder(binding.root){
         fun bind(gifticonImg: GifticonImg){
             binding.cvCouponImg.setOnClickListener {
@@ -25,7 +28,7 @@ class AddImgAdapter(var imgUriList: ArrayList<GifticonImg>, _onItemClick: onItem
                 notifyItemRemoved(bindingAdapterPosition)
 
                 if (imgUriList.size == 0){
-                    parent.findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+                    mainActivity.changeFragment(HomeFragment())
                 } else{
                     onItemClick.onClick(0)
                 }
@@ -35,7 +38,9 @@ class AddImgAdapter(var imgUriList: ArrayList<GifticonImg>, _onItemClick: onItem
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddImgViewHolder {
         binding = ItemAddImgBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AddImgViewHolder(binding, parent)
+        mainActivity = parent.context as MainActivity
+
+        return AddImgViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: AddImgViewHolder, position: Int) {
