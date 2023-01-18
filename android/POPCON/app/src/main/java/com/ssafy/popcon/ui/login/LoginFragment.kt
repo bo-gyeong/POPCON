@@ -22,6 +22,7 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentLoginBinding
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import java.util.*
 
@@ -35,6 +36,11 @@ class LoginFragment : Fragment() {
     lateinit var mainActivity: MainActivity
     private var email: String = ""
 
+    override fun onStart() {
+        super.onStart()
+        mainActivity = activity as MainActivity
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,16 +53,17 @@ class LoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val mainActivity = activity as MainActivity
         mainActivity.hideBottomNav(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mainActivity = activity as MainActivity
+
         //자동로그인
         if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
-            findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
+            mainActivity.changeFragment(HomeFragment())
         }
 
         init()
@@ -129,7 +136,7 @@ class LoginFragment : Fragment() {
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
                                 Log.d(TAG, "kakaoLogin: ${user?.kakaoAccount?.email}")
-                                findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
+                                mainActivity.changeFragment(HomeFragment())
                             }
                         }
                     }
@@ -141,11 +148,11 @@ class LoginFragment : Fragment() {
         }
     }
 
-    fun kakaoLogout(){
+    fun kakaoLogout() {
         UserApiClient.instance.logout { error ->
-            if (error != null){
+            if (error != null) {
                 Log.e(TAG, "kakaoLogout: 로그아웃 실패, SDK에서 토큰 삭제됨", error)
-            } else{
+            } else {
                 Log.e(TAG, "kakaoLogout: 로그아웃 성공, SDK에서 토큰 삭제됨")
             }
         }
@@ -174,7 +181,7 @@ class LoginFragment : Fragment() {
 
                             SharedPreferencesUtil(requireContext()).addUser(User(email, 2))
                             //Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
-                            findNavController().navigate(R.id.action_naverLoginFragment_to_homeFragment)
+                            mainActivity.changeFragment(HomeFragment())
                         }
 
                         override fun onError(errorCode: Int, message: String) {
