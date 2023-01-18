@@ -1,7 +1,5 @@
 package com.ssafy.popcon.ui.popup
 
-import android.util.Log
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -32,13 +30,15 @@ class PreviewAdapter(
             GifticonPreviewFragment.newInstance(
                 gifticons[getRealPosition(position)],
                 position,
-                object : PicListener {
+                object : PreviewListener {
                     override fun onClick(position: Int) {
                         syncToViewPager.setCurrentItem(getRealPosition(position), true)
                         syncWithViewPager.setCurrentItem(getRealPosition(position), true)
                     }
 
-                    override fun onSelect(position: Int) {}
+                    override fun onSelect(position: Int) {
+
+                    }
                 })
         }
     }
@@ -47,7 +47,7 @@ class PreviewAdapter(
         return position < sidePreviewCount || position > gifticons.size - 1 + sidePreviewCount
     }
 
-    private fun getRealPosition(position: Int): Int {
+    fun getRealPosition(position: Int): Int {
         return position - sidePreviewCount
     }
 
@@ -63,11 +63,12 @@ class PreviewAdapter(
         get() = sidePreviewCount * 2 + 1
 
     companion object {
-        private const val DEFAULT_SIDE_PREVIEW_COUNT = 3
+        private const val DEFAULT_SIDE_PREVIEW_COUNT = 2
     }
 
-    interface PicListener {
+    interface PreviewListener {
         fun onClick(position: Int)
         fun onSelect(position: Int)
     }
 }
+

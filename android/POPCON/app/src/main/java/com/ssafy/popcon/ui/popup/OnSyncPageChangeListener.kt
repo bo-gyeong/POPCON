@@ -3,7 +3,6 @@ package com.ssafy.popcon.ui.popup
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 
-
 class OnSyncPageChangeListener(
     private val syncToViewPager: ViewPager,
     private val syncWithViewPager: ViewPager
@@ -32,7 +31,7 @@ class OnSyncPageChangeListener(
     }
 
     override fun onPageSelected(position: Int) {
-        syncToViewPager.setCurrentItem(syncWithViewPager.currentItem, true)
+
     }
 
     override fun onPageScrollStateChanged(state: Int) {

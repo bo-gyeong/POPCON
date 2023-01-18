@@ -1,16 +1,23 @@
 package com.ssafy.popcon.ui.popup
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.DialogFragment
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
@@ -58,20 +65,19 @@ class GifticonDialogFragment : DialogFragment() {
         binding = DialogUseBinding.inflate(inflater, container, false)
 
         return binding.root
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Toast.makeText(requireContext(), "popup", Toast.LENGTH_SHORT).show()
         setList()
         setViewPager()
     }
 
-    private fun setViewPager(){
-        val previewAdapter = PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
+    private fun setViewPager() {
+        val previewAdapter =
+            PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
         val gifticonViewAdapter = GifticonViewAdapter(childFragmentManager, useList)
 
         binding.vpPreview.adapter = previewAdapter
@@ -90,7 +96,24 @@ class GifticonDialogFragment : DialogFragment() {
                 binding.vpGifticon
             )
         )
+
+        binding.vpPreview.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                if (previewAdapter.getItem(binding.vpPreview.currentItem + 2) is GifticonPreviewFragment) {
+                    //새로운거 선택됨
+                }
+            }
+        })
     }
+
 
     private fun setTopAdapter() {
 

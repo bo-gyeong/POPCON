@@ -1,6 +1,5 @@
 package com.ssafy.popcon.ui.popup
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.ItemGifticonSliderBinding
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.popup.PreviewAdapter.PicListener
-
-
-
-
+import com.ssafy.popcon.ui.popup.PreviewAdapter.PreviewListener
 
 class GifticonPreviewFragment : Fragment() {
     private var gifticonInfo: Gifticon? = null
@@ -31,14 +26,13 @@ class GifticonPreviewFragment : Fragment() {
         binding = ItemGifticonSliderBinding.inflate(layoutInflater, container, false)
 
         val pos = this.requireArguments().getInt("pos")
-        val pic = this.requireArguments().getString("pic")
 
-        binding.ivProductImage.setOnClickListener {
-            if (mListener != null) {
-                mListener.onSelect(pos)
-                mListener.onClick(pos)
-            }
+        binding.ivProductPreview.setOnClickListener {
+            mListener.onSelect(pos)
+            mListener.onClick(pos)
         }
+
+        binding.ivProductPreview.clipToOutline = true
         return binding.root
     }
 
@@ -49,10 +43,12 @@ class GifticonPreviewFragment : Fragment() {
     }
 
     companion object {
-        private lateinit var mListener : PreviewAdapter.PicListener
+        private lateinit var mListener: PreviewListener
         private val EXTRA_KEY_GIFTICON_INFO = "extra_key_gifticon_info"
-        fun newInstance(gifticonInfo: Gifticon, pos: Int,
-                        listener: PicListener ): GifticonPreviewFragment {
+        fun newInstance(
+            gifticonInfo: Gifticon, pos: Int,
+            listener: PreviewListener
+        ): GifticonPreviewFragment {
             val fragment = GifticonPreviewFragment()
             val args = Bundle()
             args.putSerializable(EXTRA_KEY_GIFTICON_INFO, gifticonInfo)
@@ -62,5 +58,4 @@ class GifticonPreviewFragment : Fragment() {
             return fragment
         }
     }
-
 }

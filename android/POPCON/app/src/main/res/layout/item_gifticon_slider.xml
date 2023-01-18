@@ -3,23 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginEnd="8dp">
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="2dp">
 
         <ImageView
-            android:id="@+id/iv_product_image"
+            android:id="@+id/iv_product_preview"
             imageUrl="@{gifticon.productUrl}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/edge_preview"
             android:scaleType="centerCrop"
             android:src="@drawable/product"
             app:layout_constraintStart_toStartOf="parent"

@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/iv_product_image"
+            android:id="@+id/iv_product_preview"
             imageUrl="@{gifticon.productUrl}"
             android:layout_width="0dp"
             android:layout_height="200dp"
@@ -35,7 +35,7 @@
             android:src="@drawable/barcode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_product_image" />
+            app:layout_constraintTop_toBottomOf="@id/iv_product_preview" />
 
         <TextView
             android:id="@+id/tv_brand"
