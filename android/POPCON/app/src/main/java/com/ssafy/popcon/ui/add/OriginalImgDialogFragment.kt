@@ -7,14 +7,15 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.ssafy.popcon.databinding.DialogAddOriginalBinding
+import com.ssafy.popcon.dto.GifticonImg
 
-class OriginalImgDialogFragment(_imgUri: Uri): DialogFragment() {
+class OriginalImgDialogFragment(_gifticonImg:GifticonImg): DialogFragment() {
     private lateinit var binding:DialogAddOriginalBinding
 
-    private var imgUri:Uri
+    private var gifticonImg:GifticonImg
 
     init {
-        imgUri = _imgUri
+        gifticonImg = _gifticonImg
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -23,7 +24,7 @@ class OriginalImgDialogFragment(_imgUri: Uri): DialogFragment() {
         val builder = AlertDialog.Builder(context)
         builder.setView(binding.root)
 
-        Glide.with(requireActivity()).load(imgUri).into(binding.ivOriginalImg)
+        binding.gifticonImg = gifticonImg
         binding.btnCancel.setOnClickListener {
             dismiss()
         }

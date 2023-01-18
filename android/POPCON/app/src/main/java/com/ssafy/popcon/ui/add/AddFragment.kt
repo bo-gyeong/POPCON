@@ -21,12 +21,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.soundcloud.android.crop.Crop
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentAddBinding
+import com.ssafy.popcon.dto.AddInfo
 import com.ssafy.popcon.dto.GifticonImg
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.common.onSingleClickListener
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import java.io.*
 
@@ -36,7 +37,7 @@ class AddFragment : Fragment(), onItemClick {
     private lateinit var mainActivity: MainActivity
     private lateinit var addImgAdapter: AddImgAdapter
     private lateinit var imgUris:ArrayList<GifticonImg>
-    private val delImgIdx = ArrayList<Int>()
+    private val delImgUri = ArrayList<Uri>()
     var imgNum = 0
 
     override fun onAttach(context: Context) {
@@ -56,6 +57,7 @@ class AddFragment : Fragment(), onItemClick {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAddBinding.inflate(inflater, container, false)
+        binding.addInfo = AddInfo()
 
         return binding.root
     }
@@ -66,17 +68,21 @@ class AddFragment : Fragment(), onItemClick {
         imgUris = ArrayList()
         openGalleryFirst()
 
-        binding.cvProductImg.setOnClickListener {
-            openGallery(imgNum)
-        }
+        binding.cvProductImg.setOnClickListener(object : onSingleClickListener(){
+            override fun onSingleClick(v: View) {
+                openGallery(imgNum)
+            }
+        })
 
-        binding.cvBarcodeImg.setOnClickListener {
-            openGallery(imgNum)
-        }
+        binding.cvBarcodeImg.setOnClickListener(object : onSingleClickListener(){
+            override fun onSingleClick(v: View) {
+                openGallery(imgNum)
+            }
+        })
 
         binding.btnRegi.setOnClickListener {
-            for (i in 0 until delImgIdx.size){
-                delCropImg(delImgIdx[i])
+            for (i in 0 until delImgUri.size){
+                delCropImg(delImgUri[i])
             }
             //유효성 검사
             findNavController().navigate(R.id.action_addFragment_to_homeFragment)
@@ -84,7 +90,7 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.btnOriginalSee.setOnClickListener {
             if (imgUris.size != 0){
-                seeOriginalImg(imgUris[imgNum].imgUri)
+                seeOriginalImg(imgUris[imgNum])
             }
         }
     }
@@ -105,7 +111,7 @@ class AddFragment : Fragment(), onItemClick {
                     } else{  //이미지 크롭
                         imgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
 
-                        delImgIdx.add(imgNum)
+                        delImgUri.add(imgUris[imgNum].imgUri)
                         fillContent(imgNum)
                     }
                     makeImgList()
@@ -122,11 +128,14 @@ class AddFragment : Fragment(), onItemClick {
     private fun fillContent(idx: Int){
         imgNum = idx
 
-        Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivCouponImg)
-        Glide.with(this).load(imgUris[idx].imgUri).centerCrop().into(binding.ivBarcodeImg)
-        binding.etProductName.setText("상품이름${idx}")
-        binding.etProductBrand.setText("브랜드")
-        binding.etDate.setText("2023..01.01")
+        binding.addInfo = AddInfo(
+            imgUris[idx].imgUri,
+            imgUris[idx].imgUri,
+            "상품이름${idx}",
+            "브랜드${idx}",
+            "1231-2345~~~",
+            "2023..01.01"
+        )
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
         binding.tvRegiImgCount.text = String.format(resources.getString(R.string.regi_img_count), idx+1 , imgUris.size)
@@ -207,8 +216,8 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // 크롭되면서 새로 생성된 이미지 삭제
-    private fun delCropImg(idx: Int){
-        val file = File(getPath(imgUris[idx].imgUri))
+    private fun delCropImg(delImgUri: Uri){
+        val file = File(getPath(delImgUri))
         file.delete()
     }
 
@@ -225,8 +234,8 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // 이미지 원본보기
-    private fun seeOriginalImg(imgUri:Uri){
-        OriginalImgDialogFragment(imgUri).show(
+    private fun seeOriginalImg(gifticonImg: GifticonImg){
+        OriginalImgDialogFragment(gifticonImg).show(
             childFragmentManager, "OriginalDialog"
         )
     }

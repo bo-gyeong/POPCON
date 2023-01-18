@@ -3,6 +3,8 @@ package com.ssafy.popcon.ui.common
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.view.isGone
 import androidx.databinding.BindingAdapter
@@ -35,4 +37,12 @@ fun loadCircleImage(view: ImageView, imageUrl: String?) {
             .circleCrop()
             .into(view)
     }
+}
+
+//이미지 uri -> view
+@BindingAdapter("imageUri")
+fun loadImageUri(view: ImageView, imageUri: Uri) {
+    GlideApp.with(view)
+        .load(imageUri)
+        .into(view)
 }
