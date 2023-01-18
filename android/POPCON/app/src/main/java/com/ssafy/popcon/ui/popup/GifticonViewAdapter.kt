@@ -6,13 +6,8 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.ssafy.popcon.dto.Gifticon
 
 
-class GifticonViewAdapter(fm: FragmentManager?, photoInfos: List<Gifticon>) :
-    FragmentPagerAdapter(fm!!) {
-    private val gifticons: List<Gifticon>
-
-    init {
-        this.gifticons = photoInfos
-    }
+class GifticonViewAdapter(fm: FragmentManager, private val gifticons: List<Gifticon>) :
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
         return GifticonViewFragment.newInstance(gifticons[position])

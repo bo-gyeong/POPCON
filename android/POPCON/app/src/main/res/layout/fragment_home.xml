@@ -8,6 +8,17 @@
     android:background="@color/popcon_bluegrey"
     android:fitsSystemWindows="true">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/cv_brand_tab"
+        android:name="com.ssafy.popcon.ui.brandtab.BrandTabFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:padding="8dp"
+        app:layout_constraintEnd_toStartOf="@id/btn_setting"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_gifticon"
         android:layout_width="match_parent"
@@ -20,24 +31,14 @@
         app:spanCount="2"
         tools:listitem="@layout/item_home_gifticon" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/cv_brand_tab"
-        android:name="com.ssafy.popcon.ui.brandtab.BrandTabFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        app:layout_constraintEnd_toStartOf="@id/btn_setting"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageButton
         android:id="@+id/btn_setting"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:backgroundTint="@color/popcon_purple"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/ic_baseline_settings_24"
+        android:backgroundTint="@color/popcon_purple"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/rv_gifticon"
         app:layout_constraintEnd_toEndOf="parent"

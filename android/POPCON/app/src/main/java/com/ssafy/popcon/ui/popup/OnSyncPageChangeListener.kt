@@ -7,9 +7,9 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 class OnSyncPageChangeListener(
     private val syncToViewPager: ViewPager,
     private val syncWithViewPager: ViewPager
-) :
-    OnPageChangeListener {
+) : OnPageChangeListener {
     private var scrollState = ViewPager.SCROLL_STATE_IDLE
+
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
         if (scrollState != ViewPager.SCROLL_STATE_IDLE) {
             val ratio = calculateRatioForPosition(position)
@@ -31,11 +31,14 @@ class OnSyncPageChangeListener(
         return syncToViewPagerElementWidth / syncWithViewPagerElementWidth
     }
 
-    override fun onPageSelected(position: Int) {}
+    override fun onPageSelected(position: Int) {
+        syncToViewPager.setCurrentItem(syncWithViewPager.currentItem, true)
+    }
+
     override fun onPageScrollStateChanged(state: Int) {
         scrollState = state
         if (state == ViewPager.SCROLL_STATE_IDLE) {
-            syncToViewPager.setCurrentItem(syncWithViewPager.currentItem, false)
+            syncToViewPager.setCurrentItem(syncWithViewPager.currentItem, true)
         }
     }
 }

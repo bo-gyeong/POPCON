@@ -160,7 +160,6 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-
     override fun onRestart() {
         super.onRestart()
         checkPermissions()

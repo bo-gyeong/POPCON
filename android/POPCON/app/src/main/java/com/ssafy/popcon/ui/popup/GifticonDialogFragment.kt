@@ -20,7 +20,6 @@ class GifticonDialogFragment : DialogFragment() {
 
     val useList = mutableListOf<Gifticon>()
     private lateinit var binding: DialogUseBinding
-    private lateinit var useAdapter: GifticonUseAdapter
 
     //팝업창 떠있는지 확인하는 변수
     companion object {
@@ -49,7 +48,6 @@ class GifticonDialogFragment : DialogFragment() {
         val deviceWidth = size.x
         params?.width = (deviceWidth * 0.9).toInt()
         dialog?.window?.attributes = params as WindowManager.LayoutParams
-
     }
 
     override fun onCreateView(
@@ -69,68 +67,34 @@ class GifticonDialogFragment : DialogFragment() {
 
         Toast.makeText(requireContext(), "popup", Toast.LENGTH_SHORT).show()
         setList()
-        //setViewPager()
-        //setUseAdapter()
-        test()
+        setViewPager()
     }
 
-    fun test(){
-        val photoPreviewAdapter = PhotoPreviewAdapter(childFragmentManager, useList)
+    private fun setViewPager(){
+        val previewAdapter = PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
         val gifticonViewAdapter = GifticonViewAdapter(childFragmentManager, useList)
 
-        binding.photoPreviewPager.adapter = photoPreviewAdapter
-        binding.photoPreviewPager.addOnPageChangeListener(
+        binding.vpPreview.adapter = previewAdapter
+        binding.vpPreview.addOnPageChangeListener(
             OnSyncPageChangeListener(
-                binding.photoViewPager,
-                binding.photoPreviewPager
+                binding.vpGifticon,
+                binding.vpPreview
             )
         )
 
-        binding.photoViewPager.adapter = gifticonViewAdapter
-        binding.photoViewPager.offscreenPageLimit = photoPreviewAdapter.sidePreviewCount * 2 + 1
-        binding.photoViewPager.addOnPageChangeListener(
+        binding.vpGifticon.adapter = gifticonViewAdapter
+        binding.vpGifticon.offscreenPageLimit = previewAdapter.sidePreviewCount * 2 + 1
+        binding.vpGifticon.addOnPageChangeListener(
             OnSyncPageChangeListener(
-                binding.photoPreviewPager,
-                binding.photoViewPager
+                binding.vpPreview,
+                binding.vpGifticon
             )
         )
     }
 
-    fun setDetail() {
+    private fun setTopAdapter() {
 
     }
-
-
-    /*private fun setViewPager() {
-
-        with(binding.viewpagerDialog) {
-            adapter = GifticonUseAdapter().apply {
-                submitList(useList)
-            }
-
-            TabLayoutMediator(binding.viewpagerDialogIndicator, this) { tab, position ->
-                tab.view.background = resources.getDrawable(R.drawable.product)
-                *//*GlideApp.with(tab.view)
-                    .load(useList[position].productUrl)
-                    .into(tab.view.findViewById(R.id.iv_product_image))*//*
-            }.attach()
-        }
-
-
-    }*/
-
-    //팝업창 아래 기프티콘 사용 목록 어댑터
-    /*private fun setUseAdapter() {
-        useAdapter = GifticonUseAdapter()
-
-        binding.rvGifticonUse.apply {
-            adapter = useAdapter
-            adapter!!.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-
-        useAdapter.submitList(useList)
-    }*/
 
     private fun setList() {
         useList.add(
@@ -139,6 +103,18 @@ class GifticonDialogFragment : DialogFragment() {
                 Brand("스타벅스", ""),
                 "아메리카노 T",
                 30000,
+                "https://user-images.githubusercontent.com/33195517/213049326-7f10ea87-0094-46ac-9f81-bd136e9ca5f3.png",
+                "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
+                "2023.01.12",
+                Badge("D-23", "#FF7D22FF")
+            )
+        )
+        useList.add(
+            Gifticon(
+                "1234",
+                Brand("이디야", ""),
+                "아메리카노 T",
+                30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
                 "2023.01.12",
@@ -148,7 +124,7 @@ class GifticonDialogFragment : DialogFragment() {
         useList.add(
             Gifticon(
                 "1234",
-                Brand("스타벅스", ""),
+                Brand("이디야", ""),
                 "아메리카노 T",
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
@@ -163,7 +139,7 @@ class GifticonDialogFragment : DialogFragment() {
                 Brand("스타벅스", ""),
                 "아메리카노 T",
                 30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+                "https://user-images.githubusercontent.com/33195517/213049326-7f10ea87-0094-46ac-9f81-bd136e9ca5f3.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
                 "2023.01.12",
                 Badge("D-23", "#FF7D22FF")
@@ -172,19 +148,7 @@ class GifticonDialogFragment : DialogFragment() {
         useList.add(
             Gifticon(
                 "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        useList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
+                Brand("이디야", ""),
                 "아메리카노 T",
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",

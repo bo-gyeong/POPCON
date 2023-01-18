@@ -1,39 +1,50 @@
 package com.ssafy.popcon.ui.popup
 
+import android.util.Log
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.ssafy.popcon.dto.Gifticon
 
-
-class PhotoPreviewAdapter(
-    fm: FragmentManager?,
+class PreviewAdapter(
+    fm: FragmentManager,
     val sidePreviewCount: Int,
-    photoInfos: List<Gifticon>
+    val gifticons: List<Gifticon>,
+    private val syncToViewPager: ViewPager,
+    private val syncWithViewPager: ViewPager
 ) :
-    FragmentPagerAdapter(fm!!) {
-    private val photoInfos: List<Gifticon>
-
-    constructor(fm: FragmentManager?, photoInfos: List<Gifticon>) : this(
-        fm,
-        DEFAULT_SIDE_PREVIEW_COUNT,
-        photoInfos
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    constructor(
+        fm: FragmentManager,
+        gifticons: List<Gifticon>,
+        syncToViewPager: ViewPager,
+        syncWithViewPager: ViewPager
+    ) : this(
+        fm, DEFAULT_SIDE_PREVIEW_COUNT, gifticons, syncToViewPager, syncWithViewPager
     )
-
-    init {
-        this.photoInfos = photoInfos
-    }
 
     override fun getItem(position: Int): Fragment {
         return if (isDummy(position)) {
-            DummyPreviewFragment()
+            EmptyPreviewFragment()
         } else {
-            GifticonPreviewFragment.newInstance(photoInfos[getRealPosition(position)])
+            GifticonPreviewFragment.newInstance(
+                gifticons[getRealPosition(position)],
+                position,
+                object : PicListener {
+                    override fun onClick(position: Int) {
+                        syncToViewPager.setCurrentItem(getRealPosition(position), true)
+                        syncWithViewPager.setCurrentItem(getRealPosition(position), true)
+                    }
+
+                    override fun onSelect(position: Int) {}
+                })
         }
     }
 
     private fun isDummy(position: Int): Boolean {
-        return position < sidePreviewCount || position > photoInfos.size - 1 + sidePreviewCount
+        return position < sidePreviewCount || position > gifticons.size - 1 + sidePreviewCount
     }
 
     private fun getRealPosition(position: Int): Int {
@@ -41,7 +52,7 @@ class PhotoPreviewAdapter(
     }
 
     override fun getCount(): Int {
-        return photoInfos.size + sidePreviewCount * 2
+        return gifticons.size + sidePreviewCount * 2
     }
 
     override fun getPageWidth(position: Int): Float {
@@ -49,9 +60,14 @@ class PhotoPreviewAdapter(
     }
 
     private val elementsPerPage: Int
-        private get() = sidePreviewCount * 2 + 1
+        get() = sidePreviewCount * 2 + 1
 
     companion object {
         private const val DEFAULT_SIDE_PREVIEW_COUNT = 3
+    }
+
+    interface PicListener {
+        fun onClick(position: Int)
+        fun onSelect(position: Int)
     }
 }
