@@ -11,12 +11,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
-import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.CheckPermission
