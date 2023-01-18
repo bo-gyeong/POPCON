@@ -17,8 +17,6 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.loader.content.CursorLoader
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.soundcloud.android.crop.Crop
@@ -28,6 +26,7 @@ import com.ssafy.popcon.dto.AddInfo
 import com.ssafy.popcon.dto.GifticonImg
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.onSingleClickListener
+import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import java.io.*
 
@@ -85,7 +84,7 @@ class AddFragment : Fragment(), onItemClick {
                 delCropImg(delImgUri[i])
             }
             //유효성 검사
-            findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+            mainActivity.changeFragment(HomeFragment())
         }
 
         binding.btnOriginalSee.setOnClickListener {
@@ -118,7 +117,7 @@ class AddFragment : Fragment(), onItemClick {
                 }
                 Activity.RESULT_CANCELED -> {
                     if (imgUris.size == 0){ // add탭 클릭 후 이미지 선택 안하고 뒤로가기 클릭 시
-                        binding.root.findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+                        mainActivity.changeFragment(HomeFragment())
                     }
                 }
             }

@@ -67,14 +67,6 @@ class MainActivity : AppCompatActivity() {
         // 재선택시 다시 렌더링 하지 않기 위해 수정
         binding.lBottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.addFragment -> {
-                    Log.d(TAG, "setNavBar: addFragment")
-                    if (binding.lBottomNavigationView.selectedItemId == R.id.homeFragment) {
-                        navController.navigate(R.id.action_homeFragment_to_addFragment)
-                    } else if (binding.lBottomNavigationView.selectedItemId == R.id.mapFragment) {
-                        navController.navigate(R.id.action_mapFragment_to_addFragment)
-                    }
-                }
                 R.id.homeFragment -> {
                     Log.d(TAG, "setNavBar: 홈")
                     if (binding.lBottomNavigationView.selectedItemId != R.id.homeFragment)
@@ -88,9 +80,13 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        binding.btnFab.setOnClickListener{
+            changeFragment(AddFragment())
+        }
     }
 
-    private fun changeFragment(fragment: Fragment) {
+    fun changeFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frame_layout_main, fragment)
