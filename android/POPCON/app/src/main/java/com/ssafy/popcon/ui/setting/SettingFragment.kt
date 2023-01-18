@@ -36,16 +36,15 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.run {
             signOut()
             deleteNaverUser()
-        }
+        
     }
 
     //네이버 로그아웃
     private fun signOut() {
         binding.btnSignout.setOnClickListener {
-            if (SharedPreferencesUtil(requireContext()).getUser().type == 2) {
+            if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
                 SharedPreferencesUtil(requireContext()).deleteUser()
 
                 mainActivity.changeFragment(LoginFragment())
@@ -56,7 +55,7 @@ class SettingFragment : Fragment() {
     //네이버 회원탈퇴
     private fun deleteNaverUser() {
         binding.btnDelete.setOnClickListener {
-            if (SharedPreferencesUtil(requireContext()).getUser().type == 2) {
+            if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
                 SharedPreferencesUtil(requireContext()).deleteUser()
 
                 NidOAuthLogin().callDeleteTokenApi(requireContext(), object : OAuthLoginCallback {

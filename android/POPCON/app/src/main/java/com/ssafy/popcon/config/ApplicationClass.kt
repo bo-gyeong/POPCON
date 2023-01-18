@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 class ApplicationClass : Application() {
     companion object{
-        const val SERVER_URL = ""
+        const val SERVER_URL = "http://192.168.100.136:8080/"
 
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit
@@ -46,5 +46,6 @@ class ApplicationClass : Application() {
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
 
         //make Retrofit(SERVER_URL)
+        makeRetrofit(SERVER_URL)
     }
 }
