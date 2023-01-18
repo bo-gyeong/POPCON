@@ -67,13 +67,18 @@ class MainActivity : AppCompatActivity() {
         // 재선택시 다시 렌더링 하지 않기 위해 수정
         binding.lBottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.addFragment -> {
+                    if (binding.lBottomNavigationView.selectedItemId == R.id.homeFragment) {
+                        navController.navigate(R.id.action_homeFragment_to_addFragment)
+                    } else if (binding.lBottomNavigationView.selectedItemId == R.id.mapFragment) {
+                        navController.navigate(R.id.action_mapFragment_to_addFragment)
+                    }
+                }
                 R.id.homeFragment -> {
-                    Log.d(TAG, "setNavBar: 홈")
                     if (binding.lBottomNavigationView.selectedItemId != R.id.homeFragment)
                         changeFragment(HomeFragment())
                 }
                 R.id.mapFragment -> {
-                    Log.d(TAG, "setNavBar: 맵")
                     if (binding.lBottomNavigationView.selectedItemId != R.id.mapFragment)
                         changeFragment(MapFragment())
                 }
