@@ -23,6 +23,7 @@ import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
+import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.ShakeDetector
 
 private const val TAG = "HomeFragment"
@@ -200,6 +201,10 @@ class HomeFragment : Fragment() {
         }
 
         gifticonAdapter.submitList(gifticonList)
+
+        binding.btnSetting.setOnClickListener {
+            mainActivity.changeFragment(SettingsFragment())
+        }
     }
 
     //홈화면 켜지면 센서 설정
