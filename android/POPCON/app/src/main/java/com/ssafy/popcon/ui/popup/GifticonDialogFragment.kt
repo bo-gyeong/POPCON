@@ -68,6 +68,7 @@ class GifticonDialogFragment : DialogFragment() {
         setViewPager()
     }
 
+    //상품이미지 미리보기, 기프티콘 사용화면
     private fun setViewPager() {
         val previewAdapter =
             PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
@@ -107,6 +108,7 @@ class GifticonDialogFragment : DialogFragment() {
         })
     }
 
+    //기프티콘 리스트 추가
     private fun setList() {
         useList.add(
             Gifticon(
