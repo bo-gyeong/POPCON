@@ -10,5 +10,5 @@ data class User(
     val timezone: Int = 1,
     var token: String?
 ) {
-    constructor(email: String?, social: Int) : this(email, 0, 1, 1, 1, 1, 1, "")
+    constructor(email: String?, social: Int) : this(email, social, 1, 1, 1, 1, 1, "")
 }

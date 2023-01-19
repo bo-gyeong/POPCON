@@ -1,29 +1,27 @@
-package com.ssafy.popcon.ui.home
+package com.ssafy.popcon.ui.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.ssafy.popcon.databinding.FragmentHomeBinding
+import com.ssafy.popcon.databinding.FragmentHistoryBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.ui.popup.GifticonDialogFragment
-import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
-import com.ssafy.popcon.ui.setting.SettingFragment
-import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.ui.home.GiftconAdapter
+import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
-private const val TAG = "HomeFragment"
-
-class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
-    private lateinit var shakeDetector: ShakeDetector
-    lateinit var gifticonAdapter: GiftconAdapter
+class HistoryFragment : Fragment() {
+    private lateinit var binding: FragmentHistoryBinding
     private lateinit var mainActivity: MainActivity
+    lateinit var historyAdapter: HistoryAdapter
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     override fun onStart() {
         super.onStart()
@@ -32,7 +30,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        mainActivity.hideBottomNav(false)
+        mainActivity.hideBottomNav(true)
     }
 
     override fun onCreateView(
@@ -40,9 +38,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        setSensor()
+        binding = FragmentHistoryBinding.inflate(inflater, container, false)
 
         return binding.root
     }
@@ -50,15 +46,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnSetting.setOnClickListener {
-            mainActivity.changeFragment(SettingFragment())
-        }
-
-        setGifticonAdapter()
+        setHistoryAdapter()
     }
 
-    //홈 기프티콘 어댑터 설정
-    private fun setGifticonAdapter() {
+    private fun setHistoryAdapter() {
         val gifticonList = mutableListOf<Gifticon>()
         gifticonList.add(
             Gifticon(
@@ -129,7 +120,7 @@ class HomeFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#FF7D22FF")
             )
         )
         gifticonList.add(
@@ -141,7 +132,7 @@ class HomeFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#FF7D22FF")
             )
         )
         gifticonList.add(
@@ -153,7 +144,7 @@ class HomeFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#FF7D22FF")
             )
         )
         gifticonList.add(
@@ -193,30 +184,15 @@ class HomeFragment : Fragment() {
             )
         )
 
-        gifticonAdapter = GiftconAdapter()
-        binding.rvGifticon.apply {
-            adapter = gifticonAdapter
-            layoutManager = GridLayoutManager(context, 2)
-            adapter!!.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
+        viewModel.history.observe(viewLifecycleOwner, Observer {
+            historyAdapter = HistoryAdapter()
+            historyAdapter.submitList(it)
 
-        gifticonAdapter.submitList(gifticonList)
-    }
-
-    //홈화면 켜지면 센서 설정
-    private fun setSensor() {
-        shakeDetector = ShakeDetector()
-        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
-            override fun onShake(count: Int) {
-                if (!isShow) {
-                    activity?.let {
-                        GifticonDialogFragment().show(it.supportFragmentManager, "popup")
-                    }
-                }
+            binding.rvHistory.apply {
+                adapter = historyAdapter
+                adapter!!.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
         })
-
-        MainActivity().setShakeSensor(requireContext(), shakeDetector)
     }
 }

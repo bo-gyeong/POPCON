@@ -4,7 +4,7 @@ import com.ssafy.popcon.dto.User
 
 class UserRepository(private val remoteDataSource: UserRemoteDataSource) {
 
-    suspend fun signIn(user: User): Boolean {
+    suspend fun signIn(user: User): User {
         return remoteDataSource.signIn(user)
     }
 }

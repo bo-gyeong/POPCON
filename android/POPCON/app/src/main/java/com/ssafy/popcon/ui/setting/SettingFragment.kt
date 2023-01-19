@@ -38,7 +38,6 @@ class SettingFragment : Fragment() {
 
             signOut()
             deleteNaverUser()
-        
     }
 
     //네이버 로그아웃

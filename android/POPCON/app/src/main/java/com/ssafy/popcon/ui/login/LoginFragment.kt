@@ -1,11 +1,13 @@
 package com.ssafy.popcon.ui.login
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
@@ -19,21 +21,18 @@ import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.databinding.FragmentLoginBinding
 import com.ssafy.popcon.dto.User
-import com.ssafy.popcon.repository.user.UserRemoteDataSource
-import com.ssafy.popcon.repository.user.UserRepository
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
-import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ssafy.popcon.viewmodel.UserViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 import java.util.*
 
 private const val TAG = "NaverLoginFragment_싸피"
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
+    private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
     private var userUUID: String = ""
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
@@ -181,18 +180,12 @@ class LoginFragment : Fragment() {
                     NidOAuthLogin().callProfileApi(object :
                         NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(result: NidProfileResponse) {
-                            email = result.profile?.email.toString()
-
-                            SharedPreferencesUtil(requireContext()).addUser(User(email, 2))
-                            //Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
-
-                            val userRepository =
-                                UserRepository(UserRemoteDataSource(RetrofitUtil.userService))
+                            val email = result.profile?.email.toString()
                             val user = User(email, 2)
 
-                            CoroutineScope(Dispatchers.IO).launch {
-                                userRepository.signIn(user)
-                            }
+                            SharedPreferencesUtil(requireContext()).addUser(user)
+                            Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
+                            //viewModel.naverSignIn(user)
 
                             mainActivity.changeFragment(HomeFragment())
                         }

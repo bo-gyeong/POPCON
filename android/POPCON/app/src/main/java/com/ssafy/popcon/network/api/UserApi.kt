@@ -5,7 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface UserApi {
-    // 로그인
+    //네이버 로그인
     @POST("api/user/naver-login/")
-    suspend fun signIn(@Body user: User): Boolean
+    suspend fun signIn(@Body user: User): User
 }

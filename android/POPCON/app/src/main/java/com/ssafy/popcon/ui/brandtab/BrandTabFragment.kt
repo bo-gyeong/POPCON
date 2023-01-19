@@ -5,9 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.Brand
+import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.UserViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class BrandTabFragment : Fragment() {
     private lateinit var binding: FragmentBrandTabBinding
@@ -20,11 +24,13 @@ class BrandTabFragment : Fragment() {
     ): View? {
         binding = FragmentBrandTabBinding.inflate(inflater, container, false)
         setBrandTab()
+
         return binding.root
     }
 
     fun setBrandTab() {
         brandAdapter = BrandAdapter()
+
         binding.rvBrand.apply {
             adapter = brandAdapter
             adapter!!.stateRestorationPolicy =
@@ -32,6 +38,7 @@ class BrandTabFragment : Fragment() {
         }
 
         var brandList = mutableListOf<Brand>()
+
         brandList.add(
             Brand(
                 "전체",
@@ -86,4 +93,5 @@ class BrandTabFragment : Fragment() {
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
     }
+
 }
