@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui.home
+package com.ssafy.popcon.ui.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.ItemHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
 
-class GiftconAdapter :
-    ListAdapter<Gifticon, GiftconAdapter.GifticonViewHolder>(GifticonDiffCallback()) {
+class HistoryAdapter :
+    ListAdapter<Gifticon, HistoryAdapter.GifticonViewHolder>(GifticonDiffCallback()) {
     private lateinit var binding: ItemHomeGifticonBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifticonViewHolder {
@@ -25,8 +25,8 @@ class GiftconAdapter :
     inner class GifticonViewHolder(private val binding: ItemHomeGifticonBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(gifitcon: Gifticon) {
-            binding.gifticon = gifitcon
+        fun bind(gifticon: Gifticon) {
+            binding.gifticon = gifticon
             binding.executePendingBindings()
         }
     }

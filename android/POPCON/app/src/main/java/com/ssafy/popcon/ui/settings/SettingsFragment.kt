@@ -58,10 +58,10 @@ class SettingsFragment: Fragment() {
         binding.run {
             clickJoin()
 
-            if (user!!.type == 1){
+            if (user!!.social == 1){
                 signOutKakao()
                 withdrawKakao()
-            } else if (user!!.type == 2){
+            } else if (user!!.social == 2){
                 signOutNaver()
                 withdrawNaver()
             }
@@ -70,7 +70,7 @@ class SettingsFragment: Fragment() {
 
     // 비회원이 로그인하기 클릭 시
     private fun clickJoin(){
-        if (user.type == 0){
+        if (user.social == 0){
             binding.lAccount.setOnClickListener {
                 settingsToLogin()
             }
@@ -86,7 +86,7 @@ class SettingsFragment: Fragment() {
 
     // 비회원일 경우 로그인한계정, 로그아웃, 회원탈퇴 안보이도록
     private fun settingVisibility(){
-        if (user.type == 0){
+        if (user.social == 0){
             binding.tvJoin.visibility = View.VISIBLE
             binding.tvTitleAccount.visibility = View.GONE
             binding.tvAccount.visibility = View.GONE
@@ -155,7 +155,7 @@ class SettingsFragment: Fragment() {
     //네이버 로그아웃
     private fun signOutNaver() {
         binding.tvLogout.setOnClickListener {
-            if (SharedPreferencesUtil(requireContext()).getUser().type == 2) {
+            if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
                 SharedPreferencesUtil(requireContext()).deleteUser()
                 settingsToLogin()
             }
@@ -165,7 +165,7 @@ class SettingsFragment: Fragment() {
     //네이버 회원탈퇴
     private fun withdrawNaver() {
         binding.tvWithdraw.setOnClickListener {
-            if (SharedPreferencesUtil(requireContext()).getUser().type == 2) {
+            if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
                 SharedPreferencesUtil(requireContext()).deleteUser()
 
                 NidOAuthLogin().callDeleteTokenApi(requireContext(), object : OAuthLoginCallback {

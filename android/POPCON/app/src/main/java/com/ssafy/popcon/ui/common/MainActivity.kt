@@ -1,6 +1,7 @@
 package com.ssafy.popcon.ui.common
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -57,6 +58,7 @@ class MainActivity : AppCompatActivity() {
             0,
             this.navigationHeight()
         )
+
         val navHosFragment =
             supportFragmentManager.findFragmentById(R.id.frame_layout_main) as NavHostFragment
         val navController = navHosFragment.navController
@@ -68,9 +70,9 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.addFragment -> {
                     if (binding.lBottomNavigationView.selectedItemId == R.id.homeFragment) {
-                        navController.navigate(R.id.action_homeFragment_to_addFragment)
+                        changeFragment(AddFragment())
                     } else if (binding.lBottomNavigationView.selectedItemId == R.id.mapFragment) {
-                        navController.navigate(R.id.action_mapFragment_to_addFragment)
+                        changeFragment(AddFragment())
                     }
                 }
                 R.id.homeFragment -> {

@@ -13,7 +13,7 @@ class SharedPreferencesUtil(context: Context) {
     fun addUser(user: User) {
         val editor = preferences.edit()
         editor.putString("id", user.email)
-        editor.putInt("type", user.type)
+        editor.putInt("type", user.social)
         editor.apply()
     }
 
@@ -24,7 +24,7 @@ class SharedPreferencesUtil(context: Context) {
             val type = preferences.getInt("type", 0)
             User(id!!, type)
         } else {
-            User()
+            User("", 0)
         }
     }
 
