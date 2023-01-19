@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="12dp"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:paddingBottom="?attr/actionBarSize">
     
         <TextView
             android:id="@+id/tv_regi_coupon"

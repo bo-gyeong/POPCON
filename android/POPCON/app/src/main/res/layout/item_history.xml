@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
@@ -14,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:elevation="2dp"
         app:cardCornerRadius="12dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,17 +23,19 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+            android:layout_height="match_parent"
+            android:layout_marginVertical="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_product_preview"
                 imageUrl="@{gifticon.productUrl}"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="0dp"
                 android:background="@color/popcon_white"
                 android:scaleType="centerInside"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,8 +47,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="15dp"
                 android:text="@{gifticon.brand.name}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_product_preview"
+                app:layout_constraintStart_toEndOf="@+id/iv_product_preview"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="스타벅스" />
 
             <TextView
@@ -65,14 +68,13 @@
                 date="@{gifticon.date}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/tv_brand"
                 app:layout_constraintTop_toBottomOf="@id/tv_name"
                 tools:text="2022.11.24 까지" />
 
@@ -92,7 +94,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@color/popcon_grey_02"
-                tools:text="D-DAY"
+                tools:text="사용완료"
                 tools:textColor="@color/popcon_white" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

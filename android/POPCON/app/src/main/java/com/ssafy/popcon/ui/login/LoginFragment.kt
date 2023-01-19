@@ -1,16 +1,17 @@
 package com.ssafy.popcon.ui.login
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import androidx.navigation.fragment.findNavController
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
@@ -18,23 +19,28 @@ import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.popcon.BuildConfig
-import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentLoginBinding
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.viewmodel.UserViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
+import retrofit2.http.POST
 import java.util.*
 
-private const val TAG = "NaverLoginFragment_싸피"
+private const val TAG = "LoginFragment_싸피"
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
+    private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
     private var userUUID: String = ""
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
-    lateinit var mainActivity: MainActivity
     private var email: String = ""
+    private var noMember = false
+    lateinit var mainActivity: MainActivity
 
     override fun onStart() {
         super.onStart()
@@ -92,10 +98,12 @@ class LoginFragment : Fragment() {
                 Log.d(TAG, "init_error: ${error}")
                 if (tokenInfo == null) {
                     // 디비에 값 저장
+                    Log.d(TAG, "kakaoLoginState: ")
+                    noMember = true
                 }
             } else if (tokenInfo != null) {
+                // 로그인 되어있는 상태
                 Log.d(TAG, "init_tokenInfo: ${tokenInfo}")
-                // 로그인 되어있는 상태(로그인 화면 보여줄 필요 없음)
             }
         }
     }
@@ -106,8 +114,8 @@ class LoginFragment : Fragment() {
                 if (error != null) {
                     Log.e(TAG, "kakaoLogin_error: ${error}")
                 } else if (tokenInfo != null) {
-                    Log.d(TAG, "kakaoLogin_tokenInfo: ${tokenInfo}")
                     // 로그인 되어있는 상태
+                    Log.d(TAG, "kakaoLogin_tokenInfo: ${tokenInfo}")
                 }
             }
 
@@ -131,7 +139,13 @@ class LoginFragment : Fragment() {
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
                                 email = user?.kakaoAccount?.email.toString()
-                                SharedPreferencesUtil(requireContext()).addUser(User(email, 1))
+                                val user = User(email, 1)
+                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                if (noMember){
+                                    Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!")
+                                    viewModel.signIn(user)
+                                    noMember = false
+                                }
                                 mainActivity.changeFragment(HomeFragment())
                             }
                         }
@@ -153,10 +167,13 @@ class LoginFragment : Fragment() {
                     NidOAuthLogin().callProfileApi(object :
                         NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(result: NidProfileResponse) {
-                            email = result.profile?.email.toString()
+                            val email = result.profile?.email.toString()
+                            val user = User(email, 2)
 
-                            SharedPreferencesUtil(requireContext()).addUser(User(email, 2))
-                            //Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
+                            SharedPreferencesUtil(requireContext()).addUser(user)
+                            Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
+                            viewModel.signIn(user)
+
                             mainActivity.changeFragment(HomeFragment())
                         }
 
