@@ -147,4 +147,8 @@
         <item name="android:textColor">@color/popcon_grey_04</item>
     </style>
 
+    <style name="switch_Orange">
+        <item name="colorControlActivated">@color/popcon_orange</item>
+    </style>
+
 </resources>

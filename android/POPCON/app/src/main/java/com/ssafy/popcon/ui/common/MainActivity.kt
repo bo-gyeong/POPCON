@@ -97,6 +97,14 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    fun addFragment(fragment: Fragment){
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frame_layout_main, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private val runtimePermissions = arrayOf(
         Manifest.permission.CALL_PHONE,
         Manifest.permission.ACCESS_FINE_LOCATION,

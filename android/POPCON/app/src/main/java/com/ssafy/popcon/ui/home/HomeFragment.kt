@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.btnSetting.setOnClickListener {
-            mainActivity.changeFragment(SettingsFragment())
+            mainActivity.addFragment(SettingsFragment())
         }
 
         setSensor()
