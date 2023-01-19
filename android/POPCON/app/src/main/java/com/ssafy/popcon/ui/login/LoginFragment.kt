@@ -23,12 +23,14 @@ import com.ssafy.popcon.databinding.FragmentLoginBinding
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import retrofit2.http.POST
 import java.util.*
 
-private const val TAG = "NaverLoginFragment_싸피"
+private const val TAG = "LoginFragment_싸피"
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -37,6 +39,7 @@ class LoginFragment : Fragment() {
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     private var email: String = ""
+    private var noMember = false
     lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -95,10 +98,12 @@ class LoginFragment : Fragment() {
                 Log.d(TAG, "init_error: ${error}")
                 if (tokenInfo == null) {
                     // 디비에 값 저장
+                    Log.d(TAG, "kakaoLoginState: ")
+                    noMember = true
                 }
             } else if (tokenInfo != null) {
+                // 로그인 되어있는 상태
                 Log.d(TAG, "init_tokenInfo: ${tokenInfo}")
-                // 로그인 되어있는 상태(로그인 화면 보여줄 필요 없음)
             }
         }
     }
@@ -109,8 +114,8 @@ class LoginFragment : Fragment() {
                 if (error != null) {
                     Log.e(TAG, "kakaoLogin_error: ${error}")
                 } else if (tokenInfo != null) {
-                    Log.d(TAG, "kakaoLogin_tokenInfo: ${tokenInfo}")
                     // 로그인 되어있는 상태
+                    Log.d(TAG, "kakaoLogin_tokenInfo: ${tokenInfo}")
                 }
             }
 
@@ -134,7 +139,13 @@ class LoginFragment : Fragment() {
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
                                 email = user?.kakaoAccount?.email.toString()
-                                SharedPreferencesUtil(requireContext()).addUser(User(email, 1))
+                                val user = User(email, 1)
+                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                if (noMember){
+                                    Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!")
+                                    viewModel.signIn(user)
+                                    noMember = false
+                                }
                                 mainActivity.changeFragment(HomeFragment())
                             }
                         }
@@ -161,7 +172,7 @@ class LoginFragment : Fragment() {
 
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
-                            //viewModel.naverSignIn(user)
+                            viewModel.signIn(user)
 
                             mainActivity.changeFragment(HomeFragment())
                         }

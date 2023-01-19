@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    fun naverSignIn(user: User) {
+    fun signIn(user: User) {
         viewModelScope.launch {
             userRepository.signIn(user)
         }
