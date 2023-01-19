@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/popcon_grey_08">
+    android:background="@color/popcon_grey_08"
+    android:paddingBottom="?attr/actionBarSize">
 
     <TextView
         android:id="@+id/tv_settings"
@@ -14,7 +15,7 @@
         android:paddingLeft="20dp"
         android:paddingBottom="8dp"
         android:background="@color/popcon_white_a90"
-        android:text="설정"
+        android:text="@string/settings"
         android:textColor="@color/popcon_black_03"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -37,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="로그인 된 계정"
+            android:text="@string/account"
             style="@style/TextSubtitle1.Bold"/>
 
         <TextView
@@ -64,21 +65,24 @@
             android:paddingRight="20dp"
             android:paddingLeft="20dp"
             android:paddingBottom="8dp"
+            android:background="@color/popcon_white_a90"
             app:layout_constraintTop_toBottomOf="@+id/l_account">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="알림"
+                android:text="@string/noti"
                 style="@style/TextSubtitle1.Bold"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_noti"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:theme="@style/switch_Orange"
+                android:checked="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>
 
@@ -87,9 +91,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/popcon_white_a90">
 
             <LinearLayout
+                android:id="@+id/l_noti_first"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -97,14 +103,14 @@
                 android:paddingRight="20dp"
                 android:paddingLeft="20dp"
                 android:paddingBottom="8dp"
-                android:background="@color/popcon_white_a90"
+                android:background="@drawable/change_color_press"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_noti_title_first"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="마감임박 최초 알림"
+                    android:text="@string/noti_title_first"
                     android:textColor="@color/popcon_black_03"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
@@ -121,6 +127,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/l_noti_interval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -128,14 +135,14 @@
                 android:paddingRight="20dp"
                 android:paddingLeft="20dp"
                 android:paddingBottom="8dp"
-                android:background="@color/popcon_white_a90"
+                android:background="@drawable/change_color_press"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_noti_title_interval"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="마감임박 알림 간격"
+                    android:text="@string/noti_title_interval"
                     android:textColor="@color/popcon_black_03"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
@@ -152,6 +159,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/l_noti_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -159,14 +167,14 @@
                 android:paddingRight="20dp"
                 android:paddingLeft="20dp"
                 android:paddingBottom="8dp"
-                android:background="@color/popcon_white_a90"
+                android:background="@drawable/change_color_press"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_noti_title_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="시간 설정"
+                    android:text="@string/noti_title_time"
                     android:textColor="@color/popcon_black_03"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
@@ -191,12 +199,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:paddingTop="8dp"
+        android:paddingTop="12dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
-        android:paddingBottom="8dp"
-        android:background="@color/popcon_white_a90"
-        android:text="로그아웃"
+        android:paddingBottom="12dp"
+        android:background="@drawable/change_color_press"
+        android:text="@string/logout"
         style="@style/TextSubtitle1.Bold"
         app:layout_constraintTop_toBottomOf="@+id/l_noti"/>
 
@@ -205,29 +213,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:paddingTop="8dp"
+        android:paddingTop="12dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
-        android:paddingBottom="8dp"
-        android:background="@color/popcon_white_a90"
-        android:text="회원탈퇴"
+        android:paddingBottom="12dp"
+        android:background="@drawable/change_color_press"
+        android:text="@string/withdraw"
         style="@style/TextSubtitle1.Bold"
         app:layout_constraintTop_toBottomOf="@+id/tv_logout"/>
-
-
-    <Button
-        android:id="@+id/btn_signout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로그아웃"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-    <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="회원탈퇴"
-        app:layout_constraintBottom_toTopOf="@id/btn_signout"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

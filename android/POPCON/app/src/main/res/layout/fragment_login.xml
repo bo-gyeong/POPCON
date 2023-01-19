@@ -24,14 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_nonmember_login" />
 
-    <Button
-        android:id="@+id/btn_kakao_withdraw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="카카오 탈퇴"
-        app:layout_constraintBottom_toTopOf="@+id/btn_kakao_login"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
     <TextView
         android:id="@+id/btn_naver_login"
         style="@style/TextSubtitle1.White"

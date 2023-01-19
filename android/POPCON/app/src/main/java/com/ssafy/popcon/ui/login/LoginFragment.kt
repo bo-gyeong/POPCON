@@ -72,10 +72,6 @@ class LoginFragment : Fragment() {
             kakaoLogin()
             naverLogin()
         }
-
-        binding.btnKakaoWithdraw.setOnClickListener {
-            kakaoWithdraw()
-        }
         binding.btnNonmemberLogin.setOnClickListener {
             nonMemberLogin()
         }
@@ -90,7 +86,6 @@ class LoginFragment : Fragment() {
     private fun kakaoLoginState() {
         KakaoSdk.init(mainActivity, BuildConfig.KAKAO_API_KEY)
 
-        //AccessTokenInfo(id=2617671289(고정 uid), expiresIn=43129, appId=849689, expiresInMillis=43129279)
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
                 // 동의화면에서 동의 누르기 전에 뜸
@@ -144,26 +139,6 @@ class LoginFragment : Fragment() {
             } else {
                 // 카카오 계정으로 로그인
                 UserApiClient.instance.loginWithKakaoAccount(mainActivity, callback = kakaoCallback)
-            }
-        }
-    }
-
-    fun kakaoLogout() {
-        UserApiClient.instance.logout { error ->
-            if (error != null) {
-                Log.e(TAG, "kakaoLogout: 로그아웃 실패, SDK에서 토큰 삭제됨", error)
-            } else {
-                Log.e(TAG, "kakaoLogout: 로그아웃 성공, SDK에서 토큰 삭제됨")
-            }
-        }
-    }
-
-    fun kakaoWithdraw() {
-        UserApiClient.instance.unlink { error ->
-            if (error != null) {
-                Log.e(TAG, "연결 끊기 실패", error)
-            } else {
-                Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
             }
         }
     }

@@ -19,4 +19,14 @@
     <string name="sign_naver">네이버로 시작하기</string>
     <string name="btn_finish_use">사용완료</string>
 
+    <!--    fragment_settings-->
+    <string name="settings">설정</string>
+    <string name="account">로그인 된 계정</string>
+    <string name="noti">알림</string>
+    <string name="noti_title_first">마감임박 최초 알림</string>
+    <string name="noti_title_interval">마감임박 알림 간격</string>
+    <string name="noti_title_time">시간 설정</string>
+    <string name="logout">로그아웃</string>
+    <string name="withdraw">회원탈퇴</string>
+
 </resources>
