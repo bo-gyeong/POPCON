@@ -1,5 +1,6 @@
 package com.ssafy.popcon.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.dto.User
@@ -10,7 +11,8 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     fun naverSignIn(user: User) {
         viewModelScope.launch {
-            userRepository.signIn(user)
+            val user = userRepository.signIn(user)
+            Log.d("NAVER", "naverSignIn: $user")
         }
     }
 }

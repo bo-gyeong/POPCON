@@ -31,14 +31,15 @@ class GifticonViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.gifticon = gifticonInfo
+
     }
 
     companion object {
         private const val EXTRA_KEY_GIFTICON_INFO = "extra_key_gifticon_info"
-        fun newInstance(photoInfo: Gifticon): GifticonViewFragment {
+        fun newInstance(gifticon: Gifticon): GifticonViewFragment {
             val fragment = GifticonViewFragment()
             val args = Bundle()
-            args.putSerializable(EXTRA_KEY_GIFTICON_INFO, photoInfo)
+            args.putSerializable(EXTRA_KEY_GIFTICON_INFO, gifticon)
             fragment.arguments = args
             return fragment
         }

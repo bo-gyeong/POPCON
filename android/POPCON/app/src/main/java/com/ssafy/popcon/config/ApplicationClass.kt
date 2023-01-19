@@ -2,6 +2,8 @@ package com.ssafy.popcon.config
 
 import android.Manifest
 import android.app.Application
+import android.content.Context
+import com.navercorp.nid.NaverIdLoginSDK
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import okhttp3.OkHttpClient
@@ -21,6 +23,15 @@ class ApplicationClass : Application() {
         val requiredPermissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
+
+        fun setNaverModule(context: Context) {
+            NaverIdLoginSDK.initialize(
+                context,
+                BuildConfig.naverClientID,
+                BuildConfig.naverClientSecret,
+                "POPCON"
+            )
+        }
 
         fun makeRetrofit(url: String): Retrofit {
             val okHttpClient = OkHttpClient.Builder()
@@ -48,5 +59,6 @@ class ApplicationClass : Application() {
 
         //make Retrofit(SERVER_URL)
         makeRetrofit(SERVER_URL)
+        setNaverModule(applicationContext)
     }
 }

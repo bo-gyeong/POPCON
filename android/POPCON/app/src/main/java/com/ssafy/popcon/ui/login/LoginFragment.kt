@@ -185,7 +185,7 @@ class LoginFragment : Fragment() {
 
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
-                            //viewModel.naverSignIn(user)
+                            viewModel.naverSignIn(user)
 
                             mainActivity.changeFragment(HomeFragment())
                         }
@@ -209,13 +209,6 @@ class LoginFragment : Fragment() {
                     //
                 }
             }
-
-            NaverIdLoginSDK.initialize(
-                requireContext(),
-                BuildConfig.naverClientID,
-                BuildConfig.naverClientSecret,
-                "POPCON"
-            )
 
             NaverIdLoginSDK.authenticate(requireContext(), oAuthLoginCallback)
         }
