@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:paddingBottom="?attr/actionBarSize"
     tools:context=".ui.common.MainActivity">
 
     <!--  fragment가 들어갈 container  -->
@@ -28,17 +27,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="10dp"
+        android:outlineAmbientShadowColor="@android:color/transparent"
+        android:outlineSpotShadowColor="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@+id/frame_layout_main">
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:backgroundTint="@color/popcon_white"
-            app:fabAlignmentMode="center"
-            app:fabCradleVerticalOffset="0dp">
+            app:fabAlignmentMode="center">
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/l_bottom_navigation_view"

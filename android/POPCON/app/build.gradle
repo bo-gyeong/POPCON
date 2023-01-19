@@ -124,7 +124,10 @@ dependencies {
 
 
 
-    // viewpager
+    // viewpager2
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    // viewpager indicator animantion
+//    implementation 'com.tbunomo.andrui:viewpagerdotsindicator:4.1.2'
 
 }
