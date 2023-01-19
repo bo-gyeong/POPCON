@@ -8,10 +8,9 @@ import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.ItemGifticonPopupBinding
 import com.ssafy.popcon.dto.Gifticon
 
-
 class GifticonViewFragment : Fragment() {
     private var gifticonInfo: Gifticon? = null
-    lateinit var binding : ItemGifticonPopupBinding
+    lateinit var binding: ItemGifticonPopupBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gifticonInfo = arguments?.getSerializable(EXTRA_KEY_GIFTICON_INFO) as Gifticon

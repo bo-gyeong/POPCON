@@ -1,51 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        android:id="@+id/btn_nonmember_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로그인 없이 시작하기"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/btn_kakao_login"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:background="@drawable/kakao_login_large_wide"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@id/btn_naver_login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_nonmember_login" />
-
-    <Button
-        android:id="@+id/btn_kakao_withdraw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="카카오 탈퇴"
-        app:layout_constraintBottom_toTopOf="@+id/btn_kakao_login"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <TextView
-        android:id="@+id/btn_naver_login"
-        style="@style/TextSubtitle1.White"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:background="@drawable/edge_signin_naver"
-        android:drawableLeft="@drawable/sign_naver"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/sign_naver"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_kakao_login" />
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_nonmember_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="로그인 없이 시작하기"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_kakao_login"
+            android:layout_width="350dp"
+            android:layout_height="50dp"
+            android:background="@drawable/kakao_login_large_wide"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toTopOf="@id/btn_naver_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_nonmember_login" />
+
+        <Button
+            android:id="@+id/btn_kakao_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="카카오 탈퇴"
+            app:layout_constraintBottom_toTopOf="@+id/btn_kakao_login"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:id="@+id/btn_naver_login"
+            style="@style/TextSubtitle1.White"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/edge_signin_naver"
+            android:drawableLeft="@drawable/sign_naver"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/sign_naver"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_kakao_login" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
