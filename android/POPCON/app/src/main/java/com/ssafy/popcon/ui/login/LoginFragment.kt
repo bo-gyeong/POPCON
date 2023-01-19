@@ -130,7 +130,8 @@ class LoginFragment : Fragment() {
                         // 로그인 성공
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
-                                Log.d(TAG, "kakaoLogin: ${user?.kakaoAccount?.email}")
+                                email = user?.kakaoAccount?.email.toString()
+                                SharedPreferencesUtil(requireContext()).addUser(User(email, 1))
                                 mainActivity.changeFragment(HomeFragment())
                             }
                         }
@@ -196,7 +197,9 @@ class LoginFragment : Fragment() {
             userUUID = UUID.randomUUID().toString()
         // 서버에게 생성한 UUID 전송할 레트로핏 코드
         Log.d(TAG, "nonMemberLogin: $userUUID")
-        //
+        SharedPreferencesUtil(requireContext()).addUser(User(userUUID, 0))
+
+        mainActivity.changeFragment(HomeFragment())
     }
 
     override fun onDestroy() {

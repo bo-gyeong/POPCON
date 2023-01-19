@@ -1,63 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/popcon_grey_08"
-    android:paddingBottom="?attr/actionBarSize">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/tv_settings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="38dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:paddingBottom="8dp"
-        android:background="@color/popcon_white_a90"
-        android:text="@string/settings"
-        android:textColor="@color/popcon_black_03"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="user"
+            type="com.ssafy.popcon.dto.User" />
+    </data>
 
-    <LinearLayout
-        android:id="@+id/l_account"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:paddingTop="8dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:paddingBottom="8dp"
-        android:background="@color/popcon_white_a90"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/tv_settings">
+        android:layout_height="match_parent"
+        android:background="@color/popcon_grey_08"
+        android:paddingBottom="?attr/actionBarSize">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_settings"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/account"
-            style="@style/TextSubtitle1.Bold"/>
+            android:paddingTop="38dp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/change_color_press"
+            android:text="@string/settings"
+            android:textColor="@color/popcon_black_03"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="abc123@naver.com"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/l_noti"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="3dp"
-        android:background="@color/popcon_white_a90"
-        app:layout_constraintTop_toBottomOf="@+id/l_account">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/l_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
@@ -65,37 +40,45 @@
             android:paddingRight="20dp"
             android:paddingLeft="20dp"
             android:paddingBottom="8dp"
-            android:background="@color/popcon_white_a90"
-            app:layout_constraintTop_toBottomOf="@+id/l_account">
+            android:background="@drawable/change_color_press"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/tv_settings">
 
             <TextView
+                android:id="@+id/tv_title_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/noti"
-                style="@style/TextSubtitle1.Bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                android:text="@string/account"
+                style="@style/TextSubtitle1.Bold"/>
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch_noti"
+            <TextView
+                android:id="@+id/tv_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/switch_Orange"
-                android:checked="true"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+                android:text="@{user.email}"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tv_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/join"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:visibility="gone"
+                style="@style/TextSubtitle1.Bold"/>
+
+        </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/l_noti"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/popcon_white_a90">
+            android:layout_marginTop="3dp"
+            android:background="@color/popcon_white_a90"
+            app:layout_constraintTop_toBottomOf="@+id/l_account">
 
-            <LinearLayout
-                android:id="@+id/l_noti_first"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
@@ -103,123 +86,162 @@
                 android:paddingRight="20dp"
                 android:paddingLeft="20dp"
                 android:paddingBottom="8dp"
-                android:background="@drawable/change_color_press"
-                android:orientation="vertical">
+                android:background="@color/popcon_white_a90"
+                app:layout_constraintTop_toBottomOf="@+id/l_account">
 
                 <TextView
-                    android:id="@+id/tv_noti_title_first"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/noti_title_first"
-                    android:textColor="@color/popcon_black_03"
-                    android:textStyle="bold"
+                    android:text="@string/noti"
+                    style="@style/TextSubtitle1.Bold"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_noti_setting_first"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="10일 전"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"/>
 
-            </LinearLayout>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_noti"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/switch_Orange"
+                    android:checked="true"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                android:id="@+id/l_noti_interval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:paddingTop="8dp"
-                android:paddingRight="20dp"
-                android:paddingLeft="20dp"
-                android:paddingBottom="8dp"
-                android:background="@drawable/change_color_press"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@color/popcon_white_a90">
 
-                <TextView
-                    android:id="@+id/tv_noti_title_interval"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/l_noti_first"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/noti_title_interval"
-                    android:textColor="@color/popcon_black_03"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent" />
+                    android:layout_marginTop="3dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/change_color_press"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_noti_setting_interval"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/tv_noti_title_first"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/noti_title_first"
+                        android:textColor="@color/popcon_black_03"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_noti_setting_first"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10일 전"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/l_noti_interval"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="3일 마다"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
-                    app:layout_constraintLeft_toLeftOf="parent"/>
+                    android:layout_marginTop="3dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/change_color_press"
+                    android:orientation="vertical">
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_noti_title_interval"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/noti_title_interval"
+                        android:textColor="@color/popcon_black_03"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/l_noti_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:paddingTop="8dp"
-                android:paddingRight="20dp"
-                android:paddingLeft="20dp"
-                android:paddingBottom="8dp"
-                android:background="@drawable/change_color_press"
-                android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_noti_setting_interval"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3일 마다"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
 
-                <TextView
-                    android:id="@+id/tv_noti_title_time"
-                    android:layout_width="wrap_content"
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/l_noti_time"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/noti_title_time"
-                    android:textColor="@color/popcon_black_03"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent" />
+                    android:layout_marginTop="3dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/change_color_press"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_noti_setting_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="오후 6:00"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
-                    app:layout_constraintLeft_toLeftOf="parent"/>
+                    <TextView
+                        android:id="@+id/tv_noti_title_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/noti_title_time"
+                        android:textColor="@color/popcon_black_03"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_noti_setting_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="오후 6:00"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:paddingTop="12dp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="12dp"
+            android:background="@drawable/change_color_press"
+            android:text="@string/logout"
+            style="@style/TextSubtitle1.Bold"
+            app:layout_constraintTop_toBottomOf="@+id/l_noti"/>
 
-    <TextView
-        android:id="@+id/tv_logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:paddingTop="12dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:paddingBottom="12dp"
-        android:background="@drawable/change_color_press"
-        android:text="@string/logout"
-        style="@style/TextSubtitle1.Bold"
-        app:layout_constraintTop_toBottomOf="@+id/l_noti"/>
+        <TextView
+            android:id="@+id/tv_withdraw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:paddingTop="12dp"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="12dp"
+            android:background="@drawable/change_color_press"
+            android:text="@string/withdraw"
+            style="@style/TextSubtitle1.Bold"
+            app:layout_constraintTop_toBottomOf="@+id/tv_logout"/>
 
-    <TextView
-        android:id="@+id/tv_withdraw"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:paddingTop="12dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:paddingBottom="12dp"
-        android:background="@drawable/change_color_press"
-        android:text="@string/withdraw"
-        style="@style/TextSubtitle1.Bold"
-        app:layout_constraintTop_toBottomOf="@+id/tv_logout"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

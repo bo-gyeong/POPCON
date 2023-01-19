@@ -22,6 +22,7 @@
     <!--    fragment_settings-->
     <string name="settings">설정</string>
     <string name="account">로그인 된 계정</string>
+    <string name="join">로그인 하기</string>
     <string name="noti">알림</string>
     <string name="noti_title_first">마감임박 최초 알림</string>
     <string name="noti_title_interval">마감임박 알림 간격</string>
