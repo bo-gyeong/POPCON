@@ -43,10 +43,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    dataBinding{
+    dataBinding {
         enabled = true
     }
-    viewBinding{
+    viewBinding {
         enabled = true
     }
 }
@@ -121,7 +121,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('libs/libDaumMapAndroid.jar')
 
-    // viewpager
+    //viewpager
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-
 }

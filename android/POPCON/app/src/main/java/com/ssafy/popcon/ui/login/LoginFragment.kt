@@ -24,12 +24,14 @@ import com.ssafy.popcon.databinding.FragmentLoginBinding
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import retrofit2.http.POST
 import java.util.*
 
-private const val TAG = "NaverLoginFragment_싸피"
+private const val TAG = "LoginFragment_싸피"
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -39,6 +41,7 @@ class LoginFragment : Fragment() {
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     private var email: String = ""
+    private var noMember = false
     lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -77,10 +80,6 @@ class LoginFragment : Fragment() {
             kakaoLogin()
             naverLogin()
         }
-
-        binding.btnKakaoWithdraw.setOnClickListener {
-            kakaoWithdraw()
-        }
         binding.btnNonmemberLogin.setOnClickListener {
             nonMemberLogin()
         }
@@ -95,17 +94,18 @@ class LoginFragment : Fragment() {
     private fun kakaoLoginState() {
         KakaoSdk.init(mainActivity, BuildConfig.KAKAO_API_KEY)
 
-        //AccessTokenInfo(id=2617671289(고정 uid), expiresIn=43129, appId=849689, expiresInMillis=43129279)
         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
             if (error != null) {
                 // 동의화면에서 동의 누르기 전에 뜸
                 Log.d(TAG, "init_error: ${error}")
                 if (tokenInfo == null) {
                     // 디비에 값 저장
+                    Log.d(TAG, "kakaoLoginState: ")
+                    noMember = true
                 }
             } else if (tokenInfo != null) {
+                // 로그인 되어있는 상태
                 Log.d(TAG, "init_tokenInfo: ${tokenInfo}")
-                // 로그인 되어있는 상태(로그인 화면 보여줄 필요 없음)
             }
         }
     }
@@ -116,8 +116,8 @@ class LoginFragment : Fragment() {
                 if (error != null) {
                     Log.e(TAG, "kakaoLogin_error: ${error}")
                 } else if (tokenInfo != null) {
-                    Log.d(TAG, "kakaoLogin_tokenInfo: ${tokenInfo}")
                     // 로그인 되어있는 상태
+                    Log.d(TAG, "kakaoLogin_tokenInfo: ${tokenInfo}")
                 }
             }
 
@@ -140,7 +140,14 @@ class LoginFragment : Fragment() {
                         // 로그인 성공
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { user, error ->
-                                Log.d(TAG, "kakaoLogin: ${user?.kakaoAccount?.email}")
+                                email = user?.kakaoAccount?.email.toString()
+                                val user = User(email, 1)
+                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                if (noMember){
+                                    Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!")
+                                    viewModel.signIn(user)
+                                    noMember = false
+                                }
                                 mainActivity.changeFragment(HomeFragment())
                             }
                         }
@@ -149,26 +156,6 @@ class LoginFragment : Fragment() {
             } else {
                 // 카카오 계정으로 로그인
                 UserApiClient.instance.loginWithKakaoAccount(mainActivity, callback = kakaoCallback)
-            }
-        }
-    }
-
-    fun kakaoLogout() {
-        UserApiClient.instance.logout { error ->
-            if (error != null) {
-                Log.e(TAG, "kakaoLogout: 로그아웃 실패, SDK에서 토큰 삭제됨", error)
-            } else {
-                Log.e(TAG, "kakaoLogout: 로그아웃 성공, SDK에서 토큰 삭제됨")
-            }
-        }
-    }
-
-    fun kakaoWithdraw() {
-        UserApiClient.instance.unlink { error ->
-            if (error != null) {
-                Log.e(TAG, "연결 끊기 실패", error)
-            } else {
-                Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
             }
         }
     }
@@ -187,7 +174,7 @@ class LoginFragment : Fragment() {
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
 
-                            viewModel.naverSignIn(user)
+                            viewModel.signIn(user)
                             viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                                 //Log.d(TAG, "onSuccess: $it")
                                 if (it.email == email) {
@@ -228,7 +215,9 @@ class LoginFragment : Fragment() {
             userUUID = UUID.randomUUID().toString()
         // 서버에게 생성한 UUID 전송할 레트로핏 코드
         Log.d(TAG, "nonMemberLogin: $userUUID")
-        //
+        SharedPreferencesUtil(requireContext()).addUser(User(userUUID, 0))
+
+        mainActivity.changeFragment(HomeFragment())
     }
 
     override fun onDestroy() {

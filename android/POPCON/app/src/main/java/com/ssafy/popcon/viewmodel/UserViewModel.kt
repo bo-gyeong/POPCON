@@ -14,7 +14,7 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user
 
-    fun naverSignIn(user: User) {
+    fun signIn(user: User) {
         viewModelScope.launch {
             val user = userRepository.signIn(user)
             _user.value = user

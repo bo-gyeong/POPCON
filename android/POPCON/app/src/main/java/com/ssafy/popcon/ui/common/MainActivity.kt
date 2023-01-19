@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         binding.lBottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.addFragment -> {
-                    Log.d(TAG, "setNavBar: addFragment")
                     if (binding.lBottomNavigationView.selectedItemId == R.id.homeFragment) {
                         changeFragment(AddFragment())
                     } else if (binding.lBottomNavigationView.selectedItemId == R.id.mapFragment) {
@@ -75,17 +74,19 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 R.id.homeFragment -> {
-                    Log.d(TAG, "setNavBar: 홈")
                     if (binding.lBottomNavigationView.selectedItemId != R.id.homeFragment)
                         changeFragment(HomeFragment())
                 }
                 R.id.mapFragment -> {
-                    Log.d(TAG, "setNavBar: 맵")
                     if (binding.lBottomNavigationView.selectedItemId != R.id.mapFragment)
                         changeFragment(MapFragment())
                 }
             }
             true
+        }
+
+        binding.btnFab.setOnClickListener{
+            changeFragment(AddFragment())
         }
     }
 

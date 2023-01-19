@@ -37,9 +37,6 @@
         <action
             android:id="@+id/action_homeFragment_to_addFragment"
             app:destination="@id/addFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingFragment"
-            app:destination="@id/settingFragment" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -58,11 +55,7 @@
         android:name="com.ssafy.popcon.ui.popup.GifticonDialogFragment"
         android:label="GifticonPopup" />
     <fragment
-        android:id="@+id/settingFragment"
-        android:name="com.ssafy.popcon.ui.setting.SettingFragment"
-        android:label="SettingFragment">
-        <action
-            android:id="@+id/action_settingFragment_to_naverLoginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
+        android:id="@+id/settingsFragment"
+        android:name="com.ssafy.popcon.ui.settings.SettingsFragment"
+        android:label="SettingsFragment"/>
 </navigation>

@@ -5,7 +5,7 @@
 
     <data>
         <variable
-            name="gifticon"
+            name="gifitcon"
             type="com.ssafy.popcon.dto.Gifticon" />
     </data>
 
@@ -22,73 +22,78 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:backgroundTint="@color/popcon_white"
             android:layout_height="match_parent">
 
 
             <ImageView
-                android:id="@+id/iv_product_preview"
-                imageUrl="@{gifticon.productUrl}"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:id="@+id/iv_product_preview_map"
+                imageUrl="@{gifitcon.productUrl}"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
                 android:background="@color/popcon_white"
+                app:circularflow_defaultRadius="4dp"
                 android:scaleType="centerInside"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_brand"
+                android:id="@+id/tv_brand_map"
                 style="@style/TextSubtitle2.Purple.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="15dp"
-                android:text="@{gifticon.brand.name}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_product_preview"
+                android:layout_marginStart="20dp"
+                android:text="@{gifitcon.brand.name}"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_name_map"
+                app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread"
                 tools:text="스타벅스" />
 
             <TextView
-                android:id="@+id/tv_name"
+                android:id="@+id/tv_name_map"
                 style="@style/TextSubtitle1.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:maxLines="1"
-                android:text="@{gifticon.name}"
-                app:layout_constraintStart_toStartOf="@id/tv_brand"
-                app:layout_constraintTop_toBottomOf="@id/tv_brand"
+                android:text="@{gifitcon.name}"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_date_map"
+                app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
+                app:layout_constraintTop_toBottomOf="@+id/tv_brand_map"
                 tools:text="아메리카노 + 블루베리" />
 
             <TextView
-                android:id="@+id/tv_date"
+                android:id="@+id/tv_date_map"
                 style="@style/TextSubtitle2"
-                date="@{gifticon.date}"
-                android:layout_width="0dp"
+                date="@{gifitcon.date}"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="20dp"
                 android:maxLines="1"
+                android:textSize="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_name"
+                app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name_map"
                 tools:text="2022.11.24 까지" />
 
             <TextView
-                android:id="@+id/tv_banner_badge"
+                android:id="@+id/tv_banner_badge_map"
                 style="@style/TextCaption1.White"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26dp"
                 android:layout_marginBottom="7dp"
-                android:background="@{gifticon.badge.color}"
+                android:background="@color/popcon_gradient_purple"
                 android:paddingStart="7dp"
                 android:paddingTop="1dp"
                 android:paddingEnd="7dp"
                 android:paddingBottom="1dp"
-                android:text="@{gifticon.badge.content}"
+                android:text="@{gifitcon.badge.content}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@color/popcon_grey_02"
