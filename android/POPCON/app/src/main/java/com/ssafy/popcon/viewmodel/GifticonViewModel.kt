@@ -1,12 +1,14 @@
 package com.ssafy.popcon.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
-import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.ui.common.Event
 import kotlinx.coroutines.launch
 
 class GifticonViewModel(private val gifticonRepository: GifticonRepository) : ViewModel() {
@@ -19,6 +21,13 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _history = MutableLiveData<List<Gifticon>>()
     val history: LiveData<List<Gifticon>> = _history
 
+    private val _openHistoryEvent = MutableLiveData<Event<String>>()
+    val openHistoryEvent : LiveData<Event<String>> = _openHistoryEvent
+
+    fun openHistory(userId: String) {
+        _openHistoryEvent.value = Event(userId)
+    }
+
     private fun getGifticonByUserId(userId: String) {
         viewModelScope.launch {
             val gifticons = gifticonRepository.getGifticonByUserId(userId)
@@ -26,13 +35,14 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
         }
     }
 
-    private fun getGifticonByBrand(userId: String, brandName: String) {
+    fun tabClickListener(user: User, brandName: String) {
         if (brandName == "히스토리") {
             //히스토리
-            getHistory(userId)
+            openHistory(user.email!!)
+
         } else {
             viewModelScope.launch {
-                val gifticons = gifticonRepository.getGifticonByBrand(userId, brandName)
+                val gifticons = gifticonRepository.getGifticonByBrand(user.email!!, brandName)
                 _gifticonByBrand.value = gifticons
             }
         }

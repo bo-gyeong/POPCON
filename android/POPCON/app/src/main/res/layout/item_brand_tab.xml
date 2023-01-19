@@ -12,10 +12,9 @@
         <variable
             name="viewModel"
             type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
-
         <variable
-            name="userId"
-            type="String" />
+            name="user"
+            type="com.ssafy.popcon.dto.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +24,7 @@
         android:layout_margin="4dp"
         android:background="@drawable/edge_brand_tab"
         android:elevation="4dp"
-        android:onClick="@{() -> viewModel.getGifticonByBrand(userId, brand.name)}"
+        android:onClick="@{() -> viewModel.tabClickListener(user, brand.name)}"
         android:padding="4dp">
 
         <com.google.android.material.imageview.ShapeableImageView

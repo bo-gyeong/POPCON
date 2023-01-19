@@ -9,6 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.Brand
+import com.ssafy.popcon.ui.common.EventObserver
+import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.history.HistoryFragment
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -16,6 +20,13 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 class BrandTabFragment : Fragment() {
     private lateinit var binding: FragmentBrandTabBinding
     private lateinit var brandAdapter: BrandAdapter
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    lateinit var mainActivity: MainActivity
+
+    override fun onStart() {
+        super.onStart()
+        mainActivity = activity as MainActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,11 +36,15 @@ class BrandTabFragment : Fragment() {
         binding = FragmentBrandTabBinding.inflate(inflater, container, false)
         setBrandTab()
 
+        viewModel.openHistoryEvent.observe(viewLifecycleOwner, EventObserver {
+            mainActivity.addFragment(HistoryFragment())
+        })
+
         return binding.root
     }
 
     fun setBrandTab() {
-        brandAdapter = BrandAdapter()
+        brandAdapter = BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
 
         binding.rvBrand.apply {
             adapter = brandAdapter

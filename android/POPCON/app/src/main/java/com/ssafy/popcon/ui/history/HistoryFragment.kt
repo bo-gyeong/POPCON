@@ -184,7 +184,15 @@ class HistoryFragment : Fragment() {
             )
         )
 
-        viewModel.history.observe(viewLifecycleOwner, Observer {
+        historyAdapter = HistoryAdapter()
+        historyAdapter.submitList(gifticonList)
+
+        binding.rvHistory.apply {
+            adapter = historyAdapter
+            adapter!!.stateRestorationPolicy =
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
+        /*viewModel.history.observe(viewLifecycleOwner, Observer {
             historyAdapter = HistoryAdapter()
             historyAdapter.submitList(it)
 
@@ -193,6 +201,6 @@ class HistoryFragment : Fragment() {
                 adapter!!.stateRestorationPolicy =
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
-        })
+        })*/
     }
 }

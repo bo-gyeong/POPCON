@@ -36,8 +36,8 @@ class LoginFragment : Fragment() {
     private var userUUID: String = ""
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
-    lateinit var mainActivity: MainActivity
     private var email: String = ""
+    lateinit var mainActivity: MainActivity
 
     override fun onStart() {
         super.onStart()
