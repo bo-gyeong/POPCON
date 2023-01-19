@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,12 +16,9 @@
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cv_brand_tab" />
+            app:layout_constraintTop_toBottomOf="@id/cv_brand_tab">
 
-        <ImageView
-            android:id="@+id/iv_brand_logo_test"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"
@@ -34,17 +32,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager_map_giftcon"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="bottom"
+            android:layout_margin="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <ImageButton
             android:id="@+id/btn_update_position"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="right|bottom"
-            android:layout_margin="20dp"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="90dp"
             android:scaleType="centerCrop"
             android:src="@drawable/gps"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
