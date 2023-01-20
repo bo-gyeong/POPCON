@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kakao.sdk.auth.model.OAuthToken
@@ -36,6 +37,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
     private var userUUID: String = ""
+    var user = User("", -1)
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     private var email: String = ""
@@ -168,13 +170,19 @@ class LoginFragment : Fragment() {
                         NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(result: NidProfileResponse) {
                             val email = result.profile?.email.toString()
-                            val user = User(email, 2)
-
+                            user = User(email, 2)
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
-                            viewModel.signIn(user)
 
-                            mainActivity.changeFragment(HomeFragment())
+                            viewModel.signIn(user)
+                            viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                                //Log.d(TAG, "onSuccess: $it")
+                                if (it.email == email) {
+                                    mainActivity.changeFragment(HomeFragment())
+                                } else {
+                                    //Toast.makeText(requireContext(), "개발자에게 문의하세요", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         }
 
                         override fun onError(errorCode: Int, message: String) {
@@ -196,13 +204,6 @@ class LoginFragment : Fragment() {
                     //
                 }
             }
-
-            NaverIdLoginSDK.initialize(
-                requireContext(),
-                BuildConfig.naverClientID,
-                BuildConfig.naverClientSecret,
-                "POPCON"
-            )
 
             NaverIdLoginSDK.authenticate(requireContext(), oAuthLoginCallback)
         }

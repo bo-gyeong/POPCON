@@ -25,8 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.POPCON"
         android:usesCleartextTraffic="true"
-
         tools:targetApi="31">
+
         <activity
             android:name=".ui.common.MainActivity"
             android:exported="true"
@@ -51,6 +51,6 @@
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="11bd13dc31cb51f3e909e8952dc87827" />
+            android:value="kakao${KAKAO_LOGIN_KEY}" />
     </application>
 </manifest>

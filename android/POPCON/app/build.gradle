@@ -18,10 +18,15 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+
         buildConfigField "String", "naverClientID", properties["naver_client_id"]
         buildConfigField "String", "naverClientSecret", properties["naver_client_secret"]
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
+        buildConfigField "String", "KAKAO_LOGIN_KEY", properties['kakao_login_key']
+        buildConfigField "String", "BASE_URL", properties['base_url']
+
         manifestPlaceholders["KAKAO_API_KEY"] = "kakao_api_key"
+        manifestPlaceholders["KAKAO_LOGIN_KEY"] = "kakao_login_key"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -38,13 +43,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    dataBinding{
+    dataBinding {
         enabled = true
     }
-    viewBinding{
+    viewBinding {
         enabled = true
     }
-
 }
 
 dependencies {
@@ -117,17 +121,6 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('libs/libDaumMapAndroid.jar')
 
-
-
-
-
-
-
-
-    // viewpager2
+    //viewpager
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-
-    // viewpager indicator animantion
-//    implementation 'com.tbunomo.andrui:viewpagerdotsindicator:4.1.2'
-
 }

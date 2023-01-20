@@ -14,6 +14,9 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.navercorp.nid.NaverIdLoginSDK
+import com.nhn.android.naverlogin.OAuthLogin
+import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.ui.add.AddFragment
@@ -37,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var shakeDetector = ShakeDetector()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,12 +62,6 @@ class MainActivity : AppCompatActivity() {
             0,
             this.navigationHeight()
         )
-
-        val navHosFragment =
-            supportFragmentManager.findFragmentById(R.id.frame_layout_main) as NavHostFragment
-        val navController = navHosFragment.navController
-
-        NavigationUI.setupWithNavController(binding.lBottomNavigationView, navController)
 
         // 재선택시 다시 렌더링 하지 않기 위해 수정
         binding.lBottomNavigationView.setOnItemSelectedListener { item ->
@@ -99,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun addFragment(fragment: Fragment){
+    fun addFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frame_layout_main, fragment)

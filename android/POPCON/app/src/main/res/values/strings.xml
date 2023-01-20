@@ -18,7 +18,7 @@
     <string name="regi">등록하기</string>
     <string name="sign_naver">네이버로 시작하기</string>
     <string name="btn_finish_use">사용완료</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="btn_revert">사용취소</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--    fragment_settings-->
