@@ -58,5 +58,12 @@ class HistoryDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //기프티콘 상태 업데이트
     }
 }

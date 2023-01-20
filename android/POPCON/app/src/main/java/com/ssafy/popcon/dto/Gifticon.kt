@@ -31,15 +31,3 @@ data class MapBrandLogo(
     val Y: Double,
     val brandLogo: String
 )
-
-data class Banner(
-    val brand: String,
-    val date: Int,
-    val itemName: String,
-    val brandLogo: String
-)
-
-data class BannerBadge(
-    val label: String,
-    val backgroundColor: String
-)

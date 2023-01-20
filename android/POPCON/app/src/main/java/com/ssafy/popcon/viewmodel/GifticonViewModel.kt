@@ -1,6 +1,5 @@
 package com.ssafy.popcon.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,17 +23,11 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _openHistoryEvent = MutableLiveData<Event<String>>()
     val openHistoryEvent: LiveData<Event<String>> = _openHistoryEvent
 
-    private val _openHistoryDialogEvent = MutableLiveData<Event<Gifticon>>()
-    val openHistoryDialogEvent: LiveData<Event<Gifticon>> = _openHistoryDialogEvent
-
     fun openHistory(userId: String) {
         _openHistoryEvent.value = Event(userId)
     }
 
-    fun openHistoryDialog(gifticon: Gifticon) {
-        _openHistoryDialogEvent.value = Event(gifticon)
-    }
-
+    //사용자의 기프티콘 목록 불러오기
     private fun getGifticonByUserId(userId: String) {
         viewModelScope.launch {
             val gifticons = gifticonRepository.getGifticonByUserId(userId)
@@ -42,6 +35,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
         }
     }
 
+    //상단 탭 클릭리스너
     fun tabClickListener(user: User, brandName: String) {
         if (brandName == "히스토리") {
             //히스토리
@@ -55,6 +49,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
         }
     }
 
+    //히스토리 목록 불러오기
     fun getHistory(userId: String) {
         viewModelScope.launch {
             val history = gifticonRepository.getHistory(userId)
