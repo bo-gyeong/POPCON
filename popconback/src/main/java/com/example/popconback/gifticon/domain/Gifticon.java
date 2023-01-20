@@ -19,7 +19,8 @@ import java.util.List;
 public class Gifticon {
 
     @Id
-    private String barcode_num;
+    @Column(name="barcode_num")
+    private String barcodeNum;
 
     @ManyToOne
     @JoinColumn(name="hash")
@@ -33,9 +34,12 @@ public class Gifticon {
     private String product;
     private Date due;
     private int price;
-    @JsonBackReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "gifticon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<GifticonFiles> filesList = new ArrayList<>();
+
+
+
     private int state;
     private String memo;
 

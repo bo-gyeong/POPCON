@@ -10,8 +10,28 @@ spring:
     generate-ddl: true
   profiles:
     include: API-KEY
-server :
-  error :
-    include-exception: false      # Response 에 Exception 을 표시할지
-    include-message: always      # Response 에 Exception Message 를 표시할지 (never | always | on_param)
-    include-stacktrace: never
+  cloud:
+    gcp:
+      credentials:
+        location: classpath:coral-sum-368108-cd6003507664.json
+
+# S3
+cloud:
+  aws:
+    credentials:
+        accessKey: AKIAQIDXSJQ7NXNKPWHP
+        secretKey: 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
+    s3:
+      bucket: popconbucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
