@@ -83,7 +83,7 @@ class MapGifticonFragment : Fragment() {
                     "스타벅스",
                     "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png"
                 ),
-                 "나이트로 콜드 브루",
+                "나이트로 콜드 브루",
                 0,
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2021/04/[9200000000479]_20210426091844065.jpg",
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004429]_20221121150147483.jpg",
@@ -131,7 +131,7 @@ fun makeDateTimeException(eventDate: String): String {
 //    eventDate : 2023-07-14 10:12:14
     val cal = Calendar.getInstance()
     var t_dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "KR"))
-    val date:Date = t_dateFormat.parse(eventDate)
+    val date: Date = t_dateFormat.parse(eventDate)
     cal.time = date
     return "${t_dateFormat.format(cal.time)}"
 }

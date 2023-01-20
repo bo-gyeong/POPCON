@@ -1,6 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+
+        <variable
+            name="gifticon"
+            type="com.ssafy.popcon.dto.Gifticon" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/popup_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edge_dialog">
+
+        <ImageView
+            android:id="@+id/iv_product_preview"
+            imageUrl="@{gifticon.productUrl}"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="24dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/product"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_barcode_image"
+            imageUrl="@{gifticon.barcodeUrl}"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/barcode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_product_preview" />
+
+        <TextView
+            android:id="@+id/tv_brand"
+            style="@style/TextSubtitle2.Purple.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:text="@{gifticon.brand.name}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/TextSubtitle1.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="@{gifticon.name}"
+            app:layout_constraintStart_toStartOf="@id/tv_brand"
+            app:layout_constraintTop_toBottomOf="@id/tv_brand" />
+
+        <TextView
+            android:id="@+id/tv_expDate"
+            style="@style/TextSubtitle2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:maxLines="1"
+            android:text="@{gifticon.date}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+        <TextView
+            android:id="@+id/tv_date_badge"
+            style="@style/TextCaption1.White"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginBottom="7dp"
+            android:background="@{gifticon.badge.color}"
+            android:paddingStart="7dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="1dp"
+            android:text="@{gifticon.badge.content}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/popcon_grey_02" />
+
+        <ToggleButton
+            android:id="@+id/btn_use"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/selector_btn_use"
+            android:textOff="@string/btn_finish_use"
+            android:textOn="@string/btn_revert"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_expDate" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

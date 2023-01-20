@@ -1,13 +1,12 @@
 package com.ssafy.popcon.ui.popup
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -56,6 +55,9 @@ class GifticonDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DialogUseBinding.inflate(inflater, container, false)
+
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         return binding.root
     }

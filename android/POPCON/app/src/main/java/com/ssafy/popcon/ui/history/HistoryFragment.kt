@@ -1,6 +1,7 @@
 package com.ssafy.popcon.ui.history
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,11 @@ import com.ssafy.popcon.databinding.FragmentHistoryBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.GiftconAdapter
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -100,7 +104,17 @@ class HistoryFragment : Fragment() {
             )
         )
 
-        historyAdapter = HistoryAdapter()
+        //viewModel.getHistory(SharedPreferencesUtil(requireContext()).getUser().email!!)
+        historyAdapter = HistoryAdapter(HistoryAdapter.HistoryListener { history ->
+            Log.d("TAG", "setHistoryAdapter: $history")
+            val args = Bundle()
+            args.putSerializable("history", history)
+
+            val dialogFragment = HistoryDialogFragment()
+            dialogFragment.arguments = args
+            dialogFragment.show(childFragmentManager, "popup")
+        })
+
         historyAdapter.submitList(gifticonList)
 
         binding.rvHistory.apply {

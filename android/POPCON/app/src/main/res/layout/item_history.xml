@@ -6,8 +6,16 @@
     <data>
 
         <variable
+            name="clickListener"
+            type="com.ssafy.popcon.ui.history.HistoryAdapter.HistoryListener" />
+
+        <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
+
+        <variable
+            name="viewModel"
+            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -17,16 +25,14 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
         android:elevation="2dp"
+        android:onClick="@{()->clickListener.onClick(gifticon)}"
         app:cardCornerRadius="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/iv_product_preview"
@@ -84,7 +90,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26dp"
-                android:layout_marginBottom="7dp"
                 android:background="@{gifticon.badge.color}"
                 android:paddingStart="7dp"
                 android:paddingTop="1dp"

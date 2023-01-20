@@ -176,7 +176,6 @@ class LoginFragment : Fragment() {
 
                             viewModel.signIn(user)
                             viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                                //Log.d(TAG, "onSuccess: $it")
                                 if (it.email == email) {
                                     mainActivity.changeFragment(HomeFragment())
                                 } else {
