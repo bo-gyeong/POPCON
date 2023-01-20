@@ -5,16 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.popcon.databinding.ItemHistoryBinding
 import com.ssafy.popcon.databinding.ItemHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
 
 class HistoryAdapter :
     ListAdapter<Gifticon, HistoryAdapter.GifticonViewHolder>(GifticonDiffCallback()) {
-    private lateinit var binding: ItemHomeGifticonBinding
+    private lateinit var binding: ItemHistoryBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifticonViewHolder {
         binding =
-            ItemHomeGifticonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return GifticonViewHolder(binding)
     }
 
@@ -22,7 +23,7 @@ class HistoryAdapter :
         holder.bind(getItem(position))
     }
 
-    inner class GifticonViewHolder(private val binding: ItemHomeGifticonBinding) :
+    inner class GifticonViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(gifticon: Gifticon) {

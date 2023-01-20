@@ -60,7 +60,7 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
         gifticonList.add(
@@ -72,7 +72,7 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
         gifticonList.add(
@@ -84,7 +84,7 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
         gifticonList.add(
@@ -96,91 +96,7 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("사용완료", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("사용완료", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("사용완료", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
 

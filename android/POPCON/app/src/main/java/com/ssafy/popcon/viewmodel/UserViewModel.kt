@@ -20,4 +20,11 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
             _user.value = user
         }
     }
+
+    fun withdraw(user: User) {
+        viewModelScope.launch {
+            val user = userRepository.withdraw(user)
+            _user.value = user
+        }
+    }
 }

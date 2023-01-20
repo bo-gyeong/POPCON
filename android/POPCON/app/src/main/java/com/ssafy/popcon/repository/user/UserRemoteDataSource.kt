@@ -7,4 +7,8 @@ class UserRemoteDataSource(private val apiClient: UserApi) : UserDataSource {
     override suspend fun signIn(user: User): User {
         return apiClient.signIn(user)
     }
+
+    override suspend fun withdraw(user: User): User {
+        return apiClient.withdraw(user)
+    }
 }
