@@ -16,8 +16,6 @@ configurations {
 
 repositories {
 	mavenCentral()
-
-
 }
 
 
@@ -33,15 +31,16 @@ dependencies {
 
 	implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
 	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4' /* Apache Commons FileUpload */
-
 	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter', version: '3.4.1'
-
 	implementation 'com.google.cloud:google-cloud-vision:3.5.0'
-
 	implementation 'com.google.firebase:firebase-admin:8.0.0'
-
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+	implementation 'com.google.auth:google-auth-library-oauth2-http:1.12.0'
+	implementation 'org.json:json:20160810'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
 }
 
