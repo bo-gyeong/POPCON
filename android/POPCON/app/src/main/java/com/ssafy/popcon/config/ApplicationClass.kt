@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 class ApplicationClass : Application() {
     companion object {
-        const val SERVER_URL = "http://192.168.100.62:8080/"//BuildConfig.BASE_URL
+        const val SERVER_URL = BuildConfig.BASE_URL
 
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit

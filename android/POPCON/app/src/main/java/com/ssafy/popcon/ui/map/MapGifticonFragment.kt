@@ -143,5 +143,5 @@ fun findRemainingDay(eventDate: String): Int {
     var sf = SimpleDateFormat("yyyy-MM-dd 00:00:00")
     var eventDate = sf.parse(eventDate)
     val remainingDay = (eventDate.time - today.time.time) / (60 * 60 * 24 * 1000)
-    return remainingDay.toInt()
+    return remainingDay.toInt() + 1
 }
