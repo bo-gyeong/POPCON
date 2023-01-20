@@ -1,12 +1,10 @@
 package com.ssafy.popcon.ui.login
 
-import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kakao.sdk.auth.model.OAuthToken
@@ -41,7 +39,6 @@ class LoginFragment : Fragment() {
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     private var email: String = ""
-    private var noMember = false
     lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -101,7 +98,6 @@ class LoginFragment : Fragment() {
                 if (tokenInfo == null) {
                     // 디비에 값 저장
                     Log.d(TAG, "kakaoLoginState: ")
-                    noMember = true
                 }
             } else if (tokenInfo != null) {
                 // 로그인 되어있는 상태
@@ -143,12 +139,16 @@ class LoginFragment : Fragment() {
                                 email = user?.kakaoAccount?.email.toString()
                                 val user = User(email, 1)
                                 SharedPreferencesUtil(requireContext()).addUser(user)
-                                if (noMember){
-                                    Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!")
-                                    viewModel.signIn(user)
-                                    noMember = false
-                                }
-                                mainActivity.changeFragment(HomeFragment())
+                                //mainActivity.changeFragment(HomeFragment())
+//                                viewModel.signIn(user)
+//                                viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
+//                                    if(it.email == email){
+//                                        mainActivity.changeFragment(HomeFragment())
+//                                    }
+//
+//                                })
+                                Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!!!")
+
                             }
                         }
                     }
@@ -156,6 +156,7 @@ class LoginFragment : Fragment() {
             } else {
                 // 카카오 계정으로 로그인
                 UserApiClient.instance.loginWithKakaoAccount(mainActivity, callback = kakaoCallback)
+                Log.d(TAG, "kakaoLogin: ???????????/")
             }
         }
     }
@@ -176,7 +177,6 @@ class LoginFragment : Fragment() {
 
                             viewModel.signIn(user)
                             viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                                //Log.d(TAG, "onSuccess: $it")
                                 if (it.email == email) {
                                     mainActivity.changeFragment(HomeFragment())
                                 } else {
