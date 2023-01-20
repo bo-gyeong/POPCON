@@ -10,10 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -26,16 +23,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.fragment.NavHostFragment
-import com.ssafy.popcon.R
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
-import com.ssafy.popcon.dto.MapBrandLogo
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.viewmodel.MapViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -56,7 +54,7 @@ class MapFragment : Fragment() {
     private var getLatitude: Double = 0.0
     private lateinit var internalStorage: String
     private lateinit var fileName: String
-    private var storeList = ArrayList<MapBrandLogo>()
+    private val viewModel: MapViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     private var param1: String? = null
     private var param2: String? = null
@@ -119,6 +117,15 @@ class MapFragment : Fragment() {
             moveMapUserToPosition(mapView)
         }
 
+        // 레트로핏 사용자 위치 보내고 현재 위치 기반 지도에서 표시해줄 목록
+        viewModel.sendUserPosition(
+            sharedPreferencesUtil.getUser().email.toString(),
+            sharedPreferencesUtil.getUser().social,
+            getLatitude.toString(),
+            getLongitude.toString(),
+            "500"
+        )
+
         // 현 위치 마커 추가
         var currentMarker = MapPOIItem()
         currentMarker.apply {
@@ -129,77 +136,56 @@ class MapFragment : Fragment() {
         mapView.addPOIItem(currentMarker)
 
 
-        // 나중에 서버에서 받아올 가게 정보 = storeList
-        // <TODO> 이 자리[START]에서 레트로핏으로 근처 가게 정보 전부 받아옵니다
-        storeList.add(
-            MapBrandLogo(
-                "스타벅스",
-                "구미 인동점",
-                36.1079891,
-                128.418535,
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        storeList.add(
-            MapBrandLogo(
-                "스타벅스",
-                "구미 인의점",
-                36.1070267,
-                128.420661,
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        // 이 자리[END]에서 레트로핏으로 근처 가게 정보 전부 받아옵니다
-
-        // 0. 뷰페이저
-        binding.viewpagerMapGiftcon.apply {
-            adapter = MapGifticonAdpater(context as FragmentActivity)
-        }
-
-
         // 1. 내부저장소에 로고만 저장할 폴더 없으면 만들기
-        val path = File("$internalStorage")
+        val path = File("$internalStorage") // internalStorage = requireContext().filesDir.toString() + "/brandLogo"
         if (!path.exists()) {
             path.mkdirs()
         }
 
-        // 2. 해당 브랜드들 미리 내부 저장소에 다운 시키기 -> 이미 저장되어 있으면 안하고
-        // 내부 저장소에 저장함. Device File Explorer ㄱㄱ
-        for (store in storeList) {
-            val files = path.listFiles()
-            var alreadyStore = false
-            for (file in files) {
-                if (store.brand == file.name) {
-                    alreadyStore = true
-                    break
+        // 나중에 서버에서 받아올 가게 정보 = storeList
+        viewModel.mapBrandLogo.observe(viewLifecycleOwner, Observer {
+            // 2. 해당 브랜드들 미리 내부 저장소에 다운 시키기 -> 이미 저장되어 있으면 안하고, 내부 저장소에 저장함. Device File Explorer ㄱㄱ
+            for (store in it) {
+                val files = path.listFiles()
+                var alreadyStore = false
+                for (file in files) {
+                    if (store.brandName == file.name) {
+                        alreadyStore = true
+                        break
+                    }
                 }
+                // 2-1. 브랜드 로고 없다면 추가
+                if (!alreadyStore) {
+                    // 0. storage에 파일 인스턴스를 생성합니다.
+                    fileName = "${store.brandName}.jpg" // 파일 이름은 브랜드 한글 이름
+                    // 1. resizeBitmap
+                    resizeBitmap(fileName, store.brandName)
+                }
+                // 3. 없다면, 인터넷에 있는 사진을 다운
+                // 4. 다운 받고 사이즈를 줄여서 다시 저장
             }
-            // 2-1. 브랜드 로고 없다면 추가
-            if (!alreadyStore) {
-                // 0. storage에 파일 인스턴스를 생성합니다.
-                fileName = "${store.brand}.jpg" // 파일 이름은 브랜드 한글 이름
-                // 1. resizeBitmap
-                resizeBitmap(fileName, store.brand)
-            }
-            // 3. 없다면, 인터넷에 있는 사진을 다운
-            // 4. 다운 받고 사이즈를 줄여서 다시 저장
-        }
 
-        // 마커 추가하기
-        for (store in storeList) {
-            var tempMarker = MapPOIItem()
-            tempMarker.apply {
-                itemName = store.itemName
-                mapPoint = MapPoint.mapPointWithGeoCoord(
-                    store.X!!.toDouble(),
-                    store.Y!!.toDouble()
-                )
-                markerType = MapPOIItem.MarkerType.CustomImage
-                var filePath = File(internalStorage, "/$fileName")
-                customImageBitmap = BitmapFactory.decodeFile(filePath.toString())
-                isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
+            // 지도에서 마커 추가하기
+            for (store in it) {
+                var tempMarker = MapPOIItem()
+                tempMarker.apply {
+                    itemName = store.itemName
+                    mapPoint = MapPoint.mapPointWithGeoCoord(
+                        store.xPos!!.toDouble(),
+                        store.yPos!!.toDouble()
+                    )
+                    markerType = MapPOIItem.MarkerType.CustomImage
+                    var filePath = File(internalStorage, "/$fileName") // internalStorage = requireContext().filesDir.toString() + "/brandLogo"
+                    customImageBitmap = BitmapFactory.decodeFile(filePath.toString())
+                    isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
+                }
+                mapView.addPOIItem(tempMarker)
             }
-            mapView.addPOIItem(tempMarker)
+        })
+
+        // 0. 뷰페이저 TODO 뷰페이저 어댑터 지금 난리났음!! 도와줘!!
+        binding.viewpagerMapGiftcon.apply {
+            adapter = MapGifticonAdpater(context as FragmentActivity)
         }
     }
 
@@ -271,13 +257,12 @@ class MapFragment : Fragment() {
         )
     }
 
-    // 사용자 위치 받아오는 함수
+    // 6. 사용자 위치 받아오는 함수
     private fun getUserLocation() {
         if (::locationManager.isInitialized.not()) {
             locationManager =
                 requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         }
-
         if (Build.VERSION.SDK_INT >= 23 &&
             ContextCompat.checkSelfPermission(
                 requireContext(),

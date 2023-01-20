@@ -23,6 +23,11 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                     GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
                 GifticonViewModel(gifticonRepo) as T
             }
+            modelClass.isAssignableFrom(MapViewModel::class.java) -> {
+                val gifticonRepo =
+                    GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
+                GifticonViewModel(gifticonRepo) as T
+            }
             modelClass.isAssignableFrom(AddViewModel::class.java) -> {
                 val addRepo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
                 AddViewModel(addRepo) as T
