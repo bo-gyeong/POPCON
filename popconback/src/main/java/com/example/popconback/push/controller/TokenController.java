@@ -9,6 +9,10 @@ import com.example.popconback.user.dto.CreateUser.CreateUserDto;
 import com.example.popconback.user.dto.UserDto;
 import com.example.popconback.user.repository.UserRepository;
 import com.example.popconback.user.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Api(value = "TokenController")
+@SwaggerDefinition(tags = {@Tag(name = "TokenController",
+        description = "FCM 토큰 컨트롤러")})
 @RestController
 @CrossOrigin("*")
 public class TokenController {
@@ -37,26 +44,33 @@ public class TokenController {
     UserRepository userRepository;
     @Autowired
     GifticonService gifticonService;
-    
+
+    @ApiOperation(value = "registToken",
+            notes = "토큰을 받는 Method",
+            httpMethod = "POST")
     @PostMapping("/token")
     public String registToken(String token) {
     	logger.info("registToken : token:{}", token);
         service.addToken(token);
         return "'"+token+"'" ;
     }
-    
+
+    @ApiOperation(value = "broadCast",
+            notes = "전체 메세지를 전송하는 Method",
+            httpMethod = "POST")
     @PostMapping("/broadcast")
     public Integer broadCast(String title, String body) throws IOException {
     	logger.info("broadCast : title:{}, body:{}", title, body);
     	return service.broadCastMessage(title, body);
     }
 
+    // test용
     @PostMapping("/sendMessageTo")
     public void sendMessageTo(String token, String title, String body) throws IOException {
     	logger.info("sendMessageTo : token:{}, title:{}, body:{}", token, title, body);
         service.sendMessageTo(token, title, body);
     }
-
+    // test용
     @GetMapping("/push/{hash}")
     public ResponseEntity<List<GifticonDto>> sendMessagePerodic(@PathVariable int hash){
         //List<User> U_list = userService.getAllUser();

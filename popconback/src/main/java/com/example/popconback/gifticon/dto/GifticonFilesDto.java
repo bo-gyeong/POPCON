@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class GifticonFilesDto {
     private Long id;
-    private String fileName;
+    private int imageType;
 
     private Gifticon gifticon;
     private String filePath;
@@ -22,7 +22,7 @@ public class GifticonFilesDto {
     public GifticonFiles toEntity(){
         GifticonFiles build = GifticonFiles.builder()
                 .id(id)
-                .fileName(fileName)
+                .imageType(imageType)
                 .gifticon(gifticon)
                 .filePath(filePath)
                 .build();
@@ -30,9 +30,9 @@ public class GifticonFilesDto {
     }
 
     @Builder
-    public GifticonFilesDto(Long id,String fileName, Gifticon gifticon, String filePath) {
+    public GifticonFilesDto(Long id, int imageType, Gifticon gifticon, String filePath) {
         this.id = id;
-        this.fileName = fileName;
+        this.imageType = imageType;
         this.gifticon = gifticon;
         this.filePath = filePath;
     }

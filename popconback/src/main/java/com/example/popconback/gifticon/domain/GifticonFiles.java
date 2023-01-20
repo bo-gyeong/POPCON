@@ -15,8 +15,8 @@ public class GifticonFiles {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @Column(length = 50, nullable = true)
-    private String fileName;
+    @Column(nullable = true)
+    private int imageType;
 
     @ManyToOne
     @JsonBackReference
@@ -28,9 +28,9 @@ public class GifticonFiles {
 
 
     @Builder
-    public GifticonFiles(Long id,String fileName, Gifticon gifticon, String filePath) {
+    public GifticonFiles(Long id, int imageType, Gifticon gifticon, String filePath) {
         this.id = id;
-        this.fileName = fileName;
+        this.imageType = imageType;
         this.gifticon = gifticon;
         this.filePath = filePath;
     }

@@ -8,7 +8,7 @@ import java.util.Date;
 public class UpdateGifticonDto {
 
 
-    private String barcode_num;
+    private String barcodeNum;
     private int hash;
     private String brandName;
     private String product;

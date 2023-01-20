@@ -53,7 +53,6 @@ public class GifticonService {
             GifticonDto rgifticon = new GifticonDto();
             BeanUtils.copyProperties(gifticon,rgifticon);
             rgifticon.setHash(gifticon.getUser().getHash());
-            rgifticon.setBarcode_num(gifticon.getBarcodeNum());
             rgifticon.setBrandName(gifticon.getBrand().getBrandName());
             rlist.add(rgifticon);
         }

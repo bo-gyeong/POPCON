@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class ResponseCreateGifticonDto {
 
-    private String barcode_num;
+    private String barcodeNum;
     private int hash;
     private String brandName;
     private String product;

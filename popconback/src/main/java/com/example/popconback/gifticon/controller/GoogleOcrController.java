@@ -10,10 +10,15 @@ import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.protobuf.ByteString;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,16 +27,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
+@Api(value = "GoogleOcrController")
+@SwaggerDefinition(tags = {@Tag(name = "GoogleOcrController",
+        description = "구글 OCR 컨트롤러")})
 @Controller
 @RequestMapping(value = "/gcp")
 public class GoogleOcrController {
 
-    private static final String BASE_PATH = "C:\\upload\\";
-    @RequestMapping(value = "/ocr")
-    @ResponseBody
-    public ResponseEntity<GifticonResponse> detectText(@RequestParam(value = "fileName") String fileName) throws Exception {
 
-        String filePath = BASE_PATH + fileName;
+    @ApiOperation(value = "detectText",
+            notes = "기프티콘 이미지 텍스트 추출",
+            httpMethod = "GET")
+    @GetMapping("/ocr")
+    public ResponseEntity<GifticonResponse> detectText(@RequestParam(value = "filePath") String filePath) throws Exception {
+
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
         ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));

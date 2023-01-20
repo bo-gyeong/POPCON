@@ -8,6 +8,10 @@ import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.GifticonResponse;
 import com.example.popconback.gifticon.service.GifticonService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -17,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+@Api(value = "LocationController")
+@SwaggerDefinition(tags = {@Tag(name = "LocationController",
+        description = "위치 기반 검색 컨트롤러")})
 @RestController
 public class LocationController {
     @Value("${kakao.apikey}")
@@ -26,6 +33,9 @@ public class LocationController {
     GifticonService gifticonService;
     private Object res;
 
+    @ApiOperation(value = "shakeSearch",
+            notes = "흔들었을때 사용가능한 주변 매장 브랜드",
+            httpMethod = "GET")
     @GetMapping({"/shake"})
     public List<String> shakeSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
 
@@ -111,7 +121,9 @@ public class LocationController {
 
     }
 
-
+    @ApiOperation(value = "localSearch",
+            notes = "현위치 기반 기프티콘 사용가능 한 모든 매장",
+            httpMethod = "GET")
     @GetMapping({"/local"})
     public List<Object> localSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
 

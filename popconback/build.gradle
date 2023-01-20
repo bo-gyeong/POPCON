@@ -40,8 +40,10 @@ dependencies {
 	implementation 'com.google.auth:google-auth-library-oauth2-http:1.12.0'
 	implementation 'org.json:json:20160810'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+	implementation group: 'com.google.guava', name: 'guava', version: '23.0'
 }
 
 tasks.named('test') {
