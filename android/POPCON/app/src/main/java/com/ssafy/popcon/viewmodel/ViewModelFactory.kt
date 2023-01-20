@@ -21,6 +21,11 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                     GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
                 GifticonViewModel(gifticonRepo) as T
             }
+            modelClass.isAssignableFrom(MapViewModel::class.java) -> {
+                val gifticonRepo =
+                    GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
+                GifticonViewModel(gifticonRepo) as T
+            }
             else -> {
                 throw IllegalArgumentException("Failed to create ViewModel: ${modelClass.name}")
             }

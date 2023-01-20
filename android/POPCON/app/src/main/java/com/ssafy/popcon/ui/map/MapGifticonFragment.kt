@@ -12,7 +12,6 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentMapGiftconBinding
 import com.ssafy.popcon.dto.Badge
-import com.ssafy.popcon.dto.Banner
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
@@ -60,6 +59,7 @@ class MapGifticonFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.tvBrandMap.text = param1
 
+        // TODO 현 위치 기반 기프티콘 전체 받아오기
         giftconList.add(
             Gifticon(
                 "123123123",
