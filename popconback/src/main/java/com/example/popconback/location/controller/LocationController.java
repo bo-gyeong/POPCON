@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import com.example.popconback.gifticon.domain.Gifticon;
+import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.GifticonResponse;
 import com.example.popconback.gifticon.service.GifticonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,12 @@ public class LocationController {
     @GetMapping({"/shake"})
     public List<String> shakeSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
 
-        List<Gifticon> gifticons = gifticonService.gifticonList(email, social);
+        List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
 
         List<String> brandList = new ArrayList<String>();
 
-        for (Gifticon gifticon : gifticons) {
-            String nowBrand = gifticon.getBrand().getBrandName();
+        for (GifticonDto gifticon : gifticons) {
+            String nowBrand = gifticon.getBrandName();
             if (!brandList.contains(nowBrand)) {
                 brandList.add(nowBrand);
             }
@@ -114,12 +115,12 @@ public class LocationController {
     @GetMapping({"/local"})
     public List<Object> localSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
 
-        List<Gifticon> gifticons = gifticonService.gifticonList(email, social);
+        List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
 
         List<String> brandList = new ArrayList<String>();
 
-        for (Gifticon gifticon : gifticons) {
-            String nowBrand = gifticon.getBrand().getBrandName();
+        for (GifticonDto gifticon : gifticons) {
+            String nowBrand = gifticon.getBrandName();
             if (!brandList.contains(nowBrand)) {
                 brandList.add(nowBrand);
             }
