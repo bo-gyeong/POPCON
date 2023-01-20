@@ -1,6 +1,7 @@
 package com.ssafy.popcon.ui.history
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,11 @@ import com.ssafy.popcon.databinding.FragmentHistoryBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.GiftconAdapter
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -60,7 +64,7 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
         gifticonList.add(
@@ -72,7 +76,7 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
         gifticonList.add(
@@ -84,7 +88,7 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
         gifticonList.add(
@@ -96,95 +100,21 @@ class HistoryFragment : Fragment() {
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
                 "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("사용완료", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("사용완료", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("사용완료", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
+                Badge("사용완료", "#D2D2D2")
             )
         )
 
-        historyAdapter = HistoryAdapter()
+        //viewModel.getHistory(SharedPreferencesUtil(requireContext()).getUser().email!!)
+        historyAdapter = HistoryAdapter(HistoryAdapter.HistoryListener { history ->
+            Log.d("TAG", "setHistoryAdapter: $history")
+            val args = Bundle()
+            args.putSerializable("history", history)
+
+            val dialogFragment = HistoryDialogFragment()
+            dialogFragment.arguments = args
+            dialogFragment.show(childFragmentManager, "popup")
+        })
+
         historyAdapter.submitList(gifticonList)
 
         binding.rvHistory.apply {

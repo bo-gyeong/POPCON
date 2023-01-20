@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
@@ -19,13 +20,17 @@ import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.viewmodel.UserViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 private const val TAG = "SettingsFragment_싸피"
-class SettingsFragment: Fragment() {
+
+class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
+    private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     private lateinit var mainActivity: MainActivity
-    private lateinit var user:User
+    private lateinit var user: User
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,10 +63,10 @@ class SettingsFragment: Fragment() {
         binding.run {
             clickJoin()
 
-            if (user!!.social == 1){
+            if (user!!.social == 1) {
                 signOutKakao()
                 withdrawKakao()
-            } else if (user!!.social == 2){
+            } else if (user!!.social == 2) {
                 signOutNaver()
                 withdrawNaver()
             }
@@ -69,8 +74,8 @@ class SettingsFragment: Fragment() {
     }
 
     // 비회원이 로그인하기 클릭 시
-    private fun clickJoin(){
-        if (user.social == 0){
+    private fun clickJoin() {
+        if (user.social == 0) {
             binding.lAccount.setOnClickListener {
                 settingsToLogin()
             }
@@ -78,21 +83,21 @@ class SettingsFragment: Fragment() {
     }
 
     // 설정에서 로그인화면으로 이동 및 로그인정보 삭제
-    private fun settingsToLogin(){
+    private fun settingsToLogin() {
         SharedPreferencesUtil(requireContext()).deleteUser()
         mainActivity.onBackPressed()
         mainActivity.changeFragment(LoginFragment())
     }
 
     // 비회원일 경우 로그인한계정, 로그아웃, 회원탈퇴 안보이도록
-    private fun settingVisibility(){
-        if (user.social == 0){
+    private fun settingVisibility() {
+        if (user.social == 0) {
             binding.tvJoin.visibility = View.VISIBLE
             binding.tvTitleAccount.visibility = View.GONE
             binding.tvAccount.visibility = View.GONE
             binding.tvLogout.visibility = View.GONE
             binding.tvWithdraw.visibility = View.GONE
-        } else{
+        } else {
             binding.tvJoin.visibility = View.GONE
             binding.tvTitleAccount.visibility = View.VISIBLE
             binding.tvAccount.visibility = View.VISIBLE
@@ -102,22 +107,82 @@ class SettingsFragment: Fragment() {
     }
 
     // 알림 활성화 여부
-    private fun notiActive(){
+    private fun notiActive() {
         binding.switchNoti.setOnCheckedChangeListener { compoundButton, b ->
-            if (b){
-                binding.tvNotiTitleFirst.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_black_03))
-                binding.tvNotiTitleInterval.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_black_03))
-                binding.tvNotiTitleTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_black_03))
-                binding.tvNotiSettingFirst.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_grey_04))
-                binding.tvNotiSettingInterval.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_grey_04))
-                binding.tvNotiSettingTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_grey_04))
-            } else{
-                binding.tvNotiTitleFirst.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_grey_07))
-                binding.tvNotiTitleInterval.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_grey_07))
-                binding.tvNotiTitleTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_grey_07))
-                binding.tvNotiSettingFirst.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_transparent_grey_07))
-                binding.tvNotiSettingInterval.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_transparent_grey_07))
-                binding.tvNotiSettingTime.setTextColor(ContextCompat.getColor(requireContext(), R.color.popcon_transparent_grey_07))
+            if (b) {
+                binding.tvNotiTitleFirst.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_black_03
+                    )
+                )
+                binding.tvNotiTitleInterval.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_black_03
+                    )
+                )
+                binding.tvNotiTitleTime.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_black_03
+                    )
+                )
+                binding.tvNotiSettingFirst.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_grey_04
+                    )
+                )
+                binding.tvNotiSettingInterval.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_grey_04
+                    )
+                )
+                binding.tvNotiSettingTime.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_grey_04
+                    )
+                )
+            } else {
+                binding.tvNotiTitleFirst.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_grey_07
+                    )
+                )
+                binding.tvNotiTitleInterval.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_grey_07
+                    )
+                )
+                binding.tvNotiTitleTime.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_grey_07
+                    )
+                )
+                binding.tvNotiSettingFirst.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_transparent_grey_07
+                    )
+                )
+                binding.tvNotiSettingInterval.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_transparent_grey_07
+                    )
+                )
+                binding.tvNotiSettingTime.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.popcon_transparent_grey_07
+                    )
+                )
             }
         }
     }
@@ -139,7 +204,7 @@ class SettingsFragment: Fragment() {
 
     // 카카오 회원탈퇴
     private fun withdrawKakao() {
-        binding.tvWithdraw.setOnClickListener{
+        binding.tvWithdraw.setOnClickListener {
             UserApiClient.instance.unlink { error ->
                 if (error != null) {
                     settingsToLogin()
@@ -156,7 +221,6 @@ class SettingsFragment: Fragment() {
     private fun signOutNaver() {
         binding.tvLogout.setOnClickListener {
             if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
-                SharedPreferencesUtil(requireContext()).deleteUser()
                 settingsToLogin()
             }
         }
@@ -165,12 +229,13 @@ class SettingsFragment: Fragment() {
     //네이버 회원탈퇴
     private fun withdrawNaver() {
         binding.tvWithdraw.setOnClickListener {
-            if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
-                SharedPreferencesUtil(requireContext()).deleteUser()
+            val user = SharedPreferencesUtil(requireContext()).getUser();
 
+            if (user.social == 2) {
                 NidOAuthLogin().callDeleteTokenApi(requireContext(), object : OAuthLoginCallback {
                     override fun onSuccess() {
                         //서버에서 토큰 삭제에 성공한 상태입니다.
+                        viewModel.withdraw(user)
                         SharedPreferencesUtil(requireContext()).deleteUser()
                         settingsToLogin()
                     }

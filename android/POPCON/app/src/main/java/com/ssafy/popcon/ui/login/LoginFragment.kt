@@ -143,7 +143,7 @@ class LoginFragment : Fragment() {
                                 email = user?.kakaoAccount?.email.toString()
                                 val user = User(email, 1)
                                 SharedPreferencesUtil(requireContext()).addUser(user)
-                                if (noMember){
+                                if (noMember) {
                                     Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!")
                                     viewModel.signIn(user)
                                     noMember = false
@@ -176,11 +176,10 @@ class LoginFragment : Fragment() {
 
                             viewModel.signIn(user)
                             viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                                //Log.d(TAG, "onSuccess: $it")
                                 if (it.email == email) {
                                     mainActivity.changeFragment(HomeFragment())
                                 } else {
-                                    //Toast.makeText(requireContext(), "개발자에게 문의하세요", Toast.LENGTH_SHORT).show()
+                                    Log.d(TAG, "onSuccess: 이미 있음")
                                 }
                             })
                         }

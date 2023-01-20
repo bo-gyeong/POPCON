@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="gifitcon"
             type="com.ssafy.popcon.dto.Gifticon" />
@@ -11,10 +12,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
         android:elevation="2dp"
         app:cardCornerRadius="12dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,19 +21,17 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:backgroundTint="@color/popcon_white"
             android:layout_height="match_parent">
-
 
             <ImageView
                 android:id="@+id/iv_product_preview_map"
                 imageUrl="@{gifitcon.productUrl}"
                 android:layout_width="125dp"
                 android:layout_height="125dp"
+                android:layout_marginLeft="16dp"
                 android:background="@color/popcon_white"
-                app:circularflow_defaultRadius="4dp"
                 android:scaleType="centerInside"
-                android:layout_marginLeft="20dp"
+                app:circularflow_defaultRadius="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

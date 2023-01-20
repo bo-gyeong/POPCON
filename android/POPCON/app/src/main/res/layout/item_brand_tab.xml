@@ -12,6 +12,7 @@
         <variable
             name="viewModel"
             type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
+
         <variable
             name="user"
             type="com.ssafy.popcon.dto.User" />
