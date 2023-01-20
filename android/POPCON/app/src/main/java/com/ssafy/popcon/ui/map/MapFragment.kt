@@ -189,7 +189,6 @@ class MapFragment : Fragment() {
         }
     }
 
-
     // 1. 비트맵 사이즈 비율대로 줄이고 내부 저장소에 저장하는 함수
     fun resizeBitmap(fileName: String, brand: String) {
         val tempFile = File(internalStorage, fileName)

@@ -5,30 +5,36 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.popcon.databinding.ItemHistoryBinding
 import com.ssafy.popcon.databinding.ItemHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
 
-class HistoryAdapter :
+class HistoryAdapter(private val clickListener: HistoryListener) :
     ListAdapter<Gifticon, HistoryAdapter.GifticonViewHolder>(GifticonDiffCallback()) {
-    private lateinit var binding: ItemHomeGifticonBinding
+    private lateinit var binding: ItemHistoryBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifticonViewHolder {
         binding =
-            ItemHomeGifticonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return GifticonViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: GifticonViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), clickListener)
     }
 
-    inner class GifticonViewHolder(private val binding: ItemHomeGifticonBinding) :
+    inner class GifticonViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(gifticon: Gifticon) {
+        fun bind(gifticon: Gifticon, clickListener: HistoryListener) {
             binding.gifticon = gifticon
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
+    }
+
+    class HistoryListener(val clickListener: (history: Gifticon) -> Unit) {
+        fun onClick(history: Gifticon) = clickListener(history)
     }
 }
 

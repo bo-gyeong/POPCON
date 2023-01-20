@@ -8,4 +8,7 @@ interface UserApi {
     //로그인
     @POST("api/user/login")
     suspend fun signIn(@Body user: User): User
+
+    @POST("api/user/withdraw")
+    suspend fun withdraw(@Body user: User): User
 }

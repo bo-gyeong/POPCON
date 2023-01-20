@@ -22,10 +22,17 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     val history: LiveData<List<Gifticon>> = _history
 
     private val _openHistoryEvent = MutableLiveData<Event<String>>()
-    val openHistoryEvent : LiveData<Event<String>> = _openHistoryEvent
+    val openHistoryEvent: LiveData<Event<String>> = _openHistoryEvent
+
+    private val _openHistoryDialogEvent = MutableLiveData<Event<Gifticon>>()
+    val openHistoryDialogEvent: LiveData<Event<Gifticon>> = _openHistoryDialogEvent
 
     fun openHistory(userId: String) {
         _openHistoryEvent.value = Event(userId)
+    }
+
+    fun openHistoryDialog(gifticon: Gifticon) {
+        _openHistoryDialogEvent.value = Event(gifticon)
     }
 
     private fun getGifticonByUserId(userId: String) {
@@ -48,7 +55,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
         }
     }
 
-    private fun getHistory(userId: String) {
+    fun getHistory(userId: String) {
         viewModelScope.launch {
             val history = gifticonRepository.getHistory(userId)
             _history.value = history
