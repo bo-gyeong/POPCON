@@ -38,7 +38,6 @@ class LoginFragment : Fragment() {
     var user = User("", -1)
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
-    private var email: String = ""
     lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -135,21 +134,15 @@ class LoginFragment : Fragment() {
                     } else if (token != null) {
                         // 로그인 성공
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                            UserApiClient.instance.me { user, error ->
-                                email = user?.kakaoAccount?.email.toString()
-                                val user = User(email, 1)
+                            UserApiClient.instance.me { meUser, error ->
+                                val email = meUser?.kakaoAccount?.email.toString()
+                                user = User(email, 1)
                                 SharedPreferencesUtil(requireContext()).addUser(user)
 
-                                mainActivity.changeFragment(HomeFragment())
-//                                viewModel.signIn(user)
-//                                viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer{
-//                                    if(it.email == email){
-//                                        mainActivity.changeFragment(HomeFragment())
-//                                    }
-//
-//                                })
-                                Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!!!")
-
+                                viewModel.signIn(user)
+                                viewModel.user.observe(viewLifecycleOwner){
+                                    mainActivity.changeFragment(HomeFragment())
+                                }
                             }
                         }
                     }
@@ -157,7 +150,6 @@ class LoginFragment : Fragment() {
             } else {
                 // 카카오 계정으로 로그인
                 UserApiClient.instance.loginWithKakaoAccount(mainActivity, callback = kakaoCallback)
-                Log.d(TAG, "kakaoLogin: ???????????/")
             }
         }
     }
