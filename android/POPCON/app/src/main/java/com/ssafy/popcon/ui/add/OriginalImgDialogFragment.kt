@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogAddOriginalBinding
 import com.ssafy.popcon.dto.GifticonImg
 
@@ -21,7 +22,7 @@ class OriginalImgDialogFragment(_gifticonImg:GifticonImg): DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogAddOriginalBinding.inflate(layoutInflater)
 
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context, R.style.WrapContentDialog)
         builder.setView(binding.root)
 
         binding.gifticonImg = gifticonImg

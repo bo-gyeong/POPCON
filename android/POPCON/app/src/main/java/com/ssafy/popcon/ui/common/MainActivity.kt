@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnFab.setOnClickListener{
-            changeFragment(AddFragment())
+            addFragment(AddFragment())
         }
     }
 

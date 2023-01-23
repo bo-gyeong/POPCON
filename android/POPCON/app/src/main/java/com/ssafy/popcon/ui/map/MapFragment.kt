@@ -27,6 +27,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
+import com.ssafy.popcon.dto.MapNowPos
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
@@ -118,13 +119,32 @@ class MapFragment : Fragment() {
         }
 
         // 레트로핏 사용자 위치 보내고 현재 위치 기반 지도에서 표시해줄 목록
-        viewModel.sendUserPosition(
-            sharedPreferencesUtil.getUser().email.toString(),
-            sharedPreferencesUtil.getUser().social,
-            getLatitude.toString(),
-            getLongitude.toString(),
-            "500"
+        val nowPos = mapOf<String, String>(
+            "email" to sharedPreferencesUtil.getUser().email.toString(),
+            "social" to sharedPreferencesUtil.getUser().social.toString(),
+            "x" to getLatitude.toString(),
+            "y" to getLongitude.toString(),
+            "radius" to "500"
         )
+        viewModel.sendUserPosition(nowPos)
+
+        /**
+        viewModel.sendUserPosition(
+            MapNowPos(
+                sharedPreferencesUtil.getUser().email.toString(),
+                sharedPreferencesUtil.getUser().social,
+                getLatitude.toString(),
+                getLongitude.toString(),
+                "500"
+            )
+        )**/
+//        viewModel.sendUserPosition(
+//            sharedPreferencesUtil.getUser().email.toString(),
+//            sharedPreferencesUtil.getUser().social,
+//            getLatitude.toString(),
+//            getLongitude.toString(),
+//            "500"
+//        )
 
         // 현 위치 마커 추가
         var currentMarker = MapPOIItem()

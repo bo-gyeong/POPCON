@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.loader.content.CursorLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,21 +24,38 @@ import com.soundcloud.android.crop.Crop
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.AddInfo
+import com.ssafy.popcon.dto.AddInfoNoImg
 import com.ssafy.popcon.dto.GifticonImg
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.onSingleClickListener
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
+import com.ssafy.popcon.viewmodel.AddViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
+import okio.ByteString
+import okio.ByteString.Companion.toByteString
 import java.io.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.io.path.Path
 
 class AddFragment : Fragment(), onItemClick {
     private lateinit var binding: FragmentAddBinding
+    private val viewModel:AddViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     private lateinit var mainActivity: MainActivity
     private lateinit var addImgAdapter: AddImgAdapter
-    private lateinit var imgUris:ArrayList<GifticonImg>
+    private lateinit var OriginalImgUris:ArrayList<GifticonImg>
+    private lateinit var cropXyImgUris:ArrayList<GifticonImg>
     private val delImgUri = ArrayList<Uri>()
     var imgNum = 0
+
+    companion object{
+        var chkCnt = 1
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,7 +82,8 @@ class AddFragment : Fragment(), onItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        imgUris = ArrayList()
+        OriginalImgUris = ArrayList()
+        cropXyImgUris = ArrayList()
         openGalleryFirst()
 
         binding.cvProductImg.setOnClickListener(object : onSingleClickListener(){
@@ -80,16 +99,22 @@ class AddFragment : Fragment(), onItemClick {
         })
 
         binding.btnRegi.setOnClickListener {
-            for (i in 0 until delImgUri.size){
-                delCropImg(delImgUri[i])
-            }
             //유효성 검사
-            mainActivity.changeFragment(HomeFragment())
+            if (chkCnt >= OriginalImgUris.size){
+                for (i in 0 until delImgUri.size){
+                    delCropImg(delImgUri[i])
+                }
+
+                viewModel.addGifticon(makeAddInfoList())
+                mainActivity.changeFragment(HomeFragment())
+            } else{
+                // 모든 깊티 확인 Toast
+            }
         }
 
         binding.btnOriginalSee.setOnClickListener {
-            if (imgUris.size != 0){
-                seeOriginalImg(imgUris[imgNum])
+            if (OriginalImgUris.size != 0){
+                seeOriginalImg(OriginalImgUris[imgNum])
             }
         }
     }
@@ -101,22 +126,30 @@ class AddFragment : Fragment(), onItemClick {
                     val clipData = it.data!!.clipData
 
                     if (clipData != null) {  //첫 add
-                        imgUris = ArrayList()
+                        OriginalImgUris = ArrayList()
+                        cropXyImgUris = ArrayList()
 
                         for (i in 0 until clipData.itemCount){
-                            imgUris.add(GifticonImg(clipData.getItemAt(i).uri))
+                            OriginalImgUris.add(GifticonImg(clipData.getItemAt(i).uri))
+                            //viewModel.useOcr(getPath(clipData.getItemAt(i).uri))
+                            //clipData.getItemAt(i).uri.path.toString()  --> \external\images\media\30
+                            // getPath(clipData.getItemAt(i).uri) --> \storage\emulated\0\Download\media_0(3).jpg
+                            val cropXYImgUri = cropXY(i)
+                            cropXyImgUris.add(GifticonImg(cropXYImgUri))
+                            delImgUri.add(cropXYImgUri)
                         }
-                        fillContent(0)
+                        //viewModel.useOcr("https://cloud.google.com/vision/docs/images/bicycle_example.png")
+                        fillContent(0, true)
                     } else{  //이미지 크롭
-                        imgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
+                        OriginalImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
 
-                        delImgUri.add(imgUris[imgNum].imgUri)
-                        fillContent(imgNum)
+                        delImgUri.add(OriginalImgUris[imgNum].imgUri)
+                        fillContent(imgNum, false)
                     }
                     makeImgList()
                 }
                 Activity.RESULT_CANCELED -> {
-                    if (imgUris.size == 0){ // add탭 클릭 후 이미지 선택 안하고 뒤로가기 클릭 시
+                    if (OriginalImgUris.size == 0){ // add탭 클릭 후 이미지 선택 안하고 뒤로가기 클릭 시
                         mainActivity.changeFragment(HomeFragment())
                     }
                 }
@@ -124,24 +157,36 @@ class AddFragment : Fragment(), onItemClick {
         }
 
     // View 값 채우기
-    private fun fillContent(idx: Int){
+    private fun fillContent(idx: Int, firstAdd:Boolean){
         imgNum = idx
 
+        var cropImgUri = OriginalImgUris[imgNum].imgUri
+        if (firstAdd){
+            cropImgUri = cropXyImgUris[idx].imgUri
+        }
+
         binding.addInfo = AddInfo(
-            imgUris[idx].imgUri,
-            imgUris[idx].imgUri,
-            "상품이름${idx}",
+            OriginalImgUris[idx].imgUri,
+            cropImgUri,
+            OriginalImgUris[idx].imgUri,
+            "${idx}-1231-2345~~~",
             "브랜드${idx}",
-            "1231-2345~~~",
-            "2023..01.01"
+            "상품이름${idx}",
+            "2023-01-23T06:28:49.677Z"
         )
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
-        binding.tvRegiImgCount.text = String.format(resources.getString(R.string.regi_img_count), idx+1 , imgUris.size)
+        binding.tvRegiImgCount.text = String.format(resources.getString(R.string.regi_img_count), idx+1 , OriginalImgUris.size)
     }
 
     override fun onClick(idx: Int) {
-        fillContent(idx)
+        fillContent(idx, true)
+    }
+
+    private fun cropXY(idx: Int): Uri{
+        val bitmap = uriToBitmap(OriginalImgUris[idx].imgUri)
+        val newBitmap = Bitmap.createBitmap(bitmap, 35, 35, 150, 150)
+        return saveFile("popconImg"+System.currentTimeMillis(), newBitmap)!!
     }
 
     // add탭 클릭하자마자 나오는 갤러리
@@ -154,9 +199,9 @@ class AddFragment : Fragment(), onItemClick {
 
     // cardView를 클릭했을 때 나오는 갤러리
     private fun openGallery(idx: Int) {
-        val bitmap = uriToBitmap(imgUris[idx].imgUri)
+        val bitmap = uriToBitmap(OriginalImgUris[idx].imgUri)
         val destination = saveFile("popconImg", bitmap)
-        val crop = Crop.of(imgUris[idx].imgUri, destination)
+        val crop = Crop.of(OriginalImgUris[idx].imgUri, destination)
 
         result.launch(crop.getIntent(mainActivity))
     }
@@ -222,7 +267,7 @@ class AddFragment : Fragment(), onItemClick {
 
     // 상단 리사이클러뷰 만들기
     private fun makeImgList(){
-        addImgAdapter = AddImgAdapter(imgUris, this)
+        addImgAdapter = AddImgAdapter(OriginalImgUris, cropXyImgUris, this)
 
         binding.rvCouponList.apply {
             adapter = addImgAdapter
@@ -239,6 +284,21 @@ class AddFragment : Fragment(), onItemClick {
         )
     }
 
+    private fun makeAddInfoList(): MutableList<AddInfoNoImg>{
+        val addInfos = mutableListOf<AddInfoNoImg>()
+        for (i in 0 until OriginalImgUris.size){
+            addInfos.add(
+                AddInfoNoImg(
+                    binding.etBarcode.text.toString(),
+                    binding.etProductBrand.text.toString(),
+                    binding.etProductName.text.toString(),
+                    "2023-01-23T06:28:49.677Z"
+                )
+            )
+        }
+        return addInfos
+    }
+
     // 유효성 검사
     private fun chkEffectiveness(): Boolean {
         if (binding.ivBarcodeImg.drawable == null || binding.ivCouponImg.drawable == null
@@ -247,12 +307,6 @@ class AddFragment : Fragment(), onItemClick {
             return false
         }
         return true
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.d("Tkvl", "onDestroy: ")
-        //parentFragmentManager.beginTransaction().remove(this).commit()
     }
 
     override fun onDestroy() {

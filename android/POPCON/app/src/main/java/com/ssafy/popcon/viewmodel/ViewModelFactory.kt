@@ -7,6 +7,8 @@ import com.ssafy.popcon.repository.add.AddRemoteDataSource
 import com.ssafy.popcon.repository.add.AddRepository
 import com.ssafy.popcon.repository.gifticon.GifticonRemoteDataSource
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
+import com.ssafy.popcon.repository.map.MapRemoteDataSource
+import com.ssafy.popcon.repository.map.MapRepository
 import com.ssafy.popcon.repository.user.UserRemoteDataSource
 import com.ssafy.popcon.repository.user.UserRepository
 import com.ssafy.popcon.util.RetrofitUtil
@@ -24,9 +26,9 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                 GifticonViewModel(gifticonRepo) as T
             }
             modelClass.isAssignableFrom(MapViewModel::class.java) -> {
-                val gifticonRepo =
-                    GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
-                GifticonViewModel(gifticonRepo) as T
+                val mapRepo =
+                    MapRepository(MapRemoteDataSource(RetrofitUtil.mapService))
+                MapViewModel(mapRepo) as T
             }
             modelClass.isAssignableFrom(AddViewModel::class.java) -> {
                 val addRepo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))

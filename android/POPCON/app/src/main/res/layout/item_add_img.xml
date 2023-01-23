@@ -23,9 +23,18 @@
             app:layout_constraintRight_toRightOf="parent">
 
             <ImageView
-                android:id="@+id/iv_coupon_img"
+                android:id="@+id/iv_chk_click"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_priority_high_24"/>
+
+            <ImageView
+                android:id="@+id/iv_coupon_img"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
                 app:imageUri="@{gifticonImg.imgUri}"/>
 
             <ImageButton
