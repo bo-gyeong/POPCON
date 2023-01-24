@@ -9,15 +9,19 @@ import android.os.Bundle
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class GifticonDialogFragment : DialogFragment() {
 
     val useList = mutableListOf<Gifticon>()
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
     private lateinit var binding: DialogUseBinding
 
     //팝업창 떠있는지 확인하는 변수
@@ -72,6 +76,7 @@ class GifticonDialogFragment : DialogFragment() {
 
     //상품이미지 미리보기, 기프티콘 사용화면
     private fun setViewPager() {
+        
         val previewAdapter =
             PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
         val gifticonViewAdapter = GifticonViewAdapter(childFragmentManager, useList)
@@ -189,5 +194,9 @@ class GifticonDialogFragment : DialogFragment() {
     override fun onDestroy() {
         super.onDestroy()
         isShow = false
+
+        for(gifticon : Gifticon in useList){
+            viewModel.updateGifticon(gifticon)
+        }
     }
 }

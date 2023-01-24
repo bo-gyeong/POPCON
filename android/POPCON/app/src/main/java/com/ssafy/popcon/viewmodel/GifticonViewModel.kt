@@ -56,4 +56,11 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
             _history.value = history
         }
     }
+
+    //기프티콘 업데이트
+    fun updateGifticon(gifticon: Gifticon) {
+        viewModelScope.launch {
+            gifticonRepository.updateGifticon(gifticon)
+        }
+    }
 }
