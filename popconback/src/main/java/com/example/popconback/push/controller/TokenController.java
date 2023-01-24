@@ -29,6 +29,7 @@ import java.util.Optional;
 @Api(value = "TokenController")
 @SwaggerDefinition(tags = {@Tag(name = "TokenController",
         description = "FCM 토큰 컨트롤러")})
+@RequestMapping(value = "/api/v1")
 @RestController
 @CrossOrigin("*")
 public class TokenController {
@@ -45,9 +46,7 @@ public class TokenController {
     @Autowired
     GifticonService gifticonService;
 
-    @ApiOperation(value = "registToken",
-            notes = "토큰을 받는 Method",
-            httpMethod = "POST")
+    @ApiOperation(value = "registToken", notes = "토큰을 받는 Method", httpMethod = "POST")
     @PostMapping("/token")
     public String registToken(String token) {
     	logger.info("registToken : token:{}", token);
@@ -55,9 +54,7 @@ public class TokenController {
         return "'"+token+"'" ;
     }
 
-    @ApiOperation(value = "broadCast",
-            notes = "전체 메세지를 전송하는 Method",
-            httpMethod = "POST")
+    @ApiOperation(value = "broadCast", notes = "전체 메세지를 전송하는 Method", httpMethod = "POST")
     @PostMapping("/broadcast")
     public Integer broadCast(String title, String body) throws IOException {
     	logger.info("broadCast : title:{}, body:{}", title, body);

@@ -10,10 +10,7 @@ import com.google.cloud.vision.v1.Feature;
 import com.google.cloud.vision.v1.Image;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.protobuf.ByteString;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +28,19 @@ import java.util.*;
 @SwaggerDefinition(tags = {@Tag(name = "GoogleOcrController",
         description = "구글 OCR 컨트롤러")})
 @Controller
-@RequestMapping(value = "/gcp")
+@RequestMapping(value = "/api/v1/gcp")
 public class GoogleOcrController {
 
 
-    @ApiOperation(value = "detectText",
-            notes = "기프티콘 이미지 텍스트 추출",
-            httpMethod = "GET")
+    @ApiOperation(value = "텍스트 추출", notes = "기프티콘 이미지 텍스트 추출", httpMethod = "GET")
+    @ApiImplicitParam(
+            name = "filePath",
+            value = "이미지 파일 경로 url",
+            required = true,
+            dataType = "string",
+            paramType = "query",
+            defaultValue = "None"
+    )
     @GetMapping("/ocr")
     public ResponseEntity<GifticonResponse> detectText(@RequestParam(value = "filePath") String filePath) throws Exception {
 
