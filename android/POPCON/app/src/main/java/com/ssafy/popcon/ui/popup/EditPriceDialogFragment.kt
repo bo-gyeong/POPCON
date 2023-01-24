@@ -30,6 +30,32 @@ class EditPriceDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.etPrice.setText("0")
+
+        binding.btn100.setOnClickListener {
+            var price = binding.etPrice.text.toString()
+            val temp: Int = price.toInt()
+            binding.etPrice.setText((temp + 100).toString())
+        }
+
+        binding.btn500.setOnClickListener {
+            var price = binding.etPrice.text.toString()
+            val temp: Int = price.toInt()
+            binding.etPrice.setText((temp + 500).toString())
+        }
+
+        binding.btn1000.setOnClickListener {
+            var price = binding.etPrice.text.toString()
+            val temp: Int = price.toInt()
+            binding.etPrice.setText((temp + 1000).toString())
+        }
+
+        binding.btn5000.setOnClickListener {
+            var price = binding.etPrice.text.toString()
+            val temp: Int = price.toInt()
+            binding.etPrice.setText((temp + 5000).toString())
+        }
+
 
     }
 }

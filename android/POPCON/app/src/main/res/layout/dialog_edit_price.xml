@@ -19,15 +19,16 @@
             android:id="@+id/tv_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextHeadline5.Black02"
             android:text="사용한 금액을 입력하세요"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <EditText
             android:id="@+id/et_price"
-            price="@{gifticon.price}"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
+            style="@style/TextMedium"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:inputType="number"
@@ -35,11 +36,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_input" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 원"
+            style="@style/TextMedium"
+            app:layout_constraintBottom_toBottomOf="@+id/et_price"
+            app:layout_constraintStart_toEndOf="@id/et_price" />
+
         <Button
             android:id="@+id/btn_100"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:text="100"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_price" />
@@ -70,7 +79,5 @@
             android:text="5000"
             app:layout_constraintBottom_toBottomOf="@id/btn_100"
             app:layout_constraintStart_toEndOf="@id/btn_1000" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
