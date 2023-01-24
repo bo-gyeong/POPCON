@@ -38,6 +38,10 @@ class GifticonViewFragment : Fragment() {
             binding.btnUse.isVisible = true
             binding.btnPrice.isVisible = false
         }
+
+        binding.btnPrice.setOnClickListener {
+            EditPriceDialogFragment().show(childFragmentManager, "editPrice")
+        }
     }
 
     companion object {

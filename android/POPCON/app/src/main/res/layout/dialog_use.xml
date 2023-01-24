@@ -13,8 +13,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:background="@drawable/edge_dialog"
         android:layout_height="wrap_content"
+        android:background="@drawable/edge_dialog"
         android:padding="8dp">
 
         <androidx.fragment.app.FragmentContainerView

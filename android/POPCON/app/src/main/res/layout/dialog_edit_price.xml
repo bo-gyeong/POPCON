@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="gifticon"
+            type="com.ssafy.popcon.dto.Gifticon" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edge_dialog"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tv_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사용한 금액을 입력하세요"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/et_price"
+            price="@{gifticon.price}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_input" />
+
+        <Button
+            android:id="@+id/btn_100"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_price" />
+
+        <Button
+            android:id="@+id/btn_500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="500"
+            app:layout_constraintBottom_toBottomOf="@id/btn_100"
+            app:layout_constraintStart_toEndOf="@id/btn_100" />
+
+        <Button
+            android:id="@+id/btn_1000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="1000"
+            app:layout_constraintBottom_toBottomOf="@id/btn_100"
+            app:layout_constraintStart_toEndOf="@id/btn_500" />
+
+        <Button
+            android:id="@+id/btn_5000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="5000"
+            app:layout_constraintBottom_toBottomOf="@id/btn_100"
+            app:layout_constraintStart_toEndOf="@id/btn_1000" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
