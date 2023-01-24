@@ -14,7 +14,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.loader.content.CursorLoader
@@ -82,19 +84,20 @@ class AddFragment : Fragment(), onItemClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        chkCnt = 1
         OriginalImgUris = ArrayList()
         cropXyImgUris = ArrayList()
         openGalleryFirst()
 
         binding.cvProductImg.setOnClickListener(object : onSingleClickListener(){
             override fun onSingleClick(v: View) {
-                openGallery(imgNum)
+                seeCropImgDialog(cropXyImgUris[imgNum], "Product")
             }
         })
 
         binding.cvBarcodeImg.setOnClickListener(object : onSingleClickListener(){
             override fun onSingleClick(v: View) {
-                openGallery(imgNum)
+                seeCropImgDialog(cropXyImgUris[imgNum], "Barcode")
             }
         })
 
@@ -108,13 +111,13 @@ class AddFragment : Fragment(), onItemClick {
                 viewModel.addGifticon(makeAddInfoList())
                 mainActivity.changeFragment(HomeFragment())
             } else{
-                // 모든 깊티 확인 Toast
+                Toast.makeText(requireContext(), "기프티콘 정보를 확인해주세요", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.btnOriginalSee.setOnClickListener {
             if (OriginalImgUris.size != 0){
-                seeOriginalImg(OriginalImgUris[imgNum])
+                seeOriginalImgDialog(OriginalImgUris[imgNum])
             }
         }
     }
@@ -139,14 +142,16 @@ class AddFragment : Fragment(), onItemClick {
                             delImgUri.add(cropXYImgUri)
                         }
                         //viewModel.useOcr("https://cloud.google.com/vision/docs/images/bicycle_example.png")
-                        fillContent(0, true)
+                        //viewModel.useOcr("C:\\1.PNG")
+                        //viewModel.useOcr("file:\\storage\\emulated\\0\\Download\\media_0(3).jpg")
+                        fillContent(0)
+                        makeImgList()
                     } else{  //이미지 크롭
-                        OriginalImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
+                        cropXyImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
 
-                        delImgUri.add(OriginalImgUris[imgNum].imgUri)
-                        fillContent(imgNum, false)
+                        delImgUri.add(cropXyImgUris[imgNum].imgUri)
+                        fillContent(imgNum)
                     }
-                    makeImgList()
                 }
                 Activity.RESULT_CANCELED -> {
                     if (OriginalImgUris.size == 0){ // add탭 클릭 후 이미지 선택 안하고 뒤로가기 클릭 시
@@ -157,13 +162,9 @@ class AddFragment : Fragment(), onItemClick {
         }
 
     // View 값 채우기
-    private fun fillContent(idx: Int, firstAdd:Boolean){
+    private fun fillContent(idx: Int){
         imgNum = idx
-
-        var cropImgUri = OriginalImgUris[imgNum].imgUri
-        if (firstAdd){
-            cropImgUri = cropXyImgUris[idx].imgUri
-        }
+        var cropImgUri = cropXyImgUris[idx].imgUri
 
         binding.addInfo = AddInfo(
             OriginalImgUris[idx].imgUri,
@@ -180,7 +181,7 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     override fun onClick(idx: Int) {
-        fillContent(idx, true)
+        fillContent(idx)
     }
 
     private fun cropXY(idx: Int): Uri{
@@ -198,7 +199,7 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // cardView를 클릭했을 때 나오는 갤러리
-    private fun openGallery(idx: Int) {
+    fun openGallery(idx: Int) {
         val bitmap = uriToBitmap(OriginalImgUris[idx].imgUri)
         val destination = saveFile("popconImg", bitmap)
         val crop = Crop.of(OriginalImgUris[idx].imgUri, destination)
@@ -277,8 +278,23 @@ class AddFragment : Fragment(), onItemClick {
         }
     }
 
+    // 크롭된 이미지 다이얼로그
+    private fun seeCropImgDialog(gifticonImg: GifticonImg, clickFromCv:String){
+        val dialog = CropImgDialogFragment(gifticonImg, clickFromCv)
+        dialog.show(childFragmentManager, "CropDialog")
+        dialog.setOnClickListener(object: CropImgDialogFragment.BtnClickListener{
+            override fun onClicked(fromCv: String) {
+                if (fromCv == "Product"){
+                    openGallery(imgNum)
+                } else if (fromCv == "Barcode"){
+                    openGallery(imgNum)
+                }
+            }
+        })
+    }
+
     // 이미지 원본보기
-    private fun seeOriginalImg(gifticonImg: GifticonImg){
+    private fun seeOriginalImgDialog(gifticonImg: GifticonImg){
         OriginalImgDialogFragment(gifticonImg).show(
             childFragmentManager, "OriginalDialog"
         )
