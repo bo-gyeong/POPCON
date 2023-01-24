@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.ItemGifticonPopupBinding
 import com.ssafy.popcon.dto.Gifticon
@@ -30,7 +31,13 @@ class GifticonViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.gifticon = gifticonInfo
-
+        if (gifticonInfo?.price == null) {
+            binding.btnUse.isVisible = false
+            binding.btnPrice.isVisible = true
+        } else {
+            binding.btnUse.isVisible = true
+            binding.btnPrice.isVisible = false
+        }
     }
 
     companion object {
