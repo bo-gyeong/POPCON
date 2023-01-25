@@ -9,11 +9,15 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.google.android.gms.tasks.OnCanceledListener
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.navercorp.nid.NaverIdLoginSDK
 import com.nhn.android.naverlogin.OAuthLogin
 import com.ssafy.popcon.BuildConfig
@@ -26,9 +30,10 @@ import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.Utils.navigationHeight
 import com.ssafy.popcon.util.Utils.setStatusBarTransparent
+import com.ssafy.popcon.viewmodel.FCMViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
-private const val TAG = "MainActivity 메인"
-
+private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sensorManager: SensorManager
@@ -36,11 +41,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
 
+    private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(applicationContext) }
+
     val PERMISSION_REQUEST_CODE = 8
 
     companion object {
         var shakeDetector = ShakeDetector()
 
+        const val channel_id = "popcon_user"
+
+    }
+
+    fun uploadToken(token: String){
+        fcmViewModel.uploadToken(token)
+    }
+    fun sendMessageTo(token: String, title: String, body: String){
+        fcmViewModel.sendMessageTo(token, title, body)
+        // mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         setNavBar()
         checkPermissions()
+        getFCMToken()
     }
 
     //navigation bar 설정
@@ -178,6 +196,19 @@ class MainActivity : AppCompatActivity() {
         sensorManager.unregisterListener(shakeDetector)
 
         super.onPause()
+    }
+
+    fun getFCMToken(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful){
+                return@addOnCompleteListener
+            }
+            Log.d(TAG, "token 정보: ${task.result?:"task.result is null"}")
+            if (task.result != null){
+                uploadToken(task.result)
+                fcmViewModel.setToken(task.result)
+            }
+        }
     }
 
     override fun onRestart() {

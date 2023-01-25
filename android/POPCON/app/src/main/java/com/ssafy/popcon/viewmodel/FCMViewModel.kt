@@ -7,6 +7,13 @@ import com.ssafy.popcon.repository.fcm.FCMRepository
 import kotlinx.coroutines.launch
 
 class FCMViewModel(private val fcmRepository: FCMRepository): ViewModel() {
+    var token = ""
+        private set
+
+    fun setToken(_token: String){
+        token = _token
+    }
+
     fun sendNotification(body: FCMResponse){
         viewModelScope.launch {
             fcmRepository.sendNotification(body)
