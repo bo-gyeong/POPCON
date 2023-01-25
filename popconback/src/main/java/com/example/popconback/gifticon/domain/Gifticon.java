@@ -31,7 +31,7 @@ public class Gifticon {
     @JoinColumn(name="brand_name")
     @JsonManagedReference
     private Brand brand;
-    private String product;
+    private String productName;
     private Date due;
     private int price;
     @JsonManagedReference

@@ -21,19 +21,18 @@ public class LocationResponse {
     @ApiModelProperty(name = "yPos", value = "경도", example = "36.1079")
     private String yPos;
 
-    @ApiModelProperty(name = "brand", value = "브랜드명", example = "스타벅스")
-    private String brand;
+    @ApiModelProperty(name = "brandName", value = "브랜드명", example = "스타벅스")
+    private String brandName;
 
 
     public LocationResponse() {}
 
-    public LocationResponse(String phone, String placeName, String xPos, String yPos, String brand){
+    public LocationResponse(String phone, String placeName, String xPos, String yPos, String brandName){
         this.phone = phone;
         this.placeName = placeName;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.brand = brand;
-
+        this.brandName = brandName;
     }
 
 

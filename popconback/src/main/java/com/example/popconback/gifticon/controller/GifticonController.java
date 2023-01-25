@@ -56,7 +56,7 @@ public class GifticonController {
     }
 
     @ApiOperation(value = "기프티콘 저장", notes = "기프티콘 정보 저장", httpMethod = "POST")
-    @PostMapping("/") //기프티콘 정보 저장
+    @PostMapping("") //기프티콘 정보 저장
     public ResponseEntity<List<ResponseCreateGifticonDto>> CreateGifticon (@RequestBody CreateGifticonDto[] createGifticonDtos){
         List<CreateGifticonDto> Dtolist = Arrays.asList(createGifticonDtos);
         return ResponseEntity.ok(gifticonService.createGifticon(Dtolist));
@@ -84,13 +84,13 @@ public class GifticonController {
 
 
     @ApiOperation(value = "기프티콘 수정", notes = "기프티콘 정보 수정", httpMethod = "PUT")
-    @PutMapping("/") //기프티콘 정보 수정
+    @PutMapping("") //기프티콘 정보 수정
     public ResponseEntity<ResponseUpdateGifticonDto> UpdateGifticon (@RequestBody UpdateGifticonDto updateGifticonDto){
             return ResponseEntity.ok(gifticonService.updateGifticon(updateGifticonDto));
      }
 
     @ApiOperation(value = "기프티콘 삭제", notes = "기프티콘 삭제", httpMethod = "DELETE")
-    @DeleteMapping("/") //기프티콘 삭제
+    @DeleteMapping("") //기프티콘 삭제
     public ResponseEntity<Void> DeleteGifticon (@RequestBody DeleteGifticonDto deleteGifticonDto){
         gifticonService.deleteGifticon(deleteGifticonDto.getBarcodeNum());
         return ResponseEntity.ok().build();

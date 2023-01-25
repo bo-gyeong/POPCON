@@ -8,7 +8,8 @@ public class SortGifticonDto {
 
     @ApiModelProperty(name = "hash", value = "유저 hash값", example = "1305943263")
     private int hash;
-    private String brandName; // 1:유효기간 적게 남은 순
+    @ApiModelProperty(name = "brandName", value = "브랜드명", example = "스타벅스")
+    private String brandName;
 
     @ApiModelProperty(name = "email", value = "유저 계정 이메일", example = "abc@naver.com")
     private String email;

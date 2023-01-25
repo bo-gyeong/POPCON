@@ -20,8 +20,8 @@ public class GifticonDto {
     private int hash;
     @ApiModelProperty(name = "brandName", value = "브랜드명", example = "스타벅스")
     private String brandName;
-    @ApiModelProperty(name = "product", value = "상품명", example = "아이스 카페 아메리카노 Tall")
-    private String product;
+    @ApiModelProperty(name = "productName", value = "상품명", example = "아이스 카페 아메리카노 Tall")
+    private String productName;
     @JsonFormat( shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @ApiModelProperty(name = "due", value = "유효기간", example = "2023-01-10 00:00:00.000000")
     private Date due;

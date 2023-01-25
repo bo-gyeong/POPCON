@@ -16,13 +16,13 @@ public class GifticonResponse {
     @ApiModelProperty(name = "publisher", value = "발행처", example = "GS&쿠폰")
     private String publisher;
     @ApiModelProperty(name = "brand", value = "브랜드명", example = "스타벅스")
-    private String brand;
+    private String brandName;
     @ApiModelProperty(name = "productName", value = "상품명", example = "아이스 카페 아메리카노 Tall")
     private String productName;
 
     private Map<String, String> productImg = new HashMap<>();
 
-    private Map<String, String> expiration;
+    private Map<String, String> due;
 
     @ApiModelProperty(name = "barcodeNum", value = "바코드 넘버", example = "1234-5678-9999")
     private String barcodeNum;
@@ -31,12 +31,12 @@ public class GifticonResponse {
 
     public GifticonResponse() {}
 
-    public GifticonResponse(String publisher, String brand, String productName, Map<String, String> productImg, Map<String, String> expiration, String barcodeNum,Map<String, String> barcodeImg ){
+    public GifticonResponse(String publisher, String brandName, String productName, Map<String, String> productImg, Map<String, String> due, String barcodeNum,Map<String, String> barcodeImg ){
         this.publisher = publisher;
-        this.brand = brand;
+        this.brandName = brandName;
         this.productName = productName;
         this.productImg = productImg;
-        this.expiration = expiration;
+        this.due = due;
         this.barcodeNum = barcodeNum;
         this.barcodeImg = barcodeImg;
     }
