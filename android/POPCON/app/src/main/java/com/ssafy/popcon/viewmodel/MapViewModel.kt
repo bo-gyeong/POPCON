@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.MapBrandLogo
+import com.ssafy.popcon.dto.MapNowPos
 import com.ssafy.popcon.repository.map.MapRepository
 import com.ssafy.popcon.ui.map.MapFragment
 import kotlinx.coroutines.launch
@@ -21,10 +22,20 @@ class MapViewModel(private val mapRepository: MapRepository) : ViewModel() {
     private var _mapBrandLogo = MutableLiveData<List<MapBrandLogo>>()
     val mapBrandLogo: LiveData<List<MapBrandLogo>> = _mapBrandLogo
 
-    fun sendUserPosition(email: String, social: Int, x: String, y: String, radius: String) {
+    fun sendUserPosition(nowPos: Map<String, String>) {
         viewModelScope.launch {
-            _mapBrandLogo.value = mapRepository.sendUserPosition(email, social, x, y, radius
-            )
+            _mapBrandLogo.value = mapRepository.sendUserPosition(nowPos)
         }
     }
+//    fun sendUserPosition(mapNowPos: MapNowPos) {
+//        viewModelScope.launch {
+//            _mapBrandLogo.value = mapRepository.sendUserPosition(mapNowPos)
+//        }
+//    }
+//    fun sendUserPosition(email: String, social: Int, x: String, y: String, radius: String) {
+//        viewModelScope.launch {
+//            _mapBrandLogo.value = mapRepository.sendUserPosition(email, social, x, y, radius
+//            )
+//        }
+//    }
 }
