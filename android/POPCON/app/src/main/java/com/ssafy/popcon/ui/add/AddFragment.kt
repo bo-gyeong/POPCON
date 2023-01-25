@@ -42,6 +42,7 @@ import okio.ByteString.Companion.toByteString
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -182,8 +183,8 @@ class AddFragment : Fragment(), onItemClick {
             "${idx}-1231-2345~~~",
             "브랜드${idx}",
             "상품이름${idx}",
-            ""
-        )//"2023-01-23T06:28:49.677Z"
+            binding.etDate.text.toString()
+        )
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
         binding.tvRegiImgCount.text = String.format(resources.getString(R.string.regi_img_count), idx+1 , OriginalImgUris.size)
@@ -317,39 +318,38 @@ class AddFragment : Fragment(), onItemClick {
                     binding.etBarcode.text.toString(),
                     binding.etProductBrand.text.toString(),
                     binding.etProductName.text.toString(),
-                    "2023-01-23T06:28:49.677Z"
+                    binding.etDate.text.toString()
                 )
             )
         }
         return addInfos
     }
 
-     private fun dateFormat(){
-         binding.etDate.addTextChangedListener (object : TextWatcher{
-             override fun afterTextChanged(p0: Editable?) {
-                 //p0: 추가된 문자열
-             }
+    private fun dateFormat(){
+        binding.etDate.addTextChangedListener (object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                //p0: 추가된 문자열
+            }
 
-             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                 //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 변경될 문자열의 수, p3: 새로 추가될 문자열 수
-             }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 변경될 문자열의 수, p3: 새로 추가될 문자열 수
+            }
 
-             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                 //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 삭제된 기존 문자열 수, p3: 새로 추가될 문자열 수
-                 val dateLength = binding.etDate.text.length
-                 if(dateLength==4 && p1!=4 || dateLength==7 && p1!=7){
-                     val add = binding.etDate.text.toString() + "-"
-                     binding.etDate.setText(add)
-                     binding.etDate.setSelection(add.length)
-                 }
-             }
-         })
-     }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 삭제된 기존 문자열 수, p3: 새로 추가될 문자열 수
+                val dateLength = binding.etDate.text.length
+                if(dateLength==4 && p1!=4 || dateLength==7 && p1!=7){
+                    val add = binding.etDate.text.toString() + "-"
+                    binding.etDate.setText(add)
+                    binding.etDate.setSelection(add.length)
+                }
+            }
+        })
+    }
 
     // 체크박스 클릭 시 상태변화
     private fun changeChkState(){
         val chkState = binding.cbPrice.isChecked
-        Log.d("싸피", "changeChkState: $chkState")
         if (!chkState){
             binding.cbPrice.isChecked = false
             binding.lPrice.visibility = View.GONE
