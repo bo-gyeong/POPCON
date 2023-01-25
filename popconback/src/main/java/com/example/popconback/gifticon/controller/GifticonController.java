@@ -7,6 +7,7 @@ import com.example.popconback.gifticon.dto.CreateBookmark.ResponseCreateBookmark
 import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
 import com.example.popconback.gifticon.dto.DeleteBookmark.DeleteBookmarkDto;
+import com.example.popconback.gifticon.dto.DeleteGifticon.DeleteGifticonDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
@@ -85,17 +86,17 @@ public class GifticonController {
     @ApiOperation(value = "UpdateGifticon",
             notes = "기프티콘 정보 수정",
             httpMethod = "POST")
-    @PostMapping("/gifticon/{barcode_num}") //기프티콘 정보 수정
-    public ResponseEntity<ResponseUpdateGifticonDto> UpdateGifticon (@RequestBody UpdateGifticonDto updateGifticonDto, @PathVariable String barcode_num ){
-            return ResponseEntity.ok(gifticonService.updateGifticon(updateGifticonDto, barcode_num));
+    @PutMapping("/gifticon") //기프티콘 정보 수정
+    public ResponseEntity<ResponseUpdateGifticonDto> UpdateGifticon (@RequestBody UpdateGifticonDto updateGifticonDto){
+            return ResponseEntity.ok(gifticonService.updateGifticon(updateGifticonDto));
      }
 
     @ApiOperation(value = "DeleteGifticon",
             notes = "기프티콘 삭제",
             httpMethod = "DELETE")
-    @DeleteMapping("gifticon/{barcode_num}") //기프티콘 삭제
-    public ResponseEntity<Void> DeleteGifticon (@PathVariable String barcode_num){
-        gifticonService.deleteGifticon(barcode_num);
+    @DeleteMapping("gifticon") //기프티콘 삭제
+    public ResponseEntity<Void> DeleteGifticon (@RequestBody DeleteGifticonDto deleteGifticonDto){
+        gifticonService.deleteGifticon(deleteGifticonDto.getBarcodeNum());
         return ResponseEntity.ok().build();
     }
 
