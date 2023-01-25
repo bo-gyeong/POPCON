@@ -14,7 +14,4 @@ class MapRepository(private val remoteDataSource: MapRemoteDataSource) {
 //    suspend fun sendUserPosition(mapNowPos: MapNowPos): ArrayList<MapBrandLogo> {
 //        return remoteDataSource.sendUserPosition(mapNowPos)
 //    }
-//    suspend fun sendUserPosition(email : String, social : Int, x : String, y : String, radius : String): ArrayList<MapBrandLogo> {
-//        return remoteDataSource.sendUserPosition(email, social, x, y, radius)
-//    }
 }

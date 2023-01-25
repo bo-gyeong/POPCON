@@ -138,13 +138,6 @@ class MapFragment : Fragment() {
                 "500"
             )
         )**/
-//        viewModel.sendUserPosition(
-//            sharedPreferencesUtil.getUser().email.toString(),
-//            sharedPreferencesUtil.getUser().social,
-//            getLatitude.toString(),
-//            getLongitude.toString(),
-//            "500"
-//        )
 
         // 현 위치 마커 추가
         var currentMarker = MapPOIItem()

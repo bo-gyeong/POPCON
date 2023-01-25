@@ -17,7 +17,4 @@ class MapRemoteDataSource(private val apiClient: MapApi) : MapDataSource {
 //    override suspend fun sendUserPosition(mapNowPos: MapNowPos): ArrayList<MapBrandLogo> {
 //        return apiClient.sendUserPosition(mapNowPos)
 //    }
-//    override suspend fun sendUserPosition(email : String, social : Int, x : String, y : String, radius : String): ArrayList<MapBrandLogo> {
-//        return apiClient.sendUserPosition(email, social, x, y, radius)
-//    }
 }

@@ -10,12 +10,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore.Images
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -101,6 +104,12 @@ class AddFragment : Fragment(), onItemClick {
             }
         })
 
+        dateFormat()
+
+        binding.cbPrice.setOnClickListener{
+            changeChkState()
+        }
+
         binding.btnRegi.setOnClickListener {
             //유효성 검사
             if (chkCnt >= OriginalImgUris.size){
@@ -164,7 +173,7 @@ class AddFragment : Fragment(), onItemClick {
     // View 값 채우기
     private fun fillContent(idx: Int){
         imgNum = idx
-        var cropImgUri = cropXyImgUris[idx].imgUri
+        val cropImgUri = cropXyImgUris[idx].imgUri
 
         binding.addInfo = AddInfo(
             OriginalImgUris[idx].imgUri,
@@ -173,8 +182,8 @@ class AddFragment : Fragment(), onItemClick {
             "${idx}-1231-2345~~~",
             "브랜드${idx}",
             "상품이름${idx}",
-            "2023-01-23T06:28:49.677Z"
-        )
+            ""
+        )//"2023-01-23T06:28:49.677Z"
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
         binding.tvRegiImgCount.text = String.format(resources.getString(R.string.regi_img_count), idx+1 , OriginalImgUris.size)
@@ -313,6 +322,41 @@ class AddFragment : Fragment(), onItemClick {
             )
         }
         return addInfos
+    }
+
+     private fun dateFormat(){
+         binding.etDate.addTextChangedListener (object : TextWatcher{
+             override fun afterTextChanged(p0: Editable?) {
+                 //p0: 추가된 문자열
+             }
+
+             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                 //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 변경될 문자열의 수, p3: 새로 추가될 문자열 수
+             }
+
+             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                 //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 삭제된 기존 문자열 수, p3: 새로 추가될 문자열 수
+                 val dateLength = binding.etDate.text.length
+                 if(dateLength==4 && p1!=4 || dateLength==7 && p1!=7){
+                     val add = binding.etDate.text.toString() + "-"
+                     binding.etDate.setText(add)
+                     binding.etDate.setSelection(add.length)
+                 }
+             }
+         })
+     }
+
+    // 체크박스 클릭 시 상태변화
+    private fun changeChkState(){
+        val chkState = binding.cbPrice.isChecked
+        Log.d("싸피", "changeChkState: $chkState")
+        if (!chkState){
+            binding.cbPrice.isChecked = false
+            binding.lPrice.visibility = View.GONE
+        } else{
+            binding.cbPrice.isChecked = true
+            binding.lPrice.visibility = View.VISIBLE
+        }
     }
 
     // 유효성 검사

@@ -296,8 +296,63 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="datetime"
                                 android:text="@{addInfo.due.toString()}"
-                                android:backgroundTint="@color/popcon_grey_09"/>
+                                android:maxLength="10"
+                                android:backgroundTint="@color/popcon_grey_09" />
     
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="4dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/price"
+                                    android:textColor="@color/popcon_black_03"
+                                    android:textSize="15sp"/>
+
+                                <CheckBox
+                                    android:id="@+id/cb_price"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="0dp"
+                                    android:minHeight="0dp"
+                                    android:buttonTint="@color/popcon_orange"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/l_price"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/won"
+                                    android:textColor="@color/popcon_black_03"
+                                    android:textSize="20sp"/>
+
+                                <EditText
+                                    android:id="@+id/et_price"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"
+                                    android:text="@{addInfo.price==0? `` : String.valueOf(addInfo.price)}"
+                                    android:backgroundTint="@color/popcon_grey_09"/>
+
+                            </LinearLayout>
+
                         </LinearLayout>
     
                         <LinearLayout
