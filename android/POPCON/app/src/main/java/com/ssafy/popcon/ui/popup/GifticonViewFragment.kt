@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.ItemGifticonPopupBinding
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.add.OriginalImgDialogFragment
 import com.ssafy.popcon.ui.history.HistoryDialogFragment
 
 class GifticonViewFragment : Fragment() {
@@ -58,6 +59,15 @@ class GifticonViewFragment : Fragment() {
         }
 
         binding.tvLeft.text = gifticonInfo!!.price.toString() + " 원 사용가능"
+
+        binding.ivProductPreview.setOnClickListener {
+            val args = Bundle()
+            args.putString("originalUrl", gifticonInfo!!.originalUrl)
+
+            val dialogFragment = ImageDialogFragment()
+            dialogFragment.arguments = args
+            dialogFragment.show(childFragmentManager, "originalUrl")
+        }
     }
 
     companion object {

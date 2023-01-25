@@ -9,6 +9,7 @@ data class Gifticon(
     val price: Int?,
     val productUrl: String,
     val barcodeUrl: String?,
+    val originalUrl: String?,
     val date: String,
     val badge: Badge?
 ) : Serializable
