@@ -94,7 +94,11 @@ public class GifticonService {
 
 
     public List<GifticonDto> sortGifticon (SortGifticonDto sortGifticonDto){
-        Optional<User> user = userRepository.findById(sortGifticonDto.getHash());
+        User tuser = new User();
+        tuser.setEmail(sortGifticonDto.getEmail());
+        tuser.setSocial(sortGifticonDto.getSocial());
+        int hash = tuser.hashCode();
+        Optional<User> user = userRepository.findById(hash);
         List<GifticonDto> rlist = new ArrayList<>();
         if (!user.isPresent()) {
             //throw new EntityNotFoundException("User Not Found");
@@ -106,7 +110,7 @@ public class GifticonService {
             return rlist;
         }
 
-        int hash = sortGifticonDto.getHash();
+
         //System.out.println(hash);
 
         List <Gifticon>list = gifticonRepository.findByUser_HashAndBrand_BrandName(hash,sortGifticonDto.getBrandName());
