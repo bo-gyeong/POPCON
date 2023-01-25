@@ -1,10 +1,10 @@
-package com.example.popconback.gifticon.dto.DeleteBookmark;
+package com.example.popconback.gifticon.dto.CreateFavorites;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class DeleteBookmarkDto {
+public class CreateFavoritesDto {
     @ApiModelProperty(name = "hash", value = "유저 hash값", example = "1305943263")
     private int hash;
 

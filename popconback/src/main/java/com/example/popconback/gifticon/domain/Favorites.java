@@ -11,8 +11,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name="bookmark")
-public class Bookmark {
+@Table(name="favorites")
+public class Favorites {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

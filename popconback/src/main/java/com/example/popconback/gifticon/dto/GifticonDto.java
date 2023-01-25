@@ -32,5 +32,12 @@ public class GifticonDto {
     @ApiModelProperty(name = "memo", value = "유저 메모", example = "유라 우수 참여")
     private String memo;
 
-    private List<GifticonFiles> filesList = new ArrayList<>();
+    @ApiModelProperty(name = "barcode_filepath", value = "바코드 이미지 경로", example = "")
+    private String barcode_filepath;
+    @ApiModelProperty(name = "product_filepath", value = "상품 이미지 경로", example = "")
+    private String product_filepath;
+    @ApiModelProperty(name = "origin_filepath", value = "원본 이미지 경로", example = "")
+    private String origin_filepath;
+
+    //private List<GifticonFiles> filesList = new ArrayList<>();
 }

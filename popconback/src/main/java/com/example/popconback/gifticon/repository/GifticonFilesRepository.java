@@ -10,4 +10,6 @@ public interface GifticonFilesRepository extends JpaRepository<GifticonFiles, St
 
     List<GifticonFiles> findByGifticon_BarcodeNum(String barcodeNum);
 
+
+
 }

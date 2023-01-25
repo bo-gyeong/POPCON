@@ -24,5 +24,5 @@ public class Brand {
 
     @JsonBackReference
     @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Bookmark> bookmarkList = new ArrayList<>();
+    private List<Favorites> favoritesList = new ArrayList<>();
 }

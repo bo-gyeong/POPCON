@@ -1,7 +1,8 @@
 package com.example.popconback.user.domain;
 
 
-import com.example.popconback.gifticon.domain.Bookmark;
+
+import com.example.popconback.gifticon.domain.Favorites;
 import com.example.popconback.gifticon.domain.Gifticon;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
@@ -35,7 +36,7 @@ public class User {
 
     @JsonBackReference
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Bookmark> bookmarkList;
+    private List<Favorites> favoriteskList;
     @Override
     public int hashCode() {
         return Objects.hash(email,social);
