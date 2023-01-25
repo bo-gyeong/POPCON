@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "LocationController")
 @SwaggerDefinition(tags = {@Tag(name = "LocationController",
         description = "위치 기반 검색 컨트롤러")})
+@RequestMapping(value = "/api/v1/local")
 @RestController
 public class LocationController {
     @Value("${kakao.apikey}")
@@ -124,7 +126,7 @@ public class LocationController {
     @ApiOperation(value = "localSearch",
             notes = "현위치 기반 기프티콘 사용가능 한 모든 매장",
             httpMethod = "GET")
-    @GetMapping({"/local"})
+    @GetMapping({"/search"})
     public List<Object> localSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
 
         List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);

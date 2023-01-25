@@ -5,10 +5,7 @@ import com.example.popconback.gifticon.domain.GifticonFiles;
 import com.example.popconback.gifticon.dto.GifticonFilesDto;
 import com.example.popconback.gifticon.service.GifticonFilesService;
 import com.example.popconback.gifticon.service.S3Service;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +30,7 @@ import java.util.List;
 @SwaggerDefinition(tags = {@Tag(name = "GifticonFilesContoller",
         description = "기프티콘 파일 컨트롤러")})
 @Controller
+@RequestMapping(value = "/api/v1/gifticons/files/")
 @AllArgsConstructor
 public class GifticonFilesController {
 
@@ -41,10 +39,8 @@ public class GifticonFilesController {
     private GifticonFilesService gifticonFilesService;
 
 
-    @ApiOperation(value = "upload",
-            notes = "기프티콘 이미지 업로드",
-            httpMethod = "POST")
-    @PostMapping("/mobile/upload.do")
+    @ApiOperation(value = "기프티콘 이미지 업로드", notes = "기프티콘 이미지를 서버에 업로드하여 저장", httpMethod = "POST")
+    @PostMapping("/upload")
     public ResponseEntity<Object> upload(GifticonFilesDto gifticonFilesDto, List<MultipartFile> multipartFiles) throws IOException, UncheckedIOException {
         List<String> imgPathList = new ArrayList<>();
 
@@ -53,18 +49,20 @@ public class GifticonFilesController {
             gifticonFilesDto.setFilePath(imgPath);
             imgPathList.add(imgPath);
             gifticonFilesService.savePost(gifticonFilesDto);
-
-
         }
         return new ResponseEntity<Object>(imgPathList, HttpStatus.OK);
-
-
     }
 
-    @ApiOperation(value = "gifticonFilesList",
-            notes = "바코드 넘버로 기프티콘 이미지 찾기",
-            httpMethod = "GET")
-    @GetMapping("/gifticonfiles/{barcodeNum}")
+    @ApiOperation(value = "기프티콘 이미지 찾기", notes = "바코드 넘버로 기프티콘 이미지 찾기", httpMethod = "GET")
+    @ApiImplicitParam(
+            name = "barcodeNum",
+            value = "바코드 넘버",
+            required = true,
+            dataType = "string",
+            paramType = "path",
+            defaultValue = "None"
+    )
+    @GetMapping("/{barcodeNum}")
     public ResponseEntity<List<GifticonFiles>> gifticonFilesList(@PathVariable String barcodeNum){
         return ResponseEntity.ok(gifticonFilesService.gifticonFilesList(barcodeNum));
     }

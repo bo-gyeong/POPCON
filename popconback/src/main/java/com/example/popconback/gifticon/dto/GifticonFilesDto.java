@@ -3,6 +3,7 @@ package com.example.popconback.gifticon.dto;
 import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.domain.GifticonFiles;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.persistence.JoinColumn;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 @ToString
 @NoArgsConstructor
 public class GifticonFilesDto {
+    // @ApiModelProperty(name = "hash", value = "유저 hash값", example = "1305943263")
     private Long id;
     private int imageType;
 
