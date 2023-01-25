@@ -60,34 +60,36 @@ public class GifticonService {
     }
 
 
-    public ResponseCreateGifticonDto createGifticon (CreateGifticonDto createGifticonDto){
-        Optional<User> user = userRepository.findById(createGifticonDto.getHash());
-        if (!user.isPresent()) {
-            ResponseCreateGifticonDto NoUser = new ResponseCreateGifticonDto();
-            //NoUser.setBrandName();
-            return NoUser;
+    public List<ResponseCreateGifticonDto> createGifticon (List<CreateGifticonDto> createGifticonDtoList){
+        List<ResponseCreateGifticonDto> rlist = new ArrayList<>();
+
+        for (CreateGifticonDto createGifticonDto: createGifticonDtoList) {
+            Optional<User> user = userRepository.findById(createGifticonDto.getHash());
+            if (!user.isPresent()) {
+                ResponseCreateGifticonDto NoUser = new ResponseCreateGifticonDto();
+                rlist.add(NoUser);
+            }
+            Optional<Brand> brand = brandrepository.findById(createGifticonDto.getBrandName());
+            if (!user.isPresent()) {
+                ResponseCreateGifticonDto NoBrand = new ResponseCreateGifticonDto();
+                rlist.add(NoBrand);
+            }
+
+            Gifticon gifticon = new Gifticon();
+            BeanUtils.copyProperties(createGifticonDto, gifticon);
+
+            gifticon.setUser(user.get());
+            gifticon.setBrand(brand.get());
+
+            ResponseCreateGifticonDto responDto = new ResponseCreateGifticonDto();
+
+            BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
+            responDto.setHash(gifticon.getUser().getHash());
+            responDto.setBrandName(gifticon.getBrand().getBrandName());
+
+            rlist.add(responDto);
         }
-        Optional<Brand> brand = brandrepository.findById(createGifticonDto.getBrandName());
-        if (!user.isPresent()) {
-            ResponseCreateGifticonDto NoBrand = new ResponseCreateGifticonDto();
-            return NoBrand;
-            // throw new EntityNotFoundException("Brand Not Found");
-        }
-//        System.out.println(createGifticonDto.getHash());
-//        System.out.println(createGifticonDto.getBarcode_num());
-        Gifticon gifticon = new Gifticon();
-        BeanUtils.copyProperties(createGifticonDto, gifticon);
-//        System.out.println(gifticon.getBarcode_num());
-        gifticon.setUser(user.get());
-        gifticon.setBrand(brand.get());
-
-        ResponseCreateGifticonDto responDto = new ResponseCreateGifticonDto();
-
-        BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
-        responDto.setHash(gifticon.getUser().getHash());
-        responDto.setBrandName(gifticon.getBrand().getBrandName());
-
-        return responDto;
+        return rlist;
     }
 
 

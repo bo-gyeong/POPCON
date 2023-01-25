@@ -18,9 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-
+import java.util.Objects;
 
 
 @Api(value = "GifticonController")
@@ -57,10 +58,14 @@ public class GifticonController {
         return ResponseEntity.ok(gifticonService.gifticonList(email, social));
     }
 
-    @ApiOperation(value = "기프티콘 등록", notes = "기프티콘 정보 저장", httpMethod = "POST")
-    @PostMapping("/") //기프티콘 정보 저장
-    public ResponseEntity<ResponseCreateGifticonDto> CreateGifticon (@RequestBody CreateGifticonDto createGifticonDto){
-        return ResponseEntity.ok(gifticonService.createGifticon(createGifticonDto));
+    @ApiOperation(value = "CreateGifticon",
+            notes = "기프티콘 정보 저장",
+            httpMethod = "POST")
+    @PostMapping("/gifticon") //기프티콘 정보 저장
+    public ResponseEntity<List<ResponseCreateGifticonDto>> CreateGifticon (@RequestBody CreateGifticonDto[] createGifticonDtos){
+        List<CreateGifticonDto> Dtolist = Arrays.asList(createGifticonDtos);
+        return ResponseEntity.ok(gifticonService.createGifticon(Dtolist));
+
     }
 
     @ApiOperation(value = "즐겨찾기 등록", notes = "즐겨찾기 브랜드 등록", httpMethod = "POST")

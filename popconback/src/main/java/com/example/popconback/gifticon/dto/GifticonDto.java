@@ -1,7 +1,7 @@
 package com.example.popconback.gifticon.dto;
 
 import com.example.popconback.gifticon.domain.GifticonFiles;
-import com.fasterxml.jackson.annotation.JsonFilter;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
