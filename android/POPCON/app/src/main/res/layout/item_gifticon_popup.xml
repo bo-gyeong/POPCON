@@ -111,9 +111,19 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/btn_use_on"
             android:text="금액입력"
+            android:textColor="@color/popcon_black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_expDate" />
+
+        <TextView
+            android:id="@+id/tv_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_price" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

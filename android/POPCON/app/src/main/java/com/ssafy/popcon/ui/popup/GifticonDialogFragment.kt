@@ -146,7 +146,7 @@ class GifticonDialogFragment : DialogFragment() {
                 "1234",
                 Brand("이디야", ""),
                 "아메리카노 T",
-                30000,
+                null,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
                 "2023.01.12",
