@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
         description = "유저 컨트롤러")})
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/v1/user")
 public class UserController {
 
     private final UserService userservice;
@@ -28,7 +28,7 @@ public class UserController {
     @ApiOperation(value = "createUserK",
             notes = "회원 정보 DB에 저장(카카오)",
             httpMethod = "POST")
-    @PostMapping("/user/login") // 회원 정보 DB에 저장(카카오)
+    @PostMapping("/login/kakao") // 회원 정보 DB에 저장(카카오)
     public ResponseEntity<ResponsCreateUserDto> createUserK(@RequestBody CreateUserDto createUserDto){
         return ResponseEntity.ok(userservice.CreateUser(createUserDto));
     }
@@ -36,7 +36,7 @@ public class UserController {
     @ApiOperation(value = "createUserN",
             notes = "회원 정보 DB에 저장(네이버)",
             httpMethod = "POST")
-    @PostMapping("/user/naver-login") // 회원 정보 DB에 저장(네이버)
+    @PostMapping("/login/naver") // 회원 정보 DB에 저장(네이버)
     public ResponseEntity<ResponsCreateUserDto> createUserN(@RequestBody CreateUserDto createUserDto){
         return ResponseEntity.ok(userservice.CreateUser(createUserDto));
     }
@@ -44,7 +44,7 @@ public class UserController {
     @ApiOperation(value = "updateUser",
             notes = "회원 정보 수정",
             httpMethod = "POST")
-    @PostMapping("/user/update/{hash}")// 회원 정보 수정
+    @PostMapping("/update/{hash}")// 회원 정보 수정
     public ResponseEntity<ResponseUpdateUserDto> updateUser(@RequestBody CreateUserDto createUserDto, @PathVariable int hash){
         return ResponseEntity.ok(userservice.updateUser(createUserDto,hash));
     }
@@ -52,7 +52,7 @@ public class UserController {
     @ApiOperation(value = "deleteUser",
             notes = "회원 탈퇴",
             httpMethod = "DELETE")
-    @DeleteMapping("/user/withdrawal") //회원 탈퇴
+    @DeleteMapping("/withdrawal") //회원 탈퇴
     public ResponseEntity<Void> deleteUser(@RequestBody DeleteUserDto deleteUserDto){
         userservice.deleteUser(deleteUserDto);
         return ResponseEntity.ok().build();

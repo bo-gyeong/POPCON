@@ -2,6 +2,7 @@ package com.example.popconback.gifticon.controller;
 
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,10 +13,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 @Controller
-@RequestMapping(value = "/gcp")
+@RequestMapping(value = "/api/v1/gcp")
 public class GoogleVisionController {
     private static final String BASE_PATH = "C:\\upload\\";
 
+    @ApiOperation(value = "이미지 객체 감지", notes = "이미지 객체 감지하여 해당 객체 좌표값 추출")
     @RequestMapping(value = "/vision")
     @ResponseBody
     public static void detectText(@RequestParam(value = "fileName") String fileName) throws IOException {
