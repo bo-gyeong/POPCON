@@ -12,10 +12,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
 import com.navercorp.nid.NaverIdLoginSDK
-import com.nhn.android.naverlogin.OAuthLogin
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
@@ -86,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnFab.setOnClickListener{
-            changeFragment(AddFragment())
+            addFragment(AddFragment())
         }
     }
 
@@ -184,4 +181,5 @@ class MainActivity : AppCompatActivity() {
         super.onRestart()
         checkPermissions()
     }
+
 }

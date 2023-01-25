@@ -1,7 +1,10 @@
 package com.ssafy.popcon.network.api
 
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.UserDeleteRequest
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 
 interface UserApi {
@@ -13,6 +16,6 @@ interface UserApi {
     @POST("user/login/kakao")
     suspend fun signInKakao(@Body user: User): User
 
-    @POST("user/withdraw")
-    suspend fun withdraw(@Body user: User): User
+    @HTTP(method = "DELETE", path = "user/withdrawal", hasBody = true)
+    suspend fun withdraw(@Body user: UserDeleteRequest)
 }

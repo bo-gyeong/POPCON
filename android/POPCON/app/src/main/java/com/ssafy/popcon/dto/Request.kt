@@ -9,3 +9,7 @@ data class BrandRequest(
     val y: String?
 )
 
+data class UserDeleteRequest(
+    val email: String,
+    val social: String
+)

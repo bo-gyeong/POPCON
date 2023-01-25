@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="gifitcon"
             type="com.ssafy.popcon.dto.Gifticon" />
@@ -13,9 +12,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="4dp"
         android:elevation="2dp"
         app:cardCornerRadius="12dp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,7 +27,9 @@
                 imageUrl="@{gifitcon.productUrl}"
                 android:layout_width="125dp"
                 android:layout_height="125dp"
-                android:layout_marginLeft="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:background="@color/popcon_white"
                 android:scaleType="centerInside"
                 app:circularflow_defaultRadius="4dp"
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:text="@{gifitcon.brand.name}"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_name_map"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
                 app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +59,7 @@
                 android:layout_marginStart="20dp"
                 android:maxLines="1"
                 android:text="@{gifitcon.name}"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_date_map"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
                 app:layout_constraintTop_toBottomOf="@+id/tv_brand_map"
@@ -72,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:maxLines="1"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name_map"

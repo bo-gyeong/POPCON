@@ -1,6 +1,7 @@
 package com.ssafy.popcon.repository.user
 
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.UserDeleteRequest
 
 class UserRepository(private val remoteDataSource: UserRemoteDataSource) {
 
@@ -12,7 +13,7 @@ class UserRepository(private val remoteDataSource: UserRemoteDataSource) {
         return remoteDataSource.signInKakao(user)
     }
 
-    suspend fun withdraw(user: User): User {
+    suspend fun withdraw(user: UserDeleteRequest) {
         return remoteDataSource.withdraw(user)
     }
 }

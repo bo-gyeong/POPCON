@@ -1,6 +1,7 @@
 package com.ssafy.popcon.repository.user
 
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.UserDeleteRequest
 import com.ssafy.popcon.network.api.UserApi
 
 class UserRemoteDataSource(private val apiClient: UserApi) : UserDataSource {
@@ -12,7 +13,7 @@ class UserRemoteDataSource(private val apiClient: UserApi) : UserDataSource {
         return apiClient.signInKakao(user)
     }
 
-    override suspend fun withdraw(user: User): User {
+    override suspend fun withdraw(user: UserDeleteRequest) {
         return apiClient.withdraw(user)
     }
 }
