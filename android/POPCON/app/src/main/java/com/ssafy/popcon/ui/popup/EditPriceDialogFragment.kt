@@ -16,6 +16,7 @@ import com.ssafy.popcon.dto.Gifticon
 class EditPriceDialogFragment : DialogFragment() {
     private lateinit var binding: DialogEditPriceBinding
     private lateinit var gifticon : Gifticon
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

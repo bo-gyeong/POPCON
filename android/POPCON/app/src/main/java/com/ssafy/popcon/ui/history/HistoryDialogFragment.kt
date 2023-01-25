@@ -10,9 +10,11 @@ import androidx.fragment.app.DialogFragment
 import com.ssafy.popcon.databinding.DialogHistoryBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
+import com.ssafy.popcon.ui.popup.ImageDialogFragment
 
 class HistoryDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHistoryBinding
+    private lateinit var history : Gifticon
 
     override fun onStart() {
         super.onStart()
@@ -49,7 +51,7 @@ class HistoryDialogFragment : DialogFragment() {
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         val mArgs = arguments
-        val history = mArgs!!.getSerializable("history")
+        history = mArgs!!.getSerializable("history") as Gifticon
 
         binding.gifticon = history as Gifticon?
         return binding.root
@@ -58,6 +60,14 @@ class HistoryDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.ivProductPreview.setOnClickListener {
+            val args = Bundle()
+            args.putString("originalUrl", history!!.originalUrl)
+
+            val dialogFragment = ImageDialogFragment()
+            dialogFragment.arguments = args
+            dialogFragment.show(childFragmentManager, "originalUrl")
+        }
     }
 
     override fun onDestroy() {

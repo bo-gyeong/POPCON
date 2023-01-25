@@ -7,17 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentHistoryBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.ui.home.GiftconAdapter
-import com.ssafy.popcon.ui.popup.GifticonDialogFragment
-import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -63,6 +58,7 @@ class HistoryFragment : Fragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("사용완료", "#D2D2D2")
             )
@@ -75,6 +71,7 @@ class HistoryFragment : Fragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("사용완료", "#D2D2D2")
             )
@@ -87,6 +84,7 @@ class HistoryFragment : Fragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("사용완료", "#D2D2D2")
             )
@@ -99,6 +97,7 @@ class HistoryFragment : Fragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("사용완료", "#D2D2D2")
             )

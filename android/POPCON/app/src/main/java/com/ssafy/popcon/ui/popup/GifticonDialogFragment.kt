@@ -125,6 +125,7 @@ class GifticonDialogFragment : DialogFragment() {
                 null,
                 "https://user-images.githubusercontent.com/33195517/213049326-7f10ea87-0094-46ac-9f81-bd136e9ca5f3.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("D-23", "#FF7D22FF")
             )
@@ -137,6 +138,7 @@ class GifticonDialogFragment : DialogFragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("D-23", "#FF7D22FF")
             )
@@ -149,6 +151,7 @@ class GifticonDialogFragment : DialogFragment() {
                 null,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("D-23", "#FF7D22FF")
             )
@@ -161,6 +164,7 @@ class GifticonDialogFragment : DialogFragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/213049326-7f10ea87-0094-46ac-9f81-bd136e9ca5f3.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("D-23", "#FF7D22FF")
             )
@@ -173,6 +177,7 @@ class GifticonDialogFragment : DialogFragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("D-23", "#FF7D22FF")
             )
@@ -185,6 +190,7 @@ class GifticonDialogFragment : DialogFragment() {
                 30000,
                 "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
                 "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 "2023.01.12",
                 Badge("D-23", "#FF7D22FF")
             )

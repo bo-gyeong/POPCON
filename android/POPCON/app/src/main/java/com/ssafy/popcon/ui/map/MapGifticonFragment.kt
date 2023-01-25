@@ -68,6 +68,7 @@ class MapGifticonFragment : Fragment() {
                 0,
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004429]_20221121150147483.jpg",
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004429]_20221121150147483.jpg",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 makeDateTimeException("2023-01-22 00:00:00"),
                 Badge("D-${findRemainingDay("2023-01-22 00:00:00")}", color = "#333")
             )
@@ -84,6 +85,7 @@ class MapGifticonFragment : Fragment() {
                 0,
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2021/04/[9200000000479]_20210426091844065.jpg",
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004429]_20221121150147483.jpg",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 makeDateTimeException("2023-01-23 00:00:00"),
                 Badge("D-${findRemainingDay("2023-01-23 00:00:00")}", color = "#333")
             )
@@ -100,6 +102,7 @@ class MapGifticonFragment : Fragment() {
                 0,
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004430]_20221121150217180.jpg",
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004430]_20221121150217180.jpg",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
                 makeDateTimeException("2023-01-24 00:00:00"),
                 Badge("D-${findRemainingDay("2023-01-24 00:00:00")}", color = "#333")
             )
