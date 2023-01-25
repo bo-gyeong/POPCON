@@ -139,7 +139,7 @@ class LoginFragment : Fragment() {
                                 user = User(email, 1)
                                 SharedPreferencesUtil(requireContext()).addUser(user)
 
-                                viewModel.signIn(user)
+                                viewModel.signInKakao(user)
                                 viewModel.user.observe(viewLifecycleOwner){
                                     mainActivity.changeFragment(HomeFragment())
                                 }
@@ -168,7 +168,7 @@ class LoginFragment : Fragment() {
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
 
-                            viewModel.signIn(user)
+                            viewModel.signInNaver(user)
                             viewModel.user.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
                                 if (it.email == email) {
                                     mainActivity.changeFragment(HomeFragment())

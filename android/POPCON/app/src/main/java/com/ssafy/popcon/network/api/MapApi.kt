@@ -11,6 +11,6 @@ import retrofit2.http.Path
 
 interface MapApi {
     // 현재 위치 보내기
-    @POST("api/local")
+    @POST("local")
     suspend fun sendUserPosition(@Path("email") email : String, @Path("social") social : Int, @Path("x") x : String, @Path("y") y : String, @Path("radius") radius : String):  ArrayList<MapBrandLogo>
 }

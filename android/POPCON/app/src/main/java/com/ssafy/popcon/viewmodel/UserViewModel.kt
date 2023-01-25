@@ -14,9 +14,16 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _user = MutableLiveData<User>()
     val user: LiveData<User> = _user
 
-    fun signIn(user: User) {
+    fun signInNaver(user: User) {
         viewModelScope.launch {
-            val user = userRepository.signIn(user)
+            val user = userRepository.signInNaver(user)
+            _user.value = user
+        }
+    }
+
+    fun signInKakao(user: User) {
+        viewModelScope.launch {
+            val user = userRepository.signInKakao(user)
             _user.value = user
         }
     }

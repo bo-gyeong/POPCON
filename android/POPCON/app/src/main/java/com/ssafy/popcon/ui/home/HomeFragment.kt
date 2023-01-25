@@ -62,7 +62,7 @@ class HomeFragment : Fragment() {
             mainActivity.addFragment(SettingsFragment())
         }
 
-        setGifticonAdapter()
+//        setGifticonAdapter()
 //        setTabAdapter()
     }
 
