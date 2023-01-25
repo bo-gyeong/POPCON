@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ssafy.popcon.repository.add.AddRemoteDataSource
 import com.ssafy.popcon.repository.add.AddRepository
+import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
+import com.ssafy.popcon.repository.fcm.FCMRepository
 import com.ssafy.popcon.repository.gifticon.GifticonRemoteDataSource
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
 import com.ssafy.popcon.repository.map.MapRemoteDataSource
@@ -33,6 +35,10 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
             modelClass.isAssignableFrom(AddViewModel::class.java) -> {
                 val addRepo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
                 AddViewModel(addRepo) as T
+            }
+            modelClass.isAssignableFrom(FCMViewModel::class.java) -> {
+                val fcmRepo = FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService))
+                FCMViewModel(fcmRepo) as T
             }
             else -> {
                 throw IllegalArgumentException("Failed to create ViewModel: ${modelClass.name}")
