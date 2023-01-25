@@ -13,6 +13,7 @@ import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -25,6 +26,7 @@ class HistoryFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         mainActivity = activity as MainActivity
+        GifticonDialogFragment.isShow = true
     }
 
     override fun onResume() {
@@ -131,5 +133,10 @@ class HistoryFragment : Fragment() {
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
         })*/
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        GifticonDialogFragment.isShow = false
     }
 }

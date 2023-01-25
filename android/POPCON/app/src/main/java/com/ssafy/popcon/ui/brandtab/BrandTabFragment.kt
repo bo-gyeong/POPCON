@@ -34,7 +34,6 @@ class BrandTabFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBrandTabBinding.inflate(inflater, container, false)
-        setBrandTab()
 
         viewModel.openHistoryEvent.observe(viewLifecycleOwner, EventObserver {
             mainActivity.addFragment(HistoryFragment())
@@ -43,7 +42,7 @@ class BrandTabFragment : Fragment() {
         return binding.root
     }
 
-    fun setBrandTab() {
+    fun setBrandTab(brands: List<Brand>) {
         brandAdapter = BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
 
         binding.rvBrand.apply {
@@ -52,61 +51,59 @@ class BrandTabFragment : Fragment() {
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
 
-        var brandList = mutableListOf<Brand>()
-
-        brandList.add(
-            Brand(
-                "전체",
-                ""
-            )
-        )
-        brandList.add(
-            Brand(
-                "스타벅스",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        brandList.add(
-            Brand(
-                "이디야",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        brandList.add(
-            Brand(
-                "이디야",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        brandList.add(
-            Brand(
-                "이디야",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        brandList.add(
-            Brand(
-                "이디야",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        brandList.add(
-            Brand(
-                "이디야",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        brandList.add(
-            Brand(
-                "히스토리",
-                ""
-            )
-        )
         brandAdapter.apply {
-            submitList(brandList)
+            submitList(brands)
             stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
     }
-
 }
+
+/*brandList.add(
+           Brand(
+               "전체",
+               ""
+           )
+       )
+       brandList.add(
+           Brand(
+               "스타벅스",
+               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+           )
+       )
+       brandList.add(
+           Brand(
+               "이디야",
+               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+           )
+       )
+       brandList.add(
+           Brand(
+               "이디야",
+               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+           )
+       )
+       brandList.add(
+           Brand(
+               "이디야",
+               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+           )
+       )
+       brandList.add(
+           Brand(
+               "이디야",
+               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+           )
+       )
+       brandList.add(
+           Brand(
+               "이디야",
+               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+           )
+       )
+       brandList.add(
+           Brand(
+               "히스토리",
+               ""
+           )
+       )*/

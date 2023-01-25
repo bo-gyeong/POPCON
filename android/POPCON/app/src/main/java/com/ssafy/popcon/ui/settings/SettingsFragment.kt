@@ -15,6 +15,7 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentSettingsBinding
+import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.login.LoginFragment
@@ -71,6 +72,11 @@ class SettingsFragment : Fragment() {
                 withdrawNaver()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        GifticonDialogFragment.isShow = false
     }
 
     // 비회원이 로그인하기 클릭 시

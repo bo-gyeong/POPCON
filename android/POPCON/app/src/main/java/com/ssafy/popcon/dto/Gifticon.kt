@@ -17,7 +17,14 @@ data class Gifticon(
 data class Brand(
     val name: String,
     val logoUrl: String?
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return if (other is Brand)
+            other.name == this.name
+        else
+            false
+    }
+}
 
 data class Badge(
     val content: String,

@@ -1,9 +1,11 @@
 package com.ssafy.popcon.ui.home
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -13,11 +15,13 @@ import com.ssafy.popcon.databinding.FragmentHomeBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.brandtab.BrandTabFragment
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -51,6 +55,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSetting.setOnClickListener {
@@ -58,145 +63,25 @@ class HomeFragment : Fragment() {
         }
 
         setGifticonAdapter()
+//        setTabAdapter()
+    }
+
+    //상단 탭 설정
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun setTabAdapter() {
+        val brands = mutableListOf<Brand>()
+        brands.add(Brand("전체", ""))
+        brands.addAll(viewModel.getBrands())
+        brands.add(Brand("히스토리", ""))
+
+        BrandTabFragment().setBrandTab(brands)
     }
 
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
-        /*val gifticonList = mutableListOf<Gifticon>()
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "2023.01.12",
-                Badge("D-23", "#FF7D22FF")
-            )
-        )*/
+        viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
 
-        viewModel.gifticons.observe(viewLifecycleOwner, Observer {
+        viewModel.gifticons.observe(viewLifecycleOwner) {
             gifticonAdapter = GiftconAdapter()
             binding.rvGifticon.apply {
                 adapter = gifticonAdapter
@@ -206,7 +91,7 @@ class HomeFragment : Fragment() {
             }
 
             gifticonAdapter.submitList(it)
-        })
+        }
     }
 
     //홈화면 켜지면 센서 설정
@@ -225,3 +110,138 @@ class HomeFragment : Fragment() {
         MainActivity().setShakeSensor(requireContext(), shakeDetector)
     }
 }
+
+
+/*val gifticonList = mutableListOf<Gifticon>()
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)
+gifticonList.add(
+    Gifticon(
+        "1234",
+        Brand("스타벅스", ""),
+        "아메리카노 T",
+        30000,
+        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+        "",
+        "2023.01.12",
+        Badge("D-23", "#FF7D22FF")
+    )
+)*/
