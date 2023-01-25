@@ -37,6 +37,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        setSensor()
         mainActivity.hideBottomNav(false)
     }
 
@@ -46,7 +47,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        setSensor()
 
         return binding.root
     }

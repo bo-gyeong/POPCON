@@ -27,4 +27,6 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
             _user.value = user
         }
     }
+
+
 }

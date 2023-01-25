@@ -6,4 +6,5 @@ interface GifticonDataSource {
     suspend fun getGifticonByUserId(userId: String): List<Gifticon>
     suspend fun getGifticonByBrand(userId: String, brandName: String): List<Gifticon>
     suspend fun getHistory(userId: String): List<Gifticon>
+    suspend fun updateGifticon(gifticon: Gifticon) : Gifticon
 }

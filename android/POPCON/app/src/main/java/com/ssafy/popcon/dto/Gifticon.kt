@@ -9,6 +9,7 @@ data class Gifticon(
     val price: Int?,
     val productUrl: String,
     val barcodeUrl: String?,
+    val originalUrl: String?,
     val date: String,
     val badge: Badge?
 ) : Serializable
@@ -23,13 +24,3 @@ data class Badge(
     val color: String
 )
 
-data class MapBrandLogo(
-
-//    phone, placeName, xPos, yPos, brand
-    val brandName: String,
-    val itemName: String,
-    val xPos: Double,
-    val yPos: Double,
-    val brandLogo: String,
-    val phone : String
-)
