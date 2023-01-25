@@ -1,12 +1,13 @@
 package com.example.popconback.gifticon.controller;
 
-import com.example.popconback.gifticon.dto.CreateBookmark.CreateBookmarkDto;
-import com.example.popconback.gifticon.dto.CreateBookmark.ResponseCreateBookmarkDto;
+import com.example.popconback.gifticon.dto.CreateFavorites.CreateFavoritesDto;
+import com.example.popconback.gifticon.dto.CreateFavorites.ResponseCreateFavoritesDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
-import com.example.popconback.gifticon.dto.DeleteBookmark.DeleteBookmarkDto;
+import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.DeleteGifticon.DeleteGifticonDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
+import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
@@ -65,16 +66,24 @@ public class GifticonController {
 
     @ApiOperation(value = "즐겨찾기 등록", notes = "즐겨찾기 브랜드 등록", httpMethod = "POST")
     @PostMapping("/favorites") // 즐겨찾기 브랜드 등록
-    public ResponseEntity<ResponseCreateBookmarkDto> CreateBookmark (@RequestBody CreateBookmarkDto createBookmarkDto){
-        return ResponseEntity.ok(gifticonService.createBookmark(createBookmarkDto));
+    public ResponseEntity<ResponseCreateFavoritesDto> CreateFavorites (@RequestBody CreateFavoritesDto createFavoritesDto){
+        return ResponseEntity.ok(gifticonService.createFavorites(createFavoritesDto));
     }
 
     @ApiOperation(value = "즐겨찾기 삭제", notes = "즐겨찾기 브랜드 삭제", httpMethod = "DELETE")
     @DeleteMapping("/favorites") // 즐겨찾기 브랜드 삭제
-    public ResponseEntity<Void> DeleteBookmark (@RequestBody DeleteBookmarkDto deleteBookmarkDto){
-        gifticonService.deleteBookmark(deleteBookmarkDto);
+    public ResponseEntity<Void> DeleteFavorites (@RequestBody DeleteFavoritesDto deleteFavoritesDto){
+        gifticonService.deleteFavorites(deleteFavoritesDto);
         return ResponseEntity.ok().build();
     }
+
+    @ApiOperation(value = "즐겨찾기 조회", notes = "즐겨찾기 브랜드 조회", httpMethod = "GET")
+    @GetMapping("/favorites/{email}/{social}") // 즐겨찾기 브랜드 등록
+    public ResponseEntity<List<ResponseListFavoritesDto>> CreateFavorites (@PathVariable String email, @PathVariable String social){
+        return ResponseEntity.ok(gifticonService.listFavorites(email,social));
+    }
+
+
 
     @ApiOperation(value = "기프티콘 정렬", notes = "기프티콘 브랜드별 정렬", httpMethod = "GET") // get 으로 수정
     @GetMapping("/brand") //기프티콘 브랜드별 정렬 // 사용한거 표시 제외하고 보낼지 말지 고민

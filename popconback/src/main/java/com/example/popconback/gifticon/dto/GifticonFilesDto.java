@@ -17,7 +17,6 @@ public class GifticonFilesDto {
     // @ApiModelProperty(name = "hash", value = "유저 hash값", example = "1305943263")
     private Long id;
     private int imageType;
-
     private Gifticon gifticon;
     private String filePath;
 

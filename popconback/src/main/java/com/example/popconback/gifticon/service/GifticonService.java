@@ -1,19 +1,23 @@
 package com.example.popconback.gifticon.service;
 
-import com.example.popconback.gifticon.domain.Bookmark;
+
 import com.example.popconback.gifticon.domain.Brand;
+import com.example.popconback.gifticon.domain.Favorites;
 import com.example.popconback.gifticon.domain.Gifticon;
-import com.example.popconback.gifticon.dto.CreateBookmark.CreateBookmarkDto;
-import com.example.popconback.gifticon.dto.CreateBookmark.ResponseCreateBookmarkDto;
+import com.example.popconback.gifticon.domain.GifticonFiles;
+import com.example.popconback.gifticon.dto.CreateFavorites.CreateFavoritesDto;
+import com.example.popconback.gifticon.dto.CreateFavorites.ResponseCreateFavoritesDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
-import com.example.popconback.gifticon.dto.DeleteBookmark.DeleteBookmarkDto;
+import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
+import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
-import com.example.popconback.gifticon.repository.Bookmarkrepository;
+import com.example.popconback.gifticon.repository.Favoritesrepository;
 import com.example.popconback.gifticon.repository.Brandrepository;
+import com.example.popconback.gifticon.repository.GifticonFilesRepository;
 import com.example.popconback.gifticon.repository.GifticonRepository;
 import com.example.popconback.user.domain.User;
 import com.example.popconback.user.dto.UserDto;
@@ -37,9 +41,10 @@ import static org.springframework.data.domain.Sort.Order.asc;
 @RequiredArgsConstructor
 public class GifticonService {
     private final GifticonRepository gifticonRepository;
+    private final GifticonFilesRepository gifticonFilesRepository;
     private final UserRepository userRepository;
     private final Brandrepository brandrepository;
-    private final Bookmarkrepository bookmarkrepository;
+    private final Favoritesrepository favoritesrepository;
 
     public List<GifticonDto> gifticonList (String email, String social){// 기프티콘 리스트 뽑아오기
         UserDto user = new UserDto();
@@ -54,6 +59,21 @@ public class GifticonService {
             BeanUtils.copyProperties(gifticon,rgifticon);
             rgifticon.setHash(gifticon.getUser().getHash());
             rgifticon.setBrandName(gifticon.getBrand().getBrandName());
+
+            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());
+            for (GifticonFiles gifticonfile: gflist
+                 ) {
+                if(gifticonfile.getImageType() == 0){// 0: 바코드
+                    rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                }
+                if(gifticonfile.getImageType() == 1){// 1: 상품
+                    rgifticon.setProduct_filepath(gifticonfile.getFilePath());
+                }
+                if(gifticonfile.getImageType() == 2){// 2: 원본
+                    rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                }
+            }
+
             rlist.add(rgifticon);
         }
         return rlist;
@@ -94,7 +114,7 @@ public class GifticonService {
 
 
     public List<GifticonDto> sortGifticon (SortGifticonDto sortGifticonDto){
-        User tuser = new User();
+        UserDto tuser = new UserDto();
         tuser.setEmail(sortGifticonDto.getEmail());
         tuser.setSocial(sortGifticonDto.getSocial());
         int hash = tuser.hashCode();
@@ -152,43 +172,73 @@ public class GifticonService {
         gifticonRepository.deleteById(barcode);
     }
 
-    public ResponseCreateBookmarkDto createBookmark (CreateBookmarkDto createBookmarkDto){
-        Optional<User> user = userRepository.findById(createBookmarkDto.getHash());
+    public ResponseCreateFavoritesDto createFavorites (CreateFavoritesDto createFavoritesDto){
+        Optional<User> user = userRepository.findById(createFavoritesDto.getHash());
 
-        ResponseCreateBookmarkDto responDto = new ResponseCreateBookmarkDto();
+        ResponseCreateFavoritesDto responDto = new ResponseCreateFavoritesDto();
         if (!user.isPresent()) {
             return responDto;
             //throw new EntityNotFoundException("User Not Found");
         }
-        Optional<Brand> brand = brandrepository.findById(createBookmarkDto.getBrandName());
-        if (!user.isPresent()) {
+        Optional<Brand> brand = brandrepository.findById(createFavoritesDto.getBrandName());
+        if (!brand.isPresent()) {
             return responDto;
            // throw new EntityNotFoundException("Brand Not Found");
         }
-        Bookmark bookmark = new Bookmark();
+        Favorites bookmark = new Favorites();
         bookmark.setUser(user.get());
         bookmark.setBrand(brand.get());
 
-        bookmarkrepository.save(bookmark);
+        favoritesrepository.save(bookmark);
 
         responDto.setBrandName(bookmark.getBrand().getBrandName());
         responDto.setHash(bookmark.getUser().getHash());
         return responDto;
     }
 
-    public void deleteBookmark (DeleteBookmarkDto deleteBookmarkDto){
-        Optional<User> user = userRepository.findById(deleteBookmarkDto.getHash());
+    public void deleteFavorites(DeleteFavoritesDto deleteFavoritesDto){
+        Optional<User> user = userRepository.findById(deleteFavoritesDto.getHash());
         if (!user.isPresent()) {
             throw new EntityNotFoundException("User Not Found");
         }
-        Optional<Brand> brand = brandrepository.findById(deleteBookmarkDto.getBrandName());
-        if (!user.isPresent()) {
+        Optional<Brand> brand = brandrepository.findById(deleteFavoritesDto.getBrandName());
+        if (!brand.isPresent()) {
             throw new EntityNotFoundException("Brand Not Found");
         }
-        int hash = deleteBookmarkDto.getHash();
-        String brand_name = deleteBookmarkDto.getBrandName();
-        bookmarkrepository.deleteByUser_HashAndBrand_BrandName(hash, brand_name);
+        int hash = deleteFavoritesDto.getHash();
+        String brand_name = deleteFavoritesDto.getBrandName();
+        favoritesrepository.deleteByUser_HashAndBrand_BrandName(hash, brand_name);
     }
+
+    public List<ResponseListFavoritesDto> listFavorites (String email, String social){
+        User tuser = new User();
+        tuser.setEmail(email);
+        tuser.setSocial(social);
+        int hash = tuser.hashCode();
+        Optional<User> user = userRepository.findById(hash);
+
+        List<ResponseListFavoritesDto> rlist = new ArrayList<>();
+
+        if (!user.isPresent()) {
+            return rlist;
+            //throw new EntityNotFoundException("User Not Found");
+        }
+
+        List<Favorites> list = favoritesrepository.findByUser_Hash(hash);
+
+        for (Favorites favorite: list
+             ) {
+            ResponseListFavoritesDto responDto = new ResponseListFavoritesDto();
+            responDto.setBrandName(favorite.getBrand().getBrandName());
+            rlist.add(responDto);
+        }
+
+        return rlist;
+    }
+
+
+
+
 
     public List<GifticonDto> getPushGifticon (int hash, int Dday){// 사용한 기프티콘이나 기간지난거는 스테이트로 구분 하면 되는
         Date date = java.sql.Date.valueOf(LocalDate.now().plusDays(Dday));
