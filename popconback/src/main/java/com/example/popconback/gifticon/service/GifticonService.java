@@ -122,8 +122,8 @@ public class GifticonService {
     }
 
 
-    public ResponseUpdateGifticonDto updateGifticon (UpdateGifticonDto updateGifticonDto, String barcode_num){
-        Optional<Gifticon> optionalGifticon = gifticonRepository.findById(barcode_num);
+    public ResponseUpdateGifticonDto updateGifticon (UpdateGifticonDto updateGifticonDto){
+        Optional<Gifticon> optionalGifticon = gifticonRepository.findById(updateGifticonDto.getBarcodeNum());
 //        System.out.println(optionalGifticon);
 //        System.out.println(barcode_num);
         ResponseUpdateGifticonDto responDto = new ResponseUpdateGifticonDto();
