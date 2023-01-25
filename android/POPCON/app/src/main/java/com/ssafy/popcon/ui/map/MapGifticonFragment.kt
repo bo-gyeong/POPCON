@@ -7,16 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentActivity
 import com.ssafy.popcon.R
-import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentMapGiftconBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
 import java.text.SimpleDateFormat
-import java.time.DateTimeException
 import java.util.*
 
 private const val TAG = "MapGiftconFragment 지원"

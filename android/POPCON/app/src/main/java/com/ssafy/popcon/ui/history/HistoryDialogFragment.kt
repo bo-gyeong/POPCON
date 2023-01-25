@@ -59,4 +59,10 @@ class HistoryDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //기프티콘 상태 업데이트
+    }
 }
