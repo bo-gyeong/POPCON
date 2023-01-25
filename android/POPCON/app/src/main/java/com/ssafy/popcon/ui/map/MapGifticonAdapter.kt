@@ -12,73 +12,24 @@ import com.ssafy.popcon.ui.popup.GifticonViewFragment.Companion.newInstance
 private const val TAG = "NoticeAdapter_싸피"
 
 
-class MapGifticonAdpater(fa : FragmentActivity) : FragmentStateAdapter(fa){
+class MapGifticonAdpater(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+    //    TODO  numPages를 서버에서 받은거만큼 사이즈 늘려주고
     private var numPages = 3
 
     override fun getItemCount(): Int = numPages
 
     override fun createFragment(position: Int): Fragment {
-        return when(position){
-            0 -> {MapGifticonFragment.newInstance("0", "")}
-            1 -> {MapGifticonFragment.newInstance("1", "")}
-            else -> {MapGifticonFragment.newInstance("2", "")}
+
+        return when (position) {
+            0 -> {
+                MapGifticonFragment.newInstance("0", "")
+            }
+            1 -> {
+                MapGifticonFragment.newInstance("1", "")
+            }
+            else -> {
+                MapGifticonFragment.newInstance("2", "")
+            }
         }
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//class NoticeAdapter : RecyclerView.Adapter<NoticeAdapter.NoticeHolder>() {
-//
-//    private var notifications = sharedPreferencesUtil.getNotification()
-//
-//    fun setList(){
-//        notifications = sharedPreferencesUtil.getNotification()
-//        notifyDataSetChanged()
-//    }
-//
-//    inner class NoticeHolder(val binding: List) :
-//        RecyclerView.ViewHolder(binding.root) {
-//
-//        fun bindInfo(item: Notification) {
-//            binding.noti = item.msg
-//
-//            binding.delBtn.setOnClickListener {
-//                sharedPreferencesUtil.deleteNotification(bindingAdapterPosition)
-//                this@NoticeAdapter.notifyItemRemoved(bindingAdapterPosition)
-//                setList()
-//            }
-//        }
-//    }
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeHolder {
-//        val listItemNoticeBinding =
-//            ListItemNoticeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-//        return NoticeHolder(listItemNoticeBinding)
-//    }
-//
-//    override fun onBindViewHolder(holder: NoticeHolder, position: Int) {
-//        holder.bindInfo(notifications[position])
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return notifications.size
-//    }
-//}
-//

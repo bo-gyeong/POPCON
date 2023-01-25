@@ -3,6 +3,8 @@ package com.ssafy.popcon.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.ssafy.popcon.repository.add.AddRemoteDataSource
+import com.ssafy.popcon.repository.add.AddRepository
 import com.ssafy.popcon.repository.gifticon.GifticonRemoteDataSource
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
 import com.ssafy.popcon.repository.user.UserRemoteDataSource
@@ -20,6 +22,15 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                 val gifticonRepo =
                     GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
                 GifticonViewModel(gifticonRepo) as T
+            }
+            modelClass.isAssignableFrom(MapViewModel::class.java) -> {
+                val gifticonRepo =
+                    GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
+                GifticonViewModel(gifticonRepo) as T
+            }
+            modelClass.isAssignableFrom(AddViewModel::class.java) -> {
+                val addRepo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
+                AddViewModel(addRepo) as T
             }
             else -> {
                 throw IllegalArgumentException("Failed to create ViewModel: ${modelClass.name}")

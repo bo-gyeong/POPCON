@@ -1,12 +1,10 @@
 package com.ssafy.popcon.ui.login
 
-import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.kakao.sdk.auth.model.OAuthToken
@@ -40,8 +38,6 @@ class LoginFragment : Fragment() {
     var user = User("", -1)
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
-    private var email: String = ""
-    private var noMember = false
     lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -101,7 +97,6 @@ class LoginFragment : Fragment() {
                 if (tokenInfo == null) {
                     // 디비에 값 저장
                     Log.d(TAG, "kakaoLoginState: ")
-                    noMember = true
                 }
             } else if (tokenInfo != null) {
                 // 로그인 되어있는 상태
@@ -139,16 +134,15 @@ class LoginFragment : Fragment() {
                     } else if (token != null) {
                         // 로그인 성공
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                            UserApiClient.instance.me { user, error ->
-                                email = user?.kakaoAccount?.email.toString()
-                                val user = User(email, 1)
+                            UserApiClient.instance.me { meUser, error ->
+                                val email = meUser?.kakaoAccount?.email.toString()
+                                user = User(email, 1)
                                 SharedPreferencesUtil(requireContext()).addUser(user)
-                                if (noMember) {
-                                    Log.d(TAG, "kakaoLogin: !!!!!!!!!!!!!!!!")
-                                    viewModel.signIn(user)
-                                    noMember = false
+
+                                viewModel.signIn(user)
+                                viewModel.user.observe(viewLifecycleOwner){
+                                    mainActivity.changeFragment(HomeFragment())
                                 }
-                                mainActivity.changeFragment(HomeFragment())
                             }
                         }
                     }

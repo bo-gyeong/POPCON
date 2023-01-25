@@ -56,6 +56,7 @@ class MapGifticonFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.tvBrandMap.text = param1
 
+        // TODO 현 위치 기반 기프티콘 전체 받아오기
         giftconList.add(
             Gifticon(
                 "123123123",
@@ -139,5 +140,5 @@ fun findRemainingDay(eventDate: String): Int {
     var sf = SimpleDateFormat("yyyy-MM-dd 00:00:00")
     var eventDate = sf.parse(eventDate)
     val remainingDay = (eventDate.time - today.time.time) / (60 * 60 * 24 * 1000)
-    return remainingDay.toInt()
+    return remainingDay.toInt() + 1
 }

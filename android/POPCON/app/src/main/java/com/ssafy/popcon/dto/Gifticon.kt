@@ -1,7 +1,6 @@
 package com.ssafy.popcon.dto
 
 import java.io.Serializable
-import java.util.*
 
 data class Gifticon(
     val number: String, // 바코드 넘버
@@ -25,9 +24,11 @@ data class Badge(
 )
 
 data class MapBrandLogo(
-    val brand: String,
+//    phone, placeName, xPos, yPos, brand
+    val brandName: String,
     val itemName: String,
-    val X: Double,
-    val Y: Double,
-    val brandLogo: String
+    val xPos: Double,
+    val yPos: Double,
+    val brandLogo: String,
+    val phone: String
 )
