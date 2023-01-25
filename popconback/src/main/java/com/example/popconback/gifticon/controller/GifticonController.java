@@ -1,7 +1,5 @@
 package com.example.popconback.gifticon.controller;
 
-import com.example.popconback.gifticon.domain.Bookmark;
-import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.dto.CreateBookmark.CreateBookmarkDto;
 import com.example.popconback.gifticon.dto.CreateBookmark.ResponseCreateBookmarkDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
@@ -20,9 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 
 @Api(value = "GifticonController")
@@ -59,10 +55,8 @@ public class GifticonController {
         return ResponseEntity.ok(gifticonService.gifticonList(email, social));
     }
 
-    @ApiOperation(value = "CreateGifticon",
-            notes = "기프티콘 정보 저장",
-            httpMethod = "POST")
-    @PostMapping("/gifticon") //기프티콘 정보 저장
+    @ApiOperation(value = "기프티콘 저장", notes = "기프티콘 정보 저장", httpMethod = "POST")
+    @PostMapping("/") //기프티콘 정보 저장
     public ResponseEntity<List<ResponseCreateGifticonDto>> CreateGifticon (@RequestBody CreateGifticonDto[] createGifticonDtos){
         List<CreateGifticonDto> Dtolist = Arrays.asList(createGifticonDtos);
         return ResponseEntity.ok(gifticonService.createGifticon(Dtolist));
@@ -89,19 +83,14 @@ public class GifticonController {
    }
 
 
-    @ApiOperation(value = "UpdateGifticon",
-            notes = "기프티콘 정보 수정",
-            httpMethod = "POST")
-    @PutMapping("/gifticon") //기프티콘 정보 수정
+    @ApiOperation(value = "기프티콘 수정", notes = "기프티콘 정보 수정", httpMethod = "PUT")
+    @PutMapping("/") //기프티콘 정보 수정
     public ResponseEntity<ResponseUpdateGifticonDto> UpdateGifticon (@RequestBody UpdateGifticonDto updateGifticonDto){
             return ResponseEntity.ok(gifticonService.updateGifticon(updateGifticonDto));
      }
 
-    @ApiOperation(
-            value = "기프티콘 삭제",
-            notes = "기프티콘 삭제",
-            httpMethod = "DELETE")
-    @DeleteMapping("gifticon") //기프티콘 삭제
+    @ApiOperation(value = "기프티콘 삭제", notes = "기프티콘 삭제", httpMethod = "DELETE")
+    @DeleteMapping("/") //기프티콘 삭제
     public ResponseEntity<Void> DeleteGifticon (@RequestBody DeleteGifticonDto deleteGifticonDto){
         gifticonService.deleteGifticon(deleteGifticonDto.getBarcodeNum());
         return ResponseEntity.ok().build();
@@ -109,10 +98,7 @@ public class GifticonController {
 
 
     //@Scheduled(cron = "0 0 09 * * ?")
-    @ApiOperation(
-            value = "기프티콘 상태 업데이트",
-            notes = "기프티콘 유호기간 체크 후 상태 변경 / 서버용 API",
-            httpMethod = "GET")
+    @ApiOperation(value = "기프티콘 상태 업데이트", notes = "기프티콘 유호기간 체크 후 상태 변경 / 서버용 API", httpMethod = "GET")
     @GetMapping("/check")// 유효기간 지난거 상태 변경
     public void Check_Overdate () {
         gifticonService.check_overdate();
