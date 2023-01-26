@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         setNavBar()
         checkPermissions()
-        getFCMToken()
+        //getFCMToken()
     }
 
     //navigation bar 설정
