@@ -2,6 +2,7 @@ package com.example.popconback.gifticon.controller;
 
 import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.dto.GifticonResponse;
+import com.example.popconback.gifticon.service.S3Service;
 import com.google.cloud.vision.v1.AnnotateImageRequest;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
@@ -20,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+
+import static java.io.FileInputStream.*;
 
 @Api(value = "GoogleOcrController")
 @SwaggerDefinition(tags = {@Tag(name = "GoogleOcrController",
@@ -30,7 +34,9 @@ import java.util.*;
 @Controller
 @RequestMapping(value = "/api/v1/gcp")
 public class GoogleOcrController {
+    private S3Service s3Service;
 
+    private static final String BASE_PATH = "C:\\upload\\";
 
     @ApiOperation(value = "텍스트 추출", notes = "기프티콘 이미지 텍스트 추출", httpMethod = "GET")
     @ApiImplicitParam(
@@ -42,17 +48,25 @@ public class GoogleOcrController {
             defaultValue = "None"
     )
     @GetMapping("/ocr")
-    public ResponseEntity<GifticonResponse> detectText(@RequestParam(value = "filePath") String filePath) throws Exception {
+    public ResponseEntity<GifticonResponse> detectText(@RequestParam(value = "fileName") String fileName) throws Exception {
+
+
+        String filePath = BASE_PATH + fileName;
+
+
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
         ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
+
+        new FileInputStream(filePath).close();
 
         Image img = Image.newBuilder().setContent(imgBytes).build();
         Feature feat = Feature.newBuilder().setType(Feature.Type.TEXT_DETECTION).build();
         AnnotateImageRequest request =
                 AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
         requests.add(request);
+
 
         // Initialize client that will be used to send requests. This client only needs to be created
         // once, and can be reused for multiple requests. After completing all of your requests, call
@@ -115,6 +129,13 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("GS&쿠폰", lineList.get(lineList.size()-3), findProductName[0], productPosition, expiration,lineList.get(lineList.size()-1).replace("-",""),barcodePosition);
 
+
+                        File file = new File(filePath);
+                        if(file.delete()){
+                            System.out.println("파일삭제 성공");
+                        }else{
+                            System.out.println("파일삭제 실패");
+                        }
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
                     }
@@ -159,6 +180,13 @@ public class GoogleOcrController {
                         expiration.put("D",fullExpiration.substring(10,12));
 
                         GifticonResponse gifticonResponse = new GifticonResponse("kakaotalk", lineList.get(0), findProductName[0], productPosition, expiration,lineList.get(lineList.size()-5).replace(" ",""),barcodePosition);
+
+                        File file = new File(filePath);
+                        if(file.delete()){
+                            System.out.println("파일삭제 성공");
+                        }else{
+                            System.out.println("파일삭제 실패");
+                        }
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
@@ -211,6 +239,13 @@ public class GoogleOcrController {
                         String barcodeNum = findBarcode.substring(findBarcode.length()-12,findBarcode.length());
 
                         GifticonResponse gifticonResponse = new GifticonResponse("giftishow", brandName, productName, productPosition, expiration,barcodeNum,barcodePosition);
+
+                        File file = new File(filePath);
+                        if(file.delete()){
+                            System.out.println("파일삭제 성공");
+                        }else{
+                            System.out.println("파일삭제 실패");
+                        }
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
@@ -266,22 +301,40 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("gifticon", brandName, ProductName, productPosition, expiration,lineList.get(lineList.size()-2).replace(" ",""),barcodePosition);
 
+                        File file = new File(filePath);
+                        if(file.delete()){
+                            System.out.println("파일삭제 성공");
+                        }else{
+                            System.out.println("파일삭제 실패");
+                        }
+
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
                     }
                     else {
                         GifticonResponse gifticonResponse = new GifticonResponse("직접 입력해주세요.", "직접 입력해주세요.", "직접 입력해주세요.", null, null,"직접 입력해주세요.",null);
 
+                        File file = new File(filePath);
+                        if(file.delete()){
+                            System.out.println("파일삭제 성공");
+                        }else{
+                            System.out.println("파일삭제 실패");
+                        }
+
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.NOT_FOUND);
                     }
+
+
 
 
                     //System.out.format ("Position : %s%n", annotation.getBoundingPoly());
                 }
             }
         }
-        System.out.println("fail");
+
+
         return null;
     }
-    }
+
+}
 
