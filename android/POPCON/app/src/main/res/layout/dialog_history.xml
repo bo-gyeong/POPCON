@@ -12,6 +12,10 @@
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
+
+        <variable
+            name="viewModel"
+            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -108,8 +112,21 @@
             android:textOff="@string/btn_finish_use"
             android:textOn="@string/btn_revert"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_expDate" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/btn_delete"
+            android:onClick="@{()->viewModel.deleteGifticon(gifticon.barcodeNum)}"
+            android:text="삭제"
+            android:textColor="@color/popcon_white"
+            app:layout_constraintBottom_toBottomOf="@id/btn_use"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_use" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

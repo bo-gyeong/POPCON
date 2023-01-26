@@ -10,4 +10,5 @@ interface GifticonDataSource {
     suspend fun getHistory(userId: String): List<Gifticon>
     suspend fun updateGifticon(gifticon: Gifticon) : Gifticon
     suspend fun getBrandsByLocation(brandRequest: BrandRequest) : List<Brand>
+    suspend fun deleteGifticon(barcodeNum : String)
 }

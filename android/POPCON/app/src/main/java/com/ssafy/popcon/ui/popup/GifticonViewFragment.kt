@@ -6,14 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ssafy.popcon.databinding.ItemGifticonPopupBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.add.OriginalImgDialogFragment
 import com.ssafy.popcon.ui.history.HistoryDialogFragment
+import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class GifticonViewFragment : Fragment() {
     private var gifticonInfo: Gifticon? = null
     lateinit var binding: ItemGifticonPopupBinding
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,15 @@ class GifticonViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setLayout()
+        useBtnListener()
+    }
+
+    //사용완료 버튼 리스너
+    private fun useBtnListener() {
+        binding.btnUse.setOnClickListener {
+            it.isClickable = false
+            viewModel.updateGifticon(gifticonInfo!!)
+        }
     }
 
     //금액권, 아닐 경우 레이아웃 설정

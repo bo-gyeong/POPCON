@@ -25,4 +25,8 @@ class GifticonRepository(private val remoteDataSource: GifticonRemoteDataSource)
     suspend fun getBrandsByLocation(brandRequest: BrandRequest): List<Brand> {
         return remoteDataSource.getBrandsByLocation(brandRequest)
     }
+
+    suspend fun deleteGifticon(barcodeNum: String) {
+        return remoteDataSource.deleteGifticon(barcodeNum)
+    }
 }

@@ -1,7 +1,6 @@
 package com.ssafy.popcon.viewmodel
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +19,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _gifticons = MutableLiveData<List<Gifticon>>()
     val gifticons: LiveData<List<Gifticon>> = _gifticons
 
-    private val _gifticonByBrand = MutableLiveData<List<Gifticon>>()
+    private val _gifticonByBrand = MutableLiveData<List<Gifticon>>() //popup 화면에서 사용
     val gifticonByBrand: LiveData<List<Gifticon>> = _gifticonByBrand
 
     private val _history = MutableLiveData<List<Gifticon>>()
@@ -42,6 +41,12 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
             val gifticons = gifticonRepository.getGifticonByUser(user)
 
             _gifticons.value = gifticons
+        }
+    }
+
+    fun deleteGifticon(barcodeNum: String) {
+        viewModelScope.launch {
+            gifticonRepository.deleteGifticon(barcodeNum)
         }
     }
 
@@ -75,6 +80,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
         }
     }
 
+    //현재위치에서 브랜드 받기
     fun getBrandByLocation(request: BrandRequest) {
         viewModelScope.launch {
             val brands = gifticonRepository.getBrandsByLocation(request)
