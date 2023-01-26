@@ -1,14 +1,19 @@
 package com.ssafy.popcon.ui.brandtab
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.Brand
+import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.history.HistoryFragment
@@ -16,11 +21,12 @@ import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import kotlin.streams.toList
 
 class BrandTabFragment : Fragment() {
     private lateinit var binding: FragmentBrandTabBinding
     private lateinit var brandAdapter: BrandAdapter
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -42,92 +48,47 @@ class BrandTabFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val brands = mutableListOf<Brand>()
-        setBrandTab(brands)
+        setBrandTab()
     }
 
-    fun setBrandTab(brands: MutableList<Brand>) {
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun setBrandTab() {
+        var brands = mutableListOf<Brand>()
 
-        brands.add(Brand("전체", ""))
-        //brands.addAll(viewModel.getBrands())
-        brands.add(
-            Brand(
-                "스타벅스",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            )
-        )
-        brands.add(
-            Brand(
-                "이디야",
-                "https://user-images.githubusercontent.com/33195517/214757786-cc0aa65d-dcbb-4b9d-aded-a65cda7f17a6.png"
-            )
-        )
-        brands.add(Brand("히스토리", ""))
+        viewModel.gifticons.observe(viewLifecycleOwner){
+            brands.add(Brand("", "전체"))
+            brands.addAll(getBrands(it))
+            brands.add(Brand("", "히스토리"))
 
-        brandAdapter = BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
+            brandAdapter = BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
 
-        binding.rvBrand.apply {
-            adapter = brandAdapter
-            adapter!!.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
+            binding.rvBrand.apply {
+                adapter = brandAdapter
+                adapter!!.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
 
-        brandAdapter.apply {
-            submitList(brands)
-            stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            brandAdapter.apply {
+                submitList(brands)
+                stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
         }
     }
 }
 
-/*brandList.add(
-           Brand(
-               "전체",
-               ""
-           )
-       )
-       brandList.add(
-           Brand(
-               "스타벅스",
-               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-           )
-       )
-       brandList.add(
-           Brand(
-               "이디야",
-               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-           )
-       )
-       brandList.add(
-           Brand(
-               "이디야",
-               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-           )
-       )
-       brandList.add(
-           Brand(
-               "이디야",
-               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-           )
-       )
-       brandList.add(
-           Brand(
-               "이디야",
-               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-           )
-       )
-       brandList.add(
-           Brand(
-               "이디야",
-               "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-           )
-       )
-       brandList.add(
-           Brand(
-               "히스토리",
-               ""
-           )
-       )*/
+@RequiresApi(Build.VERSION_CODES.N)
+fun getBrands(gifticons : List<Gifticon>): List<Brand> {
+    Log.d("TAG", "getBrands: ${gifticons}")
+    Log.d("TAG", "getBrands: ${gifticons.stream().map { gc -> gc.brand }?.distinct().toString()}")
+
+    var brandSet : Set<String> = setOf()
+    for(gifticon : Gifticon in gifticons){
+
+    }
+    return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
+}

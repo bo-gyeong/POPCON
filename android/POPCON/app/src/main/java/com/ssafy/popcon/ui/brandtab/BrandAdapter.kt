@@ -1,5 +1,6 @@
 package com.ssafy.popcon.ui.brandtab
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -38,7 +39,7 @@ class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
 
 class BrandDiffCallback : DiffUtil.ItemCallback<Brand>() {
     override fun areItemsTheSame(oldItem: Brand, newItem: Brand): Boolean {
-        return oldItem.name == newItem.name
+        return oldItem.brandName == newItem.brandName
     }
 
     override fun areContentsTheSame(oldItem: Brand, newItem: Brand): Boolean {

@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -30,13 +31,8 @@ import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class GifticonDialogFragment : DialogFragment() {
-    private lateinit var locationManager: LocationManager
 
-    private var getLongitude: Double = 0.0
-    private var getLatitude: Double = 0.0
-
-    val useList = mutableListOf<Gifticon>()
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var binding: DialogUseBinding
 
     //팝업창 떠있는지 확인하는 변수
@@ -68,6 +64,7 @@ class GifticonDialogFragment : DialogFragment() {
         dialog?.window?.attributes = params as WindowManager.LayoutParams
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,6 +75,8 @@ class GifticonDialogFragment : DialogFragment() {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
+        setList()
+
         return binding.root
     }
 
@@ -85,8 +84,6 @@ class GifticonDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //setList()
-        test()
     }
 
     private fun test() {
@@ -205,84 +202,40 @@ class GifticonDialogFragment : DialogFragment() {
     }
 
     //기프티콘 리스트 추가
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun setList() {
-        locationManager =
-            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        getUserLocation()
-        val user = SharedPreferencesUtil(requireContext()).getUser()
-        val brandRequest = BrandRequest(
-            user.email,
-            user.social.toString(),
-            getLatitude.toString(),
-            getLongitude.toString()
-        )
-
-        viewModel.getBrandByLocation(brandRequest)
-        viewModel.brands.observe(viewLifecycleOwner, Observer {
+        viewModel.brands.observe(viewLifecycleOwner) {
             if (it.size == 0) {//근처에 매장 없음
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = false
                 binding.vpPreview.isVisible = false
                 binding.tvNoBrand.isVisible = true
-
             } else if (it.size >= 2) {//2개면 브랜드탭 보여줌
                 binding.cvBrandTab.isVisible = true
                 binding.vpGifticon.isVisible = true
                 binding.vpPreview.isVisible = true
                 binding.tvNoBrand.isVisible = false
-
-                //BrandTabFragment().setBrandTab(it)
             } else {//1개면 브랜드탭 숨김
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = true
                 binding.vpPreview.isVisible = true
                 binding.tvNoBrand.isVisible = false
             }
-        })
+        }
 
         viewModel.gifticonByBrand.observe(viewLifecycleOwner) {
             setViewPager(it)
         }
     }
 
-    //현재위치
-    private fun getUserLocation() {
-        if (::locationManager.isInitialized.not()) {
-            locationManager =
-                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        }
-        if (Build.VERSION.SDK_INT >= 23 &&
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
-        } else {
-            var location =
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (location == null) {
-                location =
-                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            }
-            getLongitude = location?.longitude!!
-            getLatitude = location?.latitude!!
-        }
-    }
-
-    /*override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         isShow = false
 
-        for(gifticon : Gifticon in useList){
+        /*for(gifticon : Gifticon in useList){
             viewModel.updateGifticon(gifticon)
-        }
-    }*/
+        }*/
+    }
 }
 
 

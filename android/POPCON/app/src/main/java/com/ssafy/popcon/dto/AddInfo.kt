@@ -9,42 +9,42 @@ data class GifticonImg(
 )
 
 data class AddInfo(
-    val originalImgUri:Uri,
+    val originalImgUri: Uri,
     val gifticonImgUri: Uri,
-    val barcodeImgUri:Uri,
-    val barcodeNum:String,
-    val hash:Int,
-    val brandName:String,
-    val productName:String,
-    val due:String,
-    val price:Int,
-    val state:Int,
-    val memo:String
-){
+    val barcodeImgUri: Uri,
+    val barcodeNum: String,
+    val hash: Int,
+    val brandName: String,
+    val productName: String,
+    val due: String,
+    val price: Int,
+    val state: Int,
+    val memo: String
+) {
     constructor(
-        originalImgUri:Uri,
+        originalImgUri: Uri,
         gifticonImgUri: Uri,
-        barcodeImgUri:Uri,
-        barcodeNum:String,
-        brandName:String,
-        product:String,
-        due:String,
-    ): this (
+        barcodeImgUri: Uri,
+        barcodeNum: String,
+        brandName: String,
+        product: String,
+        due: String,
+    ) : this(
         originalImgUri,
         gifticonImgUri,
         barcodeImgUri,
         barcodeNum,
-        -353433146,
+        -803447615,
         brandName,
         product,
         due,
         0,
         0,
         ""
-            )
+    )
 
     constructor(
-    ):this (
+    ) : this(
         "".toUri(),
         "".toUri(),
         "".toUri(),
@@ -56,14 +56,14 @@ data class AddInfo(
         0,
         0,
         ""
-            )
+    )
 
     constructor(
-        barcodeNum:String,
-        brandName:String,
-        due:String,
-        product:String,
-    ): this (
+        barcodeNum: String,
+        brandName: String,
+        due: String,
+        product: String,
+    ) : this(
         "".toUri(),
         "".toUri(),
         "".toUri(),
@@ -79,21 +79,21 @@ data class AddInfo(
 }
 
 data class AddInfoNoImg(
-    val barcodeNum:String,
-    val hash:Int,
-    val brandName:String,
+    val barcodeNum: String,
+    val hash: Int,
+    val brandName: String,
     val productName: String,
-    val due:String,
-    val price:Int,
-    val state:Int,
-    val memo:String
-){
+    val due: String,
+    val price: Int,
+    val state: Int,
+    val memo: String
+) {
     constructor(
-        barcodeNum:String,
-        brandName:String,
-        product:String,
-        due:String
-    ): this (
+        barcodeNum: String,
+        brandName: String,
+        product: String,
+        due: String
+    ) : this(
         barcodeNum,
         -353433146,
         brandName,

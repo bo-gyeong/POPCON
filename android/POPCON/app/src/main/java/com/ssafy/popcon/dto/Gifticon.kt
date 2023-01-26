@@ -16,14 +16,18 @@ data class Gifticon(
 ) : Serializable
 
 data class Brand(
-    val name: String,
-    val logoUrl: String?
+    val brandImg: String?,
+    val brandName: String
 ) {
     override fun equals(other: Any?): Boolean {
         return if (other is Brand)
-            other.name == this.name
+            other.brandName == this.brandName
         else
             false
+    }
+
+    override fun hashCode(): Int {
+        
     }
 }
 

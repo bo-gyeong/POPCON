@@ -1,6 +1,7 @@
 package com.ssafy.popcon.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -84,12 +85,8 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     fun getBrandByLocation(request: BrandRequest) {
         viewModelScope.launch {
             val brands = gifticonRepository.getBrandsByLocation(request)
+            Log.d("TAG", "getBrandByLocation: $brands")
             _brands.value = brands
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun getBrands(): List<Brand> {
-        return gifticons.value?.stream()?.map { gc -> gc.brand }?.distinct()!!.toList()
     }
 }

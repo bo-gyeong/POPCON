@@ -52,7 +52,7 @@ class HistoryFragment : Fragment() {
 
     private fun setHistoryAdapter() {
         val gifticonList = mutableListOf<Gifticon>()
-        makeList(gifticonList )
+        makeList(gifticonList)
 
         //viewModel.getHistory(SharedPreferencesUtil(requireContext()).getUser().email!!)
         historyAdapter = HistoryAdapter(HistoryAdapter.HistoryListener { history ->

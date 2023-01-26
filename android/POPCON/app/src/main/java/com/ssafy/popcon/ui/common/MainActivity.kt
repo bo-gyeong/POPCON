@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
 
-    private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(applicationContext) }
+    private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
 
     val PERMISSION_REQUEST_CODE = 8
 
