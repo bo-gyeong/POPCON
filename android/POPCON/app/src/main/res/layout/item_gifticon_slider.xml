@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/iv_product_preview"
-            imageUrl="@{gifticon.productUrl}"
+            imageUrl="@{gifticon.product_filepath}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edge_preview"

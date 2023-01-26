@@ -228,7 +228,7 @@
                                 android:id="@+id/et_product_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@{addInfo.product}"
+                                android:text="@{addInfo.productName}"
                                 android:backgroundTint="@color/popcon_grey_09"/>
     
                         </LinearLayout>

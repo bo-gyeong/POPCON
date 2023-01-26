@@ -1,14 +1,19 @@
 package com.ssafy.popcon.repository.user
 
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.UserDeleteRequest
 
 class UserRepository(private val remoteDataSource: UserRemoteDataSource) {
 
-    suspend fun signIn(user: User): User {
-        return remoteDataSource.signIn(user)
+    suspend fun signInNaver(user: User): User {
+        return remoteDataSource.signInNaver(user)
     }
 
-    suspend fun withdraw(user: User): User {
+    suspend fun signInKakao(user: User): User {
+        return remoteDataSource.signInKakao(user)
+    }
+
+    suspend fun withdraw(user: UserDeleteRequest) {
         return remoteDataSource.withdraw(user)
     }
 }

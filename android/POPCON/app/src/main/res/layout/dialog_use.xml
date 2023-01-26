@@ -17,6 +17,16 @@
         android:background="@drawable/edge_dialog"
         android:padding="8dp">
 
+        <TextView
+            android:id="@+id/tv_noBrand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="근처에 매장이 없어요"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"
             android:name="com.ssafy.popcon.ui.brandtab.BrandTabFragment"
