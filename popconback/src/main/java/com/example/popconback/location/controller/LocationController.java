@@ -7,6 +7,8 @@ import java.util.*;
 import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.GifticonResponse;
+import com.example.popconback.gifticon.dto.ResponseBrandDto;
+import com.example.popconback.gifticon.service.BrandService;
 import com.example.popconback.gifticon.service.GifticonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,13 +35,18 @@ public class LocationController {
     private String url = "https://dapi.kakao.com/v2/local/search/keyword";
     @Autowired
     GifticonService gifticonService;
+
+    @Autowired
+    BrandService brandService;
     private Object res;
+
 
     @ApiOperation(value = "shakeSearch",
             notes = "흔들었을때 사용가능한 주변 매장 브랜드",
             httpMethod = "GET")
     @GetMapping({"/shake"})
-    public List<String> shakeSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
+    public List<ResponseBrandDto> shakeSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
+
 
         List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
 
@@ -74,7 +81,7 @@ public class LocationController {
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.set("Authorization", "KakaoAK " + this.key);
             HttpEntity<String> httpEntity = new HttpEntity(httpHeaders);
-            URI targetUrl = UriComponentsBuilder.fromUriString(this.url).queryParam("query", new Object[]{keyword}).queryParam("sort", new Object[]{"distance"}).queryParam("x", new Object[]{x}).queryParam("y", new Object[]{y}).queryParam("radius", new Object[]{radius}).build().encode(StandardCharsets.UTF_8).toUri();
+            URI targetUrl = UriComponentsBuilder.fromUriString(this.url).queryParam("query", new Object[]{keyword}).queryParam("sort", new Object[]{"distance"}).queryParam("x", new Object[]{x}).queryParam("y", new Object[]{y}).queryParam("radius", new Object[]{"500"}).build().encode(StandardCharsets.UTF_8).toUri();
             ResponseEntity<Map> result = restTemplate.exchange(targetUrl, HttpMethod.GET, httpEntity, Map.class);
 
             //System.out.println(result.getBody().get("documents").getClass());
@@ -118,8 +125,15 @@ public class LocationController {
             finalBrands.add(brand);
         }
 
+        List<ResponseBrandDto> brandInfoList = new ArrayList<>();
 
-        return finalBrands;
+        for (String brandName : finalBrands) {
+            ResponseBrandDto responseBrandDto = brandService.findBrand(brandName);
+            brandInfoList.add(responseBrandDto);
+        }
+
+
+        return brandInfoList;
 
     }
 
