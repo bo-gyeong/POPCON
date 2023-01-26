@@ -87,8 +87,15 @@ public class GifticonService {
     public List<ResponseCreateGifticonDto> createGifticon (List<CreateGifticonDto> createGifticonDtoList){
         List<ResponseCreateGifticonDto> rlist = new ArrayList<>();
 
+        UserDto tuser = new UserDto();
+
+
         for (CreateGifticonDto createGifticonDto: createGifticonDtoList) {
-            Optional<User> user = userRepository.findById(createGifticonDto.getHash());
+            tuser.setEmail(createGifticonDto.getEmail());
+            tuser.setSocial(createGifticonDto.getSocial());
+            int hash = tuser.hashCode();
+            Optional<User> user = userRepository.findById(hash);
+
             if (!user.isPresent()) {
                 ResponseCreateGifticonDto NoUser = new ResponseCreateGifticonDto();
                 rlist.add(NoUser);
@@ -108,7 +115,6 @@ public class GifticonService {
             ResponseCreateGifticonDto responDto = new ResponseCreateGifticonDto();
 
             BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
-            responDto.setHash(gifticon.getUser().getHash());
             responDto.setBrandName(gifticon.getBrand().getBrandName());
 
             rlist.add(responDto);
@@ -164,7 +170,6 @@ public class GifticonService {
         Gifticon gifticon = optionalGifticon.get();
         BeanUtils.copyProperties(updateGifticonDto, gifticon);
         BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
-        responDto.setHash(gifticon.getUser().getHash());
         responDto.setBrandName(gifticon.getBrand().getBrandName());
         return responDto;
     }
@@ -178,8 +183,9 @@ public class GifticonService {
     }
 
     public ResponseCreateFavoritesDto createFavorites (CreateFavoritesDto createFavoritesDto){
-        Optional<User> user = userRepository.findById(createFavoritesDto.getHash());
+        Optional<User> user = userRepository.findById(createFavoritesDto.hashCode());
 
+        int hash = createFavoritesDto.hashCode();
         ResponseCreateFavoritesDto responDto = new ResponseCreateFavoritesDto();
         if (!user.isPresent()) {
             return responDto;
@@ -197,12 +203,13 @@ public class GifticonService {
         favoritesrepository.save(bookmark);
 
         responDto.setBrandName(bookmark.getBrand().getBrandName());
-        responDto.setHash(bookmark.getUser().getHash());
         return responDto;
     }
 
     public void deleteFavorites(DeleteFavoritesDto deleteFavoritesDto){
-        Optional<User> user = userRepository.findById(deleteFavoritesDto.getHash());
+
+        int hash = deleteFavoritesDto.hashCode();
+        Optional<User> user = userRepository.findById(hash);
         if (!user.isPresent()) {
             throw new EntityNotFoundException("User Not Found");
         }
@@ -210,7 +217,7 @@ public class GifticonService {
         if (!brand.isPresent()) {
             throw new EntityNotFoundException("Brand Not Found");
         }
-        int hash = deleteFavoritesDto.getHash();
+
         String brand_name = deleteFavoritesDto.getBrandName();
         favoritesrepository.deleteByUser_HashAndBrand_BrandName(hash, brand_name);
     }
