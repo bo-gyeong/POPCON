@@ -15,5 +15,6 @@ fun applyPriceFormat(view: TextView, price: Int) {
 //날짜에 까지 넣기
 @BindingAdapter("date")
 fun applyDateFormat(view: TextView, date: String) {
-    view.text = view.context.getString(R.string.due_date, date)
+    val due = date.split(" ")[0]
+    view.text = view.context.getString(R.string.due_date, due)
 }

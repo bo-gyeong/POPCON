@@ -10,8 +10,8 @@ class GifticonRepository(private val remoteDataSource: GifticonRemoteDataSource)
         return remoteDataSource.getGifticonByUser(user.email!!, user.social.toString())
     }
 
-    suspend fun getGifticonByBrand(userId: String, brandName: String): List<Gifticon> {
-        return remoteDataSource.getGifticonByBrand(userId, brandName)
+    suspend fun getGifticonByBrand(user: User, brandName: String): List<Gifticon> {
+        return remoteDataSource.getGifticonByBrand(user, brandName)
     }
 
     suspend fun getHistory(userId: String): List<Gifticon> {

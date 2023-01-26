@@ -85,11 +85,87 @@ class GifticonDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setList()
+        //setList()
+        test()
+    }
+
+    private fun test() {
+        var gifticonList = mutableListOf<Gifticon>()
+        gifticonList.add(
+            Gifticon(
+                "1234-1234",
+                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
+                Brand(
+                    "스타벅스",
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                ),
+
+                "2023-01-29 00:00:00.000000",
+                -1,
+                5000,
+                "유라",
+                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
+                "아메리카노 T",
+                "https://user-images.githubusercontent.com/33195517/214759061-e4fad749-656d-4feb-acf0-f1f579cef0b0.png"
+            )
+        )
+        gifticonList.add(
+            Gifticon(
+                "1234-1234",
+                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
+                Brand(
+                    "스타벅스",
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                ),
+                "2023-02-10 00:00:00.000000",
+                -1,
+                30000,
+                "유라",
+                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
+                "아이스 카페 라떼 T",
+                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png"
+            )
+        )
+        gifticonList.add(
+            Gifticon(
+                "1234-1234",
+                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
+                Brand(
+                    "스타벅스",
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                ),
+                "2023-02-10 00:00:00.000000",
+                -1,
+                30000,
+                "유라",
+                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
+                "아이스 카페 라떼 T",
+                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png"
+            )
+        )
+        gifticonList.add(
+            Gifticon(
+                "1234-1234",
+                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
+                Brand(
+                    "스타벅스",
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                ),
+                "2023-02-10 00:00:00.000000",
+                -1,
+                30000,
+                "유라",
+                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
+                "아이스 카페 라떼 T",
+                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png"
+            )
+        )
+
+        setViewPager(gifticonList)
     }
 
     //상품이미지 미리보기, 기프티콘 사용화면
-    private fun setViewPager(useList : List<Gifticon>) {
+    private fun setViewPager(useList: List<Gifticon>) {
         val previewAdapter =
             PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
         val gifticonViewAdapter = GifticonViewAdapter(childFragmentManager, useList)
@@ -155,7 +231,7 @@ class GifticonDialogFragment : DialogFragment() {
                 binding.vpPreview.isVisible = true
                 binding.tvNoBrand.isVisible = false
 
-                BrandTabFragment().setBrandTab(it)
+                //BrandTabFragment().setBrandTab(it)
             } else {//1개면 브랜드탭 숨김
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = true

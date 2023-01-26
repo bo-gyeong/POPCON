@@ -42,7 +42,31 @@ class BrandTabFragment : Fragment() {
         return binding.root
     }
 
-    fun setBrandTab(brands: List<Brand>) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val brands = mutableListOf<Brand>()
+        setBrandTab(brands)
+    }
+
+    fun setBrandTab(brands: MutableList<Brand>) {
+
+        brands.add(Brand("전체", ""))
+        //brands.addAll(viewModel.getBrands())
+        brands.add(
+            Brand(
+                "스타벅스",
+                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+            )
+        )
+        brands.add(
+            Brand(
+                "이디야",
+                "https://user-images.githubusercontent.com/33195517/214757786-cc0aa65d-dcbb-4b9d-aded-a65cda7f17a6.png"
+            )
+        )
+        brands.add(Brand("히스토리", ""))
+
         brandAdapter = BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
 
         binding.rvBrand.apply {

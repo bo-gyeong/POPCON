@@ -1,18 +1,20 @@
 package com.ssafy.popcon.ui.map
-
+/*
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentMapGiftconBinding
-import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.util.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,7 +30,7 @@ class MapGifticonFragment : Fragment() {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var binding: FragmentMapGiftconBinding
-    private var giftconList = mutableListOf<Gifticon>()
+    private var gifticonList = mutableListOf<Gifticon>()
 
 
     override fun onAttach(context: Context) {
@@ -48,33 +50,35 @@ class MapGifticonFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map_giftcon, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.item_map_giftcon, container, false)
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.tvBrandMap.text = param1
 
         // TODO 현 위치 기반 기프티콘 전체 받아오기
-        /*giftconList.add(
+        gifticonList.add(
             Gifticon(
-                "123123123",
+                "123123123","https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004429]_20221121150147483.jpg",
                 Brand(
                     "스타벅스",
                     "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png"
                 ),
-                "마스카포네 치즈 타르트",
-                0,
+                "2023-01-22 00:00:00",
+                0,10000, "유라",
                 "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004429]_20221121150147483.jpg",
-                "https://image.istarbucks.co.kr/upload/store/skuimg/2022/11/[9300000004429]_20221121150147483.jpg",
+                "마스카포네 치즈 케이크",
                 "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-                makeDateTimeException("2023-01-22 00:00:00"),
-                Badge("D-${findRemainingDay("2023-01-22 00:00:00")}", color = "#333")
             )
         )
 
-        giftconList.add(
+        binding.badge = Utils.calDday(gifticonList[0])
+
+        */
+/*giftconList.add(
             Gifticon(
                 "123123123",
                 Brand(
@@ -106,8 +110,8 @@ class MapGifticonFragment : Fragment() {
                 makeDateTimeException("2023-01-24 00:00:00"),
                 Badge("D-${findRemainingDay("2023-01-24 00:00:00")}", color = "#333")
             )
-        )*/
-        binding.gifitcon = giftconList.get(param1!!.toInt())
+        )*//*
+
     }
 
     override fun onDestroyView() {
@@ -124,24 +128,5 @@ class MapGifticonFragment : Fragment() {
                 }
             }
     }
-
 }
-
-fun makeDateTimeException(eventDate: String): String {
-//    eventDate : 2023-07-14 10:12:14
-    val cal = Calendar.getInstance()
-    var t_dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale("ko", "KR"))
-    val date: Date = t_dateFormat.parse(eventDate)
-    cal.time = date
-    return "${t_dateFormat.format(cal.time)}"
-}
-
-
-fun findRemainingDay(eventDate: String): Int {
-//    eventDate : 2023-07-14 10:12:14
-    var today = Calendar.getInstance()
-    var sf = SimpleDateFormat("yyyy-MM-dd 00:00:00")
-    var eventDate = sf.parse(eventDate)
-    val remainingDay = (eventDate.time - today.time.time) / (60 * 60 * 24 * 1000)
-    return remainingDay.toInt() + 1
-}
+*/

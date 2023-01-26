@@ -31,8 +31,8 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _brands = MutableLiveData<List<Brand>>()
     val brands: LiveData<List<Brand>> = _brands
 
-    fun openHistory(userId: String) {
-        _openHistoryEvent.value = Event(userId)
+    fun openHistory(user: User) {
+        _openHistoryEvent.value = Event(user.email!!)
     }
 
     //사용자의 기프티콘 목록 불러오기
@@ -54,12 +54,12 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     fun tabClickListener(user: User, brandName: String) {
         if (brandName == "히스토리") {
             //히스토리
-            openHistory(user.email!!)
+            openHistory(user)
         } else if (brandName == "전체") {
             getGifticonByUser(user)
         } else {
             viewModelScope.launch {
-                val gifticons = gifticonRepository.getGifticonByBrand(user.email!!, brandName)
+                val gifticons = gifticonRepository.getGifticonByBrand(user, brandName)
                 _gifticons.value = gifticons
             }
         }
