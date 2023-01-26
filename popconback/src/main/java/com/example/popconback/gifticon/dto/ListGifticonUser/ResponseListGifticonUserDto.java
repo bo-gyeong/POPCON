@@ -1,25 +1,18 @@
-package com.example.popconback.gifticon.dto;
-
-import com.example.popconback.gifticon.domain.GifticonFiles;
+package com.example.popconback.gifticon.dto.ListGifticonUser;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-
 import java.util.Date;
-
-
-
 @Data
-public class GifticonDto {
-
+public class ResponseListGifticonUserDto {
     @ApiModelProperty(name = "barcodeNum", value = "바코드 넘버", example = "1234-5678-9999")
     private String barcodeNum;
-    @ApiModelProperty(name = "hash", value = "유저 hash값", example = "1305943263")
-    private int hash;
-    @ApiModelProperty(name = "brandName", value = "브랜드명", example = "스타벅스")
-    private String brandName;
+    //    @ApiModelProperty(name = "hash", value = "유저 hash값", example = "1305943263")
+//    private int hash;
+    @ApiModelProperty(name = "brand", value = "브랜드", example = "스타벅스")
+    private BrandForRLGUDto brand;
     @ApiModelProperty(name = "productName", value = "상품명", example = "아이스 카페 아메리카노 Tall")
     private String productName;
     @JsonFormat( shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -38,6 +31,4 @@ public class GifticonDto {
     private String product_filepath;
     @ApiModelProperty(name = "origin_filepath", value = "원본 이미지 경로", example = "")
     private String origin_filepath;
-
-    //private List<GifticonFiles> filesList = new ArrayList<>();
 }

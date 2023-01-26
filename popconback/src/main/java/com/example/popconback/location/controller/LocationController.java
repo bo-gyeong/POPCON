@@ -7,6 +7,7 @@ import java.util.*;
 import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.GifticonResponse;
+import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
 import com.example.popconback.gifticon.dto.ResponseBrandDto;
 import com.example.popconback.gifticon.service.BrandService;
 import com.example.popconback.gifticon.service.GifticonService;
@@ -47,18 +48,27 @@ public class LocationController {
     @GetMapping({"/shake"})
     public List<ResponseBrandDto> shakeSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
 
-
-        List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
+        //List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
+        List<ResponseListGifticonUserDto> gifticons = gifticonService.gifticonList(email, social);
 
         List<String> brandList = new ArrayList<String>();
 
-        for (GifticonDto gifticon : gifticons) {
-            String nowBrand = gifticon.getBrandName();
+//        for (GifticonDto gifticon : gifticons) {
+//            String nowBrand = gifticon.getBrandName();
+//            if (!brandList.contains(nowBrand)) {
+//                brandList.add(nowBrand);
+//            }
+//
+//        }
+        for (ResponseListGifticonUserDto gifticon : gifticons) {
+            String nowBrand = gifticon.getBrand().getBrandName();
             if (!brandList.contains(nowBrand)) {
                 brandList.add(nowBrand);
             }
 
         }
+
+
 
         List<String> finalBrands = new ArrayList<String>();
         List<Object> finalResults = new ArrayList<Object>();
@@ -143,12 +153,20 @@ public class LocationController {
     @GetMapping({"/search"})
     public List<Object> localSearch(@RequestParam String email, @RequestParam String social,  @RequestParam(required = false) String x, @RequestParam(required = false) String y, @RequestParam(required = false) String radius) throws Exception{
 
-        List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
+//        List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
+        List<ResponseListGifticonUserDto> gifticons = gifticonService.gifticonList(email, social);
 
         List<String> brandList = new ArrayList<String>();
 
-        for (GifticonDto gifticon : gifticons) {
-            String nowBrand = gifticon.getBrandName();
+//        for (GifticonDto gifticon : gifticons) {
+//            String nowBrand = gifticon.getBrandName();
+//            if (!brandList.contains(nowBrand)) {
+//                brandList.add(nowBrand);
+//            }
+//
+//        }
+        for (ResponseListGifticonUserDto gifticon : gifticons) {
+            String nowBrand = gifticon.getBrand().getBrandName();
             if (!brandList.contains(nowBrand)) {
                 brandList.add(nowBrand);
             }

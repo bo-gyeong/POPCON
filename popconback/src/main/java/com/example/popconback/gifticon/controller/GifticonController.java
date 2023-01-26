@@ -8,6 +8,7 @@ import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.DeleteGifticon.DeleteGifticonDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
+import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
@@ -52,7 +53,7 @@ public class GifticonController {
         )
     })
     @GetMapping("/{email}/{social}") //유저의 기프티콘 정보 DB에서 보내주기 // 이것도 만료되거나 사용한거 다보낼까?
-    public ResponseEntity<List<GifticonDto>> gifticonList(@PathVariable String email, @PathVariable String social){
+    public ResponseEntity<List<ResponseListGifticonUserDto>> gifticonList(@PathVariable String email, @PathVariable String social){
         return ResponseEntity.ok(gifticonService.gifticonList(email, social));
     }
 

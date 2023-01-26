@@ -12,6 +12,8 @@ import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticon
 import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
+import com.example.popconback.gifticon.dto.ListGifticonUser.BrandForRLGUDto;
+import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
@@ -46,21 +48,23 @@ public class GifticonService {
     private final Brandrepository brandrepository;
     private final Favoritesrepository favoritesrepository;
 
-    public List<GifticonDto> gifticonList (String email, String social){// 기프티콘 리스트 뽑아오기
+    public List<ResponseListGifticonUserDto> gifticonList (String email, String social){// 기프티콘 리스트 뽑아오기
         UserDto user = new UserDto();
         user.setEmail(email);
         user.setSocial(social);
         int hash = user.hashCode();
         List<Gifticon>list = gifticonRepository.findByUser_Hash(hash, Sort.by(asc("due")));
-        List<GifticonDto> rlist = new ArrayList<>();
+        List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
 
         for (Gifticon gifticon:list) {
-            GifticonDto rgifticon = new GifticonDto();
-            BeanUtils.copyProperties(gifticon,rgifticon);
-            rgifticon.setHash(gifticon.getUser().getHash());
-            rgifticon.setBrandName(gifticon.getBrand().getBrandName());
+            ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
+            BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
 
-            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());
+            BrandForRLGUDto brand = new BrandForRLGUDto();// 브랜드는 따로 복사
+            BeanUtils.copyProperties(gifticon.getBrand(),brand);
+            rgifticon.setBrand(brand);
+
+            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
             for (GifticonFiles gifticonfile: gflist
                  ) {
                 if(gifticonfile.getImageType() == 0){// 0: 바코드
