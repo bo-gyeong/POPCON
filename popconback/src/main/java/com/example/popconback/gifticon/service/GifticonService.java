@@ -11,6 +11,8 @@ import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
 import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
+import com.example.popconback.gifticon.dto.HistoryGifticon.GifticonHistoryDto;
+import com.example.popconback.gifticon.dto.HistoryGifticon.ResponseGifticonHistoryDto;
 import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
 import com.example.popconback.gifticon.dto.ListGifticonUser.BrandForRLGUDto;
 import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
@@ -83,6 +85,40 @@ public class GifticonService {
         return rlist;
     }
 
+    
+    public List<ResponseGifticonHistoryDto> historyGifticon (GifticonHistoryDto gifticonHistoryDto){// 기프티콘 리스트 뽑아오기
+
+        int hash = gifticonHistoryDto.hashCode();
+        List<Gifticon>list = gifticonRepository.findByUser_HashAndStateGreaterThanEqual(hash,1);
+        List<ResponseGifticonHistoryDto> rlist = new ArrayList<>();
+
+        for (Gifticon gifticon:list) {
+            ResponseGifticonHistoryDto rgifticon = new ResponseGifticonHistoryDto();
+            BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
+
+            BrandForRLGUDto brand = new BrandForRLGUDto();// 브랜드는 따로 복사
+            BeanUtils.copyProperties(gifticon.getBrand(),brand);
+            rgifticon.setBrand(brand);
+
+            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+            for (GifticonFiles gifticonfile: gflist
+            ) {
+                if(gifticonfile.getImageType() == 0){// 0: 바코드
+                    rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                }
+                if(gifticonfile.getImageType() == 1){// 1: 상품
+                    rgifticon.setProduct_filepath(gifticonfile.getFilePath());
+                }
+                if(gifticonfile.getImageType() == 2){// 2: 원본
+                    rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                }
+            }
+
+            rlist.add(rgifticon);
+        }
+        return rlist;
+    }
+
 
     public List<ResponseCreateGifticonDto> createGifticon (List<CreateGifticonDto> createGifticonDtoList){
         List<ResponseCreateGifticonDto> rlist = new ArrayList<>();
@@ -139,9 +175,6 @@ public class GifticonService {
             //throw new EntityNotFoundException("Brand Not Found");
             return rlist;
         }
-
-
-        //System.out.println(hash);
 
         List <Gifticon>list = gifticonRepository.findByUser_HashAndBrand_BrandName(hash,sortGifticonDto.getBrandName());
         for (Gifticon gifticon: list

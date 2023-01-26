@@ -7,6 +7,8 @@ import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticon
 import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.DeleteGifticon.DeleteGifticonDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
+import com.example.popconback.gifticon.dto.HistoryGifticon.GifticonHistoryDto;
+import com.example.popconback.gifticon.dto.HistoryGifticon.ResponseGifticonHistoryDto;
 import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
 import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
@@ -62,7 +64,6 @@ public class GifticonController {
     public ResponseEntity<List<ResponseCreateGifticonDto>> CreateGifticon (@RequestBody CreateGifticonDto[] createGifticonDtos){
         List<CreateGifticonDto> Dtolist = Arrays.asList(createGifticonDtos);
         return ResponseEntity.ok(gifticonService.createGifticon(Dtolist));
-
     }
 
     @ApiOperation(value = "즐겨찾기 등록", notes = "즐겨찾기 브랜드 등록", httpMethod = "POST")
@@ -91,6 +92,13 @@ public class GifticonController {
     public ResponseEntity<List<ResponseListGifticonUserDto>> SortGifticon (@RequestBody SortGifticonDto sortGifticonDto){
             return ResponseEntity.ok(gifticonService.sortGifticon(sortGifticonDto));
    }
+
+    @ApiOperation(value = "기프티콘 히스토리", notes = "기프티콘 히스토리", httpMethod = "GET") // get 으로 수정
+    @GetMapping("/history") //기프티콘 브랜드별 정렬 // 사용한거 표시 제외하고 보낼지 말지 고민
+    public ResponseEntity<List<ResponseGifticonHistoryDto>> historyGifticon (@RequestBody GifticonHistoryDto gifticonHistoryDto){
+        return ResponseEntity.ok(gifticonService.historyGifticon(gifticonHistoryDto));
+    }
+
 
 
     @ApiOperation(value = "기프티콘 수정", notes = "기프티콘 정보 수정", httpMethod = "PUT")
