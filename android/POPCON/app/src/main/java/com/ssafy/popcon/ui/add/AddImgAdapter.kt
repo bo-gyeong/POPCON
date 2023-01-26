@@ -12,12 +12,18 @@ import com.ssafy.popcon.dto.GifticonImg
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
 
-class AddImgAdapter(var OriginalImgUriList: ArrayList<GifticonImg>, var cropXyImgUriList: ArrayList<GifticonImg>, _onItemClick: onItemClick):
+class AddImgAdapter(
+    var OriginalImgUriList: ArrayList<GifticonImg>
+    , var cropXyImgUriList: ArrayList<GifticonImg>
+    , var barcodeImgUriList: ArrayList<GifticonImg>
+    , _onItemClick: onItemClick
+):
     RecyclerView.Adapter<AddImgAdapter.AddImgViewHolder>() {
     private lateinit var binding: ItemAddImgBinding
     private lateinit var mainActivity: MainActivity
     private val onItemClick = _onItemClick
     private var nowClick = 0
+    private val positionSet = mutableSetOf<Int>()
 
     inner class AddImgViewHolder(private val binding: ItemAddImgBinding):
         RecyclerView.ViewHolder(binding.root){
@@ -25,6 +31,7 @@ class AddImgAdapter(var OriginalImgUriList: ArrayList<GifticonImg>, var cropXyIm
             binding.ivChkClick.bringToFront()
             if (bindingAdapterPosition == 0){
                 binding.ivChkClick.visibility = View.GONE
+                positionSet.add(0)
             }
 
             if (bindingAdapterPosition == nowClick){
@@ -39,17 +46,20 @@ class AddImgAdapter(var OriginalImgUriList: ArrayList<GifticonImg>, var cropXyIm
             binding.cvCouponImg.setOnClickListener {
                 onItemClick.onClick(bindingAdapterPosition)
                 binding.ivChkClick.visibility = View.GONE
-                AddFragment.chkCnt++
 
                 notifyItemChanged(nowClick)
                 notifyItemChanged(bindingAdapterPosition)
                 nowClick = bindingAdapterPosition
+
+                positionSet.add(bindingAdapterPosition)
+                AddFragment.chkCnt = positionSet.size
             }
 
             binding.gifticonImg = gifticonImg
             binding.btnRemove.setOnClickListener {
                 OriginalImgUriList.removeAt(bindingAdapterPosition)
                 cropXyImgUriList.removeAt(bindingAdapterPosition)
+                barcodeImgUriList.removeAt(bindingAdapterPosition)
                 notifyItemRemoved(bindingAdapterPosition)
 
                 if (OriginalImgUriList.size == 0){

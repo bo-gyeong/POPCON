@@ -2,6 +2,7 @@ package com.ssafy.popcon.dto
 
 import android.net.Uri
 import androidx.core.net.toUri
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import java.util.Date
 
 data class GifticonImg(
@@ -13,13 +14,14 @@ data class AddInfo(
     val gifticonImgUri: Uri,
     val barcodeImgUri:Uri,
     val barcodeNum:String,
-    val hash:Int,
     val brandName:String,
     val productName:String,
     val due:String,
     val price:Int,
     val state:Int,
-    val memo:String
+    val memo:String,
+    val email: String,
+    val social: String
 ){
     constructor(
         originalImgUri:Uri,
@@ -29,19 +31,22 @@ data class AddInfo(
         brandName:String,
         product:String,
         due:String,
+        email: String,
+        social: String
     ): this (
         originalImgUri,
         gifticonImgUri,
         barcodeImgUri,
         barcodeNum,
-        -353433146,
         brandName,
         product,
         due,
         0,
         0,
-        ""
-            )
+        "",
+        email,
+        social
+        )
 
     constructor(
     ):this (
@@ -49,59 +54,67 @@ data class AddInfo(
         "".toUri(),
         "".toUri(),
         "",
-        0,
         "",
         "",
         "",
         0,
         0,
+        "",
+        "",
         ""
-            )
+         )
 
     constructor(
         barcodeNum:String,
         brandName:String,
         due:String,
         product:String,
+        email: String,
+        social: String
     ): this (
         "".toUri(),
         "".toUri(),
         "".toUri(),
         barcodeNum,
-        -353433146,
         brandName,
         product,
         due,
         0,
         0,
-        ""
+        "",
+        email,
+        social
     )
 }
 
 data class AddInfoNoImg(
-    val barcodeNum:String,
-    val hash:Int,
-    val brandName:String,
+    val barcodeNum: String,
+    val brandName: String,
     val productName: String,
-    val due:String,
-    val price:Int,
-    val state:Int,
-    val memo:String
+    val due: String,
+    val price: Int,
+    val memo: String,
+    val email: String,
+    val social: String,
+    val state: Int
 ){
     constructor(
         barcodeNum:String,
         brandName:String,
-        product:String,
-        due:String
+        productName:String,
+        due:String,
+        email: String,
+        social:String
     ): this (
         barcodeNum,
-        -353433146,
         brandName,
-        product,
+        productName,
         due,
         0,
-        0,
-        ""
+        "",
+        email,
+        social,
+        0
     )
 }
 

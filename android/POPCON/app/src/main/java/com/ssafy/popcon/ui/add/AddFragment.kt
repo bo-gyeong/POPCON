@@ -18,15 +18,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.loader.content.CursorLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.soundcloud.android.crop.Crop
 import com.ssafy.popcon.R
+import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.AddInfo
 import com.ssafy.popcon.dto.AddInfoNoImg
@@ -50,14 +53,18 @@ import kotlin.io.path.Path
 
 class AddFragment : Fragment(), onItemClick {
     private lateinit var binding: FragmentAddBinding
-    private val viewModel:AddViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel:AddViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     private lateinit var mainActivity: MainActivity
     private lateinit var addImgAdapter: AddImgAdapter
     private lateinit var OriginalImgUris:ArrayList<GifticonImg>
     private lateinit var cropXyImgUris:ArrayList<GifticonImg>
+    private lateinit var barcodeImgUris:ArrayList<GifticonImg>
     private val delImgUri = ArrayList<Uri>()
+    val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
+    val PRODUCT = "Product"
+    val BARCODE = "Barcode"
 
     companion object{
         var chkCnt = 1
@@ -91,17 +98,18 @@ class AddFragment : Fragment(), onItemClick {
         chkCnt = 1
         OriginalImgUris = ArrayList()
         cropXyImgUris = ArrayList()
+        barcodeImgUris = ArrayList()
         openGalleryFirst()
 
         binding.cvProductImg.setOnClickListener(object : onSingleClickListener(){
             override fun onSingleClick(v: View) {
-                seeCropImgDialog(cropXyImgUris[imgNum], "Product")
+                seeCropImgDialog(cropXyImgUris[imgNum], PRODUCT)
             }
         })
 
         binding.cvBarcodeImg.setOnClickListener(object : onSingleClickListener(){
             override fun onSingleClick(v: View) {
-                seeCropImgDialog(cropXyImgUris[imgNum], "Barcode")
+                seeCropImgDialog(barcodeImgUris[imgNum], BARCODE)
             }
         })
 
@@ -141,6 +149,7 @@ class AddFragment : Fragment(), onItemClick {
                     if (clipData != null) {  //첫 add
                         OriginalImgUris = ArrayList()
                         cropXyImgUris = ArrayList()
+                        barcodeImgUris = ArrayList()
 
                         for (i in 0 until clipData.itemCount){
                             OriginalImgUris.add(GifticonImg(clipData.getItemAt(i).uri))
@@ -148,8 +157,11 @@ class AddFragment : Fragment(), onItemClick {
                             //clipData.getItemAt(i).uri.path.toString()  --> \external\images\media\30
                             // getPath(clipData.getItemAt(i).uri) --> \storage\emulated\0\Download\media_0(3).jpg
                             val cropXYImgUri = cropXY(i)
+                            val cropXYBarcodeUri = cropXYBar(i)
                             cropXyImgUris.add(GifticonImg(cropXYImgUri))
+                            barcodeImgUris.add(GifticonImg(cropXYBarcodeUri))
                             delImgUri.add(cropXYImgUri)
+                            delImgUri.add(cropXYBarcodeUri)
                         }
                         //viewModel.useOcr("https://cloud.google.com/vision/docs/images/bicycle_example.png")
                         //viewModel.useOcr("C:\\1.PNG")
@@ -157,9 +169,15 @@ class AddFragment : Fragment(), onItemClick {
                         fillContent(0)
                         makeImgList()
                     } else{  //이미지 크롭
-                        cropXyImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
-
-                        delImgUri.add(cropXyImgUris[imgNum].imgUri)
+                        val imgName = File(getPath(cropXyImgUris[imgNum].imgUri)).name
+                        Log.d("###", "${imgName}")  //바코드 넘버여서 안됨,,,,,,,,,,,
+                        if (imgName.contains(PRODUCT)){
+                            cropXyImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
+                            delImgUri.add(cropXyImgUris[imgNum].imgUri)
+                        } else if (imgName.contains(BARCODE)){
+                            barcodeImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
+                            delImgUri.add(barcodeImgUris[imgNum].imgUri)
+                        }
                         fillContent(imgNum)
                     }
                 }
@@ -174,16 +192,17 @@ class AddFragment : Fragment(), onItemClick {
     // View 값 채우기
     private fun fillContent(idx: Int){
         imgNum = idx
-        val cropImgUri = cropXyImgUris[idx].imgUri
 
         binding.addInfo = AddInfo(
             OriginalImgUris[idx].imgUri,
-            cropImgUri,
-            OriginalImgUris[idx].imgUri,
+            cropXyImgUris[idx].imgUri,
+            barcodeImgUris[idx].imgUri,
             "${idx}-1231-2345~~~",
             "브랜드${idx}",
             "상품이름${idx}",
-            binding.etDate.text.toString()
+            binding.etDate.text.toString(),
+            user.email!!,
+            user.social
         )
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
@@ -197,21 +216,33 @@ class AddFragment : Fragment(), onItemClick {
     private fun cropXY(idx: Int): Uri{
         val bitmap = uriToBitmap(OriginalImgUris[idx].imgUri)
         val newBitmap = Bitmap.createBitmap(bitmap, 35, 35, 150, 150)
-        return saveFile("popconImg"+System.currentTimeMillis(), newBitmap)!!
+        return saveFile("popconImg${PRODUCT}"+System.currentTimeMillis(), newBitmap)!!
+    }
+
+    private fun cropXYBar(idx: Int): Uri{
+        val bitmap = uriToBitmap(OriginalImgUris[idx].imgUri)
+        val newBitmap = Bitmap.createBitmap(bitmap, 10, 270, 400, 100)
+        return saveFile("popconImg${BARCODE}"+System.currentTimeMillis(), newBitmap)!!
     }
 
     // add탭 클릭하자마자 나오는 갤러리
     private fun openGalleryFirst() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.putExtra(Intent.ACTION_OPEN_DOCUMENT, true)
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) //Intent.EXTRA_ALLOW_MULTIPLE
         intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         result.launch(intent)
     }
 
     // cardView를 클릭했을 때 나오는 갤러리
-    fun openGallery(idx: Int) {
+    fun openGallery(idx: Int, fromCv: String) {
         val bitmap = uriToBitmap(OriginalImgUris[idx].imgUri)
-        val destination = saveFile("popconImg", bitmap)
+        var destination:Uri? = "".toUri()
+        Log.d("###open", "openGallery: $fromCv")
+        if (fromCv == PRODUCT){
+            destination = saveFile("popconImgProduct", bitmap)
+        } else if (fromCv == BARCODE){
+            destination = saveFile("popconImgBarcode", bitmap)
+        }
         val crop = Crop.of(OriginalImgUris[idx].imgUri, destination)
 
         result.launch(crop.getIntent(mainActivity))
@@ -278,7 +309,7 @@ class AddFragment : Fragment(), onItemClick {
 
     // 상단 리사이클러뷰 만들기
     private fun makeImgList(){
-        addImgAdapter = AddImgAdapter(OriginalImgUris, cropXyImgUris, this)
+        addImgAdapter = AddImgAdapter(OriginalImgUris, cropXyImgUris, barcodeImgUris, this)
 
         binding.rvCouponList.apply {
             adapter = addImgAdapter
@@ -294,10 +325,10 @@ class AddFragment : Fragment(), onItemClick {
         dialog.show(childFragmentManager, "CropDialog")
         dialog.setOnClickListener(object: CropImgDialogFragment.BtnClickListener{
             override fun onClicked(fromCv: String) {
-                if (fromCv == "Product"){
-                    openGallery(imgNum)
-                } else if (fromCv == "Barcode"){
-                    openGallery(imgNum)
+                if (fromCv == PRODUCT){
+                    openGallery(imgNum, PRODUCT)
+                } else if (fromCv == BARCODE){
+                    openGallery(imgNum, BARCODE)
                 }
             }
         })
@@ -318,7 +349,9 @@ class AddFragment : Fragment(), onItemClick {
                     binding.etBarcode.text.toString(),
                     binding.etProductBrand.text.toString(),
                     binding.etProductName.text.toString(),
-                    binding.etDate.text.toString()
+                    binding.etDate.text.toString(),
+                    user.email!!,
+                    user.social
                 )
             )
         }
