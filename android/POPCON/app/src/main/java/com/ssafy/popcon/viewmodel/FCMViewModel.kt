@@ -1,5 +1,6 @@
 package com.ssafy.popcon.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.network.response.FCMResponse

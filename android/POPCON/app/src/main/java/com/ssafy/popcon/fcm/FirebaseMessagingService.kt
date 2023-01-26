@@ -15,16 +15,13 @@ import com.ssafy.popcon.ui.common.MainActivity
 
 @RequiresApi(Build.VERSION_CODES.O)
 class FirebaseMessagingService: FirebaseMessagingService() {
-    private lateinit var mainActivity: MainActivity
-
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
-        mainActivity = applicationContext as MainActivity
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        mainActivity.uploadToken(token)
+        MainActivity.getInstance()!!.uploadToken(token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "331079635178-n744l7khn7a8pco6lhl82mufo8l4ck0m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssafy.popcon",
+            "certificate_hash": "23bbcbafabed175366331109f7b2e5afed70f545"
+          }
+        },
+        {
           "client_id": "331079635178-epgsevi4vd1r11jcoj28s60aolfgbt0j.apps.googleusercontent.com",
           "client_type": 3
         }

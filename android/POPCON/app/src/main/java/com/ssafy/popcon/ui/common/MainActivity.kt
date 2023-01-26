@@ -45,19 +45,18 @@ class MainActivity : AppCompatActivity() {
 
     val PERMISSION_REQUEST_CODE = 8
 
+    init {
+        instance = this
+    }
+
     companion object {
         var shakeDetector = ShakeDetector()
-
         const val channel_id = "popcon_user"
 
-    }
-
-    fun uploadToken(token: String){
-        fcmViewModel.uploadToken(token)
-    }
-    fun sendMessageTo(token: String, title: String, body: String){
-        fcmViewModel.sendMessageTo(token, title, body)
-        // mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody")
+        private var instance: MainActivity? = null
+        fun getInstance(): MainActivity?{
+            return instance
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -198,7 +197,19 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    fun getFCMToken(){
+    // 토큰 보내기
+    fun uploadToken(token: String){
+        fcmViewModel.uploadToken(token)
+    }
+
+    // 알림 관련 메시지 전송
+    fun sendMessageTo(token: String, title: String, body: String){
+        fcmViewModel.sendMessageTo(token, title, body)
+        //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
+    }
+
+    // 토큰 생성
+    private fun getFCMToken(){
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful){
                 return@addOnCompleteListener
