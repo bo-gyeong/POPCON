@@ -5,7 +5,7 @@
 
     <data>
         <variable
-            name="gifitcon"
+            name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
 
         <variable
@@ -28,7 +28,7 @@
 
             <ImageView
                 android:id="@+id/iv_product_preview_map"
-                imageUrl="@{gifitcon.product_filepath}"
+                imageUrl="@{gifticon.product_filepath}"
                 android:layout_width="125dp"
                 android:layout_height="125dp"
                 android:paddingStart="16dp"
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="@{gifitcon.brand.name}"
+                android:text="@{gifticon.brand.name}"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_name_map"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:maxLines="1"
-                android:text="@{gifitcon.productName}"
+                android:text="@{gifticon.productName}"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_date_map"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
@@ -72,7 +72,7 @@
             <TextView
                 android:id="@+id/tv_date_map"
                 style="@style/TextSubtitle2"
-                date="@{gifitcon.due}"
+                date="@{gifticon.due}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

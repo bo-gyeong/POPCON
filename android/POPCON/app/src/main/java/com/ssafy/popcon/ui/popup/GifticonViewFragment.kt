@@ -1,13 +1,16 @@
 package com.ssafy.popcon.ui.popup
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.airbnb.lottie.utils.Utils
 import com.ssafy.popcon.databinding.ItemGifticonPopupBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.add.OriginalImgDialogFragment
@@ -51,6 +54,7 @@ class GifticonViewFragment : Fragment() {
     }
 
     //금액권, 아닐 경우 레이아웃 설정
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
         binding.gifticon = gifticonInfo
         if (gifticonInfo?.price == null) {
@@ -82,6 +86,8 @@ class GifticonViewFragment : Fragment() {
             dialogFragment.arguments = args
             dialogFragment.show(childFragmentManager, "originalUrl")
         }
+
+        binding.badge = com.ssafy.popcon.util.Utils.calDday(gifticonInfo!!)
     }
 
     companion object {

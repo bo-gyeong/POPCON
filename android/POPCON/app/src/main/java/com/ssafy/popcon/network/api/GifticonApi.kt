@@ -21,7 +21,7 @@ interface GifticonApi {
     //브랜드 별 사용자 기프티콘 목록
     @GET("gifticon_brand/{userId}/{brandName}")
     suspend fun getGifticonByBrand(
-        @Path("userId") userId: String,
+        @Path("userId") user: User,
         brandName: String
     ): List<Gifticon>
 

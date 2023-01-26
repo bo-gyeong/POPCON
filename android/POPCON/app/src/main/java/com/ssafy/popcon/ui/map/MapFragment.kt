@@ -25,6 +25,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.google.android.material.tabs.TabLayoutMediator
+import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.dto.MapNowPos
@@ -69,7 +71,7 @@ class MapFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
+    /*companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             MapGifticonFragment().apply {
@@ -78,14 +80,14 @@ class MapFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
-    }
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+        /*arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-        }
+        }*/
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -95,6 +97,7 @@ class MapFragment : Fragment() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
+        setGifticonBanner()
         setSensor()
 
         // 로고 이미지를 저장할 위치 - 내부 저장소
@@ -125,17 +128,17 @@ class MapFragment : Fragment() {
             "y" to getLongitude.toString(),
             "radius" to "500"
         )
-        viewModel.sendUserPosition(nowPos)
+        //viewModel.sendUserPosition(nowPos)
 
         /**
         viewModel.sendUserPosition(
-            MapNowPos(
-                sharedPreferencesUtil.getUser().email.toString(),
-                sharedPreferencesUtil.getUser().social,
-                getLatitude.toString(),
-                getLongitude.toString(),
-                "500"
-            )
+        MapNowPos(
+        sharedPreferencesUtil.getUser().email.toString(),
+        sharedPreferencesUtil.getUser().social,
+        getLatitude.toString(),
+        getLongitude.toString(),
+        "500"
+        )
         )**/
 
         // 현 위치 마커 추가
@@ -149,13 +152,14 @@ class MapFragment : Fragment() {
 
 
         // 1. 내부저장소에 로고만 저장할 폴더 없으면 만들기
-        val path = File("$internalStorage") // internalStorage = requireContext().filesDir.toString() + "/brandLogo"
+        val path =
+            File("$internalStorage") // internalStorage = requireContext().filesDir.toString() + "/brandLogo"
         if (!path.exists()) {
             path.mkdirs()
         }
 
         // 나중에 서버에서 받아올 가게 정보 = storeList
-        viewModel.mapBrandLogo.observe(viewLifecycleOwner, Observer {
+        /*viewModel.mapBrandLogo.observe(viewLifecycleOwner, Observer {
             // 2. 해당 브랜드들 미리 내부 저장소에 다운 시키기 -> 이미 저장되어 있으면 안하고, 내부 저장소에 저장함. Device File Explorer ㄱㄱ
             for (store in it) {
                 val files = path.listFiles()
@@ -193,11 +197,26 @@ class MapFragment : Fragment() {
                 }
                 mapView.addPOIItem(tempMarker)
             }
-        })
+        })*/
+    }
 
-        // 0. 뷰페이저 TODO 뷰페이저 어댑터 지금 난리났음!! 도와줘!!
-        binding.viewpagerMapGiftcon.apply {
-            adapter = MapGifticonAdpater(context as FragmentActivity)
+    private fun setGifticonBanner() {
+        viewModel.mapGifticon.observe(viewLifecycleOwner) {
+            with(binding.viewpagerMapGiftcon) {
+                adapter = MapGifticonAdpater().apply {
+                    submitList(it)
+                }
+
+                val pageWidth = resources.getDimension(R.dimen.viewpager_item_widwth)
+                val pageMargin = resources.getDimension(R.dimen.viewpager_item_margin)
+                val screenWidth = resources.displayMetrics.widthPixels
+                val offset = screenWidth - pageWidth - pageMargin
+
+                offscreenPageLimit = it.size
+                setPageTransformer { page, position ->
+                    page.translationX = position * -offset
+                }
+            }
         }
     }
 
@@ -212,10 +231,11 @@ class MapFragment : Fragment() {
 
             // 이미지 크기에 따라 압축률 정하기
             var quality = 0.25
-            if (bitmap.width > 2048 && bitmap.height > 2048)
+            if (bitmap.width > 2048 && bitmap.height > 2048) {
                 quality = 0.7
-            else if (bitmap.width > 1024 && bitmap.height > 1024)
-                quality = 0.4
+            } else if (bitmap.width > 1024 && bitmap.height > 1024) {
+            }
+            quality = 0.4
             // 비트맵 압축률만큼 압축하기
             bitmap = Bitmap.createScaledBitmap(
                 bitmap,
