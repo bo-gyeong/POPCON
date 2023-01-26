@@ -62,7 +62,7 @@ class HistoryDialogFragment : DialogFragment() {
 
         binding.ivProductPreview.setOnClickListener {
             val args = Bundle()
-            args.putString("originalUrl", history!!.originalUrl)
+            args.putString("originalUrl", history!!.origin_filepath)
 
             val dialogFragment = ImageDialogFragment()
             dialogFragment.arguments = args

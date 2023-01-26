@@ -3,15 +3,16 @@ package com.ssafy.popcon.dto
 import java.io.Serializable
 
 data class Gifticon(
-    val number: String, // 바코드 넘버
+    val barcodeNum: String,
+    val barcode_filepath: String,
     val brand: Brand,
-    val name: String,
-    val price: Int?,
-    val productUrl: String,
-    val barcodeUrl: String?,
-    val originalUrl: String?,
-    val date: String,
-    val badge: Badge?
+    val due: String, //example: 2023-01-10 00:00:00.000000
+    val hash: Int,
+    val price: Int?, //금액권 아니면 -1
+    val memo: String,
+    val origin_filepath: String,
+    val productName: String,
+    val product_filepath: String
 ) : Serializable
 
 data class Brand(

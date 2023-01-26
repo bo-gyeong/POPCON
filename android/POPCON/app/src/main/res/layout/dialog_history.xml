@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="badge"
+            type="com.ssafy.popcon.dto.Badge" />
+
+        <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
     </data>
@@ -18,7 +22,7 @@
 
         <ImageView
             android:id="@+id/iv_product_preview"
-            imageUrl="@{gifticon.productUrl}"
+            imageUrl="@{gifticon.product_filepath}"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginTop="24dp"
@@ -30,7 +34,7 @@
 
         <ImageView
             android:id="@+id/iv_barcode_image"
-            imageUrl="@{gifticon.barcodeUrl}"
+            imageUrl="@{gifticon.barcode_filepath}"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:scaleType="fitCenter"
@@ -56,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:text="@{gifticon.name}"
+            android:text="@{gifticon.productName}"
             app:layout_constraintStart_toStartOf="@id/tv_brand"
             app:layout_constraintTop_toBottomOf="@id/tv_brand" />
 
@@ -70,7 +74,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:maxLines="1"
-            android:text="@{gifticon.date}"
+            android:text="@{gifticon.due}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_name" />
@@ -82,12 +86,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="26dp"
             android:layout_marginBottom="7dp"
-            android:background="@{gifticon.badge.color}"
+            android:background="@{badge.color}"
             android:paddingStart="7dp"
             android:paddingTop="1dp"
             android:paddingEnd="7dp"
             android:paddingBottom="1dp"
-            android:text="@{gifticon.badge.content}"
+            android:text="@{badge.content}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/popcon_grey_02" />

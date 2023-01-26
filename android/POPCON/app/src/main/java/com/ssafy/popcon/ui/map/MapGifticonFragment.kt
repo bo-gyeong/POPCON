@@ -57,7 +57,7 @@ class MapGifticonFragment : Fragment() {
         binding.tvBrandMap.text = param1
 
         // TODO 현 위치 기반 기프티콘 전체 받아오기
-        giftconList.add(
+        /*giftconList.add(
             Gifticon(
                 "123123123",
                 Brand(
@@ -106,7 +106,7 @@ class MapGifticonFragment : Fragment() {
                 makeDateTimeException("2023-01-24 00:00:00"),
                 Badge("D-${findRemainingDay("2023-01-24 00:00:00")}", color = "#333")
             )
-        )
+        )*/
         binding.gifitcon = giftconList.get(param1!!.toInt())
     }
 

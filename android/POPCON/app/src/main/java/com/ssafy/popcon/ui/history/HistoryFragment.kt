@@ -52,58 +52,6 @@ class HistoryFragment : Fragment() {
 
     private fun setHistoryAdapter() {
         val gifticonList = mutableListOf<Gifticon>()
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-                "2023.01.12",
-                Badge("사용완료", "#D2D2D2")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-                "2023.01.12",
-                Badge("사용완료", "#D2D2D2")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-                "2023.01.12",
-                Badge("사용완료", "#D2D2D2")
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234",
-                Brand("스타벅스", ""),
-                "아메리카노 T",
-                30000,
-                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-                "",
-                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-                "2023.01.12",
-                Badge("사용완료", "#D2D2D2")
-            )
-        )
 
         //viewModel.getHistory(SharedPreferencesUtil(requireContext()).getUser().email!!)
         historyAdapter = HistoryAdapter(HistoryAdapter.HistoryListener { history ->
@@ -124,7 +72,15 @@ class HistoryFragment : Fragment() {
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
         /*viewModel.history.observe(viewLifecycleOwner, Observer {
-            historyAdapter = HistoryAdapter()
+            historyAdapter = HistoryAdapter(HistoryAdapter.HistoryListener { history ->
+            Log.d("TAG", "setHistoryAdapter: $history")
+            val args = Bundle()
+            args.putSerializable("history", history)
+
+            val dialogFragment = HistoryDialogFragment()
+            dialogFragment.arguments = args
+            dialogFragment.show(childFragmentManager, "popup")
+        })
             historyAdapter.submitList(it)
 
             binding.rvHistory.apply {
@@ -140,3 +96,58 @@ class HistoryFragment : Fragment() {
         GifticonDialogFragment.isShow = false
     }
 }
+
+/*
+* gifticonList.add(
+            Gifticon(
+                "1234",
+                Brand("스타벅스", ""),
+                "아메리카노 T",
+                30000,
+                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+                "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
+                "2023.01.12",
+                Badge("사용완료", "#D2D2D2")
+            )
+        )
+        gifticonList.add(
+            Gifticon(
+                "1234",
+                Brand("스타벅스", ""),
+                "아메리카노 T",
+                30000,
+                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+                "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
+                "2023.01.12",
+                Badge("사용완료", "#D2D2D2")
+            )
+        )
+        gifticonList.add(
+            Gifticon(
+                "1234",
+                Brand("스타벅스", ""),
+                "아메리카노 T",
+                30000,
+                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+                "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
+                "2023.01.12",
+                Badge("사용완료", "#D2D2D2")
+            )
+        )
+        gifticonList.add(
+            Gifticon(
+                "1234",
+                Brand("스타벅스", ""),
+                "아메리카노 T",
+                30000,
+                "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
+                "",
+                "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
+                "2023.01.12",
+                Badge("사용완료", "#D2D2D2")
+            )
+        )
+        * */
