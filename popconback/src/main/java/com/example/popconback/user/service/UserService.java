@@ -39,7 +39,6 @@ public class UserService {
 
     public ResponseUpdateUserDto updateUser(CreateUserDto createUserDto,int hash){
         Optional<User> optionalUser = userRepository.findById(hash);
-
         if (!optionalUser.isPresent()){
             throw new EntityNotFoundException("User not present in the database");
         }

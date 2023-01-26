@@ -13,4 +13,6 @@ public interface GifticonRepository extends JpaRepository<Gifticon, String> {
     List<Gifticon> findByUser_HashAndBrand_BrandName(int hash, String brand_name);
     List<Gifticon>  findByUser_HashAndDueLessThanEqualAndState(int hash, Date date, int state);
     List<Gifticon> findByDueAndState(Date date, int state);
+
+    List<Gifticon> findByUser_HashAndStateGreaterThanEqual(int hash, int state);
 }
