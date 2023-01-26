@@ -117,13 +117,13 @@ public class GifticonService {
     }
 
 
-    public List<GifticonDto> sortGifticon (SortGifticonDto sortGifticonDto){
+    public List<ResponseListGifticonUserDto> sortGifticon (SortGifticonDto sortGifticonDto){
         UserDto tuser = new UserDto();
         tuser.setEmail(sortGifticonDto.getEmail());
         tuser.setSocial(sortGifticonDto.getSocial());
         int hash = tuser.hashCode();
         Optional<User> user = userRepository.findById(hash);
-        List<GifticonDto> rlist = new ArrayList<>();
+        List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
         if (!user.isPresent()) {
             //throw new EntityNotFoundException("User Not Found");
             return rlist;
@@ -140,10 +140,11 @@ public class GifticonService {
         List <Gifticon>list = gifticonRepository.findByUser_HashAndBrand_BrandName(hash,sortGifticonDto.getBrandName());
         for (Gifticon gifticon: list
              ) {
-            GifticonDto rgifticon = new GifticonDto();
+            ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
             BeanUtils.copyProperties(gifticon, rgifticon);
-            rgifticon.setHash(gifticon.getUser().getHash());
-            rgifticon.setBrandName(gifticon.getBrand().getBrandName());
+            BrandForRLGUDto rbrand = new BrandForRLGUDto();
+            BeanUtils.copyProperties(gifticon.getBrand(),rbrand);
+            rgifticon.setBrand(rbrand);
             rlist.add(rgifticon);
         }
         return rlist;
