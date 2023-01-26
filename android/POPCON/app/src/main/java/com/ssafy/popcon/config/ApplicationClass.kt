@@ -3,6 +3,7 @@ package com.ssafy.popcon.config
 import android.Manifest
 import android.app.Application
 import android.content.Context
+import com.google.gson.GsonBuilder
 import com.navercorp.nid.NaverIdLoginSDK
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.util.SharedPreferencesUtil
@@ -34,7 +35,7 @@ class ApplicationClass : Application() {
 
             retrofit = Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
                 .client(okHttpClient)
                 .build()
 

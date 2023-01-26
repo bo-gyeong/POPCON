@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'com.google.gms.google-services'
 }
 
 Properties properties = new Properties()
@@ -23,6 +24,7 @@ android {
         buildConfigField "String", "naverClientSecret", properties["naver_client_secret"]
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
         buildConfigField "String", "KAKAO_LOGIN_KEY", properties['kakao_login_key']
+        buildConfigField "String", "FIREBASE_GOOGLE_CLOUD_KEY", properties['firebase_google_cloud_key']
         buildConfigField "String", "BASE_URL", properties['base_url']
 
         manifestPlaceholders["KAKAO_API_KEY"] = "kakao_api_key"
