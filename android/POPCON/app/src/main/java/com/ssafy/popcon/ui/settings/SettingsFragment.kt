@@ -15,7 +15,9 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentSettingsBinding
+import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.UserDeleteRequest
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
@@ -71,6 +73,11 @@ class SettingsFragment : Fragment() {
                 withdrawNaver()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        GifticonDialogFragment.isShow = false
     }
 
     // 비회원이 로그인하기 클릭 시
@@ -220,6 +227,7 @@ class SettingsFragment : Fragment() {
     //네이버 로그아웃
     private fun signOutNaver() {
         binding.tvLogout.setOnClickListener {
+            //Log.d(TAG, "signOutNaver: ${SharedPreferencesUtil(requireContext()).getUser().social}")
             if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
                 settingsToLogin()
             }
@@ -235,7 +243,8 @@ class SettingsFragment : Fragment() {
                 NidOAuthLogin().callDeleteTokenApi(requireContext(), object : OAuthLoginCallback {
                     override fun onSuccess() {
                         //서버에서 토큰 삭제에 성공한 상태입니다.
-                        viewModel.withdraw(user)
+
+                        viewModel.withdraw(UserDeleteRequest(user.email!!, user.social.toString()))
                         SharedPreferencesUtil(requireContext()).deleteUser()
                         settingsToLogin()
                     }

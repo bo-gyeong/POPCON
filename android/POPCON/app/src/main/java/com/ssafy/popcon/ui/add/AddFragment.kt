@@ -202,8 +202,8 @@ class AddFragment : Fragment(), onItemClick {
 
     // add탭 클릭하자마자 나오는 갤러리
     private fun openGalleryFirst() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.putExtra(Intent.ACTION_OPEN_DOCUMENT, true)
         intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         result.launch(intent)
     }

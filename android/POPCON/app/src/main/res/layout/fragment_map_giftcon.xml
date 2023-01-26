@@ -7,6 +7,10 @@
         <variable
             name="gifitcon"
             type="com.ssafy.popcon.dto.Gifticon" />
+
+        <variable
+            name="badge"
+            type="com.ssafy.popcon.dto.Badge" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -24,7 +28,7 @@
 
             <ImageView
                 android:id="@+id/iv_product_preview_map"
-                imageUrl="@{gifitcon.productUrl}"
+                imageUrl="@{gifitcon.product_filepath}"
                 android:layout_width="125dp"
                 android:layout_height="125dp"
                 android:paddingStart="16dp"
@@ -58,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:maxLines="1"
-                android:text="@{gifitcon.name}"
+                android:text="@{gifitcon.productName}"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_date_map"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"
@@ -68,7 +72,7 @@
             <TextView
                 android:id="@+id/tv_date_map"
                 style="@style/TextSubtitle2"
-                date="@{gifitcon.date}"
+                date="@{gifitcon.due}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -91,7 +95,7 @@
                 android:paddingTop="1dp"
                 android:paddingEnd="7dp"
                 android:paddingBottom="1dp"
-                android:text="@{gifitcon.badge.content}"
+                android:text="@{badge.content}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@color/popcon_grey_02"

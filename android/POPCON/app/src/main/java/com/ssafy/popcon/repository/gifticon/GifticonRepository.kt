@@ -1,10 +1,13 @@
 package com.ssafy.popcon.repository.gifticon
 
+import com.ssafy.popcon.dto.Brand
+import com.ssafy.popcon.dto.BrandRequest
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.User
 
 class GifticonRepository(private val remoteDataSource: GifticonRemoteDataSource) {
-    suspend fun getGifticonByUserId(userId: String): List<Gifticon> {
-        return remoteDataSource.getGifticonByUserId(userId)
+    suspend fun getGifticonByUser(user: User): List<Gifticon> {
+        return remoteDataSource.getGifticonByUser(user.email!!, user.social.toString())
     }
 
     suspend fun getGifticonByBrand(userId: String, brandName: String): List<Gifticon> {
@@ -17,5 +20,13 @@ class GifticonRepository(private val remoteDataSource: GifticonRemoteDataSource)
 
     suspend fun updateGifticon(gifticon: Gifticon): Gifticon {
         return remoteDataSource.updateGifticon(gifticon)
+    }
+
+    suspend fun getBrandsByLocation(brandRequest: BrandRequest): List<Brand> {
+        return remoteDataSource.getBrandsByLocation(brandRequest)
+    }
+
+    suspend fun deleteGifticon(barcodeNum: String) {
+        return remoteDataSource.deleteGifticon(barcodeNum)
     }
 }

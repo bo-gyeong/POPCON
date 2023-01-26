@@ -1,14 +1,21 @@
 package com.ssafy.popcon.network.api
 
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.UserDeleteRequest
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 
 interface UserApi {
-    //로그인
-    @POST("api/user/login")
-    suspend fun signIn(@Body user: User): User
+    //네이버 로그인
+    @POST("user/login/naver")
+    suspend fun signInNaver(@Body user: User): User
 
-    @POST("api/user/withdraw")
-    suspend fun withdraw(@Body user: User): User
+    //네이버 로그인
+    @POST("user/login/kakao")
+    suspend fun signInKakao(@Body user: User): User
+
+    @HTTP(method = "DELETE", path = "user/withdrawal", hasBody = true)
+    suspend fun withdraw(@Body user: UserDeleteRequest)
 }

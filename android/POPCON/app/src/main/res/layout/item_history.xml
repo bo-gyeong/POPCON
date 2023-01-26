@@ -16,6 +16,10 @@
         <variable
             name="viewModel"
             type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
+
+        <variable
+            name="badge"
+            type="com.ssafy.popcon.dto.Badge" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -36,7 +40,7 @@
 
             <ImageView
                 android:id="@+id/iv_product_preview"
-                imageUrl="@{gifticon.productUrl}"
+                imageUrl="@{gifticon.product_filepath}"
                 android:layout_width="100dp"
                 android:layout_height="0dp"
                 android:background="@color/popcon_white"
@@ -63,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="@{gifticon.name}"
+                android:text="@{gifticon.productName}"
                 app:layout_constraintStart_toStartOf="@id/tv_brand"
                 app:layout_constraintTop_toBottomOf="@id/tv_brand"
                 tools:text="아메리카노 + 블루베리" />
@@ -71,7 +75,7 @@
             <TextView
                 android:id="@+id/tv_date"
                 style="@style/TextSubtitle2"
-                date="@{gifticon.date}"
+                date="@{gifticon.due}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
@@ -90,12 +94,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26dp"
-                android:background="@{gifticon.badge.color}"
+                android:background="@{badge.color}"
                 android:paddingStart="7dp"
                 android:paddingTop="1dp"
                 android:paddingEnd="7dp"
                 android:paddingBottom="1dp"
-                android:text="@{gifticon.badge.content}"
+                android:text="@{badge.content}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@color/popcon_grey_02"

@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.kakao.sdk:v2-user:2.10.0'
 
     //Naver Login
-    implementation 'com.navercorp.nid:oauth:5.1.0'
+    implementation 'com.navercorp.nid:oauth:5.3.0'
 
     // ImageCrop
     implementation 'com.soundcloud.android:android-crop:1.0.1@aar'

@@ -12,6 +12,6 @@ interface AddApi {
     @GET("gcp/ocr")
     suspend fun useOCR(@Query("filePath") filePath:String): ocrResult
 
-    @POST("api/gifticon")
+    @POST("gifticons")
     suspend fun addGifticon(@Body addInfo: List<AddInfoNoImg>): List<AddInfo>
 }

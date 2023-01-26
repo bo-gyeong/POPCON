@@ -24,15 +24,6 @@ class ApplicationClass : Application() {
             Manifest.permission.ACCESS_FINE_LOCATION,
         )
 
-        fun setNaverModule(context: Context) {
-            NaverIdLoginSDK.initialize(
-                context,
-                BuildConfig.naverClientID,
-                BuildConfig.naverClientSecret,
-                "POPCON"
-            )
-        }
-
         fun makeRetrofit(url: String): Retrofit {
             val okHttpClient = OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
@@ -51,13 +42,21 @@ class ApplicationClass : Application() {
         }
     }
 
+    fun setNaverModule(context: Context) {
+        NaverIdLoginSDK.initialize(
+            context,
+            BuildConfig.naverClientID,
+            BuildConfig.naverClientSecret,
+            "POPCON"
+        )
+    }
+
     override fun onCreate() {
         super.onCreate()
 
         //shared preference 초기화
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
 
-        //make Retrofit(SERVER_URL)
         makeRetrofit(SERVER_URL)
         setNaverModule(applicationContext)
     }
