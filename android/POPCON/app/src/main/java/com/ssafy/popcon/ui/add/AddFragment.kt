@@ -63,6 +63,7 @@ class AddFragment : Fragment(), onItemClick {
     private val delImgUri = ArrayList<Uri>()
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
+    var clickCv = ""
     val PRODUCT = "Product"
     val BARCODE = "Barcode"
 
@@ -103,12 +104,14 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.cvProductImg.setOnClickListener(object : onSingleClickListener(){
             override fun onSingleClick(v: View) {
+                clickCv = PRODUCT
                 seeCropImgDialog(cropXyImgUris[imgNum], PRODUCT)
             }
         })
 
         binding.cvBarcodeImg.setOnClickListener(object : onSingleClickListener(){
             override fun onSingleClick(v: View) {
+                clickCv = BARCODE
                 seeCropImgDialog(barcodeImgUris[imgNum], BARCODE)
             }
         })
@@ -169,12 +172,10 @@ class AddFragment : Fragment(), onItemClick {
                         fillContent(0)
                         makeImgList()
                     } else{  //이미지 크롭
-                        val imgName = File(getPath(cropXyImgUris[imgNum].imgUri)).name
-                        Log.d("###", "${imgName}")  //바코드 넘버여서 안됨,,,,,,,,,,,
-                        if (imgName.contains(PRODUCT)){
+                        if (clickCv == PRODUCT){
                             cropXyImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
                             delImgUri.add(cropXyImgUris[imgNum].imgUri)
-                        } else if (imgName.contains(BARCODE)){
+                        } else if (clickCv == BARCODE){
                             barcodeImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
                             delImgUri.add(barcodeImgUris[imgNum].imgUri)
                         }
@@ -237,7 +238,6 @@ class AddFragment : Fragment(), onItemClick {
     fun openGallery(idx: Int, fromCv: String) {
         val bitmap = uriToBitmap(OriginalImgUris[idx].imgUri)
         var destination:Uri? = "".toUri()
-        Log.d("###open", "openGallery: $fromCv")
         if (fromCv == PRODUCT){
             destination = saveFile("popconImgProduct", bitmap)
         } else if (fromCv == BARCODE){
