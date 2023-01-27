@@ -1,19 +1,8 @@
-package com.example.popconback.location.controller;
+package com.example.popconback.gifticon.dto;
 
-import com.example.popconback.gifticon.dto.ResponseBrandDto;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
-
-
-@Getter
-@Setter
-@ToString
-public class LocationResponse {
-    // phone, place_name, x, y
-
+public class ResponseSearchByBrand {
 
     @ApiModelProperty(name = "phone", value = "매장 전화번호", example = "1522-3232")
     private String phone;
@@ -28,9 +17,9 @@ public class LocationResponse {
     private ResponseBrandDto brandInfo;
 
 
-    public LocationResponse() {}
+    public ResponseSearchByBrand() {}
 
-    public LocationResponse(String phone, String placeName, String xPos, String yPos, ResponseBrandDto brandInfo){
+    public ResponseSearchByBrand(String phone, String placeName, String xPos, String yPos, ResponseBrandDto brandInfo){
         this.phone = phone;
         this.placeName = placeName;
         this.xPos = xPos;
@@ -38,10 +27,4 @@ public class LocationResponse {
         this.brandInfo = brandInfo;
     }
 
-
-
-
-
-
 }
-
