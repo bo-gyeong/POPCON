@@ -35,7 +35,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
     private var userUUID: String = ""
-    var user = User("", -1)
+    var user = User("", "")
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     lateinit var mainActivity: MainActivity
@@ -137,7 +137,7 @@ class LoginFragment : Fragment() {
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { meUser, error ->
                                 val email = meUser?.kakaoAccount?.email.toString()
-                                user = User(email, 1)
+                                user = User(email, "카카오")
                                 SharedPreferencesUtil(requireContext()).addUser(user)
 
                                 viewModel.signInKakao(user)
@@ -165,7 +165,7 @@ class LoginFragment : Fragment() {
                         NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(result: NidProfileResponse) {
                             val email = result.profile?.email.toString()
-                            user = User(email, 2)
+                            user = User(email, "네이버")
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
 
@@ -203,7 +203,7 @@ class LoginFragment : Fragment() {
             userUUID = UUID.randomUUID().toString()
         // 서버에게 생성한 UUID 전송할 레트로핏 코드
         Log.d(TAG, "nonMemberLogin: $userUUID")
-        SharedPreferencesUtil(requireContext()).addUser(User(userUUID, 0))
+        SharedPreferencesUtil(requireContext()).addUser(User(userUUID, "비회원"))
 
         mainActivity.changeFragment(HomeFragment())
     }

@@ -65,10 +65,10 @@ class SettingsFragment : Fragment() {
         binding.run {
             clickJoin()
 
-            if (user!!.social == 1) {
+            if (user!!.social == "카카오") {
                 signOutKakao()
                 withdrawKakao()
-            } else if (user!!.social == 2) {
+            } else if (user!!.social == "네이버") {
                 signOutNaver()
                 withdrawNaver()
             }
@@ -82,7 +82,7 @@ class SettingsFragment : Fragment() {
 
     // 비회원이 로그인하기 클릭 시
     private fun clickJoin() {
-        if (user.social == 0) {
+        if (user.social == "비회원") {
             binding.lAccount.setOnClickListener {
                 settingsToLogin()
             }
@@ -98,7 +98,7 @@ class SettingsFragment : Fragment() {
 
     // 비회원일 경우 로그인한계정, 로그아웃, 회원탈퇴 안보이도록
     private fun settingVisibility() {
-        if (user.social == 0) {
+        if (user.social == "비회원") {
             binding.tvJoin.visibility = View.VISIBLE
             binding.tvTitleAccount.visibility = View.GONE
             binding.tvAccount.visibility = View.GONE
@@ -214,12 +214,18 @@ class SettingsFragment : Fragment() {
         binding.tvWithdraw.setOnClickListener {
             UserApiClient.instance.unlink { error ->
                 if (error != null) {
-                    settingsToLogin()
                     Log.e(TAG, "연결 끊기 실패", error)
                 } else {
-                    settingsToLogin()
+                    if (user.social == "카카오"){
+                        viewModel.withdraw(UserDeleteRequest(user.email!!, user.social))
+                    }
                     Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                 }
+
+                if (user.social == "카카오"){
+                    SharedPreferencesUtil(requireContext()).deleteUser()
+                }
+                settingsToLogin()
             }
         }
     }
@@ -228,7 +234,7 @@ class SettingsFragment : Fragment() {
     private fun signOutNaver() {
         binding.tvLogout.setOnClickListener {
             //Log.d(TAG, "signOutNaver: ${SharedPreferencesUtil(requireContext()).getUser().social}")
-            if (SharedPreferencesUtil(requireContext()).getUser().social == 2) {
+            if (SharedPreferencesUtil(requireContext()).getUser().social == "네이버") {
                 settingsToLogin()
             }
         }
@@ -237,9 +243,7 @@ class SettingsFragment : Fragment() {
     //네이버 회원탈퇴
     private fun withdrawNaver() {
         binding.tvWithdraw.setOnClickListener {
-            val user = SharedPreferencesUtil(requireContext()).getUser();
-
-            if (user.social == 2) {
+            if (user.social == "네이버") {
                 NidOAuthLogin().callDeleteTokenApi(requireContext(), object : OAuthLoginCallback {
                     override fun onSuccess() {
                         //서버에서 토큰 삭제에 성공한 상태입니다.

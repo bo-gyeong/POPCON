@@ -2,7 +2,7 @@ package com.ssafy.popcon.dto
 
 data class User(
     val email: String?,
-    val social: Int,
+    val social: String,
     val nday: Int = 1,
     val alarm: Int = 1,
     val manner_temp: Int = 1,
@@ -10,5 +10,5 @@ data class User(
     val timezone: Int = 1,
     var token: String?
 ) {
-    constructor(email: String?, social: Int) : this(email, social, 1, 1, 1, 1, 1, "")
+    constructor(email: String?, social: String) : this(email, social, 1, 1, 1, 1, 1, "")
 }

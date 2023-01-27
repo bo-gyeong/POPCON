@@ -2,6 +2,7 @@ package com.ssafy.popcon.dto
 
 import android.net.Uri
 import androidx.core.net.toUri
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import java.util.Date
 
 data class GifticonImg(
@@ -9,99 +10,111 @@ data class GifticonImg(
 )
 
 data class AddInfo(
-    val originalImgUri: Uri,
+    val originalImgUri:Uri,
     val gifticonImgUri: Uri,
-    val barcodeImgUri: Uri,
-    val barcodeNum: String,
-    val hash: Int,
-    val brandName: String,
-    val productName: String,
-    val due: String,
-    val price: Int,
-    val state: Int,
-    val memo: String
-) {
+    val barcodeImgUri:Uri,
+    val barcodeNum:String,
+    val brandName:String,
+    val productName:String,
+    val due:String,
+    val price:Int,
+    val state:Int,
+    val memo:String,
+    val email: String,
+    val social: String
+){
     constructor(
-        originalImgUri: Uri,
+        originalImgUri:Uri,
         gifticonImgUri: Uri,
-        barcodeImgUri: Uri,
-        barcodeNum: String,
-        brandName: String,
-        product: String,
-        due: String,
-    ) : this(
+        barcodeImgUri:Uri,
+        barcodeNum:String,
+        brandName:String,
+        product:String,
+        due:String,
+        email: String,
+        social: String
+    ): this (
         originalImgUri,
         gifticonImgUri,
         barcodeImgUri,
         barcodeNum,
-        -803447615,
         brandName,
         product,
         due,
         0,
         0,
+        "",
+        email,
+        social
+    )
+
+    constructor(
+    ):this (
+        "".toUri(),
+        "".toUri(),
+        "".toUri(),
+        "",
+        "",
+        "",
+        "",
+        0,
+        0,
+        "",
+        "",
         ""
     )
 
     constructor(
-    ) : this(
-        "".toUri(),
-        "".toUri(),
-        "".toUri(),
-        "",
-        0,
-        "",
-        "",
-        "",
-        0,
-        0,
-        ""
-    )
-
-    constructor(
-        barcodeNum: String,
-        brandName: String,
-        due: String,
-        product: String,
-    ) : this(
+        barcodeNum:String,
+        brandName:String,
+        due:String,
+        product:String,
+        email: String,
+        social: String
+    ): this (
         "".toUri(),
         "".toUri(),
         "".toUri(),
         barcodeNum,
-        -353433146,
         brandName,
         product,
         due,
         0,
         0,
-        ""
+        "",
+        email,
+        social
     )
 }
 
 data class AddInfoNoImg(
     val barcodeNum: String,
-    val hash: Int,
     val brandName: String,
     val productName: String,
     val due: String,
     val price: Int,
-    val state: Int,
-    val memo: String
-) {
+    val memo: String,
+    val email: String,
+    val social: String,
+    val state: Int
+){
     constructor(
-        barcodeNum: String,
-        brandName: String,
-        product: String,
-        due: String
-    ) : this(
+        barcodeNum:String,
+        brandName:String,
+        productName:String,
+        due:String,
+        email: String,
+        social:String
+    ): this (
         barcodeNum,
-        -353433146,
         brandName,
-        product,
+        productName,
         due,
         0,
-        0,
-        ""
+        "",
+        email,
+        social,
+        0
     )
 }
 
