@@ -1,24 +1,28 @@
 package com.example.popconback.location.controller;
 
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-
-import com.example.popconback.gifticon.domain.Gifticon;
-import com.example.popconback.gifticon.dto.*;
+import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
+import com.example.popconback.gifticon.dto.LocationSearchByBrandDto;
+import com.example.popconback.gifticon.dto.LocationShakeDto;
+import com.example.popconback.gifticon.dto.ResponseBrandDto;
 import com.example.popconback.gifticon.service.BrandService;
 import com.example.popconback.gifticon.service.GifticonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @Api(value = "LocationController")
 @SwaggerDefinition(tags = {@Tag(name = "LocationController",
@@ -48,13 +52,13 @@ public class LocationController {
             String x = locationShakeDto.getX();
             String y = locationShakeDto.getY();
 
-            List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
+            List<ResponseListGifticonUserDto> gifticons = gifticonService.gifticonList(email, social);
 
             List<String> brandList = new ArrayList<String>();
 
-            for (GifticonDto gifticon : gifticons) {
+            for (ResponseListGifticonUserDto gifticon : gifticons) {
                 try {
-                    String nowBrand = gifticon.getBrandName();
+                    String nowBrand = gifticon.getBrand().getBrandName();
                     if (!brandList.contains(nowBrand)) {
                         brandList.add(nowBrand);
                     }
@@ -177,13 +181,13 @@ public class LocationController {
             String x = locationShakeDto.getX();
             String y = locationShakeDto.getY();
 
-            List<GifticonDto> gifticons = gifticonService.gifticonList(email, social);
+            List<ResponseListGifticonUserDto> gifticons = gifticonService.gifticonList(email, social);
 
             List<String> brandList = new ArrayList<String>();
 
-            for (GifticonDto gifticon : gifticons) {
+            for (ResponseListGifticonUserDto gifticon : gifticons) {
                 try{
-                    String nowBrand = gifticon.getBrandName();
+                    String nowBrand = gifticon.getBrand().getBrandName();
                     if (!brandList.contains(nowBrand)) {
                         brandList.add(nowBrand);
                     }
