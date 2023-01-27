@@ -11,8 +11,6 @@ public class ResponseCreateGifticonDto {
 
     @ApiModelProperty(name = "barcodeNum", value = "바코드 넘버", example = "1234-5678-9999")
     private String barcodeNum;
-    @ApiModelProperty(name = "hash", value = "유저 hash값", example = "1305943263")
-    private int hash;
     @ApiModelProperty(name = "brandName", value = "브랜드명", example = "스타벅스")
     private String brandName;
     @ApiModelProperty(name = "productName", value = "상품명", example = "아이스 카페 아메리카노 Tall")

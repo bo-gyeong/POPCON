@@ -11,7 +11,11 @@ import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
 import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
+import com.example.popconback.gifticon.dto.HistoryGifticon.GifticonHistoryDto;
+import com.example.popconback.gifticon.dto.HistoryGifticon.ResponseGifticonHistoryDto;
 import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
+import com.example.popconback.gifticon.dto.ListGifticonUser.BrandForRLGUDto;
+import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
@@ -46,23 +50,59 @@ public class GifticonService {
     private final Brandrepository brandrepository;
     private final Favoritesrepository favoritesrepository;
 
-    public List<GifticonDto> gifticonList (String email, String social){// 기프티콘 리스트 뽑아오기
+    public List<ResponseListGifticonUserDto> gifticonList (String email, String social){// 기프티콘 리스트 뽑아오기
         UserDto user = new UserDto();
         user.setEmail(email);
         user.setSocial(social);
         int hash = user.hashCode();
         List<Gifticon>list = gifticonRepository.findByUser_Hash(hash, Sort.by(asc("due")));
-        List<GifticonDto> rlist = new ArrayList<>();
+        List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
 
         for (Gifticon gifticon:list) {
-            GifticonDto rgifticon = new GifticonDto();
-            BeanUtils.copyProperties(gifticon,rgifticon);
-            rgifticon.setHash(gifticon.getUser().getHash());
-            rgifticon.setBrandName(gifticon.getBrand().getBrandName());
+            ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
+            BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
 
-            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());
+            BrandForRLGUDto brand = new BrandForRLGUDto();// 브랜드는 따로 복사
+            BeanUtils.copyProperties(gifticon.getBrand(),brand);
+            rgifticon.setBrand(brand);
+
+            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
             for (GifticonFiles gifticonfile: gflist
                  ) {
+                if(gifticonfile.getImageType() == 0){// 0: 바코드
+                    rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                }
+                if(gifticonfile.getImageType() == 1){// 1: 상품
+                    rgifticon.setProduct_filepath(gifticonfile.getFilePath());
+                }
+                if(gifticonfile.getImageType() == 2){// 2: 원본
+                    rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                }
+            }
+
+            rlist.add(rgifticon);
+        }
+        return rlist;
+    }
+
+    
+    public List<ResponseGifticonHistoryDto> historyGifticon (GifticonHistoryDto gifticonHistoryDto){// 기프티콘 리스트 뽑아오기
+
+        int hash = gifticonHistoryDto.hashCode();
+        List<Gifticon>list = gifticonRepository.findByUser_HashAndStateGreaterThanEqual(hash,1);
+        List<ResponseGifticonHistoryDto> rlist = new ArrayList<>();
+
+        for (Gifticon gifticon:list) {
+            ResponseGifticonHistoryDto rgifticon = new ResponseGifticonHistoryDto();
+            BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
+
+            BrandForRLGUDto brand = new BrandForRLGUDto();// 브랜드는 따로 복사
+            BeanUtils.copyProperties(gifticon.getBrand(),brand);
+            rgifticon.setBrand(brand);
+
+            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+            for (GifticonFiles gifticonfile: gflist
+            ) {
                 if(gifticonfile.getImageType() == 0){// 0: 바코드
                     rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
                 }
@@ -83,8 +123,15 @@ public class GifticonService {
     public List<ResponseCreateGifticonDto> createGifticon (List<CreateGifticonDto> createGifticonDtoList){
         List<ResponseCreateGifticonDto> rlist = new ArrayList<>();
 
+        UserDto tuser = new UserDto();
+
+
         for (CreateGifticonDto createGifticonDto: createGifticonDtoList) {
-            Optional<User> user = userRepository.findById(createGifticonDto.getHash());
+            tuser.setEmail(createGifticonDto.getEmail());
+            tuser.setSocial(createGifticonDto.getSocial());
+            int hash = tuser.hashCode();
+            Optional<User> user = userRepository.findById(hash);
+
             if (!user.isPresent()) {
                 ResponseCreateGifticonDto NoUser = new ResponseCreateGifticonDto();
                 rlist.add(NoUser);
@@ -104,7 +151,6 @@ public class GifticonService {
             ResponseCreateGifticonDto responDto = new ResponseCreateGifticonDto();
 
             BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
-            responDto.setHash(gifticon.getUser().getHash());
             responDto.setBrandName(gifticon.getBrand().getBrandName());
 
             rlist.add(responDto);
@@ -113,13 +159,13 @@ public class GifticonService {
     }
 
 
-    public List<GifticonDto> sortGifticon (SortGifticonDto sortGifticonDto){
+    public List<ResponseListGifticonUserDto> sortGifticon (SortGifticonDto sortGifticonDto){
         UserDto tuser = new UserDto();
         tuser.setEmail(sortGifticonDto.getEmail());
         tuser.setSocial(sortGifticonDto.getSocial());
         int hash = tuser.hashCode();
         Optional<User> user = userRepository.findById(hash);
-        List<GifticonDto> rlist = new ArrayList<>();
+        List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
         if (!user.isPresent()) {
             //throw new EntityNotFoundException("User Not Found");
             return rlist;
@@ -130,16 +176,14 @@ public class GifticonService {
             return rlist;
         }
 
-
-        //System.out.println(hash);
-
         List <Gifticon>list = gifticonRepository.findByUser_HashAndBrand_BrandName(hash,sortGifticonDto.getBrandName());
         for (Gifticon gifticon: list
              ) {
-            GifticonDto rgifticon = new GifticonDto();
+            ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
             BeanUtils.copyProperties(gifticon, rgifticon);
-            rgifticon.setHash(gifticon.getUser().getHash());
-            rgifticon.setBrandName(gifticon.getBrand().getBrandName());
+            BrandForRLGUDto rbrand = new BrandForRLGUDto();
+            BeanUtils.copyProperties(gifticon.getBrand(),rbrand);
+            rgifticon.setBrand(rbrand);
             rlist.add(rgifticon);
         }
         return rlist;
@@ -159,7 +203,6 @@ public class GifticonService {
         Gifticon gifticon = optionalGifticon.get();
         BeanUtils.copyProperties(updateGifticonDto, gifticon);
         BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
-        responDto.setHash(gifticon.getUser().getHash());
         responDto.setBrandName(gifticon.getBrand().getBrandName());
         return responDto;
     }
@@ -173,8 +216,9 @@ public class GifticonService {
     }
 
     public ResponseCreateFavoritesDto createFavorites (CreateFavoritesDto createFavoritesDto){
-        Optional<User> user = userRepository.findById(createFavoritesDto.getHash());
+        Optional<User> user = userRepository.findById(createFavoritesDto.hashCode());
 
+        int hash = createFavoritesDto.hashCode();
         ResponseCreateFavoritesDto responDto = new ResponseCreateFavoritesDto();
         if (!user.isPresent()) {
             return responDto;
@@ -192,12 +236,13 @@ public class GifticonService {
         favoritesrepository.save(bookmark);
 
         responDto.setBrandName(bookmark.getBrand().getBrandName());
-        responDto.setHash(bookmark.getUser().getHash());
         return responDto;
     }
 
     public void deleteFavorites(DeleteFavoritesDto deleteFavoritesDto){
-        Optional<User> user = userRepository.findById(deleteFavoritesDto.getHash());
+
+        int hash = deleteFavoritesDto.hashCode();
+        Optional<User> user = userRepository.findById(hash);
         if (!user.isPresent()) {
             throw new EntityNotFoundException("User Not Found");
         }
@@ -205,7 +250,7 @@ public class GifticonService {
         if (!brand.isPresent()) {
             throw new EntityNotFoundException("Brand Not Found");
         }
-        int hash = deleteFavoritesDto.getHash();
+
         String brand_name = deleteFavoritesDto.getBrandName();
         favoritesrepository.deleteByUser_HashAndBrand_BrandName(hash, brand_name);
     }
