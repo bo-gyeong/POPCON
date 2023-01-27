@@ -41,5 +41,6 @@
     <!--  dialog_settings_noti  -->
     <string name="first">일 전</string>
     <string name="interval">일 마다</string>
+    <string name="complete">완료</string>
 
 </resources>

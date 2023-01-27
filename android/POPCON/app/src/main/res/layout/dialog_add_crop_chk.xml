@@ -40,7 +40,7 @@
             <Button
                 android:id="@+id/btn_cancel"
                 android:layout_width="0dp"
-                android:layout_height="45dp"
+                android:layout_height="46dp"
                 android:layout_margin="10dp"
                 android:text="@string/cancel"
                 android:textSize="14sp"
@@ -55,7 +55,7 @@
             <Button
                 android:id="@+id/btn_recrop"
                 android:layout_width="0dp"
-                android:layout_height="45dp"
+                android:layout_height="46dp"
                 android:layout_margin="10dp"
                 android:text="@string/recrop"
                 android:textSize="14sp"

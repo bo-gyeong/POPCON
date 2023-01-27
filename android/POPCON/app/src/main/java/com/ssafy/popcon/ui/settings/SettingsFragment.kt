@@ -62,6 +62,16 @@ class SettingsFragment : Fragment() {
         notiActive()
         settingVisibility()
 
+        binding.lNotiFirst.setOnClickListener {
+            makeDialog(0)
+        }
+        binding.lNotiInterval.setOnClickListener {
+            makeDialog(1)
+        }
+        binding.lNotiTime.setOnClickListener {
+            makeDialog(2)
+        }
+
         binding.run {
             clickJoin()
 
@@ -87,6 +97,24 @@ class SettingsFragment : Fragment() {
                 settingsToLogin()
             }
         }
+    }
+
+    private fun makeDialog(notiListPosition: Int){
+        val dialog = NotiDialogFragment(notiListPosition)
+        dialog.show(childFragmentManager, "NotiDialog")
+        dialog.setOnClickListener(object: NotiDialogFragment.BtnClickListener{
+            override fun onClicked(selectNum: Int) {
+                var userInfo: User? = null
+                when (selectNum){
+                    0 -> userInfo = User(user.email, user.social, selectNum, user.alarm, user.manner_temp, user.term, user.timezone, user.token)
+                    1 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, selectNum, user.timezone, user.token)
+                    2 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, user.term, selectNum, user.token)
+                }
+                SharedPreferencesUtil(requireContext()).updateUser(userInfo!!)
+                Log.d(TAG, "onClicked: ${user.nday}")
+                // 서버로 갱신된 user 전송
+            }
+        })
     }
 
     // 설정에서 로그인화면으로 이동 및 로그인정보 삭제
@@ -115,8 +143,14 @@ class SettingsFragment : Fragment() {
 
     // 알림 활성화 여부
     private fun notiActive() {
+        var userInfo: User
         binding.switchNoti.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
+                userInfo = User(user.email, user.social, user.nday, 1, user.manner_temp, user.term, user.timezone, user.token)
+                binding.lNotiFirst.isClickable = true
+                binding.lNotiInterval.isClickable = true
+                binding.lNotiTime.isClickable = true
+
                 binding.tvNotiTitleFirst.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
@@ -154,6 +188,11 @@ class SettingsFragment : Fragment() {
                     )
                 )
             } else {
+                userInfo = User(user.email, user.social, user.nday, 0, user.manner_temp, user.term, user.timezone, user.token)
+                binding.lNotiFirst.isClickable = false
+                binding.lNotiInterval.isClickable = false
+                binding.lNotiTime.isClickable = false
+
                 binding.tvNotiTitleFirst.setTextColor(
                     ContextCompat.getColor(
                         requireContext(),
@@ -191,6 +230,8 @@ class SettingsFragment : Fragment() {
                     )
                 )
             }
+            SharedPreferencesUtil(requireContext()).updateUser(userInfo)
+            // 서버로 갱신된 user 전송
         }
     }
 
@@ -216,15 +257,10 @@ class SettingsFragment : Fragment() {
                 if (error != null) {
                     Log.e(TAG, "연결 끊기 실패", error)
                 } else {
-                    if (user.social == "카카오"){
-                        viewModel.withdraw(UserDeleteRequest(user.email!!, user.social))
-                    }
+                    viewModel.withdraw(UserDeleteRequest(user.email!!, user.social))
                     Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                 }
-
-                if (user.social == "카카오"){
-                    SharedPreferencesUtil(requireContext()).deleteUser()
-                }
+                SharedPreferencesUtil(requireContext()).deleteUser()
                 settingsToLogin()
             }
         }

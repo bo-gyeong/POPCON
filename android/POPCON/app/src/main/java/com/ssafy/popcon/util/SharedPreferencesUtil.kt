@@ -14,6 +14,9 @@ class SharedPreferencesUtil(context: Context) {
         val editor = preferences.edit()
         editor.putString("id", user.email)
         editor.putString("type", user.social)
+        editor.putInt("noti_fitst", user.nday)
+        editor.putInt("noti_interval", user.term)
+        editor.putInt("noti_time", user.timezone)
         editor.apply()
     }
 
@@ -25,6 +28,18 @@ class SharedPreferencesUtil(context: Context) {
             User(id!!, type!!)
         } else {
             User("", "비회원")
+        }
+    }
+
+    //유저정보 업데이트(알림)
+    fun updateUser(user: User) {
+        val id = preferences.getString("id", "")
+        if (id != "") {
+            val editor = preferences.edit()
+            editor.putInt("noti_fitst", user.nday)
+            editor.putInt("noti_interval", user.term)
+            editor.putInt("noti_time", user.timezone)
+            editor.apply()
         }
     }
 
