@@ -86,9 +86,10 @@ fun getBrands(gifticons : List<Gifticon>): List<Brand> {
     Log.d("TAG", "getBrands: ${gifticons}")
     Log.d("TAG", "getBrands: ${gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()}")
 
-    var brandSet : Set<String> = setOf()
+    var brandSet = mutableSetOf<String>()
     for(gifticon : Gifticon in gifticons){
-
+        brandSet.add(gifticon.brand.brandName)
     }
-    return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
+    //return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
+    return set.toList()
 }
