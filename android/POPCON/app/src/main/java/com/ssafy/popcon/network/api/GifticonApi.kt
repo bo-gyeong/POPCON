@@ -1,9 +1,6 @@
 package com.ssafy.popcon.network.api
 
-import com.ssafy.popcon.dto.Brand
-import com.ssafy.popcon.dto.BrandRequest
-import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.*
 import retrofit2.http.*
 
 interface GifticonApi {
@@ -19,11 +16,8 @@ interface GifticonApi {
     suspend fun getBrandsByLocation(@Body request: BrandRequest): List<Brand>
 
     //브랜드 별 사용자 기프티콘 목록
-    @GET("gifticon_brand/{userId}/{brandName}")
-    suspend fun getGifticonByBrand(
-        @Path("userId") user: User,
-        brandName: String
-    ): List<Gifticon>
+    @POST("gifticons/brand")
+    suspend fun getGifticonByBrand(@Body gifticonByBrandRequest: GifticonByBrandRequest): List<Gifticon>
 
     //히스토리
     @GET("gifticons/{userId}/{}")

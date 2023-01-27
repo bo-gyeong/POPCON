@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -73,22 +74,28 @@ class HomeFragment : Fragment() {
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
 
         viewModel.gifticons.observe(viewLifecycleOwner) {
-            gifticonAdapter = GiftconAdapter(GiftconAdapter.GifticonListener { gifticon ->
-                val args = Bundle()
-                args.putSerializable("gifticon", gifticon)
+            if (it.isEmpty()) {
+                binding.tvNoGifticon.isVisible = true
+            } else {
+                binding.tvNoGifticon.isVisible = false
 
-                val dialogFragment = HomeDialogFragment()
-                dialogFragment.arguments = args
-                dialogFragment.show(childFragmentManager, "popup")
-            })
-            binding.rvGifticon.apply {
-                adapter = gifticonAdapter
-                layoutManager = GridLayoutManager(context, 2)
-                adapter!!.stateRestorationPolicy =
-                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+                gifticonAdapter = GiftconAdapter(GiftconAdapter.GifticonListener { gifticon ->
+                    val args = Bundle()
+                    args.putSerializable("gifticon", gifticon)
+
+                    val dialogFragment = HomeDialogFragment()
+                    dialogFragment.arguments = args
+                    dialogFragment.show(childFragmentManager, "popup")
+                })
+                binding.rvGifticon.apply {
+                    adapter = gifticonAdapter
+                    layoutManager = GridLayoutManager(context, 2)
+                    adapter!!.stateRestorationPolicy =
+                        RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+                }
+
+                gifticonAdapter.submitList(it)
             }
-
-            gifticonAdapter.submitList(it)
         }
 
 

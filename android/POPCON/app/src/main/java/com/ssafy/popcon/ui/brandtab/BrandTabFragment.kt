@@ -26,6 +26,8 @@ import kotlin.streams.toList
 class BrandTabFragment : Fragment() {
     private lateinit var binding: FragmentBrandTabBinding
     private lateinit var brandAdapter: BrandAdapter
+    var brands = mutableListOf<Brand>()
+
     private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     lateinit var mainActivity: MainActivity
 
@@ -52,19 +54,38 @@ class BrandTabFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //init()
         setBrandTab()
+    }
+
+    private fun init() {
+        brands.clear()
+        brands.add(Brand("", "전체"))
+        brands.add(Brand("", "히스토리"))
+
+        brandAdapter =
+            BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
+
+        binding.rvBrand.apply {
+            adapter = brandAdapter
+            adapter!!.stateRestorationPolicy =
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        }
+
+        brandAdapter.submitList(brands)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun setBrandTab() {
-        var brands = mutableListOf<Brand>()
-
-        viewModel.gifticons.observe(viewLifecycleOwner){
+        viewModel.allGifticons.observe(viewLifecycleOwner) {
+            Log.d("TAG", "setBrandTab: $it")
+            brands.clear()
             brands.add(Brand("", "전체"))
-            brands.addAll(getBrands(it))
+            //brands.addAll(getBrands(it))
             brands.add(Brand("", "히스토리"))
 
-            brandAdapter = BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
+            brandAdapter =
+                BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
 
             binding.rvBrand.apply {
                 adapter = brandAdapter
@@ -72,24 +93,12 @@ class BrandTabFragment : Fragment() {
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
 
-            brandAdapter.apply {
-                submitList(brands)
-                stateRestorationPolicy =
-                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-            }
+            brandAdapter.submitList(brands)
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.N)
-fun getBrands(gifticons : List<Gifticon>): List<Brand> {
-    Log.d("TAG", "getBrands: ${gifticons}")
-    Log.d("TAG", "getBrands: ${gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()}")
-
-    var brandSet = mutableSetOf<String>()
-    for(gifticon : Gifticon in gifticons){
-        brandSet.add(gifticon.brand.brandName)
-    }
-    //return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
-    return set.toList()
+fun getBrands(gifticons: List<Gifticon>): List<Brand> {
+    return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
 }

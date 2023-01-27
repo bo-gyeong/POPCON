@@ -26,6 +26,7 @@ import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 private const val TAG = "MainActivity_싸피"
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sensorManager: SensorManager
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         const val channel_id = "popcon_user"
 
         private var instance: MainActivity? = null
-        fun getInstance(): MainActivity?{
+        fun getInstance(): MainActivity? {
             return instance
         }
     }
@@ -65,36 +66,22 @@ class MainActivity : AppCompatActivity() {
     //navigation bar 설정
     private fun setNavBar() {
         this.setStatusBarTransparent() // 투명 상태 바
-        binding.lBottomNavigationView.setPadding(
+        binding.bottomAppBar.setPadding(
             0,
             0,
             0,
             this.navigationHeight()
         )
 
-        // 재선택시 다시 렌더링 하지 않기 위해 수정
-        binding.lBottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.addFragment -> {
-                    if (binding.lBottomNavigationView.selectedItemId == R.id.homeFragment) {
-                        changeFragment(AddFragment())
-                    } else if (binding.lBottomNavigationView.selectedItemId == R.id.mapFragment) {
-                        changeFragment(AddFragment())
-                    }
-                }
-                R.id.homeFragment -> {
-                    if (binding.lBottomNavigationView.selectedItemId != R.id.homeFragment)
-                        changeFragment(HomeFragment())
-                }
-                R.id.mapFragment -> {
-                    if (binding.lBottomNavigationView.selectedItemId != R.id.mapFragment)
-                        changeFragment(MapFragment())
-                }
-            }
-            true
-        }
+        binding.btnFab.setPadding(
+            0,
+            0,
+            0,
+            this.navigationHeight()
 
-        binding.btnFab.setOnClickListener{
+        )
+
+        binding.btnFab.setOnClickListener {
             addFragment(AddFragment())
         }
     }
@@ -159,10 +146,10 @@ class MainActivity : AppCompatActivity() {
     //하단바 숨기기
     fun hideBottomNav(state: Boolean) {
         if (state) {
-            binding.lBottomNavigationView.visibility = View.GONE
-            binding.lFabContainer.visibility = View.GONE
+            //binding.bottomAppBar.visibility = View.GONE
+            //binding.lFabContainer.visibility = View.GONE
         } else {
-            binding.lBottomNavigationView.visibility = View.VISIBLE
+            binding.bottomAppBar.visibility = View.VISIBLE
             binding.lFabContainer.visibility = View.VISIBLE
         }
     }
@@ -190,24 +177,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 토큰 보내기
-    fun uploadToken(token: String){
+    fun uploadToken(token: String) {
         fcmViewModel.uploadToken(token)
     }
 
     // 알림 관련 메시지 전송
-    fun sendMessageTo(token: String, title: String, body: String){
+    fun sendMessageTo(token: String, title: String, body: String) {
         fcmViewModel.sendMessageTo(token, title, body)
         //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
     }
 
     // 토큰 생성
-    private fun getFCMToken(){
+    private fun getFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful){
+            if (!task.isSuccessful) {
                 return@addOnCompleteListener
             }
-            Log.d(TAG, "token 정보: ${task.result?:"task.result is null"}")
-            if (task.result != null){
+            Log.d(TAG, "token 정보: ${task.result ?: "task.result is null"}")
+            if (task.result != null) {
                 uploadToken(task.result)
                 fcmViewModel.setToken(task.result)
             }
@@ -218,5 +205,4 @@ class MainActivity : AppCompatActivity() {
         super.onRestart()
         checkPermissions()
     }
-
 }

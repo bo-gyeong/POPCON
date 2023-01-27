@@ -4,13 +4,16 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
+import com.ssafy.popcon.util.Utils
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
@@ -40,6 +43,7 @@ class HomeDialogFragment : DialogFragment() {
         dialog?.window?.attributes = params as WindowManager.LayoutParams
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,6 +58,7 @@ class HomeDialogFragment : DialogFragment() {
         gifticon = mArgs!!.getSerializable("gifticon") as Gifticon
 
         binding.gifticon = gifticon as Gifticon?
+        binding.badge = Utils.calDday(gifticon)
         return binding.root
     }
 

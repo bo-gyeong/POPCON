@@ -7,10 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.popcon.dto.Brand
-import com.ssafy.popcon.dto.BrandRequest
-import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
 import com.ssafy.popcon.ui.common.Event
 import kotlinx.coroutines.launch
@@ -19,6 +16,9 @@ import kotlin.streams.toList
 class GifticonViewModel(private val gifticonRepository: GifticonRepository) : ViewModel() {
     private val _gifticons = MutableLiveData<List<Gifticon>>()
     val gifticons: LiveData<List<Gifticon>> = _gifticons
+
+    private val _allGifticons =  MutableLiveData<List<Gifticon>>()
+    val allGifticons : LiveData<List<Gifticon>> = _allGifticons
 
     private val _gifticonByBrand = MutableLiveData<List<Gifticon>>() //popup 화면에서 사용
     val gifticonByBrand: LiveData<List<Gifticon>> = _gifticonByBrand
@@ -42,6 +42,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
             val gifticons = gifticonRepository.getGifticonByUser(user)
 
             _gifticons.value = gifticons
+            _allGifticons.value = gifticons
         }
     }
 
@@ -60,7 +61,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
             getGifticonByUser(user)
         } else {
             viewModelScope.launch {
-                val gifticons = gifticonRepository.getGifticonByBrand(user, brandName)
+                val gifticons = gifticonRepository.getGifticonByBrand(GifticonByBrandRequest(user.email!!, user.social.toString(), -1, brandName))
                 _gifticons.value = gifticons
             }
         }
