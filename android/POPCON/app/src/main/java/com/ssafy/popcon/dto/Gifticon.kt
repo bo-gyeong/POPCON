@@ -27,7 +27,7 @@ data class Brand(
     }
 
     override fun hashCode(): Int {
-        
+        return brandName.toInt()
     }
 }
 

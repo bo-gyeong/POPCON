@@ -84,7 +84,7 @@ class BrandTabFragment : Fragment() {
 @RequiresApi(Build.VERSION_CODES.N)
 fun getBrands(gifticons : List<Gifticon>): List<Brand> {
     Log.d("TAG", "getBrands: ${gifticons}")
-    Log.d("TAG", "getBrands: ${gifticons.stream().map { gc -> gc.brand }?.distinct().toString()}")
+    Log.d("TAG", "getBrands: ${gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()}")
 
     var brandSet : Set<String> = setOf()
     for(gifticon : Gifticon in gifticons){
