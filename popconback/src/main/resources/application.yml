@@ -39,3 +39,12 @@ logging:
         util:
           EC2MetadataUtils: error
 
+gcp:
+  config:
+    file: coral-sum-368108-cd6003507664.json
+  project:
+    id: coral-sum-368108
+  bucket:
+    id: popcon
+  dir:
+    name:
