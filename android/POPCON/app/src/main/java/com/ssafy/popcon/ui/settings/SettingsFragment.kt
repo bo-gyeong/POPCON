@@ -214,12 +214,18 @@ class SettingsFragment : Fragment() {
         binding.tvWithdraw.setOnClickListener {
             UserApiClient.instance.unlink { error ->
                 if (error != null) {
-                    settingsToLogin()
                     Log.e(TAG, "연결 끊기 실패", error)
                 } else {
-                    settingsToLogin()
+                    if (user.social == "카카오"){
+                        viewModel.withdraw(UserDeleteRequest(user.email!!, user.social))
+                    }
                     Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                 }
+
+                if (user.social == "카카오"){
+                    SharedPreferencesUtil(requireContext()).deleteUser()
+                }
+                settingsToLogin()
             }
         }
     }
@@ -237,8 +243,6 @@ class SettingsFragment : Fragment() {
     //네이버 회원탈퇴
     private fun withdrawNaver() {
         binding.tvWithdraw.setOnClickListener {
-            val user = SharedPreferencesUtil(requireContext()).getUser();
-
             if (user.social == "네이버") {
                 NidOAuthLogin().callDeleteTokenApi(requireContext(), object : OAuthLoginCallback {
                     override fun onSuccess() {
