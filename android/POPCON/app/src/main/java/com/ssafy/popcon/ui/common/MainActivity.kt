@@ -84,6 +84,8 @@ class MainActivity : AppCompatActivity() {
         binding.btnFab.setOnClickListener {
             addFragment(AddFragment())
         }
+
+
     }
 
     fun changeFragment(fragment: Fragment) {
@@ -146,8 +148,8 @@ class MainActivity : AppCompatActivity() {
     //하단바 숨기기
     fun hideBottomNav(state: Boolean) {
         if (state) {
-            //binding.bottomAppBar.visibility = View.GONE
-            //binding.lFabContainer.visibility = View.GONE
+            binding.bottomAppBar.visibility = View.GONE
+            binding.lFabContainer.visibility = View.GONE
         } else {
             binding.bottomAppBar.visibility = View.VISIBLE
             binding.lFabContainer.visibility = View.VISIBLE

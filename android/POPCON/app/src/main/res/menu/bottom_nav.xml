@@ -3,12 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/homeFragment"
-        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home_24"
         android:title=""
-        android:icon="@drawable/ic_baseline_home_24"/>
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/placeholder"
+        android:title=""/>
     <item
         android:id="@+id/mapFragment"
-        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_map_24"
         android:title=""
-        android:icon="@drawable/ic_baseline_map_24"/>
+        app:showAsAction="always" />
 </menu>
