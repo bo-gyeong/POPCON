@@ -60,7 +60,7 @@ class AddFragment : Fragment(), onItemClick {
     private lateinit var OriginalImgUris:ArrayList<GifticonImg>
     private lateinit var cropXyImgUris:ArrayList<GifticonImg>
     private lateinit var barcodeImgUris:ArrayList<GifticonImg>
-    private val delImgUri = ArrayList<Uri>()
+    private val delImgUris = ArrayList<Uri>()
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
     var clickCv = ""
@@ -118,6 +118,12 @@ class AddFragment : Fragment(), onItemClick {
 
         dateFormat()
 
+        binding.btnOriginalSee.setOnClickListener {
+            if (OriginalImgUris.size != 0){
+                seeOriginalImgDialog(OriginalImgUris[imgNum])
+            }
+        }
+
         binding.cbPrice.setOnClickListener{
             changeChkState()
         }
@@ -125,20 +131,14 @@ class AddFragment : Fragment(), onItemClick {
         binding.btnRegi.setOnClickListener {
             //유효성 검사
             if (chkCnt >= OriginalImgUris.size){
-                for (i in 0 until delImgUri.size){
-                    delCropImg(delImgUri[i])
+                for (i in 0 until delImgUris.size){
+                    delCropImg(delImgUris[i])
                 }
 
                 viewModel.addGifticon(makeAddInfoList())
                 mainActivity.changeFragment(HomeFragment())
             } else{
                 Toast.makeText(requireContext(), "기프티콘 정보를 확인해주세요", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.btnOriginalSee.setOnClickListener {
-            if (OriginalImgUris.size != 0){
-                seeOriginalImgDialog(OriginalImgUris[imgNum])
             }
         }
     }
@@ -163,8 +163,8 @@ class AddFragment : Fragment(), onItemClick {
                             val cropXYBarcodeUri = cropXYBar(i)
                             cropXyImgUris.add(GifticonImg(cropXYImgUri))
                             barcodeImgUris.add(GifticonImg(cropXYBarcodeUri))
-                            delImgUri.add(cropXYImgUri)
-                            delImgUri.add(cropXYBarcodeUri)
+                            delImgUris.add(cropXYImgUri)
+                            delImgUris.add(cropXYBarcodeUri)
                         }
                         //viewModel.useOcr("https://cloud.google.com/vision/docs/images/bicycle_example.png")
                         //viewModel.useOcr("C:\\1.PNG")
@@ -174,10 +174,10 @@ class AddFragment : Fragment(), onItemClick {
                     } else{  //이미지 크롭
                         if (clickCv == PRODUCT){
                             cropXyImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
-                            delImgUri.add(cropXyImgUris[imgNum].imgUri)
+                            delImgUris.add(cropXyImgUris[imgNum].imgUri)
                         } else if (clickCv == BARCODE){
                             barcodeImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
-                            delImgUri.add(barcodeImgUris[imgNum].imgUri)
+                            delImgUris.add(barcodeImgUris[imgNum].imgUri)
                         }
                         fillContent(imgNum)
                     }
