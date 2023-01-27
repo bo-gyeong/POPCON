@@ -38,4 +38,8 @@
     <string name="cancel">취소</string>
     <string name="recrop">직접 자르기</string>
 
+    <!--  dialog_settings_noti  -->
+    <string name="first">일 전</string>
+    <string name="interval">일 마다</string>
+
 </resources>
