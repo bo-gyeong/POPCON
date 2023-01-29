@@ -7,14 +7,20 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.ssafy.popcon.databinding.DialogHistoryBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
+import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HistoryDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHistoryBinding
-    private lateinit var history : Gifticon
+    private lateinit var history: Gifticon
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+
 
     override fun onStart() {
         super.onStart()
@@ -68,11 +74,21 @@ class HistoryDialogFragment : DialogFragment() {
             dialogFragment.arguments = args
             dialogFragment.show(childFragmentManager, "originalUrl")
         }
+
+        //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+        binding.btnDelete.setOnClickListener {
+            viewModel.deleteGifticon(history.barcodeNum)
+
+            dialog?.dismiss()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         //기프티콘 상태 업데이트
+        if (!binding.btnUse.isChecked) {
+            viewModel.updateGifticon(history)
+        }
     }
 }

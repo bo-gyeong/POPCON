@@ -9,15 +9,19 @@ import android.os.Bundle
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
 import com.ssafy.popcon.util.Utils
+import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
     private lateinit var gifticon : Gifticon
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     override fun onStart() {
         super.onStart()
@@ -73,11 +77,21 @@ class HomeDialogFragment : DialogFragment() {
             dialogFragment.arguments = args
             dialogFragment.show(childFragmentManager, "originalUrl")
         }
+
+        //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+        binding.btnDelete.setOnClickListener {
+            viewModel.deleteGifticon(gifticon.barcodeNum)
+
+            dialog?.dismiss()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
         //기프티콘 상태 업데이트
+        if (!binding.btnUse.isChecked) {
+            viewModel.updateGifticon(gifticon)
+        }
     }
 }

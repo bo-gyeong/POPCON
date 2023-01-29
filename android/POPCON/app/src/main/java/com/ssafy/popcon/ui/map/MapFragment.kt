@@ -35,6 +35,7 @@ import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.MapViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 import net.daum.mf.map.api.MapPOIItem
@@ -57,7 +58,7 @@ class MapFragment : Fragment() {
     private var getLatitude: Double = 0.0
     private lateinit var internalStorage: String
     private lateinit var fileName: String
-    private val viewModel: MapViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     private var param1: String? = null
     private var param2: String? = null
@@ -157,7 +158,10 @@ class MapFragment : Fragment() {
         if (!path.exists()) {
             path.mkdirs()
         }
+    }
 
+    //배너 클릭하면, 기프티콘, 매장위치 받아와야함.
+    private fun topBannerClickListener() {
         // 나중에 서버에서 받아올 가게 정보 = storeList
         /*viewModel.mapBrandLogo.observe(viewLifecycleOwner, Observer {
             // 2. 해당 브랜드들 미리 내부 저장소에 다운 시키기 -> 이미 저장되어 있으면 안하고, 내부 저장소에 저장함. Device File Explorer ㄱㄱ
@@ -201,7 +205,7 @@ class MapFragment : Fragment() {
     }
 
     private fun setGifticonBanner() {
-        viewModel.mapGifticon.observe(viewLifecycleOwner) {
+        viewModel.gifticons.observe(viewLifecycleOwner) {
             with(binding.viewpagerMapGiftcon) {
                 adapter = MapGifticonAdpater().apply {
                     submitList(it)

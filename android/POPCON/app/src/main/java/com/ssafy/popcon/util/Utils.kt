@@ -8,11 +8,13 @@ import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
 import com.ssafy.popcon.dto.Badge
+import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.streams.toList
 
 object Utils {
     //상태바 투명처리
@@ -49,6 +51,8 @@ object Utils {
 
         return if (dDay.toInt() == 0) {
             Badge("오늘까지", "#FFFF0000")
+        } else if (dDay.toInt() < 0) {
+            Badge("사용완료", "#D2D2D2")
         } else {
             var color = "#8ED2CD"
             if (dDay <= 3) {
