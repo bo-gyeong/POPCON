@@ -33,6 +33,9 @@
     <string name="noti_title_time">시간 설정</string>
     <string name="logout">로그아웃</string>
     <string name="withdraw">회원탈퇴</string>
+    <string name="time_9">9:00</string>
+    <string name="time_13">13:00</string>
+    <string name="time_18">18:00</string>
 
     <!--  dialog_add_crop_chk  -->
     <string name="cancel">취소</string>

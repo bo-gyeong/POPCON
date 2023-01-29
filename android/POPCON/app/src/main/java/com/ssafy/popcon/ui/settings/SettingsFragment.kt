@@ -59,7 +59,8 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        notiActive()
+        switchClick()
+        showSettingTime()
         settingVisibility()
 
         binding.lNotiFirst.setOnClickListener {
@@ -71,6 +72,7 @@ class SettingsFragment : Fragment() {
         binding.lNotiTime.setOnClickListener {
             makeDialog(2)
         }
+        switchState()
 
         binding.run {
             clickJoin()
@@ -99,6 +101,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    // 알림 다이얼로그 생성
     private fun makeDialog(notiListPosition: Int){
         val dialog = NotiDialogFragment(notiListPosition)
         dialog.show(childFragmentManager, "NotiDialog")
@@ -110,6 +113,9 @@ class SettingsFragment : Fragment() {
                     1 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, selectNum, user.timezone, user.token)
                     2 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, user.term, selectNum, user.token)
                 }
+                // 왜 이렇게 해야하는지?
+                //SharedPreferencesUtil(requireContext()).updateUser(User("wkdqhrud4870@daum.net", "네이버", 5, 0, 0, 2, 5, "sdfsdf"))
+                Log.d(TAG, "onViewCreated: ${user.email} + ${SharedPreferencesUtil(requireContext()).preferences.getInt("noti_fitst", -1)}")
                 SharedPreferencesUtil(requireContext()).updateUser(userInfo!!)
                 Log.d(TAG, "onClicked: ${user.nday}")
                 // 서버로 갱신된 user 전송
@@ -122,6 +128,15 @@ class SettingsFragment : Fragment() {
         SharedPreferencesUtil(requireContext()).deleteUser()
         mainActivity.onBackPressed()
         mainActivity.changeFragment(LoginFragment())
+    }
+
+    // 시간 설정 text변경
+    private fun showSettingTime(){
+        when(user.timezone) {
+            0 -> binding.tvNotiSettingTime.text = resources.getText(R.string.time_9)
+            1 -> binding.tvNotiSettingTime.text = resources.getText(R.string.time_13)
+            2 -> binding.tvNotiSettingTime.text = resources.getText(R.string.time_18)
+        }
     }
 
     // 비회원일 경우 로그인한계정, 로그아웃, 회원탈퇴 안보이도록
@@ -141,98 +156,116 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private fun switchState(){
+        if (binding.switchNoti.isChecked){
+            notiActive()
+        } else{
+            notiInactive()
+        }
+    }
+
     // 알림 활성화 여부
-    private fun notiActive() {
+    private fun switchClick() {
         var userInfo: User
         binding.switchNoti.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
                 userInfo = User(user.email, user.social, user.nday, 1, user.manner_temp, user.term, user.timezone, user.token)
-                binding.lNotiFirst.isClickable = true
-                binding.lNotiInterval.isClickable = true
-                binding.lNotiTime.isClickable = true
-
-                binding.tvNotiTitleFirst.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_black_03
-                    )
-                )
-                binding.tvNotiTitleInterval.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_black_03
-                    )
-                )
-                binding.tvNotiTitleTime.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_black_03
-                    )
-                )
-                binding.tvNotiSettingFirst.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_grey_04
-                    )
-                )
-                binding.tvNotiSettingInterval.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_grey_04
-                    )
-                )
-                binding.tvNotiSettingTime.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_grey_04
-                    )
-                )
+                notiActive()
             } else {
                 userInfo = User(user.email, user.social, user.nday, 0, user.manner_temp, user.term, user.timezone, user.token)
-                binding.lNotiFirst.isClickable = false
-                binding.lNotiInterval.isClickable = false
-                binding.lNotiTime.isClickable = false
-
-                binding.tvNotiTitleFirst.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_grey_07
-                    )
-                )
-                binding.tvNotiTitleInterval.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_grey_07
-                    )
-                )
-                binding.tvNotiTitleTime.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_grey_07
-                    )
-                )
-                binding.tvNotiSettingFirst.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_transparent_grey_07
-                    )
-                )
-                binding.tvNotiSettingInterval.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_transparent_grey_07
-                    )
-                )
-                binding.tvNotiSettingTime.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.popcon_transparent_grey_07
-                    )
-                )
+                notiInactive()
             }
             SharedPreferencesUtil(requireContext()).updateUser(userInfo)
             // 서버로 갱신된 user 전송
         }
+    }
+
+    // 알림 스위치 활성화상태
+    private fun notiActive(){
+        binding.lNotiFirst.isClickable = true
+        binding.lNotiInterval.isClickable = true
+        binding.lNotiTime.isClickable = true
+
+        binding.tvNotiTitleFirst.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_black_03
+            )
+        )
+        binding.tvNotiTitleInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_black_03
+            )
+        )
+        binding.tvNotiTitleTime.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_black_03
+            )
+        )
+        binding.tvNotiSettingFirst.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
+        binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
+        binding.tvNotiSettingTime.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
+    }
+
+    // 알림 스위치 비활성화상태
+    private fun notiInactive(){
+        binding.lNotiFirst.isClickable = false
+        binding.lNotiInterval.isClickable = false
+        binding.lNotiTime.isClickable = false
+
+        binding.tvNotiTitleFirst.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_07
+            )
+        )
+        binding.tvNotiTitleInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_07
+            )
+        )
+        binding.tvNotiTitleTime.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_07
+            )
+        )
+        binding.tvNotiSettingFirst.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
+        binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
+        binding.tvNotiSettingTime.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
     }
 
     // 카카오 로그아웃

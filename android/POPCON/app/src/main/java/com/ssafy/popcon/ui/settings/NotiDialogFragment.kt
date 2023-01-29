@@ -59,6 +59,7 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
 
                 binding.npSelect.minValue = 0
                 binding.npSelect.maxValue = 30
+                binding.npSelect.value = user.nday
             }
             1 -> {
                 binding.tvSelectTitle.text = requireContext().resources.getText(R.string.noti_title_interval)
@@ -67,15 +68,21 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
 
                 binding.npSelect.minValue = 0
                 binding.npSelect.maxValue = user.nday
+                binding.npSelect.value = user.term
             }
             2 -> {
                 binding.tvSelectTitle.text = requireContext().resources.getText(R.string.noti_title_time)
                 binding.tvSelect.visibility = View.GONE
 
-                val timeList = arrayOf("9:00", "13:00", "18:00")
+                val timeList = arrayOf(
+                    this.resources.getText(R.string.time_9) as String,
+                    this.resources.getText(R.string.time_13) as String,
+                    this.resources.getText(R.string.time_18) as String
+                )
                 binding.npSelect.displayedValues = timeList
                 binding.npSelect.minValue = 0
                 binding.npSelect.maxValue = timeList.size-1
+                binding.npSelect.value = user.timezone
             }
         }
     }

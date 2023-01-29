@@ -103,7 +103,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:theme="@style/switch_Orange"
-                    android:checked="true"
+                    android:checked="@{user.alarm==0 ? false : true}"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintRight_toRightOf="parent"/>
 
@@ -141,7 +141,7 @@
                         android:id="@+id/tv_noti_setting_first"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10일 전"
+                        android:text="@{String.valueOf(user.nday)}"
                         app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
@@ -173,7 +173,7 @@
                         android:id="@+id/tv_noti_setting_interval"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="3일 마다"
+                        android:text="@{String.valueOf(user.term)}"
                         app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
@@ -205,7 +205,6 @@
                         android:id="@+id/tv_noti_setting_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="오후 6:00"
                         app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
