@@ -7,8 +7,10 @@ import com.example.popconback.user.dto.DeleteUser.DeleteUserDto;
 import com.example.popconback.user.dto.UpdateUser.ResponseUpdateUserDto;
 import com.example.popconback.user.dto.UserDto;
 import com.example.popconback.user.repository.UserRepository;
+import com.example.popconback.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -21,6 +23,9 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Value("${jwt.secret}")
+    private String secretkey;
+    private Long expiredMs = 1000 * 60 * 60l;
     public ResponsCreateUserDto CreateUser (CreateUserDto createuserDto){
         User user = new User();
         BeanUtils.copyProperties(createuserDto, user, "hash");// 해시값은 무시하고 복사
@@ -35,6 +40,24 @@ public class UserService {
 
         BeanUtils.copyProperties(userRepository.save(user),responsDto );
         return responsDto;
+    }
+
+
+    public String login (String email, String social){// 카카오 토큰을 가지고 와서 여기서 로그인 시켜야함
+                // 카카오에 사용자 정보를 요청
+                // 그걸로 DB 탐색
+                // 사용자가 있으면 있는거 보내고 없으면 DB에 회원 등록하고 보내고 (소셜 로그인이라 회원가입과 분리가 안되어 있어서)
+                // 두가지 경우 생각해야함
+        UserDto user = new UserDto();
+        user.setEmail(email);
+        user.setSocial(social);
+        Optional<User> optionalUser = userRepository.findById(user.hashCode());
+        if(optionalUser.isPresent()){
+
+        }
+        String token = JwtUtil.creatJwt(email,social, secretkey,expiredMs );
+
+        return token;
     }
 
     public ResponseUpdateUserDto updateUser(CreateUserDto createUserDto,int hash){

@@ -15,9 +15,11 @@ import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
 import com.example.popconback.gifticon.service.GifticonService;
+import com.example.popconback.user.dto.UserDto;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,12 @@ import java.util.List;
 public class GifticonController {
 
     private final GifticonService gifticonService;
+
+    @GetMapping("/test")
+    ResponseEntity<String> test(Authentication authentication){
+        UserDto user = (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok().body(user.getEmail()+user.getSocial()+"test");
+    }
 
     @ApiOperation(value = "기프티콘 조회", notes = "유저의 기프티콘 정보 조회", httpMethod = "GET")
     @ApiImplicitParams({
