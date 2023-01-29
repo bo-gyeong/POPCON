@@ -80,4 +80,9 @@ object Utils {
         val remainingDay = (eventDate.time - today.time.time) / (60 * 60 * 24 * 1000)
         return remainingDay.toInt() + 1
     }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun getBrands(gifticons: List<Gifticon>): List<Brand> {
+        return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
+    }
 }

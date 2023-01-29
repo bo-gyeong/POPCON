@@ -18,6 +18,7 @@ import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.history.HistoryFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -81,7 +82,7 @@ class BrandTabFragment : Fragment() {
             Log.d("TAG", "setBrandTab: $it")
             brands.clear()
             brands.add(Brand("", "전체"))
-            //brands.addAll(getBrands(it))
+            //brands.addAll(Utils.getBrands(it))
             brands.add(Brand("", "히스토리"))
 
             brandAdapter =
@@ -96,9 +97,4 @@ class BrandTabFragment : Fragment() {
             brandAdapter.submitList(brands)
         }
     }
-}
-
-@RequiresApi(Build.VERSION_CODES.N)
-fun getBrands(gifticons: List<Gifticon>): List<Brand> {
-    return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
 }
