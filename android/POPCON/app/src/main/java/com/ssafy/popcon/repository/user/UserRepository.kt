@@ -16,4 +16,8 @@ class UserRepository(private val remoteDataSource: UserRemoteDataSource) {
     suspend fun withdraw(user: UserDeleteRequest) {
         return remoteDataSource.withdraw(user)
     }
+
+    suspend fun updateUser(user: User, hash:Int): User{
+        return remoteDataSource.updateUser(user, hash)
+    }
 }

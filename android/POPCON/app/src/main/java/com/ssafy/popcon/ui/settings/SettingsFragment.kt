@@ -1,6 +1,7 @@
 package com.ssafy.popcon.ui.settings
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
@@ -24,19 +27,22 @@ import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import kotlin.math.log
 
 private const val TAG = "SettingsFragment_싸피"
-
+/** 추후 로그 지우기 **/
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
-    private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: UserViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     private lateinit var mainActivity: MainActivity
     private lateinit var user: User
+    private lateinit var shardPreference:SharedPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         user = SharedPreferencesUtil(requireContext()).getUser()
+        shardPreference = SharedPreferencesUtil(requireContext()).preferences
         mainActivity = context as MainActivity
     }
 
@@ -52,6 +58,13 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        user = User(
+            user.email,
+            shardPreference.getInt("noti_first", 1),
+            shardPreference.getInt("alarm", 1),
+            shardPreference.getInt("noti_interval", 1),
+            shardPreference.getInt("noti_time", 1)
+        )
         binding.user = user
 
         return binding.root
@@ -106,19 +119,27 @@ class SettingsFragment : Fragment() {
         val dialog = NotiDialogFragment(notiListPosition)
         dialog.show(childFragmentManager, "NotiDialog")
         dialog.setOnClickListener(object: NotiDialogFragment.BtnClickListener{
-            override fun onClicked(selectNum: Int) {
+            override fun onClicked(selectPos: Int, selectValue:Int) {
                 var userInfo: User? = null
-                when (selectNum){
-                    0 -> userInfo = User(user.email, user.social, selectNum, user.alarm, user.manner_temp, user.term, user.timezone, user.token)
-                    1 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, selectNum, user.timezone, user.token)
-                    2 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, user.term, selectNum, user.token)
+                Log.d(TAG, "onClicked: ${selectPos}   ${selectValue}")
+                when (selectPos){
+                    0 -> {
+                        var term = user.term
+                        if (term > selectValue){
+                            term = selectValue
+                        }
+                        userInfo = User(user.email, user.social, selectValue, user.alarm, user.manner_temp, term, user.timezone, user.token)
+                    }
+                    1 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, selectValue, user.timezone, user.token)
+                    2 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, user.term, selectValue, user.token)
                 }
-                // 왜 이렇게 해야하는지?
-                //SharedPreferencesUtil(requireContext()).updateUser(User("wkdqhrud4870@daum.net", "네이버", 5, 0, 0, 2, 5, "sdfsdf"))
-                Log.d(TAG, "onViewCreated: ${user.email} + ${SharedPreferencesUtil(requireContext()).preferences.getInt("noti_fitst", -1)}")
                 SharedPreferencesUtil(requireContext()).updateUser(userInfo!!)
-                Log.d(TAG, "onClicked: ${user.nday}")
-                // 서버로 갱신된 user 전송
+                user = userInfo
+
+                viewModel.updateUser(user, -308222648)
+                viewModel.user.observe(viewLifecycleOwner){
+                    binding.user = it
+                }
             }
         })
     }
@@ -176,7 +197,12 @@ class SettingsFragment : Fragment() {
                 notiInactive()
             }
             SharedPreferencesUtil(requireContext()).updateUser(userInfo)
-            // 서버로 갱신된 user 전송
+            user = userInfo
+
+            viewModel.updateUser(user, -308222648)
+            viewModel.user.observe(viewLifecycleOwner){
+                binding.user = it
+            }
         }
     }
 

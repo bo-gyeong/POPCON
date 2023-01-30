@@ -29,6 +29,7 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
         builder.setView(binding.root)
 
         user = SharedPreferencesUtil(requireParentFragment().requireContext()).getUser()
+        userInit()
         showDlgContent(notiListPosition)
 
         // tvSelectTitle과 width크기 같게
@@ -43,11 +44,23 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
         })
 
         binding.btnComplete.setOnClickListener {
-            onClickListener.onClicked(binding.npSelect.value)
+            onClickListener.onClicked(notiListPosition, binding.npSelect.value)
             dismiss()
         }
 
         return builder.create()
+    }
+
+    // user 초기화
+    private fun userInit(){
+        val shardPreference = SharedPreferencesUtil(requireContext()).preferences
+        user = User(
+            user.email,
+            shardPreference.getInt("noti_first", 1),
+            shardPreference.getInt("alarm", 1),
+            shardPreference.getInt("noti_interval", 1),
+            shardPreference.getInt("noti_time", 1)
+        )
     }
 
     private fun showDlgContent(notiListPosition: Int){
@@ -88,7 +101,7 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
     }
 
     interface BtnClickListener{
-        fun onClicked(selectNum: Int)
+        fun onClicked(selectPos: Int, selectValue:Int)
     }
 
     private lateinit var onClickListener: BtnClickListener
