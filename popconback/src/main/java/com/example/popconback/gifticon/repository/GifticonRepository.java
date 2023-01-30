@@ -15,4 +15,6 @@ public interface GifticonRepository extends JpaRepository<Gifticon, String> {
     List<Gifticon> findByDueAndState(Date date, int state);
 
     List<Gifticon> findByUser_HashAndStateGreaterThanEqual(int hash, int state);
+
+    Gifticon findByBarcodeNum(String barcodeNum);
 }

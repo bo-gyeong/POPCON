@@ -1,6 +1,7 @@
 package com.example.popconback.files.controller;
 
 import com.example.popconback.files.domain.InputFile;
+import com.example.popconback.files.dto.RegisterGifticonDto;
 import com.example.popconback.files.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -20,9 +21,16 @@ public class FileController {
 
     private final FileService fileService;
 
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/add_origin",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public List<InputFile> addFile(@RequestBody MultipartFile[] files){
         LOGGER.debug("Call addFile API");
         return fileService.uploadFiles(files);
+    }
+
+
+    @PostMapping(value="/register_gifticon", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public List<InputFile> registerGifticon(RegisterGifticonDto registerGifticonDto){
+        LOGGER.debug("Call registerGifticon API");
+        return fileService.registerGifticon(registerGifticonDto);
     }
 }
