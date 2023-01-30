@@ -1,39 +1,38 @@
 package com.ssafy.popcon.ui.popup
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
-import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
-import com.ssafy.popcon.dto.BrandRequest
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.home.brandtab.BrandTabFragment
-import com.ssafy.popcon.ui.map.MapFragment
-import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+
 
 class GifticonDialogFragment : DialogFragment() {
 
     private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var binding: DialogUseBinding
+    private var prevIndex = 0
+    private var newWidth = 20
+    private var newHeight = 20
+    private var oldWidth = 10
+    private var oldHeight = 10
 
     //팝업창 떠있는지 확인하는 변수
     companion object {
@@ -75,8 +74,8 @@ class GifticonDialogFragment : DialogFragment() {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
-        setList()
-
+        //setList()
+        test()
         return binding.root
     }
 
@@ -184,25 +183,51 @@ class GifticonDialogFragment : DialogFragment() {
             )
         )
 
-        binding.vpPreview.addOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                if (previewAdapter.getItem(binding.vpPreview.currentItem + 2) is GifticonPreviewFragment) {
-                    //새로운 preview 선택됨
+        binding.vpPreview.apply{
+            addOnPageChangeListener(object : OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {}
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
                 }
-            }
-        })
+
+                override fun onPageSelected(position: Int) {
+                    if (previewAdapter.getItem(binding.vpPreview.currentItem + 2) is GifticonPreviewFragment) {
+
+                    }
+                    //새로운 preview 선택됨
+                    val v: View = binding.vpPreview.getChildAt(position)
+
+                    Log.d("TAG", "onPageSelected: $position")
+                    /*val params: ConstraintLayout.LayoutParams = ConstraintLayout.LayoutParams(
+                        newWidth, newHeight
+                    )
+
+                    v.layoutParams = params*/
+                    Log.d("TAG", "onPageSelected: ${binding.vpPreview.getChildAt(position)}")
+
+                    v.findViewById<ImageView>(R.id.bg_black).isVisible = false
+                    //v.layoutParams.height = 120
+                    val oldV: View = binding.vpPreview.getChildAt(prevIndex)
+                    /*val oldParams: ConstraintLayout.LayoutParams = ConstraintLayout.LayoutParams(
+                        oldWidth, oldHeight
+                    )
+
+                    oldV.layoutParams = oldParams*/
+                    oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
+                    /*oldV.layoutParams.width = 60
+                    oldV.layoutParams.width = 60*/
+
+
+                    prevIndex = position
+                }
+            })
+        }
     }
 
     //기프티콘 리스트 추가
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun setList() {
         viewModel.brands.observe(viewLifecycleOwner) {
             if (it.size == 0) {//근처에 매장 없음

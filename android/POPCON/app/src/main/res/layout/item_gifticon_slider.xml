@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
@@ -23,6 +24,16 @@
             android:src="@drawable/product"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/bg_black"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/background_black_gradient"
+            app:layout_constraintBottom_toBottomOf="@id/iv_product_preview"
+            app:layout_constraintEnd_toEndOf="@id/iv_product_preview"
+            app:layout_constraintStart_toStartOf="@id/iv_product_preview"
+            app:layout_constraintTop_toTopOf="@id/iv_product_preview" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
