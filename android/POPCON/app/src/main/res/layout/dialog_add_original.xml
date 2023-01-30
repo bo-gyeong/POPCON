@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_gravity="end|top"
-                    android:background="@drawable/shape_circle_grey"
+                    android:background="@drawable/shape_circle_transparent_light_yellow"
                     android:src="@drawable/ic_baseline_clear_24"/>
 
         </FrameLayout>

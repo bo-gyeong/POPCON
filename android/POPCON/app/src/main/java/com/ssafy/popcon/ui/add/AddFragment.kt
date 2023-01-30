@@ -118,7 +118,7 @@ class AddFragment : Fragment(), onItemClick {
 
         dateFormat()
 
-        binding.btnOriginalSee.setOnClickListener {
+        binding.cvOriginalImg.setOnClickListener {
             if (OriginalImgUris.size != 0){
                 seeOriginalImgDialog(OriginalImgUris[imgNum])
             }
@@ -207,7 +207,7 @@ class AddFragment : Fragment(), onItemClick {
         )
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
-        binding.tvRegiImgCount.text = String.format(resources.getString(R.string.regi_img_count), idx+1 , OriginalImgUris.size)
+        binding.ivOriginalImgPlus.visibility = View.GONE
     }
 
     override fun onClick(idx: Int) {
