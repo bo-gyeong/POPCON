@@ -1,25 +1,44 @@
 package com.example.popconback.files.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.popconback.gifticon.domain.Gifticon;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Table(name="files")
 public class InputFile {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
-    private String fileName;
-    private String fileUrl;
 
-    public InputFile(String fileName, String fileUrl) {
+    @Column(nullable = true)
+    private Integer imageType;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name="barcode_num")
+    private Gifticon gifticon;
+
+    private String fileName;
+    @Column(columnDefinition = "TEXT")
+    private String filePath;
+
+
+
+
+    @Builder
+    public InputFile(Integer imageType, Gifticon gifticon, String fileName, String filePath) {
+
+        this.imageType = imageType;
+        this.gifticon = gifticon;
         this.fileName = fileName;
-        this.fileUrl = fileUrl;
+        this.filePath = filePath;
+
     }
+
 }

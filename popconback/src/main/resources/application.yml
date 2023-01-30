@@ -47,4 +47,4 @@ gcp:
   bucket:
     id: popcon
   dir:
-    name:
+    name: images

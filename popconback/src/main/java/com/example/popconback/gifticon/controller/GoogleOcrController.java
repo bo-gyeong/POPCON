@@ -1,32 +1,18 @@
 package com.example.popconback.gifticon.controller;
 
-import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.dto.GifticonResponse;
 import com.example.popconback.gifticon.service.S3Service;
-import com.google.cloud.vision.v1.AnnotateImageRequest;
-import com.google.cloud.vision.v1.AnnotateImageResponse;
-import com.google.cloud.vision.v1.BatchAnnotateImagesResponse;
-import com.google.cloud.vision.v1.EntityAnnotation;
-import com.google.cloud.vision.v1.Feature;
-import com.google.cloud.vision.v1.Image;
-import com.google.cloud.vision.v1.ImageAnnotatorClient;
-import com.google.protobuf.ByteString;
+import com.google.cloud.vision.v1.*;
 import io.swagger.annotations.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.*;
-
-import static java.io.FileInputStream.*;
 
 @Api(value = "GoogleOcrController")
 @SwaggerDefinition(tags = {@Tag(name = "GoogleOcrController",
@@ -51,17 +37,13 @@ public class GoogleOcrController {
     public ResponseEntity<GifticonResponse> detectText(@RequestParam(value = "fileName") String fileName) throws Exception {
 
 
-        String filePath = BASE_PATH + fileName;
-
+        String filePath = "gs://popcon/"+fileName;
 
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
 
-        ByteString imgBytes = ByteString.readFrom(new FileInputStream(filePath));
-
-        new FileInputStream(filePath).close();
-
-        Image img = Image.newBuilder().setContent(imgBytes).build();
+        ImageSource imgSource = ImageSource.newBuilder().setGcsImageUri(filePath).build();
+        Image img = Image.newBuilder().setSource(imgSource).build();
         Feature feat = Feature.newBuilder().setType(Feature.Type.TEXT_DETECTION).build();
         AnnotateImageRequest request =
                 AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
@@ -130,12 +112,6 @@ public class GoogleOcrController {
                         GifticonResponse gifticonResponse = new GifticonResponse("GS&쿠폰", lineList.get(lineList.size()-3), findProductName[0], productPosition, expiration,lineList.get(lineList.size()-1).replace("-",""),barcodePosition);
 
 
-                        File file = new File(filePath);
-                        if(file.delete()){
-                            System.out.println("파일삭제 성공");
-                        }else{
-                            System.out.println("파일삭제 실패");
-                        }
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
                     }
@@ -181,12 +157,6 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("kakaotalk", lineList.get(0), findProductName[0], productPosition, expiration,lineList.get(lineList.size()-5).replace(" ",""),barcodePosition);
 
-                        File file = new File(filePath);
-                        if(file.delete()){
-                            System.out.println("파일삭제 성공");
-                        }else{
-                            System.out.println("파일삭제 실패");
-                        }
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
@@ -240,12 +210,7 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("giftishow", brandName, productName, productPosition, expiration,barcodeNum,barcodePosition);
 
-                        File file = new File(filePath);
-                        if(file.delete()){
-                            System.out.println("파일삭제 성공");
-                        }else{
-                            System.out.println("파일삭제 실패");
-                        }
+
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
@@ -301,12 +266,7 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("gifticon", brandName, ProductName, productPosition, expiration,lineList.get(lineList.size()-2).replace(" ",""),barcodePosition);
 
-                        File file = new File(filePath);
-                        if(file.delete()){
-                            System.out.println("파일삭제 성공");
-                        }else{
-                            System.out.println("파일삭제 실패");
-                        }
+
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
