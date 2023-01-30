@@ -42,7 +42,6 @@ class SettingsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        mainActivity.hideBottomNav(true)
         GifticonDialogFragment.isShow = true
     }
 

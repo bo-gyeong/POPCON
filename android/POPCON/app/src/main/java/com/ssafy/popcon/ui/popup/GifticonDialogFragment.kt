@@ -24,7 +24,7 @@ import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.BrandRequest
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.brandtab.BrandTabFragment
+import com.ssafy.popcon.ui.home.brandtab.BrandTabFragment
 import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel

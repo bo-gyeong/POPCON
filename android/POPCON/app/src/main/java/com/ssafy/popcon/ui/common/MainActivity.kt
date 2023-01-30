@@ -3,23 +3,30 @@ package com.ssafy.popcon.ui.common
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Switch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.map.MapFragment
+import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.util.Utils.navigationHeight
 import com.ssafy.popcon.util.Utils.setStatusBarTransparent
 import com.ssafy.popcon.viewmodel.FCMViewModel
@@ -61,31 +68,53 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         checkPermissions()
         //getFCMToken()
+        
+        //자동로그인
+        if (SharedPreferencesUtil(this).getUser().email != "") {
+            Log.d(TAG, "onCreate: 로그인됨")
+            changeFragment(HomeFragment())
+        } else {
+            Log.d(TAG, "onCreate: 로그인 필요")
+            changeFragment(LoginFragment())
+        }
     }
 
     //navigation bar 설정
     private fun setNavBar() {
-        this.setStatusBarTransparent() // 투명 상태 바
-        binding.bottomAppBar.setPadding(
-            0,
-            0,
-            0,
-            this.navigationHeight()
-        )
+        //this.setStatusBarTransparent() // 투명 상태 바
 
-        binding.btnFab.setPadding(
-            0,
-            0,
-            0,
-            this.navigationHeight()
+        window.navigationBarColor = Color.WHITE;
 
-        )
+        val radius = resources.getDimension(R.dimen.radius_small)
+        val bottomNavigationViewBackground = binding.bottomNav.background as MaterialShapeDrawable
+        bottomNavigationViewBackground.shapeAppearanceModel =
+            bottomNavigationViewBackground.shapeAppearanceModel.toBuilder()
+                .setTopRightCorner(CornerFamily.ROUNDED, radius)
+                .setTopLeftCorner(CornerFamily.ROUNDED, radius)
+                .build()
 
-        binding.btnFab.setOnClickListener {
-            addFragment(AddFragment())
+        binding.bottomNav.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.homeFragment -> {
+                    changeFragment(HomeFragment())
+                    true
+                }
+                R.id.addFragment -> {
+                    addFragment(AddFragment())
+                    true
+                }
+                R.id.mapFragment ->{
+                    changeFragment(MapFragment())
+                    true
+                }
+                R.id.settingsFragment->{
+                    changeFragment(SettingsFragment())
+                    true
+                }
+                //donateFragment 추가하기
+                else -> false
+            }
         }
-
-
     }
 
     fun changeFragment(fragment: Fragment) {
@@ -148,11 +177,9 @@ class MainActivity : AppCompatActivity() {
     //하단바 숨기기
     fun hideBottomNav(state: Boolean) {
         if (state) {
-            binding.bottomAppBar.visibility = View.GONE
-            binding.lFabContainer.visibility = View.GONE
+            binding.bottomNav.visibility = View.GONE
         } else {
-            binding.bottomAppBar.visibility = View.VISIBLE
-            binding.lFabContainer.visibility = View.VISIBLE
+            binding.bottomNav.visibility = View.VISIBLE
         }
     }
 

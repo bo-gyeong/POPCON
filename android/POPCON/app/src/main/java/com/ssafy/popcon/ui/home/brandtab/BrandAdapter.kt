@@ -1,11 +1,14 @@
-package com.ssafy.popcon.ui.brandtab
+package com.ssafy.popcon.ui.home.brandtab
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ItemBrandTabBinding
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.User
@@ -14,6 +17,8 @@ import com.ssafy.popcon.viewmodel.GifticonViewModel
 
 class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
     ListAdapter<Brand, BrandAdapter.BrandViewHolder>(BrandDiffCallback()) {
+    var index: Int = 0
+    private lateinit var itemClickListener: OnItemClickListener
     private lateinit var binding: ItemBrandTabBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandViewHolder {
@@ -23,6 +28,17 @@ class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
 
     override fun onBindViewHolder(holder: BrandViewHolder, position: Int) {
         holder.bind(getItem(position))
+
+        if (index == position) {
+            binding.viewBrandTab.setBackgroundResource(R.drawable.edge_brand_tab_select)
+        } else {
+            binding.viewBrandTab.setBackgroundResource(R.drawable.edge_brand_tab)
+        }
+
+        holder.itemView.setOnClickListener {
+            itemClickListener.onClick(it, position)
+            index = position
+        }
     }
 
     inner class BrandViewHolder(private val binding: ItemBrandTabBinding) :
@@ -34,6 +50,10 @@ class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
             binding.user = user
             binding.executePendingBindings()
         }
+    }
+
+    interface OnItemClickListener {
+        fun onClick(v: View, position: Int)
     }
 }
 

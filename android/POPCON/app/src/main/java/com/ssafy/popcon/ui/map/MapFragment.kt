@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.LocationManager
@@ -35,6 +36,7 @@ import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.util.Utils.setStatusBarTransparent
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.MapViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -68,6 +70,7 @@ class MapFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = FragmentMapBinding.inflate(inflater, container, false)
         return binding.root
     }

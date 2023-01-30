@@ -22,6 +22,7 @@ class SharedPreferencesUtil(context: Context) {
         val id = preferences.getString("id", "")
         return if (id != "") {
             val type = preferences.getString("type", "비회원")
+
             User(id!!, type!!)
         } else {
             User("", "비회원")

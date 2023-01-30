@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.POPCON" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/popcon_orange</item>
+        <item name="colorPrimary">@color/popcon_black</item>
         <item name="colorPrimaryVariant">@color/popcon_orange</item>
         <item name="colorOnPrimary">@color/popcon_white</item>
         <!-- Secondary brand color. -->
@@ -12,7 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
         <!-- Customize your theme here. -->
-
     </style>
 </resources>

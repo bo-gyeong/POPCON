@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui.brandtab
+package com.ssafy.popcon.ui.home.brandtab
 
 import android.os.Build
 import android.os.Bundle
@@ -55,8 +55,8 @@ class BrandTabFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //init()
-        setBrandTab()
+        init()
+        //setBrandTab()
     }
 
     private fun init() {
@@ -79,7 +79,7 @@ class BrandTabFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun setBrandTab() {
         viewModel.allGifticons.observe(viewLifecycleOwner) {
-            Log.d("TAG", "setBrandTab: $it")
+            //Log.d("TAG", "setBrandTab: $it")
             brands.clear()
             brands.add(Brand("", "전체"))
             //brands.addAll(Utils.getBrands(it))

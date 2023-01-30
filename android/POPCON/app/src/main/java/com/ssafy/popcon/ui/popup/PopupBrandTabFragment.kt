@@ -19,7 +19,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.BrandRequest
-import com.ssafy.popcon.ui.brandtab.BrandAdapter
+import com.ssafy.popcon.ui.home.brandtab.BrandAdapter
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel

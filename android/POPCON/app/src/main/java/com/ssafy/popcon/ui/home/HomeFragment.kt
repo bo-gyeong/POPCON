@@ -18,7 +18,7 @@ import com.ssafy.popcon.databinding.FragmentHomeBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.brandtab.BrandTabFragment
+import com.ssafy.popcon.ui.home.brandtab.BrandTabFragment
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.history.HistoryDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
@@ -62,9 +62,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnSetting.setOnClickListener {
-            mainActivity.addFragment(SettingsFragment())
-        }
 
         setGifticonAdapter()
     }
@@ -97,7 +94,6 @@ class HomeFragment : Fragment() {
                 gifticonAdapter.submitList(it)
             }
         }
-
 
         //테스트용
         /*gifticonAdapter = GiftconAdapter()

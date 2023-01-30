@@ -5,28 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:background="@color/popcon_bluegrey"
     android:fitsSystemWindows="true">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/cv_brand_tab"
-        android:name="com.ssafy.popcon.ui.brandtab.BrandTabFragment"
-        android:layout_width="0dp"
+        android:name="com.ssafy.popcon.ui.home.brandtab.BrandTabFragment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:padding="8dp"
-        app:layout_constraintEnd_toStartOf="@id/btn_setting"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:background="@color/popcon_light_grey"
+        android:layout_height="0.5dp"/>
+
     <TextView
         android:id="@+id/tv_noGifticon"
         android:layout_width="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
         android:text="기프티콘을 등록해주세요!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_gifticon"
@@ -39,20 +44,4 @@
         app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
         app:spanCount="2"
         tools:listitem="@layout/item_home_gifticon" />
-
-    <ImageButton
-        android:id="@+id/btn_setting"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_baseline_settings_24"
-        android:backgroundTint="@color/popcon_purple"
-        android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@id/rv_gifticon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/cv_brand_tab"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

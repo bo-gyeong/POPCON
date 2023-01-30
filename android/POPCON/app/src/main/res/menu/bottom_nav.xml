@@ -4,16 +4,26 @@
     <item
         android:id="@+id/homeFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title=""
-        app:showAsAction="always" />
+        android:icon="@drawable/bottom_home_selector"
+        android:title=""/>
     <item
-        android:id="@+id/placeholder"
+        android:id="@+id/donateFragment"
+        android:enabled="true"
+        android:icon="@drawable/bottom_donate_selector"
+        android:title=""/>
+    <item
+        android:id="@+id/addFragment"
+        android:enabled="true"
+        android:icon="@drawable/bottom_add"
         android:title=""/>
     <item
         android:id="@+id/mapFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_map_24"
-        android:title=""
-        app:showAsAction="always" />
+        android:icon="@drawable/bottom_location_selector"
+        android:title=""/>
+    <item
+        android:id="@+id/settingsFragment"
+        android:enabled="true"
+        android:icon="@drawable/bottom_user_selector"
+        android:title=""/>
 </menu>
