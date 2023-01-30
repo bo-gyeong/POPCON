@@ -28,11 +28,11 @@ public class JwtUtil {
         claims.put("Social", social);
 
         return Jwts.builder()
+                .setHeaderParam("type","jwt")
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+expiredMs))
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
-
     }
 }

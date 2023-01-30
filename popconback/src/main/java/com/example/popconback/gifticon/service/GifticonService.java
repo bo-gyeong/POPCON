@@ -69,10 +69,10 @@ public class GifticonService {
             List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
             for (GifticonFiles gifticonfile: gflist
                  ) {
-                if(gifticonfile.getImageType() == 0){// 0: 바코드
+                if(gifticonfile.getImageType() == 0){// 0:
                     rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
                 }
-                if(gifticonfile.getImageType() == 1){// 1: 상품
+                if(gifticonfile.getImageType() == 1){// 1:
                     rgifticon.setProduct_filepath(gifticonfile.getFilePath());
                 }
                 if(gifticonfile.getImageType() == 2){// 2: 원본
@@ -256,7 +256,7 @@ public class GifticonService {
     }
 
     public List<ResponseListFavoritesDto> listFavorites (String email, String social){
-        User tuser = new User();
+        UserDto tuser = new UserDto();
         tuser.setEmail(email);
         tuser.setSocial(social);
         int hash = tuser.hashCode();

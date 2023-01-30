@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mariadb://127.0.0.1:3307/popcon
+    url: jdbc:mariadb://127.0.0.1:3306/popcon
     username: root
     password: ssafy
   jpa:
@@ -50,3 +50,5 @@ gcp:
     name:
 jwt :
   secret : "token.server.secret.key"
+app :
+  sec : "the world"

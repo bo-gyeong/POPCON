@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping("/login") // 회원 정보 DB에 저장(카카오)
     public ResponseEntity<String> testlogin(@RequestBody CreateUserDto createUserDto){
-        return ResponseEntity.ok(userservice.login(createUserDto.getEmail(),createUserDto.getSocial()));// 카카오 토큰을 받아와서 사용자 정부 추출
+        return ResponseEntity.ok(userservice.login(createUserDto.getEmail(),createUserDto.getSocial(),createUserDto.getToken()));// 카카오 토큰을 받아와서 사용자 정부 추출
     }
 
 
