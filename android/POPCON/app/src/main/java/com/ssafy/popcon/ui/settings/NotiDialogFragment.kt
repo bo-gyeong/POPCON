@@ -56,6 +56,7 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
         val shardPreference = SharedPreferencesUtil(requireContext()).preferences
         user = User(
             user.email,
+            user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
             shardPreference.getInt("noti_interval", 1),

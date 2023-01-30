@@ -50,11 +50,12 @@ class SharedPreferencesUtil(context: Context) {
     fun getUserNotiInfo(): User{
         val id = preferences.getString("id", "")
         return if (id != "") {
+            val type = preferences.getString("type", "비회원")
             val alarm = preferences.getInt("alarm", 1)
             val notiFirst = preferences.getInt("noti_first", 1)
             val notiInterval = preferences.getInt("noti_interval", 1)
             val notiTime = preferences.getInt("noti_time", 1)
-            User(id!!, alarm, notiFirst, notiInterval, notiTime)
+            User(id!!, type!!, alarm, notiFirst, notiInterval, notiTime)
         } else {
             User("", "비회원")
         }

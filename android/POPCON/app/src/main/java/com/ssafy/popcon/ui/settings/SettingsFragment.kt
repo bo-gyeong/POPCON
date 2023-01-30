@@ -60,6 +60,7 @@ class SettingsFragment : Fragment() {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
         user = User(
             user.email,
+            user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
             shardPreference.getInt("noti_interval", 1),
@@ -91,9 +92,12 @@ class SettingsFragment : Fragment() {
             clickJoin()
 
             if (user!!.social == "카카오") {
+                Log.d(TAG, "onViewCreated: ???????????")
+                ivTitleAccount.setImageResource(R.drawable.kakaotalk_icon)
                 signOutKakao()
                 withdrawKakao()
             } else if (user!!.social == "네이버") {
+                ivTitleAccount.setImageResource(com.nhn.android.oauth.R.drawable.naver_icon)
                 signOutNaver()
                 withdrawNaver()
             }
@@ -200,9 +204,6 @@ class SettingsFragment : Fragment() {
             user = userInfo
 
             viewModel.updateUser(user, -308222648)
-            viewModel.user.observe(viewLifecycleOwner){
-                binding.user = it
-            }
         }
     }
 

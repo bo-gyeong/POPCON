@@ -11,7 +11,7 @@ data class User(
     var token: String?
 ) {
     constructor(email: String?, social: String) : this(email, social, 1, 1, 1, 1, 1, "")
-    constructor(email: String?, nday: Int, alarm: Int, term: Int, timezone: Int): this(
-        email, "", nday, alarm, 1, term, timezone, ""
+    constructor(email: String?, social: String, nday: Int, alarm: Int, term: Int, timezone: Int): this(
+        email, social, nday, alarm, 1, term, timezone, ""
     )
 }
