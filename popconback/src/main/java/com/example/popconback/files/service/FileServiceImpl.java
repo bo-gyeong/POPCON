@@ -55,6 +55,42 @@ public class FileServiceImpl implements FileService{
                 if (fileDto != null) {
                     inputFiles.add(new InputFile(0, null, fileDto.getFileName(), fileDto.getFilePath()));
                     LOGGER.debug("File uploaded successfully, file name: {} and url: {}",fileDto.getFileName(), fileDto.getFilePath());
+<<<<<<< HEAD
+=======
+                }
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while uploading. Error: ", e);
+                throw new GCPFileUploadException("Error occurred while uploading");
+            }
+        });
+
+        fileRepository.saveAll(inputFiles);
+        LOGGER.debug("File details successfully saved in the database");
+        return inputFiles;
+    }
+
+
+
+    public List<InputFile> registerGifticon(MultipartFile[] files) {
+
+        LOGGER.debug("Start file uploading service");
+        List<InputFile> inputFiles = new ArrayList<>();
+
+        Arrays.asList(files).forEach(file -> {
+            String originalFileName = file.getOriginalFilename();
+            if(originalFileName == null){
+                throw new BadRequestException("Original file name is null");
+            }
+            Path path = new File(originalFileName).toPath();
+
+            try {
+                String contentType = Files.probeContentType(path);
+                FileDto fileDto = dataBucketUtil.uploadFile(file, originalFileName, contentType);
+
+                if (fileDto != null) {
+                    inputFiles.add(new InputFile(0, null, fileDto.getFileName(), fileDto.getFilePath()));
+                    LOGGER.debug("File uploaded successfully, file name: {} and url: {}",fileDto.getFileName(), fileDto.getFilePath());
+>>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
                 }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while uploading. Error: ", e);
