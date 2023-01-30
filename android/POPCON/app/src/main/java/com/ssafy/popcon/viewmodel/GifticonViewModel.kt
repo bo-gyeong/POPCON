@@ -32,6 +32,9 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _brands = MutableLiveData<List<Brand>>()
     val brands: LiveData<List<Brand>> = _brands
 
+    private val _brandsHome = MutableLiveData<List<Brand>>()
+    val brandsHome: LiveData<List<Brand>> = _brandsHome
+
     fun openHistory(user: User) {
         _openHistoryEvent.value = Event(user.email!!)
     }
@@ -43,6 +46,13 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
 
             _gifticons.value = gifticons
             _allGifticons.value = gifticons
+        }
+    }
+
+    fun getHomeBrand(user: User) {
+        viewModelScope.launch {
+            //var homeBrand = gifticonRepository.getBrandByUser(user)
+            //_brandsHome.value = homeBrand.add(Brand("전체", ""))
         }
     }
 

@@ -7,6 +7,23 @@
     android:layout_gravity="center"
     android:fitsSystemWindows="true">
 
+    <TextView
+        android:id="@+id/tv_popcon"
+        style="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="POPCON"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_history"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/btn_history"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/cv_brand_tab"
         android:name="com.ssafy.popcon.ui.home.brandtab.BrandTabFragment"
@@ -14,14 +31,14 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tv_popcon"/>
 
     <View
-        app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
+        android:layout_height="0.5dp"
         android:background="@color/popcon_light_grey"
-        android:layout_height="0.5dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cv_brand_tab" />
 
     <TextView
         android:id="@+id/tv_noGifticon"

@@ -62,7 +62,6 @@ class BrandTabFragment : Fragment() {
     private fun init() {
         brands.clear()
         brands.add(Brand("", "전체"))
-        brands.add(Brand("", "히스토리"))
 
         brandAdapter =
             BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
@@ -72,18 +71,29 @@ class BrandTabFragment : Fragment() {
             adapter!!.stateRestorationPolicy =
                 RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         }
-
+        
         brandAdapter.submitList(brands)
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    //상단 브랜드탭
     fun setBrandTab() {
-        viewModel.allGifticons.observe(viewLifecycleOwner) {
+        viewModel.brands.observe(viewLifecycleOwner){
+            brandAdapter =
+                BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
+
+            binding.rvBrand.apply {
+                adapter = brandAdapter
+                adapter!!.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
+
+            brandAdapter.submitList(it)
+        }
+        /*viewModel.allGifticons.observe(viewLifecycleOwner) {
             //Log.d("TAG", "setBrandTab: $it")
             brands.clear()
             brands.add(Brand("", "전체"))
             //brands.addAll(Utils.getBrands(it))
-            brands.add(Brand("", "히스토리"))
 
             brandAdapter =
                 BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
@@ -95,6 +105,6 @@ class BrandTabFragment : Fragment() {
             }
 
             brandAdapter.submitList(brands)
-        }
+        }*/
     }
 }
