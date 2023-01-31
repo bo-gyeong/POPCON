@@ -11,10 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <net.daum.mf.map.api.MapView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mapView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_brand_tab">
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"

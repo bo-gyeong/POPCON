@@ -47,7 +47,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-private const val TAG = "MapFragment"
+private const val TAG = "MapFragment 지원"
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -100,13 +100,16 @@ class MapFragment : Fragment() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val mapView = binding.mapView
-
-        //setGifticonBanner()
+        setGifticonBanner()
         setSensor()
 
         // 로고 이미지를 저장할 위치 - 내부 저장소
         internalStorage = requireContext().filesDir.toString() + "/brandLogo"
+
+        // 맵 띄우기
+        val mapView = MapView(requireContext())
+        val mapViewContainer = binding.mapView as ViewGroup
+        mapViewContainer.addView(mapView)
 
         // 사용자 현재 위치 가져오기, GPS 우선
         locationManager = requireContext().getSystemService(LOCATION_SERVICE) as LocationManager
@@ -148,7 +151,7 @@ class MapFragment : Fragment() {
             mapPoint = MapPoint.mapPointWithGeoCoord(getLatitude, getLongitude)
             currentMarker.markerType = MapPOIItem.MarkerType.BluePin // 기본으로 제공되는 파란색 핀
         }
-        binding.mapView.addPOIItem(currentMarker)
+        mapView.addPOIItem(currentMarker)
 
 
         // 1. 내부저장소에 로고만 저장할 폴더 없으면 만들기
