@@ -29,9 +29,12 @@ public class GifticonResponse {
 
     private Map<String, String> barcodeImg = new HashMap<>();
 
+    private int validation;  // 0: 정상 , 1: 바코드 중복 , 2: 브랜드 없음, 3: 1&2 , -1: 형식에 맞지않는 기프티콘
+
+
     public GifticonResponse() {}
 
-    public GifticonResponse(String publisher, String brandName, String productName, Map<String, String> productImg, Map<String, String> due, String barcodeNum,Map<String, String> barcodeImg ){
+    public GifticonResponse(String publisher, String brandName, String productName, Map<String, String> productImg, Map<String, String> due, String barcodeNum,Map<String, String> barcodeImg, int validation){
         this.publisher = publisher;
         this.brandName = brandName;
         this.productName = productName;
@@ -39,6 +42,7 @@ public class GifticonResponse {
         this.due = due;
         this.barcodeNum = barcodeNum;
         this.barcodeImg = barcodeImg;
+        this.validation = validation;
     }
 
 
