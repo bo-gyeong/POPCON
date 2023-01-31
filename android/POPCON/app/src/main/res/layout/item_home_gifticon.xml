@@ -12,10 +12,9 @@
         <variable
             name="badge"
             type="com.ssafy.popcon.dto.Badge" />
-
         <variable
-            name="clickListener"
-            type="com.ssafy.popcon.ui.home.GiftconAdapter.GifticonListener" />
+            name="viewModel"
+            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -25,7 +24,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:elevation="2dp"
-        android:onClick="@{()->clickListener.onClick(gifticon)}"
+        android:onClick="@{()->viewModel.openGifticonDialog(gifticon.barcodeNum)}"
         app:cardCornerRadius="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -44,6 +43,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/bg_black_r"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="@drawable/background_black_gradient_r"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="0dp" />
 
             <TextView
                 android:id="@+id/tv_brand"
@@ -103,6 +111,8 @@
                 tools:background="@color/popcon_grey_02"
                 tools:text="D-DAY"
                 tools:textColor="@color/popcon_white" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 </layout>

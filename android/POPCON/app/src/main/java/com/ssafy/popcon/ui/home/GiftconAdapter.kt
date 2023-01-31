@@ -4,6 +4,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,7 @@ import com.ssafy.popcon.databinding.ItemHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.util.Utils
 
-class GiftconAdapter(private val clickListener : GifticonListener) :
+class GiftconAdapter() :
     ListAdapter<Gifticon, GiftconAdapter.GifticonViewHolder>(GifticonDiffCallback()) {
     private lateinit var binding: ItemHomeGifticonBinding
 
@@ -33,14 +34,10 @@ class GiftconAdapter(private val clickListener : GifticonListener) :
         fun bind(gifticon: Gifticon) {
             binding.gifticon = gifticon
             binding.badge = Utils.calDday(gifticon)
-            binding.clickListener = clickListener
+            binding.bgBlackR.isVisible = gifticon.state == 2
 
             binding.executePendingBindings()
         }
-    }
-
-    class GifticonListener(val clickListener: (gifticon: Gifticon) -> Unit) {
-        fun onClick(gifticon: Gifticon) = clickListener(gifticon)
     }
 }
 

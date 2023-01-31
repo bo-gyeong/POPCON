@@ -35,6 +35,7 @@ class HistoryAdapter(private val clickListener: HistoryListener) :
             binding.gifticon = gifticon
             binding.badge = Utils.calDday(gifticon)
             binding.clickListener = clickListener
+            binding.ivProductPreview.clipToOutline = true
             binding.executePendingBindings()
         }
     }

@@ -24,7 +24,7 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
-    private lateinit var gifticon: Gifticon
+    private lateinit var barNum: String
     private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
     private lateinit var mainActivity: MainActivity
 
@@ -66,36 +66,45 @@ class HomeDialogFragment : DialogFragment() {
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         val mArgs = arguments
-        gifticon = mArgs!!.getSerializable("gifticon") as Gifticon
-
-        binding.gifticon = gifticon as Gifticon?
-        binding.badge = Utils.calDday(gifticon)
+        barNum = mArgs!!.getString("barNum")!!
 
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setButton()
-        binding.ivProductPreview.setOnClickListener {
-            val args = Bundle()
-            args.putString("originalUrl", gifticon!!.origin_filepath)
+        setLayout()
+    }
 
-            val dialogFragment = ImageDialogFragment()
-            dialogFragment.arguments = args
-            dialogFragment.show(childFragmentManager, "originalUrl")
-        }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setLayout() {
+        viewModel.getGifticonByBarcodeNum(barNum)
+        viewModel.gifticon.observe(viewLifecycleOwner){ gifticon ->
+            setButton(gifticon)
+            binding.gifticon = gifticon
+            binding.badge = Utils.calDday(gifticon)
 
-        //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
-        binding.btnDelete.setOnClickListener {
-            viewModel.deleteGifticon(gifticon.barcodeNum)
+            binding.ivProductPreview.setOnClickListener {
+                val args = Bundle()
+                args.putString("originalUrl", gifticon.origin_filepath)
 
-            dialog?.dismiss()
+                val dialogFragment = ImageDialogFragment()
+                dialogFragment.arguments = args
+                dialogFragment.show(childFragmentManager, "originalUrl")
+            }
+
+            //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+            binding.btnDelete.setOnClickListener {
+                viewModel.deleteGifticon(gifticon.barcodeNum)
+
+                dialog?.dismiss()
+            }
         }
     }
 
-    private fun setButton() {
+    private fun setButton(gifticon : Gifticon) {
         when (gifticon.state) {
             //0:사용가능, 1:사용완료, 2:기간만료
             0 -> {

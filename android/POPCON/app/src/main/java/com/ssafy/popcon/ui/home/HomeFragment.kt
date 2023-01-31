@@ -18,9 +18,11 @@ import com.ssafy.popcon.databinding.FragmentHomeBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.home.brandtab.BrandTabFragment
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.history.HistoryDialogFragment
+import com.ssafy.popcon.ui.history.HistoryFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.ui.popup.GifticonViewAdapter
@@ -64,6 +66,22 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setGifticonAdapter()
+        openGifticonDialog()
+
+        binding.btnHistory.setOnClickListener {
+            mainActivity.addFragment(HistoryFragment())
+        }
+    }
+
+    private fun openGifticonDialog() {
+        viewModel.openGifticonDialogEvent.observe(viewLifecycleOwner, EventObserver{
+            val args = Bundle()
+            args.putSerializable("barNum", it)
+
+            val dialogFragment = HomeDialogFragment()
+            dialogFragment.arguments = args
+            dialogFragment.show(childFragmentManager, "popup")
+        })
     }
 
     //홈 기프티콘 어댑터 설정
@@ -78,14 +96,8 @@ class HomeFragment : Fragment() {
             } else {
                 binding.tvNoGifticon.isVisible = false
 
-                gifticonAdapter = GiftconAdapter(GiftconAdapter.GifticonListener { gifticon ->
-                    val args = Bundle()
-                    args.putSerializable("gifticon", gifticon)
+                gifticonAdapter = GiftconAdapter()
 
-                    val dialogFragment = HomeDialogFragment()
-                    dialogFragment.arguments = args
-                    dialogFragment.show(childFragmentManager, "popup")
-                })
                 binding.rvGifticon.apply {
                     adapter = gifticonAdapter
                     layoutManager = GridLayoutManager(context, 2)

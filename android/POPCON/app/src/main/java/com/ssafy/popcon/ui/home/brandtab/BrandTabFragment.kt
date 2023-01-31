@@ -44,10 +44,6 @@ class BrandTabFragment : Fragment() {
     ): View? {
         binding = FragmentBrandTabBinding.inflate(inflater, container, false)
 
-        viewModel.openHistoryEvent.observe(viewLifecycleOwner, EventObserver {
-            mainActivity.addFragment(HistoryFragment())
-        })
-
         return binding.root
     }
 
