@@ -73,6 +73,7 @@ class BrandTabFragment : Fragment() {
 
     //상단 브랜드탭
     fun setBrandTab() {
+        viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.brands.observe(viewLifecycleOwner){
             brandAdapter =
                 BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())

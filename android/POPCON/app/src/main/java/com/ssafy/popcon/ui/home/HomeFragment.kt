@@ -3,6 +3,7 @@ package com.ssafy.popcon.ui.home
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +39,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var shakeDetector: ShakeDetector
     lateinit var gifticonAdapter: GiftconAdapter
-    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
     private lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -65,6 +66,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.user = SharedPreferencesUtil(requireContext()).getUser()
+        binding.viewModel = viewModel
+
         setGifticonAdapter()
         openGifticonDialog()
 
@@ -75,6 +79,7 @@ class HomeFragment : Fragment() {
 
     private fun openGifticonDialog() {
         viewModel.openGifticonDialogEvent.observe(viewLifecycleOwner, EventObserver{
+            Log.d(TAG, "openGifticonDialog: $it")
             val args = Bundle()
             args.putSerializable("barNum", it)
 
@@ -86,9 +91,6 @@ class HomeFragment : Fragment() {
 
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
-        binding.user = SharedPreferencesUtil(requireContext()).getUser()
-        binding.viewModel = viewModel
-
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.gifticons.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
@@ -96,7 +98,7 @@ class HomeFragment : Fragment() {
             } else {
                 binding.tvNoGifticon.isVisible = false
 
-                gifticonAdapter = GiftconAdapter()
+                gifticonAdapter = GiftconAdapter(viewModel)
 
                 binding.rvGifticon.apply {
                     adapter = gifticonAdapter

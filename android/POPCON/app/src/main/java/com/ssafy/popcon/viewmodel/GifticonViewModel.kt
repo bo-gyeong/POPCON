@@ -32,8 +32,8 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _brandsHome = MutableLiveData<List<Brand>>()
     val brandsHome: LiveData<List<Brand>> = _brandsHome
 
-    private val _gifticon = MutableLiveData<Gifticon>()
-    val gifticon : LiveData<Gifticon> = _gifticon
+    private val _gifticon = MutableLiveData<GifticonResponse>()
+    val gifticon : LiveData<GifticonResponse> = _gifticon
 
     private val _openGifticonDialogEvent = MutableLiveData<Event<String>>()
     val openGifticonDialogEvent = _openGifticonDialogEvent
@@ -41,6 +41,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     fun getGifticonByBarcodeNum(barcodeNum: String){
         viewModelScope.launch {
             val gifticon = gifticonRepository.getGifticonByBarNum(barcodeNum)
+            Log.d("TAG", "getGifticonByBarcodeNum: $gifticon")
             _gifticon.value = gifticon
         }
     }
@@ -60,10 +61,10 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     }
 
     fun getHomeBrand(user: User) {
-        /*viewModelScope.launch {
-            var homeBrand = gifticonRepository.getBrandByUser(user)
-            _brandsHome.value = homeBrand.add(Brand("전체", ""))
-        }*/
+        viewModelScope.launch {
+            var homeBrand = gifticonRepository.getHomeBrands(user)
+            _brandsHome.value = homeBrand
+        }
     }
 
     fun deleteGifticon(barcodeNum: String) {

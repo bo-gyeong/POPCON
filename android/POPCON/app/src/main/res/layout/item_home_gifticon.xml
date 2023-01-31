@@ -12,6 +12,7 @@
         <variable
             name="badge"
             type="com.ssafy.popcon.dto.Badge" />
+
         <variable
             name="viewModel"
             type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
@@ -24,7 +25,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:elevation="2dp"
-        android:onClick="@{()->viewModel.openGifticonDialog(gifticon.barcodeNum)}"
+        android:onClick="@{() -> viewModel.openGifticonDialog(gifticon.barcodeNum)}"
         app:cardCornerRadius="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -46,10 +47,10 @@
 
             <ImageView
                 android:id="@+id/bg_black_r"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:background="@drawable/background_black_gradient_r"
+                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="0dp" />
 

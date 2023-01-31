@@ -6,12 +6,15 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
+import com.ssafy.popcon.dto.Badge
+import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.common.MainActivity
@@ -68,23 +71,38 @@ class HomeDialogFragment : DialogFragment() {
         val mArgs = arguments
         barNum = mArgs!!.getString("barNum")!!
 
+        binding.badge = Badge("","#000000")
+
         return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setLayout()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
         viewModel.getGifticonByBarcodeNum(barNum)
-        viewModel.gifticon.observe(viewLifecycleOwner){ gifticon ->
-            setButton(gifticon)
+        viewModel.gifticon.observe(viewLifecycleOwner) { g ->
+            val gifticon = Gifticon(
+                g.barcodeNum,
+                g.barcode_filepath?:"",
+                Brand("", g.brandName),
+                g.due,
+                g.hash,
+                g.price,
+                g.memo?:"",
+                g.origin_filepath?:"",
+                g.productName,
+                g.product_filepath?:"",
+                g.state
+            )
+
             binding.gifticon = gifticon
             binding.badge = Utils.calDday(gifticon)
+            setButton(gifticon)
 
             binding.ivProductPreview.setOnClickListener {
                 val args = Bundle()
@@ -104,7 +122,7 @@ class HomeDialogFragment : DialogFragment() {
         }
     }
 
-    private fun setButton(gifticon : Gifticon) {
+    private fun setButton(gifticon: Gifticon) {
         when (gifticon.state) {
             //0:사용가능, 1:사용완료, 2:기간만료
             0 -> {
@@ -133,14 +151,5 @@ class HomeDialogFragment : DialogFragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //기프티콘 상태 업데이트
-        /*if (!binding.btnUse.isChecked) {
-            viewModel.updateGifticon(gifticon)
-        }*/
     }
 }

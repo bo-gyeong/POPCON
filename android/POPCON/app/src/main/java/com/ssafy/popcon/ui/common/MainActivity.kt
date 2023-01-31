@@ -18,6 +18,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.login.LoginFragment
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //SharedPreferencesUtil(this).addUser(User("abc@naver.com", "카카오", 0,1,1,1,1,"string"))
         setNavBar()
         checkPermissions()
         //getFCMToken()

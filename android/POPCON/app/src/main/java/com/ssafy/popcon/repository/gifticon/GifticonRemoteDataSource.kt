@@ -9,7 +9,7 @@ class GifticonRemoteDataSource(private val apiClient: GifticonApi) : GifticonDat
         return apiClient.getGifticonByUser(email, social)
     }
 
-    override suspend fun getGifticonByBarNum(barcodeNum: String): Gifticon {
+    override suspend fun getGifticonByBarNum(barcodeNum: String): GifticonResponse {
         return apiClient.getGifticonByBarNum(barcodeNum)
     }
 
@@ -31,5 +31,9 @@ class GifticonRemoteDataSource(private val apiClient: GifticonApi) : GifticonDat
 
     override suspend fun deleteGifticon(barcodeNum: String) {
         return apiClient.deleteGifticon(barcodeNum)
+    }
+
+    override suspend fun getHomeBrands(email: String, social: String): List<Brand> {
+        return apiClient.getBrandHome(email, social)
     }
 }

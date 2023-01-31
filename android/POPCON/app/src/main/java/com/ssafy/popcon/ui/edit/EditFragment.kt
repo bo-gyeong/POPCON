@@ -32,9 +32,7 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.databinding.FragmentEditBinding
-import com.ssafy.popcon.dto.AddInfo
-import com.ssafy.popcon.dto.AddInfoNoImg
-import com.ssafy.popcon.dto.GifticonImg
+import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.add.AddImgAdapter
 import com.ssafy.popcon.ui.add.CropImgDialogFragment
 import com.ssafy.popcon.ui.add.OriginalImgDialogFragment
@@ -65,14 +63,6 @@ class EditFragment : Fragment() {
     private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
-    var imgNum = 0
-    var clickCv = ""
-    val PRODUCT = "Product"
-    val BARCODE = "Barcode"
-
-    companion object{
-        var chkCnt = 1
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -125,7 +115,21 @@ class EditFragment : Fragment() {
 
     private fun setLayout() {
         viewModel.getGifticonByBarcodeNum(barNum)
-        viewModel.gifticon.observe(viewLifecycleOwner){ gifticon ->
+        viewModel.gifticon.observe(viewLifecycleOwner){ g ->
+            val gifticon = Gifticon(
+                g.barcodeNum,
+                g.barcode_filepath?:"",
+                Brand("", g.brandName),
+                g.due,
+                g.hash,
+                g.price,
+                g.memo?:"",
+                g.origin_filepath?:"",
+                g.productName,
+                g.product_filepath?:"",
+                g.state
+            )
+
             binding.gifticon = gifticon
 
             binding.btnOriginalSee.setOnClickListener {
@@ -139,6 +143,13 @@ class EditFragment : Fragment() {
             binding.ivCouponImg.setOnClickListener {
                 openImgDialog(gifticon.product_filepath)
             }
+        }
+
+        //수정 누르면 업데이트트
+        binding.btnEdit.setOnClickListener {
+            Log.d("TAG", "setLayout: ${binding.gifticon}")
+
+            //viewModel.updateGifticon(binding.gifticon)
         }
     }
 
