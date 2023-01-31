@@ -28,7 +28,7 @@ public class AuthenticationConfig {
               .csrf().disable()
               .cors().and()
               .authorizeRequests()
-              .antMatchers("/api/v1/user/login").permitAll()
+              .antMatchers("/api/v1/user/login","/api/v1/user/refresh").permitAll()
               .antMatchers("/swagger-ui/**","/swagger-resources/**","/v3/api-docs").permitAll()
               .anyRequest().authenticated()
 //              .antMatchers(HttpMethod.POST).authenticated()

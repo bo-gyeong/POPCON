@@ -91,6 +91,8 @@ public class UserService {
           return null;
         }
         User user = optionalUser.get();
+        UserDto dto = new UserDto();
+        BeanUtils.copyProperties(user,dto);
 
         String token = JwtUtil.creatJwt(user.getEmail(),user.getSocial(), secretkey,expiredMs );
         String Refreshtoken = JwtUtil.creatRefashToken (expiredMsRe,secretkey);
@@ -98,6 +100,9 @@ public class UserService {
         ResponseToken responseToken = new ResponseToken();
         responseToken.setAcessToken(token);
         responseToken.setRefreshToekn(Refreshtoken);
+        //user에 refreshtoken 저장하기
+        dto.setRefreshToken(refreshtoken);
+        userRepository.save(dto.toEntity());
 
         return responseToken;
     }
