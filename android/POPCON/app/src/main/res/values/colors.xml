@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="transparent">#00000000</color>
     <color name="popcon_orange">#F7B733</color>
     <color name="popcon_yellow">#FCEA5D</color>
@@ -36,4 +36,7 @@
     <color name="popcon_white_a90">#E6FFFFFF</color>
     <color name="popcon_brown">#967a6d</color>
     <color name="popcon_btn_grey">#d2d2d2</color>
+
+    <!--  material  -->
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/popcon_grey_08</color>
 </resources>

@@ -46,6 +46,7 @@ import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -102,6 +103,15 @@ class AddFragment : Fragment(), onItemClick {
         barcodeImgUris = ArrayList()
         openGalleryFirst()
 
+        binding.cvAddCoupon.setOnClickListener {
+            for (i in 0 until delImgUris.size){
+                delCropImg(delImgUris[i])
+            }
+            delImgUris.clear()
+
+            openGalleryFirst()
+        }
+
         binding.cvProductImg.setOnClickListener(object : onSingleClickListener(){
             override fun onSingleClick(v: View) {
                 clickCv = PRODUCT
@@ -116,6 +126,8 @@ class AddFragment : Fragment(), onItemClick {
             }
         })
 
+        brandChk()
+        brandBarcodeNum()
         dateFormat()
 
         binding.cvOriginalImg.setOnClickListener {
@@ -358,10 +370,89 @@ class AddFragment : Fragment(), onItemClick {
         return addInfos
     }
 
+    // 브랜드 존재여부 검사
+    private fun brandChk(){
+        binding.etProductBrand.addTextChangedListener (object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0!!.length > 5){
+                    binding.tilProductBrand.error = "올바른 브랜드를 입력해주세요"
+                } else{
+                    binding.tilProductBrand.error = null
+                    binding.tilProductBrand.isErrorEnabled = false
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
+    }
+
+    // 바코드 번호 중복 검사
+    private fun brandBarcodeNum(){
+        binding.etBarcode.addTextChangedListener (object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0!!.length > 5){
+                    binding.tilBarcode.error = "이미 등록된 바코드 번호입니다"
+                } else{
+                    binding.tilBarcode.error = null
+                    binding.tilBarcode.isErrorEnabled = false
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
+    }
+
+    // 유효기간 검사
+    val dateArr = arrayOf(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
     private fun dateFormat(){
         binding.etDate.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-                //p0: 추가된 문자열
+                val dateLength = binding.etDate.text!!.length
+                val nowText = p0.toString()
+
+                when (dateLength){
+                    5 -> {
+                        val newYear = nowText.substring(0, 4).toInt()
+                        val nowYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(System.currentTimeMillis()).toInt()
+                        if (newYear < nowYear || newYear > 2100){
+                            binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                        } else{
+                            binding.tilDate.error = null
+                            binding.tilDate.isErrorEnabled = false
+                        }
+                    }
+                    8 -> {
+                        if (nowText.substring(5, 7).toInt() > 12){
+                            binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                        } else{
+                            binding.tilDate.error = null
+                            binding.tilDate.isErrorEnabled = false
+                        }
+                    }
+
+                    10 -> {
+                        val month = nowText.substring(5, 7).toInt()
+                        val day = nowText.substring(8).toInt()
+
+                        if (day > dateArr[month-1]){
+                            binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                        } else{
+                            binding.tilDate.error = null
+                            binding.tilDate.isErrorEnabled = false
+                        }
+                    }
+                    else -> {
+                        binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                    }
+                }
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -370,7 +461,7 @@ class AddFragment : Fragment(), onItemClick {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 삭제된 기존 문자열 수, p3: 새로 추가될 문자열 수
-                val dateLength = binding.etDate.text.length
+                val dateLength = binding.etDate.text!!.length
                 if(dateLength==4 && p1!=4 || dateLength==7 && p1!=7){
                     val add = binding.etDate.text.toString() + "-"
                     binding.etDate.setText(add)
