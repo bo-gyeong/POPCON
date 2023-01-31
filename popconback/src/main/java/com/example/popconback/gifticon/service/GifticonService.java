@@ -207,12 +207,40 @@ public class GifticonService {
         return responDto;
     }
 
-    public void deleteGifticon (String barcode){
-        Optional<Gifticon> gifticon = gifticonRepository.findById(barcode);
+    public void deleteGifticon (String barcode_num){
+        Optional<Gifticon> gifticon = gifticonRepository.findById(barcode_num);
         if(!gifticon.isPresent()){
             throw new EntityNotFoundException("Gifticon Not Found");
         }
-        gifticonRepository.deleteById(barcode);
+        gifticonRepository.deleteById(barcode_num);
+    }
+
+    public GifticonDto getGifticon(String barcode_num){
+        Optional<Gifticon> gifticon = gifticonRepository.findById(barcode_num);
+        if(!gifticon.isPresent()){
+            throw new EntityNotFoundException("Gifticon Not Found");
+        }
+        Gifticon Tgifticon = gifticon.get();
+        GifticonDto responsDto = new GifticonDto();
+        BeanUtils.copyProperties(Tgifticon,responsDto);
+        responsDto.setHash(Tgifticon.getUser().getHash());
+        responsDto.setBrandName(Tgifticon.getBrand().getBrandName());
+
+
+        List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(responsDto.getBarcodeNum());//사진들도 따로 복사
+        for (GifticonFiles gifticonfile: gflist
+        ) {
+            if(gifticonfile.getImageType() == 0){// 0: 바코드
+                responsDto.setBarcode_filepath(gifticonfile.getFilePath());
+            }
+            if(gifticonfile.getImageType() == 1){// 1: 상품
+               responsDto.setProduct_filepath(gifticonfile.getFilePath());
+            }
+            if(gifticonfile.getImageType() == 2){// 2: 원본
+                responsDto.setOrigin_filepath(gifticonfile.getFilePath());
+            }
+        }
+        return responsDto;
     }
 
     public ResponseCreateFavoritesDto createFavorites (CreateFavoritesDto createFavoritesDto){

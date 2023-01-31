@@ -115,6 +115,13 @@ public class GifticonController {
     }
 
 
+    @ApiOperation(value = "기프티콘 조회", notes = "기프티콘 삭제", httpMethod = "DELETE")
+    @GetMapping("{barcode_num}") //기프티콘 삭제
+    public ResponseEntity<GifticonDto> getGifticon (@PathVariable String barcode_num) {
+        return ResponseEntity.ok(gifticonService.getGifticon(barcode_num));
+    }
+
+
     //@Scheduled(cron = "0 0 09 * * ?")
     @ApiOperation(value = "기프티콘 상태 업데이트", notes = "기프티콘 유호기간 체크 후 상태 변경 / 서버용 API", httpMethod = "GET")
     @GetMapping("/check")// 유효기간 지난거 상태 변경
