@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
@@ -123,14 +124,14 @@ class HomeDialogFragment : DialogFragment() {
     }
 
     private fun setButton(gifticon: Gifticon) {
+        Log.d("TAG", "setButton: $gifticon")
         when (gifticon.state) {
             //0:사용가능, 1:사용완료, 2:기간만료
             0 -> {
                 //수정 화면으로
                 binding.btnUse.setOnClickListener {
                     val args = Bundle()
-                    args.putSerializable("barNum", gifticon.barcodeNum)
-
+                    args.putString("barNum", gifticon.barcodeNum)
                     mainActivity.addFragment(EditFragment())
                 }
             }
