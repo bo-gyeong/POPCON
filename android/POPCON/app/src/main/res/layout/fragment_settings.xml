@@ -24,7 +24,7 @@
             android:paddingRight="20dp"
             android:paddingLeft="20dp"
             android:paddingBottom="8dp"
-            android:background="@drawable/change_color_press"
+            android:background="@drawable/change_color_press_white"
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -127,7 +127,7 @@
                     android:paddingRight="34dp"
                     android:paddingLeft="34dp"
                     android:paddingBottom="8dp"
-                    android:background="@drawable/change_color_press"
+                    android:background="@drawable/change_color_press_white"
                     android:orientation="vertical">
 
                     <TextView
@@ -159,7 +159,7 @@
                     android:paddingRight="34dp"
                     android:paddingLeft="34dp"
                     android:paddingBottom="8dp"
-                    android:background="@drawable/change_color_press"
+                    android:background="@drawable/change_color_press_white"
                     android:orientation="vertical">
 
                     <TextView
@@ -191,7 +191,7 @@
                     android:paddingRight="34dp"
                     android:paddingLeft="34dp"
                     android:paddingBottom="8dp"
-                    android:background="@drawable/change_color_press"
+                    android:background="@drawable/change_color_press_white"
                     android:orientation="vertical">
 
                     <TextView
@@ -226,7 +226,7 @@
             android:paddingRight="20dp"
             android:paddingLeft="20dp"
             android:paddingBottom="12dp"
-            android:background="@drawable/change_color_press"
+            android:background="@drawable/change_color_press_white"
             android:text="@string/logout"
             style="@style/TextSubtitle1.Bold"
             app:layout_constraintTop_toBottomOf="@+id/l_noti"/>
@@ -240,7 +240,7 @@
             android:paddingRight="20dp"
             android:paddingLeft="20dp"
             android:paddingBottom="12dp"
-            android:background="@drawable/change_color_press"
+            android:background="@drawable/change_color_press_white"
             android:text="@string/withdraw"
             android:textColor="@color/popcon_grey_06"
             app:layout_constraintTop_toBottomOf="@+id/tv_logout"/>
