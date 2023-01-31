@@ -1,7 +1,7 @@
 package com.example.popconback.files.dto;
 
 import lombok.Data;
-<<<<<<< HEAD
+
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
@@ -16,11 +16,4 @@ public class RegisterGifticonDto {
 
 
 }
-=======
 
-@Data
-public class RegisterGifticonDto {
-
-
-}
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8

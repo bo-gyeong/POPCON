@@ -9,10 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-<<<<<<< HEAD
 @Setter
-=======
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
 @Table(name="files")
 public class InputFile {
 

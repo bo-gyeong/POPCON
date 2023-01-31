@@ -1,6 +1,6 @@
 package com.example.popconback.gifticon.controller;
 
-<<<<<<< HEAD
+
 import com.example.popconback.gifticon.domain.Brand;
 import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.dto.CheckValidationDto;
@@ -11,12 +11,12 @@ import com.example.popconback.gifticon.service.GifticonService;
 import com.google.cloud.vision.v1.*;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-=======
+
 import com.example.popconback.gifticon.dto.GifticonResponse;
 import com.example.popconback.gifticon.service.S3Service;
 import com.google.cloud.vision.v1.*;
 import io.swagger.annotations.*;
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-<<<<<<< HEAD
-=======
-import java.io.File;
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
+
 import java.util.*;
 
 @Api(value = "GoogleOcrController")
@@ -46,7 +43,15 @@ public class GoogleOcrController {
 
     private static final String BASE_PATH = "C:\\upload\\";
 
-
+    @ApiOperation(value = "checkBarcodeValidaiton", notes = "0:error / 1:success", httpMethod = "GET")
+    @ApiImplicitParam(
+            name = "barcodeNum",
+            value = "기프티콘 바코드 넘버",
+            required = true,
+            dataType = "string",
+            paramType = "query",
+            defaultValue = "None"
+    )
     @GetMapping("/ocr/check_barcode")
     public ResponseEntity<CheckValidationDto> checkBarcode(@RequestParam(value = "barcodeNum") String barcodeNum) throws Exception {
 
@@ -69,7 +74,15 @@ public class GoogleOcrController {
 
     }
 
-
+    @ApiOperation(value = "checkBrandValidation", notes = "0:error / 1:success", httpMethod = "GET")
+    @ApiImplicitParam(
+            name = "brandName",
+            value = "기프티콘 브랜드 명",
+            required = true,
+            dataType = "string",
+            paramType = "query",
+            defaultValue = "None"
+    )
     @GetMapping("/ocr/check_brand")
     public ResponseEntity<CheckValidationDto> checkBrand(@RequestParam(value = "brandName") String brandName) throws Exception {
 
@@ -95,10 +108,10 @@ public class GoogleOcrController {
     }
 
 
-    @ApiOperation(value = "텍스트 추출", notes = "기프티콘 이미지 텍스트 추출", httpMethod = "GET")
+    @ApiOperation(value = "detectTextAndValidation", notes = "0: success / 1: barcode error / 2: brand error / 3: both error", httpMethod = "GET")
     @ApiImplicitParam(
-            name = "filePath",
-            value = "이미지 파일 경로 url",
+            name = "fileName",
+            value = "gcp 이미지 파일 이름",
             required = true,
             dataType = "string",
             paramType = "query",
@@ -108,10 +121,7 @@ public class GoogleOcrController {
     public ResponseEntity<GifticonResponse> detectText(@RequestParam(value = "fileName") String fileName) throws Exception {
 
 
-<<<<<<< HEAD
 
-=======
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
         String filePath = "gs://popcon/"+fileName;
 
 
@@ -189,7 +199,7 @@ public class GoogleOcrController {
                         String brandName = lineList.get(lineList.size()-3);
 
 
-<<<<<<< HEAD
+
                         int validation = 0;
 
                         try {
@@ -223,8 +233,7 @@ public class GoogleOcrController {
 
 
                         GifticonResponse gifticonResponse = new GifticonResponse("GS&쿠폰", brandName, findProductName[0], productPosition, expiration,barcodeNum,barcodePosition, validation);
-=======
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
+
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
 
@@ -274,7 +283,7 @@ public class GoogleOcrController {
                         String brandName = lineList.get(0);
                         int validation = 0;
 
-<<<<<<< HEAD
+
                         try {
                             Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
 
@@ -301,8 +310,7 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("kakaotalk", brandName, findProductName[0], productPosition, expiration,barcodeNum,barcodePosition, validation);
 
-=======
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
+
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
 
@@ -356,7 +364,6 @@ public class GoogleOcrController {
                         String barcodeNum = findBarcode.substring(findBarcode.length()-12,findBarcode.length());
 
 
-<<<<<<< HEAD
                         int validation = 0;
 
                         try {
@@ -386,8 +393,7 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("giftishow", brandName, productName, productPosition, expiration,barcodeNum,barcodePosition,validation);
 
-=======
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
+
 
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);
@@ -443,7 +449,6 @@ public class GoogleOcrController {
 
 
 
-<<<<<<< HEAD
                         String barcodeNum = lineList.get(lineList.size()-2).replace(" ","");
                         System.out.println(barcodeNum);
 
@@ -477,8 +482,7 @@ public class GoogleOcrController {
 
                         GifticonResponse gifticonResponse = new GifticonResponse("gifticon", brandName, ProductName, productPosition, expiration,barcodeNum,barcodePosition,validation);
 
-=======
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
+
 
 
                         return new ResponseEntity<GifticonResponse>(gifticonResponse, HttpStatus.OK);

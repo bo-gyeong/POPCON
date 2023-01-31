@@ -55,8 +55,7 @@ public class FileServiceImpl implements FileService{
                 if (fileDto != null) {
                     inputFiles.add(new InputFile(0, null, fileDto.getFileName(), fileDto.getFilePath()));
                     LOGGER.debug("File uploaded successfully, file name: {} and url: {}",fileDto.getFileName(), fileDto.getFilePath());
-<<<<<<< HEAD
-=======
+
                 }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while uploading. Error: ", e);
@@ -90,7 +89,7 @@ public class FileServiceImpl implements FileService{
                 if (fileDto != null) {
                     inputFiles.add(new InputFile(0, null, fileDto.getFileName(), fileDto.getFilePath()));
                     LOGGER.debug("File uploaded successfully, file name: {} and url: {}",fileDto.getFileName(), fileDto.getFilePath());
->>>>>>> cd324043697fc12e1cadfebcafe784654184a4d8
+
                 }
             } catch (Exception e) {
                 LOGGER.error("Error occurred while uploading. Error: ", e);
