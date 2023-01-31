@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/homeFragment"
         android:enabled="true"
-        android:title="Home"
-        android:icon="@drawable/ic_baseline_home_24"/>
+        android:icon="@drawable/bottom_home_selector"
+        android:title=""/>
+    <item
+        android:id="@+id/donateFragment"
+        android:enabled="true"
+        android:icon="@drawable/bottom_donate_selector"
+        android:title=""/>
     <item
         android:id="@+id/addFragment"
         android:enabled="true"
-        android:title=""
-        android:icon="@drawable/ic_baseline_add_circle_24"/>
+        android:icon="@drawable/bottom_add"
+        android:title=""/>
     <item
         android:id="@+id/mapFragment"
         android:enabled="true"
-        android:title="Map"
-        android:icon="@drawable/ic_baseline_map_24"/>
+        android:icon="@drawable/bottom_location_selector"
+        android:title=""/>
+    <item
+        android:id="@+id/settingsFragment"
+        android:enabled="true"
+        android:icon="@drawable/bottom_user_selector"
+        android:title=""/>
 </menu>

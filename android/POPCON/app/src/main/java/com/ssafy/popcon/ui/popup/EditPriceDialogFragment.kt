@@ -15,7 +15,7 @@ import com.ssafy.popcon.dto.Gifticon
 
 class EditPriceDialogFragment : DialogFragment() {
     private lateinit var binding: DialogEditPriceBinding
-    private lateinit var gifticon : Gifticon
+    private lateinit var gifticon: Gifticon
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,34 +39,43 @@ class EditPriceDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //binding.etPrice.setText("0")
-        binding.etPrice.setText(gifticon.price.toString())
-
         priceBtnCilckListener()
     }
 
     //가격버튼
     private fun priceBtnCilckListener() {
         binding.btn100.setOnClickListener {
-            var price = binding.etPrice.text.toString()
+            var price = "0"
+            if (binding.etPrice.text.toString() != "") {
+                price = binding.etPrice.text.toString()
+            }
             val temp: Int = price.toInt()
             binding.etPrice.setText((temp + 100).toString())
         }
 
         binding.btn500.setOnClickListener {
-            var price = binding.etPrice.text.toString()
+            var price = "0"
+            if (binding.etPrice.text.toString() != "") {
+                price = binding.etPrice.text.toString()
+            }
             val temp: Int = price.toInt()
             binding.etPrice.setText((temp + 500).toString())
         }
 
         binding.btn1000.setOnClickListener {
-            var price = binding.etPrice.text.toString()
+            var price = "0"
+            if (binding.etPrice.text.toString() != "") {
+                price = binding.etPrice.text.toString()
+            }
             val temp: Int = price.toInt()
             binding.etPrice.setText((temp + 1000).toString())
         }
 
         binding.btn5000.setOnClickListener {
-            var price = binding.etPrice.text.toString()
+            var price = "0"
+            if (binding.etPrice.text.toString() != "") {
+                price = binding.etPrice.text.toString()
+            }
             val temp: Int = price.toInt()
             binding.etPrice.setText((temp + 5000).toString())
         }

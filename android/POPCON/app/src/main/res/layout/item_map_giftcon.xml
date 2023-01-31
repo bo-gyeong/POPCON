@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="@{gifticon.brand.name}"
+                android:text="@{gifticon.brand.brandName}"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toTopOf="@+id/tv_name_map"
                 app:layout_constraintStart_toEndOf="@+id/iv_product_preview_map"

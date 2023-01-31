@@ -1,43 +1,34 @@
 package com.ssafy.popcon.ui.popup
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
-import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
-import com.ssafy.popcon.dto.BrandRequest
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.brandtab.BrandTabFragment
-import com.ssafy.popcon.ui.map.MapFragment
-import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
+
 class GifticonDialogFragment : DialogFragment() {
-    private lateinit var locationManager: LocationManager
 
-    private var getLongitude: Double = 0.0
-    private var getLatitude: Double = 0.0
-
-    val useList = mutableListOf<Gifticon>()
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var binding: DialogUseBinding
+    private var prevIndex = 0
 
     //팝업창 떠있는지 확인하는 변수
     companion object {
@@ -68,6 +59,7 @@ class GifticonDialogFragment : DialogFragment() {
         dialog?.window?.attributes = params as WindowManager.LayoutParams
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,6 +69,7 @@ class GifticonDialogFragment : DialogFragment() {
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        test()
 
         return binding.root
     }
@@ -86,7 +79,6 @@ class GifticonDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         //setList()
-        test()
     }
 
     private fun test() {
@@ -96,8 +88,8 @@ class GifticonDialogFragment : DialogFragment() {
                 "1234-1234",
                 "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
                 Brand(
-                    "스타벅스",
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
+                    "스타벅스"
                 ),
 
                 "2023-01-29 00:00:00.000000",
@@ -114,8 +106,8 @@ class GifticonDialogFragment : DialogFragment() {
                 "1234-1234",
                 "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
                 Brand(
-                    "스타벅스",
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
+                    "스타벅스"
                 ),
                 "2023-02-10 00:00:00.000000",
                 -1,
@@ -131,8 +123,8 @@ class GifticonDialogFragment : DialogFragment() {
                 "1234-1234",
                 "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
                 Brand(
-                    "스타벅스",
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
+                    "스타벅스"
                 ),
                 "2023-02-10 00:00:00.000000",
                 -1,
@@ -148,8 +140,8 @@ class GifticonDialogFragment : DialogFragment() {
                 "1234-1234",
                 "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
                 Brand(
-                    "스타벅스",
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
+                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
+                    "스타벅스"
                 ),
                 "2023-02-10 00:00:00.000000",
                 -1,
@@ -187,102 +179,69 @@ class GifticonDialogFragment : DialogFragment() {
             )
         )
 
-        binding.vpPreview.addOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
-            override fun onPageSelected(position: Int) {
-                if (previewAdapter.getItem(binding.vpPreview.currentItem + 2) is GifticonPreviewFragment) {
-                    //새로운 preview 선택됨
+        binding.vpPreview.apply {
+            addOnPageChangeListener(object : OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
                 }
-            }
-        })
+
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    Log.d("TAG", "onPageSelected: $position")
+                    val v: View = binding.vpPreview.getChildAt(position)
+                    v.findViewById<ImageView>(R.id.bg_black).isVisible = false
+                    v.findViewById<ImageView>(R.id.edge_preview).isVisible = true
+
+                    val oldV: View = binding.vpPreview.getChildAt(prevIndex)
+                    oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
+                    oldV.findViewById<ImageView>(R.id.edge_preview).isVisible = false
+
+                    prevIndex = position
+                }
+            })
+        }
     }
 
     //기프티콘 리스트 추가
     private fun setList() {
-        locationManager =
-            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        getUserLocation()
-        val user = SharedPreferencesUtil(requireContext()).getUser()
-        val brandRequest = BrandRequest(
-            user.email,
-            user.social.toString(),
-            getLatitude.toString(),
-            getLongitude.toString()
-        )
-
-        viewModel.getBrandByLocation(brandRequest)
-        viewModel.brands.observe(viewLifecycleOwner, Observer {
+        viewModel.brands.observe(viewLifecycleOwner) {
             if (it.size == 0) {//근처에 매장 없음
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = false
                 binding.vpPreview.isVisible = false
                 binding.tvNoBrand.isVisible = true
-
             } else if (it.size >= 2) {//2개면 브랜드탭 보여줌
                 binding.cvBrandTab.isVisible = true
                 binding.vpGifticon.isVisible = true
                 binding.vpPreview.isVisible = true
                 binding.tvNoBrand.isVisible = false
-
-                //BrandTabFragment().setBrandTab(it)
             } else {//1개면 브랜드탭 숨김
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = true
                 binding.vpPreview.isVisible = true
                 binding.tvNoBrand.isVisible = false
             }
-        })
+        }
 
         viewModel.gifticonByBrand.observe(viewLifecycleOwner) {
             setViewPager(it)
         }
     }
 
-    //현재위치
-    private fun getUserLocation() {
-        if (::locationManager.isInitialized.not()) {
-            locationManager =
-                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        }
-        if (Build.VERSION.SDK_INT >= 23 &&
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
-        } else {
-            var location =
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (location == null) {
-                location =
-                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            }
-            getLongitude = location?.longitude!!
-            getLatitude = location?.latitude!!
-        }
-    }
-
-    /*override fun onDestroy() {
+    override fun onDestroy() {
         super.onDestroy()
         isShow = false
 
-        for(gifticon : Gifticon in useList){
-            viewModel.updateGifticon(gifticon)
-        }
-    }*/
+        /*for(gifticon : Gifticon in useList){
+
+          viewModel.updateGifticon(gifticon)
+        }*/
+    }
 }
 
 

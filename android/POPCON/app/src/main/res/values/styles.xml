@@ -12,12 +12,6 @@
         <item name="cornerSize">8dp</item>
     </style>
 
-    <!-- Floating Btn -->
-    <style name="Floating" parent="Widget.Design.FloatingActionButton">
-        <!---rest of your style-->
-        <item name="android:foreground">@drawable/background_purple_gradient_r</item>
-    </style>
-
     <!--  Text Style  -->
     <style name="TextHeadline32">
         <item name="android:textSize">32sp</item>

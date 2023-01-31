@@ -57,7 +57,7 @@
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="kakao${KAKAO_LOGIN_KEY}" />
+            android:value="kakao${KAKAO_API_KEY}" />
 
         <service
             android:name=".fcm.FirebaseMessagingService"

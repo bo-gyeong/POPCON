@@ -21,7 +21,8 @@ class FirebaseMessagingService: FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        MainActivity.getInstance()!!.uploadToken(token)
+
+        //MainActivity.getInstance()!!.uploadToken(token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
