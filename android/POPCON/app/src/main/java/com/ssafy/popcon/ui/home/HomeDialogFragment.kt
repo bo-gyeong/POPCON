@@ -110,6 +110,9 @@ class HomeDialogFragment : DialogFragment() {
             0 -> {
                 //수정 화면으로
                 binding.btnUse.setOnClickListener {
+                    val args = Bundle()
+                    args.putSerializable("barNum", gifticon.barcodeNum)
+
                     mainActivity.addFragment(EditFragment())
                 }
             }
