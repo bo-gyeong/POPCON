@@ -32,4 +32,10 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
             userRepository.withdraw(user)
         }
     }
+
+    fun updateUser(user: User, hash: Int){
+        viewModelScope.launch {
+            _user.value = userRepository.updateUser(user, hash)
+        }
+    }
 }
