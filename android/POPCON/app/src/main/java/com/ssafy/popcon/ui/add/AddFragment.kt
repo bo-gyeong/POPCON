@@ -130,7 +130,7 @@ class AddFragment : Fragment(), onItemClick {
         brandBarcodeNum()
         dateFormat()
 
-        binding.cvOriginalImg.setOnClickListener {
+        binding.btnOriginalSee.setOnClickListener {
             if (OriginalImgUris.size != 0){
                 seeOriginalImgDialog(OriginalImgUris[imgNum])
             }
@@ -219,7 +219,6 @@ class AddFragment : Fragment(), onItemClick {
         )
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
-        binding.ivOriginalImgPlus.visibility = View.GONE
     }
 
     override fun onClick(idx: Int) {
