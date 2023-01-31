@@ -23,7 +23,6 @@ android {
         buildConfigField "String", "naverClientID", properties["naver_client_id"]
         buildConfigField "String", "naverClientSecret", properties["naver_client_secret"]
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
-        buildConfigField "String", "KAKAO_LOGIN_KEY", properties['kakao_login_key']
         buildConfigField "String", "FIREBASE_GOOGLE_CLOUD_KEY", properties['firebase_google_cloud_key']
         buildConfigField "String", "BASE_URL", properties['base_url']
 

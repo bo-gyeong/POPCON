@@ -1,64 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:fitsSystemWindows="true">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/tv_popcon"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="POPCON"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="user"
+            type="com.ssafy.popcon.dto.User" />
+        <variable
+            name="viewModel"
+            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
+    </data>
 
-    <ImageButton
-        android:id="@+id/btn_history"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/btn_history"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/cv_brand_tab"
-        android:name="com.ssafy.popcon.ui.home.brandtab.BrandTabFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_popcon"/>
-
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/popcon_light_grey"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv_brand_tab" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:fitsSystemWindows="true">
 
-    <TextView
-        android:id="@+id/tv_noGifticon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="기프티콘을 등록해주세요!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:onClick="@{() -> viewModel.openHistory(user)}"
+            android:id="@+id/logo"
+            android:layout_width="160dp"
+            android:layout_height="60dp"
+            android:src="@drawable/popcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_gifticon"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
-        app:spanCount="2"
-        tools:listitem="@layout/item_home_gifticon" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/btn_history"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/btn_history"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/cv_brand_tab"
+            android:name="com.ssafy.popcon.ui.home.brandtab.BrandTabFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logo" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/popcon_light_grey"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_brand_tab" />
+
+        <TextView
+            android:id="@+id/tv_noGifticon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="기프티콘을 등록해주세요!"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_gifticon"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
+            app:spanCount="2"
+            tools:listitem="@layout/item_home_gifticon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

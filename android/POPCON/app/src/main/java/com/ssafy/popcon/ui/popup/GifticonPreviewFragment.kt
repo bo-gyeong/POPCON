@@ -1,9 +1,11 @@
 package com.ssafy.popcon.ui.popup
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.ssafy.popcon.databinding.ItemGifticonSliderBinding
 import com.ssafy.popcon.dto.Gifticon
@@ -26,6 +28,10 @@ class GifticonPreviewFragment : Fragment() {
         binding = ItemGifticonSliderBinding.inflate(layoutInflater, container, false)
 
         val pos = this.requireArguments().getInt("pos")
+        if (pos == 2) {
+            binding.bgBlack.isVisible = false
+            binding.edgePreview.isVisible = true
+        }
 
         binding.ivProductPreview.setOnClickListener {
             mListener.onSelect(pos)

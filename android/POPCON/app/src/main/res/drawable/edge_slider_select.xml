@@ -3,7 +3,7 @@
     <item>
         <shape android:shape="rectangle">
             <corners
-                android:radius="20dp"/>
+                android:radius="10dp"/>
             <gradient
                 android:endColor="#F7B733"
                 android:startColor="#F7B733"
@@ -24,7 +24,7 @@
         <shape android:shape="rectangle">
             <solid android:color="@color/popcon_white" />
             <corners
-                android:radius="20dp"/>
+                android:radius="10dp"/>
         </shape>
     </item>
 </layer-list>

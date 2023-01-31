@@ -68,8 +68,10 @@ class HomeFragment : Fragment() {
 
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
-        viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
+        binding.user = SharedPreferencesUtil(requireContext()).getUser()
+        binding.viewModel = viewModel
 
+        viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.gifticons.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 binding.tvNoGifticon.isVisible = true

@@ -64,10 +64,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
 
     //상단 탭 클릭리스너
     fun tabClickListener(user: User, brandName: String) {
-        if (brandName == "히스토리") {
-            //히스토리
-            openHistory(user)
-        } else if (brandName == "전체") {
+        if (brandName == "전체") {
             getGifticonByUser(user)
         } else {
             viewModelScope.launch {
