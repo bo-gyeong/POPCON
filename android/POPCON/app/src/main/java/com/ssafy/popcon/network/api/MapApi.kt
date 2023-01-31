@@ -17,4 +17,6 @@ interface MapApi {
     @GET("local")
     suspend fun sendUserPosition(@QueryMap nowPos: Map<String, String>):  ArrayList<MapBrandLogo>
     //suspend fun sendUserPosition(@Body mapNowPos:MapNowPos):  ArrayList<MapBrandLogo>
+
+
 }

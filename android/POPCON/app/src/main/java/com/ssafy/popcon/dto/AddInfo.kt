@@ -46,7 +46,7 @@ data class AddInfo(
         "",
         email,
         social
-        )
+    )
 
     constructor(
     ):this (
@@ -62,7 +62,7 @@ data class AddInfo(
         "",
         "",
         ""
-         )
+    )
 
     constructor(
         barcodeNum:String,

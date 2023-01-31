@@ -27,6 +27,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/product"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,11 +36,22 @@
             imageUrl="@{gifticon.barcode_filepath}"
             android:layout_width="0dp"
             android:layout_height="100dp"
+            android:layout_marginHorizontal="24dp"
             android:scaleType="fitCenter"
             android:src="@drawable/barcode"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_product_preview" />
+
+        <View
+            android:id="@+id/dv"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/popcon_light_grey"
+            app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
 
         <TextView
             android:id="@+id/tv_brand"
@@ -48,9 +60,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="15dp"
-            android:text="@{gifticon.brand.name}"
+            android:text="@{gifticon.brand.brandName}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
+            app:layout_constraintTop_toBottomOf="@id/dv" />
 
         <TextView
             android:id="@+id/tv_name"
@@ -65,6 +77,7 @@
         <TextView
             android:id="@+id/tv_expDate"
             style="@style/TextSubtitle2"
+            date="@{gifticon.due}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -72,10 +85,17 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:maxLines="1"
-            date="@{gifticon.due}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+        <TextView
+            android:id="@+id/tv_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{gifticon.memo}"
+            app:layout_constraintStart_toStartOf="@id/tv_expDate"
+            app:layout_constraintTop_toBottomOf="@id/tv_expDate" />
 
         <TextView
             android:id="@+id/tv_date_badge"

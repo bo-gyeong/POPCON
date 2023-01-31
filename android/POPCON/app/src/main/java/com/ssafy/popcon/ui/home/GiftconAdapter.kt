@@ -11,7 +11,7 @@ import com.ssafy.popcon.databinding.ItemHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.util.Utils
 
-class GiftconAdapter :
+class GiftconAdapter(private val clickListener : GifticonListener) :
     ListAdapter<Gifticon, GiftconAdapter.GifticonViewHolder>(GifticonDiffCallback()) {
     private lateinit var binding: ItemHomeGifticonBinding
 
@@ -33,9 +33,14 @@ class GiftconAdapter :
         fun bind(gifticon: Gifticon) {
             binding.gifticon = gifticon
             binding.badge = Utils.calDday(gifticon)
+            binding.clickListener = clickListener
 
             binding.executePendingBindings()
         }
+    }
+
+    class GifticonListener(val clickListener: (gifticon: Gifticon) -> Unit) {
+        fun onClick(gifticon: Gifticon) = clickListener(gifticon)
     }
 }
 

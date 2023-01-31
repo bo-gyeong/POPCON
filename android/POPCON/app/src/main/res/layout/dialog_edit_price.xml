@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/edge_dialog"
-        android:padding="8dp">
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/tv_input"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:text="사용한 금액을 입력하세요"
             android:textColor="@color/popcon_black"
-            android:textSize="22sp"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:hint="0"
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

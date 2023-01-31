@@ -23,7 +23,6 @@ android {
         buildConfigField "String", "naverClientID", properties["naver_client_id"]
         buildConfigField "String", "naverClientSecret", properties["naver_client_secret"]
         buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
-        buildConfigField "String", "KAKAO_LOGIN_KEY", properties['kakao_login_key']
         buildConfigField "String", "FIREBASE_GOOGLE_CLOUD_KEY", properties['firebase_google_cloud_key']
         buildConfigField "String", "BASE_URL", properties['base_url']
 
@@ -56,7 +55,7 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'

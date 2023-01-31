@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
     <dimen name="viewpager_item_widwth">312dp</dimen>
     <dimen name="viewpager_item_margin">16dp</dimen>
+    <dimen name="design_fab_size_normal" tools:override="true">58dp</dimen>
+    <dimen name="design_fab_image_size" tools:override="true">40dp</dimen>
+    <dimen name="radius_small">12dp</dimen>
 </resources>
