@@ -35,4 +35,15 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256,secretKey)
                 .compact();
     }
+    public static String creatRefashToken( Long expiredMs,String secretKey){
+
+        return Jwts.builder()
+                .setHeaderParam("type","Refresh")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+expiredMs))
+                .signWith(SignatureAlgorithm.HS256,secretKey)
+                .compact();
+    }
+
+
 }

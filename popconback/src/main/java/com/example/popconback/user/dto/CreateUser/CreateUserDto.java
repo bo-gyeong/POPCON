@@ -1,5 +1,6 @@
 package com.example.popconback.user.dto.CreateUser;
 
+import com.example.popconback.user.domain.User;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -24,6 +25,8 @@ public class CreateUserDto {
     private int timezone;
     @ApiModelProperty(name = "manner_temp", value = "매너온도", example = "30")
     private int manner_temp;
+    @ApiModelProperty(name = "secret", value = "비밀키", example = "the world")
+    private String secret;
 
     @Override
     public int hashCode() {

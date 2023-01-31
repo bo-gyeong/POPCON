@@ -8,14 +8,16 @@ import java.util.Objects;
 @Data
 public class UserDto {
     private int hash;
-    private String email;
+    private String  email;
     private String social;
     private String Token;
+    private String RefreshToken;
     private int alarm;
     private int Nday;
     private int term;
     private int timezone;
     private int manner_temp;
+    private String secret;
 
     public User toEntity() {
         User build = User.builder()
@@ -23,6 +25,7 @@ public class UserDto {
                 .email(email)
                 .social(social)
                 .Token(Token)
+                .Refreshtoken(RefreshToken)
                 .alarm(alarm)
                 .Nday(Nday)
                 .term(term)

@@ -4,7 +4,10 @@ package com.example.popconback.user.controller;
 import com.example.popconback.user.dto.CreateUser.CreateUserDto;
 import com.example.popconback.user.dto.CreateUser.ResponsCreateUserDto;
 import com.example.popconback.user.dto.DeleteUser.DeleteUserDto;
+import com.example.popconback.user.dto.Token.ResponseToken;
 import com.example.popconback.user.dto.UpdateUser.ResponseUpdateUserDto;
+import com.example.popconback.user.dto.UpdateUser.UpdateUserDto;
+import com.example.popconback.user.dto.UserDto;
 import com.example.popconback.user.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,8 +15,13 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Api(value = "UserController")
 @SwaggerDefinition(tags = {@Tag(name = "UserController",
@@ -26,9 +34,15 @@ public class UserController {
     private final UserService userservice;
 
 
-    @PostMapping("/login") // 회원 정보 DB에 저장(카카오)
-    public ResponseEntity<String> testlogin(@RequestBody CreateUserDto createUserDto){
-        return ResponseEntity.ok(userservice.login(createUserDto.getEmail(),createUserDto.getSocial(),createUserDto.getToken()));// 카카오 토큰을 받아와서 사용자 정부 추출
+    @PostMapping("/login") // 로그인
+    public ResponseEntity<ResponseToken> login(@RequestBody CreateUserDto createUserDto){
+        return ResponseEntity.ok(userservice.login(createUserDto));// 카카오 토큰을 받아와서 사용자 정부 추출
+    }
+
+    @PostMapping("/refresh") // 리프레시하기
+    public ResponseEntity<ResponseToken> refresh(HttpServletRequest request){// 필터에서 안걸러지면 유효기간 남아있는거임
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        return ResponseEntity.ok(userservice.refresh(token));// 카카오 토큰을 받아와서 사용자 정부 추출
     }
 
 
@@ -51,17 +65,19 @@ public class UserController {
     @ApiOperation(value = "updateUser",
             notes = "회원 정보 수정",
             httpMethod = "POST")
-    @PostMapping("/update/{hash}")// 회원 정보 수정
-    public ResponseEntity<ResponseUpdateUserDto> updateUser(@RequestBody CreateUserDto createUserDto, @PathVariable int hash){
-        return ResponseEntity.ok(userservice.updateUser(createUserDto,hash));
+    @PostMapping("/update")// 회원 정보 수정
+    public ResponseEntity<ResponseUpdateUserDto> updateUser(@RequestBody UpdateUserDto updateUserDto, Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok(userservice.updateUser(updateUserDto,us.hashCode()));
     }
 
     @ApiOperation(value = "deleteUser",
             notes = "회원 탈퇴",
             httpMethod = "DELETE")
     @DeleteMapping("/withdrawal") //회원 탈퇴
-    public ResponseEntity<Void> deleteUser(@RequestBody DeleteUserDto deleteUserDto){
-        userservice.deleteUser(deleteUserDto);
+    public ResponseEntity<Void> deleteUser(Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        userservice.deleteUser(us.hashCode());
         return ResponseEntity.ok().build();
     }
 

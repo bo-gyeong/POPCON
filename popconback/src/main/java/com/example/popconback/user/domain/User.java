@@ -13,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-@Setter
+//@Setter
 @Table(name = "user")
 public class User {
     @Id
@@ -22,6 +22,8 @@ public class User {
     private String social;
 
     private String Token;
+
+    private String RefreshToken;
 
     private int alarm;
     private int Nday;
@@ -42,6 +44,7 @@ public class User {
                 String email,
                 String social,
                 String Token,
+                String Refreshtoken,
                 int alarm,
                 int Nday,
                 int term,
@@ -51,9 +54,10 @@ public class User {
         this.email = email;
         this.social = social;
         this.Token =  Token;
+        this.RefreshToken = Refreshtoken;
         this.alarm = alarm;
         this.Nday = Nday;
-        this.Nday = term;
+        this.term = term;
         this.timezone = timezone;
         this.manner_temp = manner_temp;
     }
