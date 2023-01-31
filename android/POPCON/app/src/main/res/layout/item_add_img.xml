@@ -26,7 +26,7 @@
                 android:id="@+id/iv_chk_click"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_priority_high_24"/>
+                android:background="@color/popcon_transparent_black_03"/>
 
             <ImageView
                 android:id="@+id/iv_coupon_img"
@@ -43,7 +43,7 @@
                 android:layout_height="20dp"
                 android:layout_margin="2dp"
                 android:layout_gravity="end|top"
-                android:background="@drawable/shape_circle_grey"
+                android:background="@drawable/shape_circle_transparent_light_yellow"
                 android:src="@drawable/ic_baseline_remove_24"/>
 
         </androidx.cardview.widget.CardView>

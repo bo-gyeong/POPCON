@@ -9,7 +9,6 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Switch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -27,10 +26,9 @@ import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.util.Utils.navigationHeight
-import com.ssafy.popcon.util.Utils.setStatusBarTransparent
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+
 
 private const val TAG = "MainActivity_싸피"
 
