@@ -10,8 +10,12 @@ import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.add.AddFragment
+import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.edit.EditFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
 import com.ssafy.popcon.util.Utils
@@ -20,12 +24,15 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
-    private lateinit var gifticon : Gifticon
+    private lateinit var gifticon: Gifticon
     private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private lateinit var mainActivity: MainActivity
 
     override fun onStart() {
         super.onStart()
         GifticonDialogFragment.isShow = true
+
+        mainActivity = activity as MainActivity
     }
 
     override fun onResume() {
@@ -63,12 +70,14 @@ class HomeDialogFragment : DialogFragment() {
 
         binding.gifticon = gifticon as Gifticon?
         binding.badge = Utils.calDday(gifticon)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setButton()
         binding.ivProductPreview.setOnClickListener {
             val args = Bundle()
             args.putString("originalUrl", gifticon!!.origin_filepath)
@@ -86,12 +95,40 @@ class HomeDialogFragment : DialogFragment() {
         }
     }
 
+    private fun setButton() {
+        when (gifticon.state) {
+            //0:사용가능, 1:사용완료, 2:기간만료
+            0 -> {
+                //수정 화면으로
+                binding.btnUse.setOnClickListener {
+                    mainActivity.addFragment(EditFragment())
+                }
+            }
+            1 -> {
+                binding.btnUse.text = "되돌리기"
+
+                //사용 가능 상태로 업데이트
+                binding.btnUse.setOnClickListener {
+                    binding.btnUse.isClickable = false
+                    gifticon.state = 0
+                    viewModel.updateGifticon(gifticon)
+                }
+            }
+            2 -> {
+                //수정 화면으로
+                binding.btnUse.setOnClickListener {
+                    mainActivity.addFragment(EditFragment())
+                }
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         //기프티콘 상태 업데이트
-        if (!binding.btnUse.isChecked) {
+        /*if (!binding.btnUse.isChecked) {
             viewModel.updateGifticon(gifticon)
-        }
+        }*/
     }
 }

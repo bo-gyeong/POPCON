@@ -50,10 +50,10 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     }
 
     fun getHomeBrand(user: User) {
-        viewModelScope.launch {
-            //var homeBrand = gifticonRepository.getBrandByUser(user)
-            //_brandsHome.value = homeBrand.add(Brand("전체", ""))
-        }
+        /*viewModelScope.launch {
+            var homeBrand = gifticonRepository.getBrandByUser(user)
+            _brandsHome.value = homeBrand.add(Brand("전체", ""))
+        }*/
     }
 
     fun deleteGifticon(barcodeNum: String) {

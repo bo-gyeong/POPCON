@@ -98,7 +98,7 @@ class GifticonDialogFragment : DialogFragment() {
                 "유라",
                 "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
                 "아메리카노 T",
-                "https://user-images.githubusercontent.com/33195517/214759061-e4fad749-656d-4feb-acf0-f1f579cef0b0.png"
+                "https://user-images.githubusercontent.com/33195517/214759061-e4fad749-656d-4feb-acf0-f1f579cef0b0.png",0
             )
         )
         gifticonList.add(
@@ -115,7 +115,7 @@ class GifticonDialogFragment : DialogFragment() {
                 "유라",
                 "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
                 "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png"
+                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",1
             )
         )
         gifticonList.add(
@@ -132,7 +132,7 @@ class GifticonDialogFragment : DialogFragment() {
                 "유라",
                 "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
                 "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png"
+                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",2
             )
         )
         gifticonList.add(
@@ -149,7 +149,7 @@ class GifticonDialogFragment : DialogFragment() {
                 "유라",
                 "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
                 "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png"
+                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",1
             )
         )
 

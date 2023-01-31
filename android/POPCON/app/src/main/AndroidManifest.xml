@@ -28,10 +28,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="${kakaoApiKey}" />
-
         <activity
             android:name=".ui.common.MainActivity"
             android:exported="true"
@@ -46,14 +42,14 @@
             <intent-filter>
                 <data
                     android:host="oauth"
-                    android:scheme="kakao${kakaoApiKey}" />
-
+                    android:scheme="kakao${kakao}" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="${kakao}" />
+
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <service
             android:name=".fcm.FirebaseMessagingService"
