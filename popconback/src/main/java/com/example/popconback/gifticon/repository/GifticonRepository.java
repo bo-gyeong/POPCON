@@ -1,12 +1,17 @@
 package com.example.popconback.gifticon.repository;
 
+import com.example.popconback.gifticon.domain.Brand;
 import com.example.popconback.gifticon.domain.Gifticon;
+import com.example.popconback.gifticon.dto.SortBrand.SordBrandDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface GifticonRepository extends JpaRepository<Gifticon, String> {
     List<Gifticon> findByUser_Hash(int hash, Sort sort);
@@ -17,4 +22,6 @@ public interface GifticonRepository extends JpaRepository<Gifticon, String> {
     List<Gifticon> findByUser_HashAndStateGreaterThanEqual(int hash, int state);
 
     Gifticon findByBarcodeNum(String barcodeNum);
+    @Query(value = "SELECT brand_name, COUNT(brand_name) as cnt FROM gifticon WHERE hash = :hash GROUP BY brand_name ORDER BY cnt desc", nativeQuery = true)
+    List<Map<String,Object>> selectSQLById(@Param(value = "hash") int hash);
 }
