@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="gifticonImg"
+            type="com.ssafy.popcon.dto.GifticonImg" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edge_dialog"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/iv_crop_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:maxHeight="500dp"
+            android:background="@drawable/edge_dialog"
+            app:imageUri="@{gifticonImg.imgUri}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/iv_crop_img"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_margin="10dp"
+                android:text="@string/cancel"
+                android:textSize="14sp"
+                android:textColor="@color/popcon_orange"
+                android:background="@drawable/btn_round_orange_outline"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/btn_recrop"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"/>
+
+            <Button
+                android:id="@+id/btn_recrop"
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_margin="10dp"
+                android:text="@string/recrop"
+                android:textSize="14sp"
+                android:background="@drawable/btn_round_orange"
+                app:layout_constraintLeft_toRightOf="@+id/btn_cancel"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

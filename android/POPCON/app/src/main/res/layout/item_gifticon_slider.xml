@@ -3,24 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:padding="2dp">
+        android:id="@+id/cl_preview"
+        android:layout_width="62dp"
+        android:layout_height="62dp">
 
         <ImageView
             android:id="@+id/iv_product_preview"
-            imageUrl="@{gifticon.productUrl}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            imageUrl="@{gifticon.product_filepath}"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:background="@drawable/edge_preview"
             android:scaleType="centerCrop"
             android:src="@drawable/product"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/bg_black"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/background_black_gradient"
+            app:layout_constraintBottom_toBottomOf="@id/iv_product_preview"
+            app:layout_constraintEnd_toEndOf="@id/iv_product_preview"
+            app:layout_constraintStart_toStartOf="@id/iv_product_preview"
+            app:layout_constraintTop_toTopOf="@id/iv_product_preview" />
+
+        <ImageView
+            android:id="@+id/edge_preview"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:background="@drawable/selector_preview"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

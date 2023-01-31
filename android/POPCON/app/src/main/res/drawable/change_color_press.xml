@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@color/popcon_transparent_grey_07"/>
+    <item android:drawable="@color/popcon_white_a90"/>
+</selector>

@@ -6,9 +6,16 @@
     <data>
 
         <variable
-            name="gifitcon"
+            name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
 
+        <variable
+            name="badge"
+            type="com.ssafy.popcon.dto.Badge" />
+
+        <variable
+            name="clickListener"
+            type="com.ssafy.popcon.ui.home.GiftconAdapter.GifticonListener" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -18,6 +25,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:elevation="2dp"
+        android:onClick="@{()->clickListener.onClick(gifticon)}"
         app:cardCornerRadius="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,14 +34,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <ImageView
                 android:id="@+id/iv_product_preview"
-                imageUrl="@{gifitcon.productUrl}"
+                imageUrl="@{gifticon.product_filepath}"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
                 android:background="@color/popcon_white"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="15dp"
-                android:text="@{gifitcon.brand.name}"
+                android:text="@{gifticon.brand.brandName}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_product_preview"
                 tools:text="스타벅스" />
@@ -56,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="@{gifitcon.name}"
+                android:text="@{gifticon.productName}"
                 app:layout_constraintStart_toStartOf="@id/tv_brand"
                 app:layout_constraintTop_toBottomOf="@id/tv_brand"
                 tools:text="아메리카노 + 블루베리" />
@@ -64,7 +71,7 @@
             <TextView
                 android:id="@+id/tv_date"
                 style="@style/TextSubtitle2"
-                date="@{gifitcon.date}"
+                date="@{gifticon.due}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -85,12 +92,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="26dp"
                 android:layout_marginBottom="7dp"
-                android:background="@{gifitcon.badge.color}"
+                android:background="@{badge.color}"
                 android:paddingStart="7dp"
                 android:paddingTop="1dp"
                 android:paddingEnd="7dp"
                 android:paddingBottom="1dp"
-                android:text="@{gifitcon.badge.content}"
+                android:text="@{badge.content}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@color/popcon_grey_02"

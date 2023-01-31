@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "331079635178",
+    "project_id": "sample-f5f82",
+    "storage_bucket": "sample-f5f82.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331079635178:android:9a7234aa5cbf9917e28793",
+        "android_client_info": {
+          "package_name": "com.ssafy.popcon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331079635178-mo4t75nauo70f7mtjt689j9vgj9ge7td.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssafy.popcon",
+            "certificate_hash": "d88a99e300ed46d7e038a4decb8c52df05a9a42c"
+          }
+        },
+        {
+          "client_id": "331079635178-n744l7khn7a8pco6lhl82mufo8l4ck0m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssafy.popcon",
+            "certificate_hash": "23bbcbafabed175366331109f7b2e5afed70f545"
+          }
+        },
+        {
+          "client_id": "331079635178-epgsevi4vd1r11jcoj28s60aolfgbt0j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAreCMwxDh9G2XGSIAotrKOqwK_DXpiWCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331079635178-epgsevi4vd1r11jcoj28s60aolfgbt0j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -14,11 +14,22 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:background="@drawable/edge_dialog"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tv_noBrand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="근처에 매장이 없어요"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"
-            android:name="com.ssafy.popcon.ui.brandtab.BrandTabFragment"
+            android:name="com.ssafy.popcon.ui.popup.PopupBrandTabFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
@@ -28,7 +39,8 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vp_gifticon"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="560dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_brand_tab" />
@@ -36,7 +48,7 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vp_preview"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="62dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/vp_gifticon" />
     </androidx.constraintlayout.widget.ConstraintLayout>

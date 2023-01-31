@@ -3,28 +3,36 @@ package com.ssafy.popcon.ui.common
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Switch
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.map.MapFragment
+import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.util.Utils.navigationHeight
 import com.ssafy.popcon.util.Utils.setStatusBarTransparent
+import com.ssafy.popcon.viewmodel.FCMViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
-private const val TAG = "MainActivity 메인"
+private const val TAG = "MainActivity_싸피"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -33,10 +41,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
 
+    private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
+
     val PERMISSION_REQUEST_CODE = 8
+
+    init {
+        instance = this
+    }
 
     companion object {
         var shakeDetector = ShakeDetector()
+        const val channel_id = "popcon_user"
+
+        private var instance: MainActivity? = null
+        fun getInstance(): MainActivity? {
+            return instance
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,53 +67,68 @@ class MainActivity : AppCompatActivity() {
 
         setNavBar()
         checkPermissions()
+        //getFCMToken()
+        
+        //자동로그인
+        if (SharedPreferencesUtil(this).getUser().email != "") {
+            Log.d(TAG, "onCreate: 로그인됨")
+            changeFragment(HomeFragment())
+        } else {
+            Log.d(TAG, "onCreate: 로그인 필요")
+            changeFragment(LoginFragment())
+        }
     }
 
     //navigation bar 설정
     private fun setNavBar() {
-        this.setStatusBarTransparent() // 투명 상태 바
-        binding.lBottomNavigationView.setPadding(
-            0,
-            0,
-            0,
-            this.navigationHeight()
-        )
-        val navHosFragment =
-            supportFragmentManager.findFragmentById(R.id.frame_layout_main) as NavHostFragment
-        val navController = navHosFragment.navController
+        //this.setStatusBarTransparent() // 투명 상태 바
 
-        NavigationUI.setupWithNavController(binding.lBottomNavigationView, navController)
+        window.navigationBarColor = Color.WHITE;
 
-        // 재선택시 다시 렌더링 하지 않기 위해 수정
-        binding.lBottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.addFragment -> {
-                    Log.d(TAG, "setNavBar: addFragment")
-                    if (binding.lBottomNavigationView.selectedItemId == R.id.homeFragment) {
-                        navController.navigate(R.id.action_homeFragment_to_addFragment)
-                    } else if (binding.lBottomNavigationView.selectedItemId == R.id.mapFragment) {
-                        navController.navigate(R.id.action_mapFragment_to_addFragment)
-                    }
-                }
+        val radius = resources.getDimension(R.dimen.radius_small)
+        val bottomNavigationViewBackground = binding.bottomNav.background as MaterialShapeDrawable
+        bottomNavigationViewBackground.shapeAppearanceModel =
+            bottomNavigationViewBackground.shapeAppearanceModel.toBuilder()
+                .setTopRightCorner(CornerFamily.ROUNDED, radius)
+                .setTopLeftCorner(CornerFamily.ROUNDED, radius)
+                .build()
+
+        binding.bottomNav.setOnItemSelectedListener {
+            when (it.itemId) {
                 R.id.homeFragment -> {
-                    Log.d(TAG, "setNavBar: 홈")
-                    if (binding.lBottomNavigationView.selectedItemId != R.id.homeFragment)
-                        changeFragment(HomeFragment())
+                    changeFragment(HomeFragment())
+                    true
                 }
-                R.id.mapFragment -> {
-                    Log.d(TAG, "setNavBar: 맵")
-                    if (binding.lBottomNavigationView.selectedItemId != R.id.mapFragment)
-                        changeFragment(MapFragment())
+                R.id.addFragment -> {
+                    addFragment(AddFragment())
+                    true
                 }
+                R.id.mapFragment ->{
+                    changeFragment(MapFragment())
+                    true
+                }
+                R.id.settingsFragment->{
+                    changeFragment(SettingsFragment())
+                    true
+                }
+                //donateFragment 추가하기
+                else -> false
             }
-            true
         }
     }
 
-    private fun changeFragment(fragment: Fragment) {
+    fun changeFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frame_layout_main, fragment)
+            .commit()
+    }
+
+    fun addFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frame_layout_main, fragment)
+            .addToBackStack(null)
             .commit()
     }
 
@@ -142,11 +177,9 @@ class MainActivity : AppCompatActivity() {
     //하단바 숨기기
     fun hideBottomNav(state: Boolean) {
         if (state) {
-            binding.lBottomNavigationView.visibility = View.GONE
-            binding.lFabContainer.visibility = View.GONE
+            binding.bottomNav.visibility = View.GONE
         } else {
-            binding.lBottomNavigationView.visibility = View.VISIBLE
-            binding.lFabContainer.visibility = View.VISIBLE
+            binding.bottomNav.visibility = View.VISIBLE
         }
     }
 
@@ -170,6 +203,31 @@ class MainActivity : AppCompatActivity() {
         sensorManager.unregisterListener(shakeDetector)
 
         super.onPause()
+    }
+
+    // 토큰 보내기
+    fun uploadToken(token: String) {
+        fcmViewModel.uploadToken(token)
+    }
+
+    // 알림 관련 메시지 전송
+    fun sendMessageTo(token: String, title: String, body: String) {
+        fcmViewModel.sendMessageTo(token, title, body)
+        //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
+    }
+
+    // 토큰 생성
+    private fun getFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@addOnCompleteListener
+            }
+            Log.d(TAG, "token 정보: ${task.result ?: "task.result is null"}")
+            if (task.result != null) {
+                uploadToken(task.result)
+                fcmViewModel.setToken(task.result)
+            }
+        }
     }
 
     override fun onRestart() {

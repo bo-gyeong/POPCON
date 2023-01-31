@@ -2,19 +2,20 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+
     <data>
         <variable
             name="addInfo"
             type="com.ssafy.popcon.dto.AddInfo" />
     </data>
-    
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="12dp"
-        android:fitsSystemWindows="true">
-    
+        android:fitsSystemWindows="true"
+        android:paddingBottom="?attr/actionBarSize">
+
         <TextView
             android:id="@+id/tv_regi_coupon"
             android:layout_width="wrap_content"
@@ -26,7 +27,7 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
-    
+
         <TextView
             android:id="@+id/tv_regi_img_count"
             android:layout_width="wrap_content"
@@ -39,14 +40,14 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/tv_regi_coupon"/>
-    
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_coupon_list"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@+id/tv_regi_coupon"/>
-    
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/l_regi"
             android:layout_width="match_parent"
@@ -54,29 +55,29 @@
             app:layout_constraintBottom_toTopOf="@id/btn_regi"
             app:layout_constraintTop_toBottomOf="@+id/rv_coupon_list"
             app:layout_constraintVertical_weight="9">
-    
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent">
-    
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-    
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/l_add_coupon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent">
-    
+
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/l_coupon_img"
                             android:layout_width="match_parent"
                             android:layout_height="180dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent">
-    
+
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cv_product_img"
                                 android:layout_width="0dp"
@@ -90,13 +91,13 @@
                                 app:layout_constraintRight_toLeftOf="@id/cv_barcode_img"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintHorizontal_weight="1">
-    
+
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:padding="10dp"
                                     android:layout_gravity="center">
-    
+
                                     <ImageView
                                         android:id="@+id/iv_coupon_img"
                                         android:layout_width="0dp"
@@ -106,7 +107,7 @@
                                         app:layout_constraintBottom_toTopOf="@+id/tv_coupon_img"
                                         app:layout_constraintLeft_toLeftOf="parent"
                                         app:layout_constraintRight_toRightOf="parent"/>
-    
+
                                     <ImageView
                                         android:id="@+id/iv_coupon_img_plus"
                                         android:layout_width="50dp"
@@ -117,7 +118,7 @@
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintLeft_toLeftOf="parent"
                                         app:layout_constraintRight_toRightOf="parent"/>
-    
+
                                     <TextView
                                         android:id="@+id/tv_coupon_img"
                                         android:layout_width="wrap_content"
@@ -128,11 +129,11 @@
                                         app:layout_constraintLeft_toLeftOf="parent"
                                         app:layout_constraintRight_toRightOf="parent"
                                         app:layout_constraintTop_toBottomOf="@+id/iv_coupon_img"/>
-    
+
                                 </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
                             </androidx.cardview.widget.CardView>
-    
+
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cv_barcode_img"
                                 android:layout_width="0dp"
@@ -146,13 +147,13 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 app:layout_constraintLeft_toRightOf="@id/cv_product_img"
                                 app:layout_constraintHorizontal_weight="2">
-    
+
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:padding="10dp"
                                     android:layout_gravity="center">
-    
+
                                     <ImageView
                                         android:id="@+id/iv_barcode_img"
                                         android:layout_width="0dp"
@@ -162,7 +163,7 @@
                                         app:layout_constraintBottom_toTopOf="@+id/tv_barcode_img"
                                         app:layout_constraintLeft_toLeftOf="parent"
                                         app:layout_constraintRight_toRightOf="parent"/>
-    
+
                                     <ImageView
                                         android:id="@+id/iv_barcode_img_plus"
                                         android:layout_width="50dp"
@@ -173,7 +174,7 @@
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintLeft_toLeftOf="parent"
                                         app:layout_constraintRight_toRightOf="parent"/>
-    
+
                                     <TextView
                                         android:id="@+id/tv_barcode_img"
                                         android:layout_width="wrap_content"
@@ -184,13 +185,13 @@
                                         app:layout_constraintLeft_toLeftOf="parent"
                                         app:layout_constraintRight_toRightOf="parent"
                                         app:layout_constraintTop_toBottomOf="@+id/iv_barcode_img"/>
-    
+
                                 </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
                             </androidx.cardview.widget.CardView>
-    
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btn_original_see"
                             android:layout_width="match_parent"
@@ -200,118 +201,173 @@
                             android:background="@drawable/shape_round_grey"
                             app:layout_constraintTop_toBottomOf="@+id/l_coupon_img"
                             app:layout_constraintLeft_toLeftOf="parent"/>
-    
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginTop="20dp"
                         app:layout_constraintTop_toBottomOf="@+id/l_add_coupon">
-    
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginBottom="4dp">
-    
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/product_name"
                                 android:textColor="@color/popcon_black_03"
                                 android:textSize="15sp"/>
-    
+
                             <EditText
                                 android:id="@+id/et_product_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@{addInfo.GName}"
+                                android:text="@{addInfo.productName}"
                                 android:backgroundTint="@color/popcon_grey_09"/>
-    
+
                         </LinearLayout>
-    
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginBottom="4dp">
-    
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/product_brand"
                                 android:textColor="@color/popcon_black_03"
                                 android:textSize="15sp"/>
-    
+
                             <EditText
                                 android:id="@+id/et_product_brand"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@{addInfo.brand}"
+                                android:text="@{addInfo.brandName}"
                                 android:backgroundTint="@color/popcon_grey_09"/>
-    
+
                         </LinearLayout>
-    
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginBottom="4dp">
-    
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/barcode"
                                 android:textColor="@color/popcon_black_03"
                                 android:textSize="15sp"/>
-    
+
                             <EditText
                                 android:id="@+id/et_barcode"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@{addInfo.barcodeNum}"
                                 android:backgroundTint="@color/popcon_grey_09"/>
-    
+
                         </LinearLayout>
-    
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginBottom="4dp">
-    
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/date"
                                 android:textColor="@color/popcon_black_03"
                                 android:textSize="15sp"/>
-    
+
                             <EditText
                                 android:id="@+id/et_date"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="datetime"
-                                android:text="@{addInfo.date}"
-                                android:backgroundTint="@color/popcon_grey_09"/>
-    
+                                android:text="@{addInfo.due.toString()}"
+                                android:maxLength="10"
+                                android:backgroundTint="@color/popcon_grey_09" />
+
                         </LinearLayout>
-    
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginBottom="4dp">
-    
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/price"
+                                    android:textColor="@color/popcon_black_03"
+                                    android:textSize="15sp"/>
+
+                                <CheckBox
+                                    android:id="@+id/cb_price"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:minWidth="0dp"
+                                    android:minHeight="0dp"
+                                    android:buttonTint="@color/popcon_orange"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/l_price"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/won"
+                                    android:textColor="@color/popcon_black_03"
+                                    android:textSize="20sp"/>
+
+                                <EditText
+                                    android:id="@+id/et_price"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="number"
+                                    android:text="@{addInfo.price==0? `` : String.valueOf(addInfo.price)}"
+                                    android:backgroundTint="@color/popcon_grey_09"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginBottom="4dp">
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/memo"
                                 android:textColor="@color/popcon_black_03"
                                 android:textSize="15sp"/>
-    
+
                             <EditText
                                 android:id="@+id/et_write_memo"
                                 android:layout_width="match_parent"
@@ -319,17 +375,17 @@
                                 android:hint="@string/write_memo"
                                 android:text="@{addInfo.memo}"
                                 android:backgroundTint="@color/popcon_grey_09"/>
-    
+
                         </LinearLayout>
-    
+
                     </LinearLayout>
-    
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
             </ScrollView>
-    
+
         </androidx.constraintlayout.widget.ConstraintLayout>
-    
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_regi"
             android:layout_width="250dp"
@@ -344,6 +400,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintVertical_weight="1"/>
-    
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

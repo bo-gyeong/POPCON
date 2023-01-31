@@ -4,9 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="brand"
             type="com.ssafy.popcon.dto.Brand" />
+
+        <variable
+            name="viewModel"
+            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
+
+        <variable
+            name="user"
+            type="com.ssafy.popcon.dto.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,16 +25,17 @@
         android:layout_margin="4dp"
         android:background="@drawable/edge_brand_tab"
         android:elevation="4dp"
+        android:onClick="@{() -> viewModel.tabClickListener(user, brand.brandName)}"
         android:padding="4dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_brand"
-            android:layout_width="20dp"
-            android:layout_marginStart="4dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_gravity="center"
+            android:layout_marginStart="4dp"
             android:scaleType="centerCrop"
-            app:imageUrl="@{brand.logoUrl}"
+            app:imageUrl="@{brand.brandImg}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_brand"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,10 +46,10 @@
             android:id="@+id/tv_brand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@{brand.name}"
-            android:paddingEnd="4dp"
             android:layout_marginStart="4dp"
+            android:gravity="center"
+            android:paddingEnd="4dp"
+            android:text="@{brand.brandName}"
             android:textColor="@color/popcon_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_brand"
