@@ -22,6 +22,6 @@ public interface GifticonRepository extends JpaRepository<Gifticon, String> {
     List<Gifticon> findByUser_HashAndStateGreaterThanEqual(int hash, int state);
 
     Gifticon findByBarcodeNum(String barcodeNum);
-    @Query(value = "SELECT brand_name, COUNT(brand_name) as cnt FROM gifticon WHERE hash = :hash GROUP BY brand_name ORDER BY cnt desc", nativeQuery = true)
+    @Query(value = "SELECT g.brand_name, b.brand_img, COUNT(g.brand_name) as cnt FROM gifticon g JOIN brand b ON g.brand_name = b.brand_name WHERE hash = :hash GROUP BY g.brand_name ORDER BY cnt desc", nativeQuery = true)
     List<Map<String,Object>> selectSQLById(@Param(value = "hash") int hash);
 }
