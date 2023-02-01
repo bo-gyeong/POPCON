@@ -1,6 +1,8 @@
 package com.ssafy.popcon.ui.add
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -10,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore.Images
+import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -40,8 +43,16 @@ import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okio.BufferedSink
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
+import okio.source
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -52,6 +63,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.io.path.Path
 
+private const val TAG = "###_AddFragment"
 class AddFragment : Fragment(), onItemClick {
     private lateinit var binding: FragmentAddBinding
     private val viewModel:AddViewModel by activityViewModels { ViewModelFactory(requireContext()) }
@@ -62,6 +74,7 @@ class AddFragment : Fragment(), onItemClick {
     private lateinit var cropXyImgUris:ArrayList<GifticonImg>
     private lateinit var barcodeImgUris:ArrayList<GifticonImg>
     private val delImgUris = ArrayList<Uri>()
+    private val multipartFiles = ArrayList<MultipartBody.Part>()
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
     var clickCv = ""
@@ -108,6 +121,7 @@ class AddFragment : Fragment(), onItemClick {
                 delCropImg(delImgUris[i])
             }
             delImgUris.clear()
+            multipartFiles.clear()
 
             openGalleryFirst()
         }
@@ -167,10 +181,36 @@ class AddFragment : Fragment(), onItemClick {
                         barcodeImgUris = ArrayList()
 
                         for (i in 0 until clipData.itemCount){
-                            OriginalImgUris.add(GifticonImg(clipData.getItemAt(i).uri))
-                            //viewModel.useOcr(getPath(clipData.getItemAt(i).uri))
-                            //clipData.getItemAt(i).uri.path.toString()  --> \external\images\media\30
-                            // getPath(clipData.getItemAt(i).uri) --> \storage\emulated\0\Download\media_0(3).jpg
+                            val originalImgUri = clipData.getItemAt(i).uri
+                            OriginalImgUris.add(GifticonImg(originalImgUri))
+                            //viewModel.useOcr(getPath(originalImgUri))
+                            //originalImgUri.path.toString()  --> \external\images\media\30
+                            // getPath(originalImgUri) --> \storage\emulated\0\Download\media_0(3).jpg
+                            //Log.d(TAG, "333: ${originalImgUri}")  // content://media/external/images/media/29
+                            //Log.d(TAG, "444: ${getPath(originalImgUri)}")  // /storage/emulated/0/Download/media_0(4).jpg
+                            val path = getPath(originalImgUri)
+                            val fileName = path.substring(path.lastIndexOf("/")+1)
+
+                            val fileBody = path.toRequestBody("multipart/form-data".toMediaTypeOrNull()) //image/jpeg
+                            uriToBitmap(originalImgUri)
+                            val data = MultipartBody.Part.createFormData("file",  "${UUID.randomUUID()}.JPG", fileBody)
+                            // MultipartBody.Part.createFormData("file",  "${UUID.randomUUID()}.JPG", body)
+                            //multipartFiles.add(data)
+
+                            val body = RequestBody.create(
+                                "multipart/form-data".toMediaTypeOrNull(),
+                                File(getPath(originalImgUri))
+                            )
+                            val dataaa = MultipartBody.Part.createFormData("file",  "${UUID.randomUUID()}.JPG", body)
+                            //multipartFiles.add(dataaa)
+
+
+
+
+
+                            val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
+                            multipartFiles.add(realData!!)
+
                             val cropXYImgUri = cropXY(i)
                             val cropXYBarcodeUri = cropXYBar(i)
                             cropXyImgUris.add(GifticonImg(cropXYImgUri))
@@ -179,8 +219,13 @@ class AddFragment : Fragment(), onItemClick {
                             delImgUris.add(cropXYBarcodeUri)
                         }
                         //viewModel.useOcr("https://cloud.google.com/vision/docs/images/bicycle_example.png")
-                        //viewModel.useOcr("C:\\1.PNG")
                         //viewModel.useOcr("file:\\storage\\emulated\\0\\Download\\media_0(3).jpg")
+                        viewModel.addFileToGCP(multipartFiles.toTypedArray())
+                        viewModel.gcpResult.observe(viewLifecycleOwner){
+                            for (gcoResult in it){
+                                viewModel.useOcr(gcoResult.fileName)
+                            }
+                        }
                         fillContent(0)
                         makeImgList()
                     } else{  //이미지 크롭
@@ -223,6 +268,30 @@ class AddFragment : Fragment(), onItemClick {
 
     override fun onClick(idx: Int) {
         fillContent(idx)
+    }
+
+    @SuppressLint("Range")
+    private fun Uri.asMultipart(name: String, contentResolver: ContentResolver): MultipartBody.Part?{
+        return contentResolver.query(this, null, null, null, null)?.let {
+            if (it.moveToNext()){
+                val displayName = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                val requestBody = object : RequestBody(){
+                    override fun contentType(): MediaType? {
+                        return contentResolver.getType(this@asMultipart)?.toMediaType()
+                    }
+
+                    @SuppressLint("Recycle")
+                    override fun writeTo(sink: BufferedSink) {
+                        sink.writeAll(contentResolver.openInputStream(this@asMultipart)?.source()!!)
+                    }
+                }
+                it.close()
+                MultipartBody.Part.createFormData(name, displayName, requestBody)
+            } else{
+                it.close()
+                null
+            }
+        }
     }
 
     private fun cropXY(idx: Int): Uri{
@@ -421,6 +490,7 @@ class AddFragment : Fragment(), onItemClick {
                     5 -> {
                         val newYear = nowText.substring(0, 4).toInt()
                         val nowYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(System.currentTimeMillis()).toInt()
+
                         if (newYear < nowYear || newYear > 2100){
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
                         } else{
@@ -428,6 +498,7 @@ class AddFragment : Fragment(), onItemClick {
                             binding.tilDate.isErrorEnabled = false
                         }
                     }
+
                     8 -> {
                         if (nowText.substring(5, 7).toInt() > 12){
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
@@ -438,11 +509,18 @@ class AddFragment : Fragment(), onItemClick {
                     }
 
                     10 -> {
-                        val month = nowText.substring(5, 7).toInt()
-                        val day = nowText.substring(8).toInt()
+                        val newMonth = nowText.substring(5, 7).toInt()
+                        val newDay = nowText.substring(8).toInt()
 
-                        if (day > dateArr[month-1]){
+                        val nowDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())
+                        val nowDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(nowDateFormat)
+                        val newDate =  SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(p0.toString())
+                        val calDate = newDate!!.compareTo(nowDate)
+
+                        if (newDay > dateArr[newMonth-1]){
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                        } else if (calDate < 0){
+                            binding.tilDate.error = "이미 지난 날짜입니다"
                         } else{
                             binding.tilDate.error = null
                             binding.tilDate.isErrorEnabled = false

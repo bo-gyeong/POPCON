@@ -201,7 +201,8 @@ class SettingsFragment : Fragment() {
             SharedPreferencesUtil(requireContext()).updateUser(userInfo)
             user = userInfo
 
-            viewModel.updateUser(user, 177784539)
+            //viewModel.updateUser(user, 177784539)
+            viewModel.updateUser(user, -308222648)
         }
     }
 
