@@ -16,6 +16,8 @@ import com.example.popconback.gifticon.dto.HistoryGifticon.ResponseGifticonHisto
 import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
 import com.example.popconback.gifticon.dto.ListGifticonUser.BrandForRLGUDto;
 import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
+import com.example.popconback.gifticon.dto.ResponseBrandDto;
+import com.example.popconback.gifticon.dto.SortBrand.SordBrandDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
@@ -34,10 +36,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.security.AccessControlException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.time.LocalTime.now;
 import static org.springframework.data.domain.Sort.Order.asc;
@@ -210,6 +209,7 @@ public class GifticonService {
 
 
 
+
     public void deleteGifticon (String barcode,int hash){
         Optional<Gifticon> gifticon = gifticonRepository.findById(barcode);
         if(!gifticon.isPresent()){
@@ -219,6 +219,35 @@ public class GifticonService {
             throw new AccessControlException("not your gift");
         }
         gifticonRepository.deleteById(barcode);
+    }
+
+    public GifticonDto getGifticon(String barcode_num){
+        Optional<Gifticon> gifticon = gifticonRepository.findById(barcode_num);
+        if(!gifticon.isPresent()){
+            throw new EntityNotFoundException("Gifticon Not Found");
+        }
+        Gifticon Tgifticon = gifticon.get();
+        GifticonDto responsDto = new GifticonDto();
+        BeanUtils.copyProperties(Tgifticon,responsDto);
+        responsDto.setHash(Tgifticon.getUser().getHash());
+        responsDto.setBrandName(Tgifticon.getBrand().getBrandName());
+
+
+        List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(responsDto.getBarcodeNum());//사진들도 따로 복사
+        for (GifticonFiles gifticonfile: gflist
+        ) {
+            if(gifticonfile.getImageType() == 0){// 0: 바코드
+                responsDto.setBarcode_filepath(gifticonfile.getFilePath());
+            }
+            if(gifticonfile.getImageType() == 1){// 1: 상품
+               responsDto.setProduct_filepath(gifticonfile.getFilePath());
+            }
+            if(gifticonfile.getImageType() == 2){// 2: 원본
+                responsDto.setOrigin_filepath(gifticonfile.getFilePath());
+            }
+        }
+        return responsDto;
+
     }
 
     public ResponseCreateFavoritesDto createFavorites (CreateFavoritesDto createFavoritesDto,int hash){
@@ -284,9 +313,6 @@ public class GifticonService {
     }
 
 
-
-
-
     public List<GifticonDto> getPushGifticon (int hash, int Dday){// 사용한 기프티콘이나 기간지난거는 스테이트로 구분 하면 되는
         Date date = java.sql.Date.valueOf(LocalDate.now().plusDays(Dday));
         List<GifticonDto> rlist = new ArrayList<>();
@@ -301,6 +327,30 @@ public class GifticonService {
         }
         return rlist;
 
+    }
+
+
+    public List<Map<String,Object>> brandListOrderByGifticonCountEachUser(String email, String social){
+        UserDto user = new UserDto();
+        user.setEmail(email);
+        user.setSocial(social);
+        List<Map<String,Object>> list = gifticonRepository.selectSQLById(user.hashCode());
+//        List<Gifticon> list = gifticonRepository.findByUser_Hash(user.hashCode(),Sort.by(asc("due")));
+//        List<ResponseBrandDto> rlist = new ArrayList<>();
+//        List<String> blist = new ArrayList<>();
+//        for (Gifticon gifticon:list
+//             ) {
+//            String brandname = gifticon.getBrand().getBrandName();
+//            if(!blist.contains(brandname)){
+//                blist.add(brandname);
+//            }
+//        }
+//        for (String brandname:blist
+//             ) {
+//            List<Gifticon> glist = gifticonRepository.findByUser_HashAndBrand_BrandName(user.hashCode(),brandname);
+//
+//        }
+        return list;
     }
 
     public void check_overdate(){

@@ -1,5 +1,6 @@
 package com.example.popconback.gifticon.controller;
 
+import com.example.popconback.gifticon.domain.Brand;
 import com.example.popconback.gifticon.dto.CreateFavorites.CreateFavoritesDto;
 import com.example.popconback.gifticon.dto.CreateFavorites.ResponseCreateFavoritesDto;
 import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
@@ -11,6 +12,8 @@ import com.example.popconback.gifticon.dto.HistoryGifticon.GifticonHistoryDto;
 import com.example.popconback.gifticon.dto.HistoryGifticon.ResponseGifticonHistoryDto;
 import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
 import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
+import com.example.popconback.gifticon.dto.ResponseBrandDto;
+import com.example.popconback.gifticon.dto.SortBrand.SordBrandDto;
 import com.example.popconback.gifticon.dto.SortGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
 import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 @Api(value = "GifticonController")
@@ -132,6 +136,18 @@ public class GifticonController {
         return ResponseEntity.ok().build();
     }
 
+
+    @ApiOperation(value = "기프티콘 조회", notes = "기프티콘 삭제", httpMethod = "DELETE")
+    @GetMapping("{barcode_num}") //기프티콘 삭제
+    public ResponseEntity<GifticonDto> getGifticon (@PathVariable String barcode_num) {
+        return ResponseEntity.ok(gifticonService.getGifticon(barcode_num));
+    }
+
+    @ApiOperation(value = "브랜드 기프티콘 순으로 정렬", notes = "브랜드 기프티콘 순으로 정렬", httpMethod = "GET")
+    @GetMapping("/brandsort/{email}/{social}")
+    public ResponseEntity<List<Map<String,Object>>> getGifticon (@PathVariable String email, @PathVariable String social) {
+        return ResponseEntity.ok(gifticonService.brandListOrderByGifticonCountEachUser(email,social));
+    }
 
     //@Scheduled(cron = "0 0 09 * * ?")
     @ApiOperation(value = "기프티콘 상태 업데이트", notes = "기프티콘 유호기간 체크 후 상태 변경 / 서버용 API", httpMethod = "GET")

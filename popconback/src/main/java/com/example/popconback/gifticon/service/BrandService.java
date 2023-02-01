@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,32 @@ public class BrandService {
         return responseBrandDto;
 
     }
+
+    public List<ResponseBrandDto> brandListOrderByGifticonCount (){
+        List<Brand> brandList = brandrepository.findAllByOrderByCountOfGifticonsDesc();
+
+        List<ResponseBrandDto> resultList = new ArrayList<>();
+
+        for (Brand brand : brandList) {
+            ResponseBrandDto responseBrandDto = new ResponseBrandDto();
+
+            int nowGifticonCount = brand.getCountOfGifticons();
+
+            if (nowGifticonCount > 0) {
+                responseBrandDto.setBrandName(brand.getBrandName());
+                responseBrandDto.setBrandImg(brand.getBrandImg());
+
+                resultList.add(responseBrandDto);
+            }
+
+        }
+
+
+        return resultList;
+
+    }
+
+
 
 
 
