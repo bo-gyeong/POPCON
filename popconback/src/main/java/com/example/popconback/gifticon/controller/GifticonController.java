@@ -63,62 +63,72 @@ public class GifticonController {
         )
     })
     @GetMapping("/{email}/{social}") //유저의 기프티콘 정보 DB에서 보내주기 // 이것도 만료되거나 사용한거 다보낼까?
-    public ResponseEntity<List<ResponseListGifticonUserDto>> gifticonList(@PathVariable String email, @PathVariable String social){
-        return ResponseEntity.ok(gifticonService.gifticonList(email, social));
+    public ResponseEntity<List<ResponseListGifticonUserDto>> gifticonList(@PathVariable String email, @PathVariable String social,Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+
+        return ResponseEntity.ok(gifticonService.gifticonList(us.getEmail(), us.getSocial()));
     }
 
     @ApiOperation(value = "기프티콘 저장", notes = "기프티콘 정보 저장", httpMethod = "POST")
     @PostMapping("") //기프티콘 정보 저장
-    public ResponseEntity<List<ResponseCreateGifticonDto>> CreateGifticon (@RequestBody CreateGifticonDto[] createGifticonDtos){
+    public ResponseEntity<List<ResponseCreateGifticonDto>> CreateGifticon (@RequestBody CreateGifticonDto[] createGifticonDtos, Authentication authentication){
         List<CreateGifticonDto> Dtolist = Arrays.asList(createGifticonDtos);
-        return ResponseEntity.ok(gifticonService.createGifticon(Dtolist));
+        UserDto us= (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok(gifticonService.createGifticon(Dtolist,us.hashCode()));
     }
 
     @ApiOperation(value = "즐겨찾기 등록", notes = "즐겨찾기 브랜드 등록", httpMethod = "POST")
     @PostMapping("/favorites") // 즐겨찾기 브랜드 등록
-    public ResponseEntity<ResponseCreateFavoritesDto> CreateFavorites (@RequestBody CreateFavoritesDto createFavoritesDto){
-        return ResponseEntity.ok(gifticonService.createFavorites(createFavoritesDto));
+    public ResponseEntity<ResponseCreateFavoritesDto> CreateFavorites (@RequestBody CreateFavoritesDto createFavoritesDto,Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok(gifticonService.createFavorites(createFavoritesDto,us.hashCode()));
     }
 
     @ApiOperation(value = "즐겨찾기 삭제", notes = "즐겨찾기 브랜드 삭제", httpMethod = "DELETE")
     @DeleteMapping("/favorites") // 즐겨찾기 브랜드 삭제
-    public ResponseEntity<Void> DeleteFavorites (@RequestBody DeleteFavoritesDto deleteFavoritesDto){
-        gifticonService.deleteFavorites(deleteFavoritesDto);
+    public ResponseEntity<Void> DeleteFavorites (@RequestBody DeleteFavoritesDto deleteFavoritesDto,Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        gifticonService.deleteFavorites(deleteFavoritesDto,us.hashCode());
         return ResponseEntity.ok().build();
     }
 
     @ApiOperation(value = "즐겨찾기 조회", notes = "즐겨찾기 브랜드 조회", httpMethod = "GET")
     @GetMapping("/favorites/{email}/{social}") // 즐겨찾기 브랜드 등록
-    public ResponseEntity<List<ResponseListFavoritesDto>> CreateFavorites (@PathVariable String email, @PathVariable String social){
-        return ResponseEntity.ok(gifticonService.listFavorites(email,social));
+    public ResponseEntity<List<ResponseListFavoritesDto>> CreateFavorites (@PathVariable String email, @PathVariable String social, Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok(gifticonService.listFavorites(email,social,us.hashCode()));
     }
 
 
 
     @ApiOperation(value = "기프티콘 정렬", notes = "기프티콘 브랜드별 정렬", httpMethod = "GET") // get 으로 수정
     @GetMapping("/brand") //기프티콘 브랜드별 정렬 // 사용한거 표시 제외하고 보낼지 말지 고민
-    public ResponseEntity<List<ResponseListGifticonUserDto>> SortGifticon (@RequestBody SortGifticonDto sortGifticonDto){
-            return ResponseEntity.ok(gifticonService.sortGifticon(sortGifticonDto));
+    public ResponseEntity<List<ResponseListGifticonUserDto>> SortGifticon (@RequestBody SortGifticonDto sortGifticonDto,Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+            return ResponseEntity.ok(gifticonService.sortGifticon(sortGifticonDto,us.hashCode()));
    }
 
     @ApiOperation(value = "기프티콘 히스토리", notes = "기프티콘 히스토리", httpMethod = "GET") // get 으로 수정
-    @GetMapping("/history") //기프티콘 브랜드별 정렬 // 사용한거 표시 제외하고 보낼지 말지 고민
-    public ResponseEntity<List<ResponseGifticonHistoryDto>> historyGifticon (@RequestBody GifticonHistoryDto gifticonHistoryDto){
-        return ResponseEntity.ok(gifticonService.historyGifticon(gifticonHistoryDto));
+    @GetMapping("/history")
+    public ResponseEntity<List<ResponseGifticonHistoryDto>> historyGifticon (@RequestBody GifticonHistoryDto gifticonHistoryDto,Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok(gifticonService.historyGifticon(gifticonHistoryDto,us.hashCode()));
     }
 
 
 
     @ApiOperation(value = "기프티콘 수정", notes = "기프티콘 정보 수정", httpMethod = "PUT")
     @PutMapping("") //기프티콘 정보 수정
-    public ResponseEntity<ResponseUpdateGifticonDto> UpdateGifticon (@RequestBody UpdateGifticonDto updateGifticonDto){
-            return ResponseEntity.ok(gifticonService.updateGifticon(updateGifticonDto));
+    public ResponseEntity<ResponseUpdateGifticonDto> UpdateGifticon (@RequestBody UpdateGifticonDto updateGifticonDto, Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok(gifticonService.updateGifticon(updateGifticonDto,us.hashCode()));
      }
 
     @ApiOperation(value = "기프티콘 삭제", notes = "기프티콘 삭제", httpMethod = "DELETE")
     @DeleteMapping("") //기프티콘 삭제
-    public ResponseEntity<Void> DeleteGifticon (@RequestBody DeleteGifticonDto deleteGifticonDto){
-        gifticonService.deleteGifticon(deleteGifticonDto.getBarcodeNum());
+    public ResponseEntity<Void> DeleteGifticon (@RequestBody DeleteGifticonDto deleteGifticonDto,Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        gifticonService.deleteGifticon(deleteGifticonDto.getBarcodeNum(),us.hashCode());
         return ResponseEntity.ok().build();
     }
 
