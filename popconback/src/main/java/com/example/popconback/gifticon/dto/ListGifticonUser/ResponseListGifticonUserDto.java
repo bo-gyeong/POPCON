@@ -15,8 +15,9 @@ public class ResponseListGifticonUserDto {
     private BrandForRLGUDto brand;
     @ApiModelProperty(name = "productName", value = "상품명", example = "아이스 카페 아메리카노 Tall")
     private String productName;
-    @JsonFormat( shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+
     @ApiModelProperty(name = "due", value = "유효기간", example = "2023-01-10 00:00:00.000000")
+    @JsonFormat( shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date due;
     @ApiModelProperty(name = "price", value = "int:금액권의 잔여금액, -1:교환권", example = "-1")
     private int price;

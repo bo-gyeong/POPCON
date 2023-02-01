@@ -22,6 +22,8 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
@@ -47,6 +49,8 @@ dependencies {
 
 	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
 	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
+
+
 }
 
 tasks.named('test') {

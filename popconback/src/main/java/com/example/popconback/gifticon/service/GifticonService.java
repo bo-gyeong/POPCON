@@ -34,6 +34,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.AccessControlException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -68,10 +69,10 @@ public class GifticonService {
             List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
             for (GifticonFiles gifticonfile: gflist
                  ) {
-                if(gifticonfile.getImageType() == 0){// 0: 바코드
+                if(gifticonfile.getImageType() == 0){// 0:
                     rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
                 }
-                if(gifticonfile.getImageType() == 1){// 1: 상품
+                if(gifticonfile.getImageType() == 1){// 1:
                     rgifticon.setProduct_filepath(gifticonfile.getFilePath());
                 }
                 if(gifticonfile.getImageType() == 2){// 2: 원본
@@ -85,9 +86,8 @@ public class GifticonService {
     }
 
     
-    public List<ResponseGifticonHistoryDto> historyGifticon (GifticonHistoryDto gifticonHistoryDto){// 기프티콘 리스트 뽑아오기
+    public List<ResponseGifticonHistoryDto> historyGifticon (GifticonHistoryDto gifticonHistoryDto, int hash){// 기프티콘 리스트 뽑아오기
 
-        int hash = gifticonHistoryDto.hashCode();
         List<Gifticon>list = gifticonRepository.findByUser_HashAndStateGreaterThanEqual(hash,1);
         List<ResponseGifticonHistoryDto> rlist = new ArrayList<>();
 
@@ -119,16 +119,16 @@ public class GifticonService {
     }
 
 
-    public List<ResponseCreateGifticonDto> createGifticon (List<CreateGifticonDto> createGifticonDtoList){
+    public List<ResponseCreateGifticonDto> createGifticon (List<CreateGifticonDto> createGifticonDtoList, int hash){
         List<ResponseCreateGifticonDto> rlist = new ArrayList<>();
 
         UserDto tuser = new UserDto();
 
 
         for (CreateGifticonDto createGifticonDto: createGifticonDtoList) {
-            tuser.setEmail(createGifticonDto.getEmail());
-            tuser.setSocial(createGifticonDto.getSocial());
-            int hash = tuser.hashCode();
+//            tuser.setEmail(createGifticonDto.getEmail());
+//            tuser.setSocial(createGifticonDto.getSocial());
+//            int hash = tuser.hashCode();
             Optional<User> user = userRepository.findById(hash);
 
             if (!user.isPresent()) {
@@ -156,13 +156,31 @@ public class GifticonService {
         }
         return rlist;
     }
+    public ResponseUpdateGifticonDto updateGifticon (UpdateGifticonDto updateGifticonDto,int hash){
+        Optional<Gifticon> optionalGifticon = gifticonRepository.findById(updateGifticonDto.getBarcodeNum());
+        ResponseUpdateGifticonDto responDto = new ResponseUpdateGifticonDto();
+
+        if (!optionalGifticon.isPresent()){
+            return responDto;
+            //throw new EntityNotFoundException("Gifticon not present in the database");
+        }
+        Gifticon gifticon = optionalGifticon.get();
+
+        if(gifticon.getUser().getHash() != hash){
+            return responDto; //본인꺼 아니면 건들지 마시오
+        }
+
+        BeanUtils.copyProperties(updateGifticonDto, gifticon);
+
+        gifticon.setBrand(brandrepository.findByBrandName(updateGifticonDto.getBrandName()));
+        BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
+        responDto.setBrandName(gifticon.getBrand().getBrandName());
+        return responDto;
+    }
 
 
-    public List<ResponseListGifticonUserDto> sortGifticon (SortGifticonDto sortGifticonDto){
-        UserDto tuser = new UserDto();
-        tuser.setEmail(sortGifticonDto.getEmail());
-        tuser.setSocial(sortGifticonDto.getSocial());
-        int hash = tuser.hashCode();
+    public List<ResponseListGifticonUserDto> sortGifticon (SortGifticonDto sortGifticonDto,int hash){
+
         Optional<User> user = userRepository.findById(hash);
         List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
         if (!user.isPresent()) {
@@ -189,29 +207,18 @@ public class GifticonService {
     }
 
 
-    public ResponseUpdateGifticonDto updateGifticon (UpdateGifticonDto updateGifticonDto){
-        Optional<Gifticon> optionalGifticon = gifticonRepository.findById(updateGifticonDto.getBarcodeNum());
-//        System.out.println(optionalGifticon);
-//        System.out.println(barcode_num);
-        ResponseUpdateGifticonDto responDto = new ResponseUpdateGifticonDto();
 
-        if (!optionalGifticon.isPresent()){
-            return responDto;
-            //throw new EntityNotFoundException("Gifticon not present in the database");
-        }
-        Gifticon gifticon = optionalGifticon.get();
-        BeanUtils.copyProperties(updateGifticonDto, gifticon);
-        BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);
-        responDto.setBrandName(gifticon.getBrand().getBrandName());
-        return responDto;
-    }
 
-    public void deleteGifticon (String barcode_num){
-        Optional<Gifticon> gifticon = gifticonRepository.findById(barcode_num);
+
+    public void deleteGifticon (String barcode,int hash){
+        Optional<Gifticon> gifticon = gifticonRepository.findById(barcode);
         if(!gifticon.isPresent()){
             throw new EntityNotFoundException("Gifticon Not Found");
         }
-        gifticonRepository.deleteById(barcode_num);
+        if(gifticon.get().getUser().getHash() != hash){
+            throw new AccessControlException("not your gift");
+        }
+        gifticonRepository.deleteById(barcode);
     }
 
     public GifticonDto getGifticon(String barcode_num){
@@ -240,12 +247,13 @@ public class GifticonService {
             }
         }
         return responsDto;
+
     }
 
-    public ResponseCreateFavoritesDto createFavorites (CreateFavoritesDto createFavoritesDto){
-        Optional<User> user = userRepository.findById(createFavoritesDto.hashCode());
+    public ResponseCreateFavoritesDto createFavorites (CreateFavoritesDto createFavoritesDto,int hash){
+        Optional<User> user = userRepository.findById(hash);
 
-        int hash = createFavoritesDto.hashCode();
+
         ResponseCreateFavoritesDto responDto = new ResponseCreateFavoritesDto();
         if (!user.isPresent()) {
             return responDto;
@@ -266,9 +274,8 @@ public class GifticonService {
         return responDto;
     }
 
-    public void deleteFavorites(DeleteFavoritesDto deleteFavoritesDto){
+    public void deleteFavorites(DeleteFavoritesDto deleteFavoritesDto,int hash){
 
-        int hash = deleteFavoritesDto.hashCode();
         Optional<User> user = userRepository.findById(hash);
         if (!user.isPresent()) {
             throw new EntityNotFoundException("User Not Found");
@@ -282,11 +289,8 @@ public class GifticonService {
         favoritesrepository.deleteByUser_HashAndBrand_BrandName(hash, brand_name);
     }
 
-    public List<ResponseListFavoritesDto> listFavorites (String email, String social){
-        User tuser = new User();
-        tuser.setEmail(email);
-        tuser.setSocial(social);
-        int hash = tuser.hashCode();
+    public List<ResponseListFavoritesDto> listFavorites (String email, String social,int hash){
+
         Optional<User> user = userRepository.findById(hash);
 
         List<ResponseListFavoritesDto> rlist = new ArrayList<>();
