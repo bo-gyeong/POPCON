@@ -11,7 +11,7 @@ public class UserDto {
     private String  email;
     private String social;
     private String Token;
-    private String RefreshToken;
+    private String refreshToken;
     private int alarm;
     private int Nday;
     private int term;
@@ -25,7 +25,7 @@ public class UserDto {
                 .email(email)
                 .social(social)
                 .Token(Token)
-                .Refreshtoken(RefreshToken)
+                .refreshtoken(refreshToken)
                 .alarm(alarm)
                 .Nday(Nday)
                 .term(term)

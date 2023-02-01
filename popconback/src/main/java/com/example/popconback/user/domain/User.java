@@ -23,7 +23,7 @@ public class User {
 
     private String Token;
 
-    private String RefreshToken;
+    private String refreshToken;
 
     private int alarm;
     private int Nday;
@@ -44,7 +44,7 @@ public class User {
                 String email,
                 String social,
                 String Token,
-                String Refreshtoken,
+                String refreshtoken,
                 int alarm,
                 int Nday,
                 int term,
@@ -54,7 +54,7 @@ public class User {
         this.email = email;
         this.social = social;
         this.Token =  Token;
-        this.RefreshToken = Refreshtoken;
+        this.refreshToken = refreshtoken;
         this.alarm = alarm;
         this.Nday = Nday;
         this.term = term;

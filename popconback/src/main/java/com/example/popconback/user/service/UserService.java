@@ -73,35 +73,43 @@ public class UserService {
         responseToken.setAcessToken(token);
         responseToken.setRefreshToekn(Refreshtoken);
 
-        user.setRefreshToken(Refreshtoken);
+            user.setRefreshToken(Refreshtoken);
 
         Optional<User> optionalUser = userRepository.findById(user.hashCode());
-        if(!optionalUser.isPresent()){ //없으면 초기값 세팅 후 db에 저장 후 아래에서 토큰 발행
+        if(!optionalUser.isPresent()){ //회원가입되는거고
             userRepository.save(user.toEntity());
         }
-        //있으면 그냥 토큰만 발행
+        else{//로그인하고 refresh 다시 만들어서 저장해주고
+            UserDto joineduser = new UserDto();
+            BeanUtils.copyProperties(optionalUser.get(),joineduser);
+            joineduser.setRefreshToken(Refreshtoken);
+            userRepository.save(joineduser.toEntity());
+        }
+
 
 
         return responseToken;
     }
 
     public ResponseToken refresh(String refreshtoken){// 리프레시 토큰 오면 보내는거
-        Optional<User> optionalUser = userRepository.findbyRefreshToken(refreshtoken);
-        if(!optionalUser.isPresent()){ //없으면 그냥 보내라
-          return null;
+        User optionalUser = userRepository.findByRefreshToken(refreshtoken);
+        ResponseToken responseToken = new ResponseToken();
+        if(optionalUser == null){ //없으면 그냥 보내라
+          return responseToken;// 널값 들어가있음 없으면
         }
-        User user = optionalUser.get();
+        User user = optionalUser;
         UserDto dto = new UserDto();
         BeanUtils.copyProperties(user,dto);
 
         String token = JwtUtil.creatJwt(user.getEmail(),user.getSocial(), secretkey,expiredMs );
         String Refreshtoken = JwtUtil.creatRefashToken (expiredMsRe,secretkey);
 
-        ResponseToken responseToken = new ResponseToken();
+
+
         responseToken.setAcessToken(token);
         responseToken.setRefreshToekn(Refreshtoken);
         //user에 refreshtoken 저장하기
-        dto.setRefreshToken(refreshtoken);
+        dto.setRefreshToken(Refreshtoken);
         userRepository.save(dto.toEntity());
 
         return responseToken;

@@ -39,9 +39,9 @@ public class UserController {
         return ResponseEntity.ok(userservice.login(createUserDto));// 카카오 토큰을 받아와서 사용자 정부 추출
     }
 
-    @PostMapping("/refresh") // 리프레시하기
+    @GetMapping("/refresh") // 리프레시하기
     public ResponseEntity<ResponseToken> refresh(HttpServletRequest request){// 필터에서 안걸러지면 유효기간 남아있는거임
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
         return ResponseEntity.ok(userservice.refresh(token));
     }
 

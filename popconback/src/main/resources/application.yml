@@ -52,3 +52,8 @@ jwt :
   secret : "token.server.secret.key"
 app :
   sec : "the world"
+
+server:
+  error:
+    include-exception: true # 오류 응답에 exception의 내용을 포함할지 여부
+    include-stacktrace: never # 오류 응답에 stacktrace 내용을 포함할 지 여부
