@@ -6,6 +6,7 @@ import android.content.Context
 import com.google.gson.GsonBuilder
 import com.navercorp.nid.NaverIdLoginSDK
 import com.ssafy.popcon.BuildConfig
+import com.ssafy.popcon.util.AuthInterceptor
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -31,6 +32,7 @@ class ApplicationClass : Application() {
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
                 // 로그캣에 okhttp.OkHttpClient로 검색하면 http 통신 내용을 보여줍니다.
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(AuthInterceptor())
                 .connectTimeout(30, TimeUnit.SECONDS).build()
 
             retrofit = Retrofit.Builder()
@@ -53,10 +55,11 @@ class ApplicationClass : Application() {
     }
 
     override fun onCreate() {
+        sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
+
         super.onCreate()
 
         //shared preference 초기화
-        sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
 
         makeRetrofit(SERVER_URL)
         setNaverModule(applicationContext)

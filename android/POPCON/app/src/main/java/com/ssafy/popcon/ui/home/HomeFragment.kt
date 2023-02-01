@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentHomeBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
@@ -91,6 +92,7 @@ class HomeFragment : Fragment() {
 
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
+        Log.d(TAG, "setGifticonAdapter: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.gifticons.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {

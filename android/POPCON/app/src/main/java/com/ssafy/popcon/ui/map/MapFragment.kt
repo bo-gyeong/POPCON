@@ -184,9 +184,7 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         Log.d(TAG, "updateViewPager: $gifticons")
         with(binding.viewpagerMapGiftcon) {
             adapter = MapGifticonAdpater().apply {
-
                     submitList(gifticons)
-
             }
 
             val pageWidth = resources.getDimension(R.dimen.viewpager_item_widwth)
@@ -203,6 +201,10 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
     //기프티콘 뷰페이저
     fun setGifticonBanner() {
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
+
+        viewModel.mapGifticon.observe(viewLifecycleOwner){
+            binding.tvTest.text = it.toString()
+        }
 
         with(binding.viewpagerMapGiftcon) {
             adapter = MapGifticonAdpater().apply {

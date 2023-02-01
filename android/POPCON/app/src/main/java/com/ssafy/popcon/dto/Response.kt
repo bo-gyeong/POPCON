@@ -19,3 +19,8 @@ data class BrandResponse(
     val brand_img : String,
     val cnt : Int
 )
+
+data class SigninResponse(
+    val acessToken : String,
+    val refreshToekn : String
+)

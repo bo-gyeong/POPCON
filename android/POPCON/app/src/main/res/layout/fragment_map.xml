@@ -13,8 +13,8 @@
 
         <net.daum.mf.map.api.MapView
             android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="396dp"
+            android:layout_height="716dp" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"
@@ -27,6 +27,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:layout_marginTop="100dp"
+            android:id="@+id/tv_test"
+            android:layout_width="wrap_content"
+            android:text="etaearerae"
+            android:layout_height="wrap_content"/>
         <ImageButton
             android:id="@+id/btn_update_position"
             android:layout_width="50dp"

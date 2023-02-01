@@ -2,6 +2,7 @@ package com.ssafy.popcon.ui.brandtab
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +53,7 @@ class MapBrandtabFragment : Fragment() {
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener{
             override fun onClick(v: View, brandName: String) {
+                Log.d("TAG", "onClick: $brandName")
                 viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
                 MapFragment().updateViewPager(viewModel.mapGifticon.value!!)
             }
