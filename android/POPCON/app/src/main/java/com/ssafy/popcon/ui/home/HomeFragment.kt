@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var shakeDetector: ShakeDetector
     lateinit var gifticonAdapter: GiftconAdapter
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun openGifticonDialog() {
-        viewModel.openGifticonDialogEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.openGifticonDialogEvent.observe(viewLifecycleOwner, EventObserver {
             Log.d(TAG, "openGifticonDialog: $it")
             val args = Bundle()
             args.putSerializable("barNum", it)

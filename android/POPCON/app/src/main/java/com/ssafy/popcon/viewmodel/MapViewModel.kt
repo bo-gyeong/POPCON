@@ -11,7 +11,10 @@ import com.ssafy.popcon.repository.map.MapRepository
 import com.ssafy.popcon.ui.map.MapFragment
 import kotlinx.coroutines.launch
 
-class MapViewModel(private val gifticonRepository: GifticonRepository, private val mapRepository: MapRepository) : ViewModel() {
+class MapViewModel(
+    private val gifticonRepository: GifticonRepository,
+    private val mapRepository: MapRepository
+) : ViewModel() {
 
     // 내가 가진 모든 기프티콘 저장하는 변수
     private val _mapGifticon = MutableLiveData<List<Gifticon>>()
@@ -24,7 +27,7 @@ class MapViewModel(private val gifticonRepository: GifticonRepository, private v
     private val _brandsMap = MutableLiveData<List<BrandResponse>>()
     val brandsMap: LiveData<List<BrandResponse>> = _brandsMap
 
-    fun sendUserPosition(nowPos: Map<String, String>) {
+    fun getStoreInfo(nowPos: Map<String, String>) {
         viewModelScope.launch {
             _mapBrandLogo.value = mapRepository.sendUserPosition(nowPos)
         }
@@ -43,7 +46,14 @@ class MapViewModel(private val gifticonRepository: GifticonRepository, private v
             getGifticonByUser(user)
         } else {
             viewModelScope.launch {
-                val gifticons = gifticonRepository.getGifticonByBrand(GifticonByBrandRequest(user.email!!, user.social.toString(), -1, brandName))
+                val gifticons = gifticonRepository.getGifticonByBrand(
+                    GifticonByBrandRequest(
+                        user.email!!,
+                        user.social.toString(),
+                        -1,
+                        brandName
+                    )
+                )
                 _mapGifticon.value = gifticons
             }
         }

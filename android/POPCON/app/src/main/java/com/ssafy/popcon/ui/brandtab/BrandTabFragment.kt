@@ -58,13 +58,16 @@ class BrandTabFragment : Fragment() {
     //상단 브랜드탭
     fun setBrandTab() {
         viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
-        viewModel.brandsHome.observe(viewLifecycleOwner){
-            brandAdapter =
-                BrandAdapter(BrandAdapter.BrandListener { brand ->
-                    Log.d("TAG", "setBrandTab: ${brand.brandName}")
-                    viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brand.brandName)
-                })
+        brandAdapter = BrandAdapter()
+        brandAdapter.setItemClickListener(object: BrandAdapter.OnItemClickListener{
+            override fun onClick(v: View, brandName : String) {
+                Log.d("TAG", "onClick: $brandName")
 
+                viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+            }
+        })
+
+        viewModel.brandsHome.observe(viewLifecycleOwner){
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =

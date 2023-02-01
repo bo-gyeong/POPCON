@@ -71,7 +71,9 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
             getGifticonByUser(user)
         } else {
             viewModelScope.launch {
+                Log.d("TAG", "getGifticons: $brandName")
                 val gifticons = gifticonRepository.getGifticonByBrand(GifticonByBrandRequest(user.email!!, user.social.toString(), -1, brandName))
+                Log.d("TAG", "getGifticons: $gifticons")
                 _gifticons.value = gifticons
             }
         }

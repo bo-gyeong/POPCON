@@ -1,10 +1,12 @@
 package com.ssafy.popcon.ui.brandtab
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +18,11 @@ import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.generated.callback.OnClickListener
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class BrandAdapter(private val clickListener : BrandListener) :
+class BrandAdapter() :
     ListAdapter<Brand, BrandAdapter.BrandViewHolder>(BrandDiffCallback()) {
     var index: Int = 0
     private lateinit var binding: ItemBrandTabBinding
@@ -28,32 +33,44 @@ class BrandAdapter(private val clickListener : BrandListener) :
     }
 
     override fun onBindViewHolder(holder: BrandViewHolder, position: Int) {
-        holder.bind(getItem(position), clickListener)
+        holder.bind(getItem(position))
+        val brandView: ConstraintLayout = holder.itemView.findViewById(R.id.view_brand_tab)
 
         if (index == position) {
-            binding.viewBrandTab.setBackgroundResource(R.drawable.edge_brand_tab_select)
+            brandView.setBackgroundResource(R.drawable.edge_brand_tab_select)
         } else {
-            binding.viewBrandTab.setBackgroundResource(R.drawable.edge_brand_tab)
+            brandView.setBackgroundResource(R.drawable.edge_brand_tab)
         }
 
         holder.itemView.setOnClickListener {
+            itemClickListener.onClick(it, getItem(position).brandName)
             index = position
+
+            notifyDataSetChanged()
         }
     }
 
     inner class BrandViewHolder(private val binding: ItemBrandTabBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(brand: Brand, clickListener: BrandListener) {
+        fun bind(brand: Brand) {
             binding.brand = brand
-            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
     }
 
-    class BrandListener(val clickListener: (brand: Brand) -> Unit) {
-        fun onClick(brand: Brand) = clickListener(brand)
+    //리스너 인터페이스
+    interface OnItemClickListener {
+        fun onClick(v: View, brandName: String)
     }
+
+    //외부에서 클릭 이벤트
+    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
+
+        this.itemClickListener = onItemClickListener
+    }
+
+    private lateinit var itemClickListener: OnItemClickListener
 }
 
 class BrandDiffCallback : DiffUtil.ItemCallback<Brand>() {

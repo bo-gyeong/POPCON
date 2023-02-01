@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.viewpager.widget.ViewPager.PageTransformer
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Brand
@@ -26,7 +27,6 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 
 class GifticonDialogFragment : DialogFragment() {
-
     private val viewModel: PopupViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var binding: DialogUseBinding
     private var prevIndex = 0
@@ -70,7 +70,6 @@ class GifticonDialogFragment : DialogFragment() {
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        test()
 
         return binding.root
     }
@@ -79,82 +78,7 @@ class GifticonDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //setList()
-    }
-
-    private fun test() {
-        var gifticonList = mutableListOf<Gifticon>()
-        gifticonList.add(
-            Gifticon(
-                "1234-1234",
-                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-                Brand(
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
-                    "스타벅스"
-                ),
-
-                "2023-01-29 00:00:00.000000",
-                -1,
-                5000,
-                "유라",
-                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-                "아메리카노 T",
-                "https://user-images.githubusercontent.com/33195517/214759061-e4fad749-656d-4feb-acf0-f1f579cef0b0.png",0
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234-1234",
-                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-                Brand(
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
-                    "스타벅스"
-                ),
-                "2023-02-10 00:00:00.000000",
-                -1,
-                30000,
-                "유라",
-                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-                "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",1
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234-1234",
-                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-                Brand(
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
-                    "스타벅스"
-                ),
-                "2023-02-10 00:00:00.000000",
-                -1,
-                30000,
-                "유라",
-                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-                "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",2
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234-1234",
-                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-                Brand(
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png",
-                    "스타벅스"
-                ),
-                "2023-02-10 00:00:00.000000",
-                -1,
-                30000,
-                "유라",
-                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-                "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",1
-            )
-        )
-
-        setViewPager(gifticonList)
+        setList()
     }
 
     //상품이미지 미리보기, 기프티콘 사용화면
@@ -179,6 +103,12 @@ class GifticonDialogFragment : DialogFragment() {
                 binding.vpGifticon
             )
         )
+
+        binding.vpPreview.setPageTransformer(false
+        ) { page, position ->
+            Log.d("TAG", "transformPage: $position")
+            page.translationX = position * -40
+        }
 
         binding.vpPreview.apply {
             addOnPageChangeListener(object : OnPageChangeListener {

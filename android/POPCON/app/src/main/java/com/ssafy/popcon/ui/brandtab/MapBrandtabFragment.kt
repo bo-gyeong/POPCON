@@ -49,11 +49,13 @@ class MapBrandtabFragment : Fragment() {
     fun setBrandTab() {
         viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.brandsMap.observe(viewLifecycleOwner){
-            brandAdapter =
-                BrandAdapter(BrandAdapter.BrandListener { brand ->
-                    viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brand.brandName)
-                })
+            brandAdapter = BrandAdapter()
 
+            brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener{
+                override fun onClick(v: View, brandName: String) {
+                    viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+                }
+            })
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =

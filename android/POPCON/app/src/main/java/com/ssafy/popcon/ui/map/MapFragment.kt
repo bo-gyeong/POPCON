@@ -17,6 +17,7 @@ import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,6 +31,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
+import com.ssafy.popcon.databinding.ItemBalloonBinding
+import com.ssafy.popcon.dto.MapBrandLogo
 import com.ssafy.popcon.dto.MapNowPos
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
@@ -41,6 +44,7 @@ import com.ssafy.popcon.util.Utils.setStatusBarTransparent
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.MapViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import net.daum.mf.map.api.CalloutBalloonAdapter
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -54,17 +58,14 @@ private const val TAG = "MapFragment"
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class MapFragment : Fragment() {
+class MapFragment() : Fragment() , CalloutBalloonAdapter{
     private lateinit var binding: FragmentMapBinding
+    private lateinit var ballBinding : ItemBalloonBinding
     private lateinit var locationManager: LocationManager
     private var getLongitude: Double = 0.0
     private var getLatitude: Double = 0.0
     private lateinit var internalStorage: String
-    private lateinit var fileName: String
     private val viewModel: MapViewModel by activityViewModels { ViewModelFactory(requireContext()) }
-
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,26 +74,13 @@ class MapFragment : Fragment() {
     ): View? {
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
+        ballBinding = ItemBalloonBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
-    /*companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MapGifticonFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }*/
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }*/
 
     }
 
@@ -106,6 +94,7 @@ class MapFragment : Fragment() {
         val mapView = binding.mapView
 
         setGifticonBanner()
+        setStore()
         setSensor()
 
         // 로고 이미지를 저장할 위치 - 내부 저장소
@@ -123,16 +112,6 @@ class MapFragment : Fragment() {
             moveMapUserToPosition(mapView)
         }
 
-        // 레트로핏 사용자 위치 보내고 현재 위치 기반 지도에서 표시해줄 목록
-        val nowPos = mapOf<String, String>(
-            "email" to sharedPreferencesUtil.getUser().email.toString(),
-            "social" to sharedPreferencesUtil.getUser().social.toString(),
-            "x" to getLatitude.toString(),
-            "y" to getLongitude.toString(),
-            "radius" to "500"
-        )
-        //viewModel.sendUserPosition(nowPos)
-
         // 현 위치 마커 추가
         var currentMarker = MapPOIItem()
         currentMarker.apply {
@@ -142,7 +121,6 @@ class MapFragment : Fragment() {
         }
         binding.mapView.addPOIItem(currentMarker)
 
-
         // 1. 내부저장소에 로고만 저장할 폴더 없으면 만들기
         val path =
             File("$internalStorage") // internalStorage = requireContext().filesDir.toString() + "/brandLogo"
@@ -151,48 +129,55 @@ class MapFragment : Fragment() {
         }
     }
 
-    //배너 클릭하면, 기프티콘, 매장위치 받아와야함.
-    private fun topBannerClickListener() {
-        // 나중에 서버에서 받아올 가게 정보 = storeList
-        /*viewModel.mapBrandLogo.observe(viewLifecycleOwner, Observer {
-            // 2. 해당 브랜드들 미리 내부 저장소에 다운 시키기 -> 이미 저장되어 있으면 안하고, 내부 저장소에 저장함. Device File Explorer ㄱㄱ
-            for (store in it) {
-                val files = path.listFiles()
-                var alreadyStore = false
-                for (file in files) {
-                    if (store.brandName == file.name) {
-                        alreadyStore = true
-                        break
-                    }
+    inner class CustomBalloonAdapter(private val stores : List<MapBrandLogo>) : CalloutBalloonAdapter {
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 마커 클릭 시 나오는 말풍선
+            val name = poiItem?.itemName
+            for (store in stores) {
+                if (store.placeName == name) {
+                    ballBinding.store = store
+                    break
                 }
-                // 2-1. 브랜드 로고 없다면 추가
-                if (!alreadyStore) {
-                    // 0. storage에 파일 인스턴스를 생성합니다.
-                    fileName = "${store.brandName}.jpg" // 파일 이름은 브랜드 한글 이름
-                    // 1. resizeBitmap
-                    resizeBitmap(fileName, store.brandName)
-                }
-                // 3. 없다면, 인터넷에 있는 사진을 다운
-                // 4. 다운 받고 사이즈를 줄여서 다시 저장
             }
 
-            // 지도에서 마커 추가하기
+            return ballBinding.root
+        }
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            // 말풍선 클릭 시
+            return ballBinding.root
+        }
+    }
+
+    private fun setStore() {
+        val nowPos = mapOf<String, String>(
+            "email" to sharedPreferencesUtil.getUser().email.toString(),
+            "social" to sharedPreferencesUtil.getUser().social.toString(),
+            "x" to getLatitude.toString(),
+            "y" to getLongitude.toString(),
+            "radius" to "500"
+        )
+
+        //y : 위도 latitude
+        viewModel.getStoreInfo(nowPos)
+        viewModel.mapBrandLogo.observe(viewLifecycleOwner) {
+            binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(it))
+
             for (store in it) {
-                var tempMarker = MapPOIItem()
-                tempMarker.apply {
-                    itemName = store.itemName
-                    mapPoint = MapPoint.mapPointWithGeoCoord(
-                        store.xPos!!.toDouble(),
-                        store.yPos!!.toDouble()
-                    )
-                    markerType = MapPOIItem.MarkerType.CustomImage
-                    var filePath = File(internalStorage, "/$fileName") // internalStorage = requireContext().filesDir.toString() + "/brandLogo"
-                    customImageBitmap = BitmapFactory.decodeFile(filePath.toString())
-                    isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
-                }
-                mapView.addPOIItem(tempMarker)
+                val marker = MapPOIItem()
+                val position = MapPoint.mapPointWithGeoCoord(
+                    store.ypos.toDouble(),
+                    store.xpos.toDouble()
+                )
+
+                marker.itemName = store.placeName
+                marker.mapPoint = position
+                marker.markerType = MapPOIItem.MarkerType.BluePin
+                marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+
+                binding.mapView.addPOIItem(marker)
             }
-        })*/
+        }
     }
 
     //기프티콘 뷰페이저
@@ -217,7 +202,62 @@ class MapFragment : Fragment() {
         }
     }
 
-    // 1. 비트맵 사이즈 비율대로 줄이고 내부 저장소에 저장하는 함수
+    // 5. 현재 위치로 중심점 변경하는 함수
+    private fun moveMapUserToPosition(mapView: MapView) {
+        mapView.setMapCenterPointAndZoomLevel(
+            MapPoint.mapPointWithGeoCoord(
+                getLatitude,
+                getLongitude
+            ), 3, true
+        )
+    }
+
+    // 6. 사용자 위치 받아오는 함수
+    private fun getUserLocation() {
+        if (::locationManager.isInitialized.not()) {
+            locationManager =
+                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        }
+        if (Build.VERSION.SDK_INT >= 23 &&
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                0
+            )
+        } else {
+            var location =
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if (location == null) {
+                location =
+                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            }
+            getLongitude = location?.longitude!!
+            getLatitude = location?.latitude!!
+        }
+    }
+
+    //화면 켜지면 센서 설정
+    private fun setSensor() {
+        shakeDetector = ShakeDetector()
+        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
+            override fun onShake(count: Int) {
+                if (!isShow) {
+                    activity?.let {
+                        GifticonDialogFragment().show(it.supportFragmentManager, "popup")
+                    }
+                }
+            }
+        })
+        MainActivity().setShakeSensor(requireContext(), shakeDetector)
+    }
+
+    /*// 1. 비트맵 사이즈 비율대로 줄이고 내부 저장소에 저장하는 함수
     fun resizeBitmap(fileName: String, brand: String) {
         val tempFile = File(internalStorage, fileName)
         try {
@@ -274,60 +314,56 @@ class MapFragment : Fragment() {
         val input: InputStream = connection.getInputStream()
         x = BitmapFactory.decodeStream(input)
         return BitmapDrawable(Resources.getSystem(), x)
-    }
-
-    // 5. 현재 위치로 중심점 변경하는 함수
-    private fun moveMapUserToPosition(mapView: MapView) {
-        mapView.setMapCenterPointAndZoomLevel(
-            MapPoint.mapPointWithGeoCoord(
-                getLatitude,
-                getLongitude
-            ), 3, true
-        )
-    }
-
-    // 6. 사용자 위치 받아오는 함수
-    private fun getUserLocation() {
-        if (::locationManager.isInitialized.not()) {
-            locationManager =
-                requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        }
-        if (Build.VERSION.SDK_INT >= 23 &&
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                0
-            )
-        } else {
-            var location =
-                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            if (location == null) {
-                location =
-                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            }
-            getLongitude = location?.longitude!!
-            getLatitude = location?.latitude!!
-        }
-    }
-
-    //화면 켜지면 센서 설정
-    private fun setSensor() {
-        shakeDetector = ShakeDetector()
-        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
-            override fun onShake(count: Int) {
-                if (!isShow) {
-                    activity?.let {
-                        GifticonDialogFragment().show(it.supportFragmentManager, "popup")
+    }*/
+    //배너 클릭하면, 기프티콘, 매장위치 받아와야함.
+    private fun topBannerClickListener() {
+        // 나중에 서버에서 받아올 가게 정보 = storeList
+        /*viewModel.mapBrandLogo.observe(viewLifecycleOwner, Observer {
+            // 2. 해당 브랜드들 미리 내부 저장소에 다운 시키기 -> 이미 저장되어 있으면 안하고, 내부 저장소에 저장함. Device File Explorer ㄱㄱ
+            for (store in it) {
+                val files = path.listFiles()
+                var alreadyStore = false
+                for (file in files) {
+                    if (store.brandName == file.name) {
+                        alreadyStore = true
+                        break
                     }
                 }
+                // 2-1. 브랜드 로고 없다면 추가
+                if (!alreadyStore) {
+                    // 0. storage에 파일 인스턴스를 생성합니다.
+                    fileName = "${store.brandName}.jpg" // 파일 이름은 브랜드 한글 이름
+                    // 1. resizeBitmap
+                    resizeBitmap(fileName, store.brandName)
+                }
+                // 3. 없다면, 인터넷에 있는 사진을 다운
+                // 4. 다운 받고 사이즈를 줄여서 다시 저장
             }
-        })
-        MainActivity().setShakeSensor(requireContext(), shakeDetector)
+
+            // 지도에서 마커 추가하기
+            for (store in it) {
+                var tempMarker = MapPOIItem()
+                tempMarker.apply {
+                    itemName = store.itemName
+                    mapPoint = MapPoint.mapPointWithGeoCoord(
+                        store.xPos!!.toDouble(),
+                        store.yPos!!.toDouble()
+                    )
+                    markerType = MapPOIItem.MarkerType.CustomImage
+                    var filePath = File(internalStorage, "/$fileName") // internalStorage = requireContext().filesDir.toString() + "/brandLogo"
+                    customImageBitmap = BitmapFactory.decodeFile(filePath.toString())
+                    isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
+                }
+                mapView.addPOIItem(tempMarker)
+            }
+        })*/
+    }
+
+    override fun getCalloutBalloon(p0: MapPOIItem?): View {
+        TODO("Not yet implemented")
+    }
+
+    override fun getPressedCalloutBalloon(p0: MapPOIItem?): View {
+        TODO("Not yet implemented")
     }
 }

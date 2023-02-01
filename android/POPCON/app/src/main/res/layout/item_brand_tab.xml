@@ -6,10 +6,6 @@
     <data>
 
         <variable
-            name="clickListener"
-            type="com.ssafy.popcon.ui.brandtab.BrandAdapter.BrandListener" />
-
-        <variable
             name="brand"
             type="com.ssafy.popcon.dto.Brand" />
     </data>
@@ -19,9 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_margin="4dp"
-        android:background="@drawable/edge_brand_tab"
         android:elevation="4dp"
-        android:onClick="@{()->clickListener.onClick(brand)}"
         android:padding="4dp">
 
         <com.google.android.material.imageview.ShapeableImageView

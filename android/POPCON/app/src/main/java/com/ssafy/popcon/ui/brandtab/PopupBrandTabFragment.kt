@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,16 +70,16 @@ class PopupBrandTabFragment : Fragment() {
             "36.1079"
         )
 
-        brandAdapter =
-            BrandAdapter(BrandAdapter.BrandListener { brand ->
-                viewModel.getGifticons(
-                    SharedPreferencesUtil(requireContext()).getUser(),
-                    brand.brandName
-                )
-            })
+        brandAdapter = BrandAdapter()
+        brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
+            override fun onClick(v: View, brandName: String) {
+                //viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+            }
+        })
 
         viewModel.getBrandByLocation(brandRequest)
         viewModel.brands.observe(viewLifecycleOwner) {
+            Log.d("TAG", "setBrandTab: $it")
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =
