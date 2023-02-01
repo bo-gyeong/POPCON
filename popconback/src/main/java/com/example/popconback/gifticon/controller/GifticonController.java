@@ -91,7 +91,7 @@ public class GifticonController {
 
 
 
-    @ApiOperation(value = "기프티콘 정렬", notes = "기프티콘 브랜드별 정렬", httpMethod = "GET") // get 으로 수정
+    @ApiOperation(value = "기프티콘 정렬", notes = "기프티콘 브랜드별 정렬", httpMethod = "POST") // get 으로 수정
     @PostMapping("/brand") //기프티콘 브랜드별 정렬 // 사용한거 표시 제외하고 보낼지 말지 고민
     public ResponseEntity<List<ResponseListGifticonUserDto>> SortGifticon (@RequestBody SortGifticonDto sortGifticonDto){
             return ResponseEntity.ok(gifticonService.sortGifticon(sortGifticonDto));
