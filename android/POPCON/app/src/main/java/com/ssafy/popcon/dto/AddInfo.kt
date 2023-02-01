@@ -137,11 +137,18 @@ data class OCRResult(
 )
 
 data class OCRResultDate(
-    val year: String,
-    val month: String,
-    val day: String
+    val Y: String,
+    val M: String,
+    val D: String
 )
 
 data class OCRResultCoordinate(
-    val x1: String
+    val y1: String,
+    val x1: String,
+    val y2: String,
+    val x2: String,
+    val y3: String,
+    val x3: String,
+    val y4: String,
+    val x4: String
 )
