@@ -30,6 +30,9 @@ import androidx.fragment.app.viewModels
 import androidx.loader.content.CursorLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import com.soundcloud.android.crop.Crop
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
@@ -37,6 +40,7 @@ import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.AddInfo
 import com.ssafy.popcon.dto.AddInfoNoImg
 import com.ssafy.popcon.dto.GifticonImg
+import com.ssafy.popcon.dto.OCRResult
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.onSingleClickListener
 import com.ssafy.popcon.ui.home.HomeFragment
@@ -53,6 +57,7 @@ import okio.BufferedSink
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
 import okio.source
+import org.json.JSONObject
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -75,6 +80,7 @@ class AddFragment : Fragment(), onItemClick {
     private lateinit var barcodeImgUris:ArrayList<GifticonImg>
     private val delImgUris = ArrayList<Uri>()
     private val multipartFiles = ArrayList<MultipartBody.Part>()
+    private val ocrResults = ArrayList<OCRResult>()
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
     var clickCv = ""
@@ -122,6 +128,7 @@ class AddFragment : Fragment(), onItemClick {
             }
             delImgUris.clear()
             multipartFiles.clear()
+            ocrResults.clear()
 
             openGalleryFirst()
         }
@@ -183,7 +190,6 @@ class AddFragment : Fragment(), onItemClick {
                         for (i in 0 until clipData.itemCount){
                             val originalImgUri = clipData.getItemAt(i).uri
                             OriginalImgUris.add(GifticonImg(originalImgUri))
-                            //viewModel.useOcr(getPath(originalImgUri))
                             //originalImgUri.path.toString()  --> \external\images\media\30
                             // getPath(originalImgUri) --> \storage\emulated\0\Download\media_0(3).jpg
                             //Log.d(TAG, "333: ${originalImgUri}")  // content://media/external/images/media/29
@@ -221,11 +227,28 @@ class AddFragment : Fragment(), onItemClick {
                         //viewModel.useOcr("https://cloud.google.com/vision/docs/images/bicycle_example.png")
                         //viewModel.useOcr("file:\\storage\\emulated\\0\\Download\\media_0(3).jpg")
                         viewModel.addFileToGCP(multipartFiles.toTypedArray())
+                        val fileNames = ArrayList<String>()
                         viewModel.gcpResult.observe(viewLifecycleOwner){
-                            for (gcoResult in it){
-                                viewModel.useOcr(gcoResult.fileName)
+                            for (gcpResult in it){
+                                fileNames.add(gcpResult.fileName)
                             }
                         }
+                        viewModel.useOcr(fileNames)
+                        viewModel.ocrResult.observe(viewLifecycleOwner){
+                            for (ocrResult in it){
+                                ocrResults.add(ocrResult)
+                            }
+                        }
+
+                        for (i in 0 until clipData.itemCount){
+                            val cropXYImgUri = cropXY(i)
+                            val cropXYBarcodeUri = cropXYBar(i)
+                            cropXyImgUris.add(GifticonImg(cropXYImgUri))
+                            barcodeImgUris.add(GifticonImg(cropXYBarcodeUri))
+                            delImgUris.add(cropXYImgUri)
+                            delImgUris.add(cropXYBarcodeUri)
+                        }
+
                         fillContent(0)
                         makeImgList()
                     } else{  //이미지 크롭
@@ -255,10 +278,10 @@ class AddFragment : Fragment(), onItemClick {
             OriginalImgUris[idx].imgUri,
             cropXyImgUris[idx].imgUri,
             barcodeImgUris[idx].imgUri,
-            "${idx}-1231-2345~~~",
-            "브랜드${idx}",
-            "상품이름${idx}",
-            binding.etDate.text.toString(),
+            ocrResults[idx].barcodeNum,
+            ocrResults[idx].brand,
+            ocrResults[idx].productName,
+            jsonParsingDate(binding.etDate.text.toString()),
             user.email!!,
             user.social
         )
@@ -270,6 +293,7 @@ class AddFragment : Fragment(), onItemClick {
         fillContent(idx)
     }
 
+    // uri to multipart
     @SuppressLint("Range")
     private fun Uri.asMultipart(name: String, contentResolver: ContentResolver): MultipartBody.Part?{
         return contentResolver.query(this, null, null, null, null)?.let {
@@ -292,6 +316,37 @@ class AddFragment : Fragment(), onItemClick {
                 null
             }
         }
+    }
+
+    // ocrResult 날짜 조합
+    private fun jsonParsingDate(date: String): String{
+        var result: String
+        var year = ""
+        var month = ""
+        var day = ""
+
+        val splitFirst = date.split(",")
+        for (i in 0 until splitFirst.size){
+            when(splitFirst[i].substring(1, 2)){
+                "Y" -> year = splitFirst[i].substring(5, 9)
+                "M" -> month = splitFirst[i].substring(5, 7)
+                "D" -> day = splitFirst[i].substring(5, 7)
+            }
+        }
+        result = "${year}-${month}-${day}"
+
+
+
+
+        val jsonObject = Gson().fromJson(date, JsonArray::class.java)
+        val dateArr = 0
+
+        return result
+    }
+
+    // ocrResult 이미지 좌표 split
+    private fun jsonParsingCoordinate(value: String){
+
     }
 
     private fun cropXY(idx: Int): Uri{

@@ -19,7 +19,7 @@ interface AddApi {
     suspend fun addFileToGCP(@Part files:Array<MultipartBody.Part>): List<gcpResult>
 
     @GET("gcp/ocr")
-    suspend fun useOCR(@Query("fileName") fileName:String): ocrResult
+    suspend fun useOCR(@Query("fileName") fileName:List<String>): List<ocrResult>
 
     @POST("gifticons")
     suspend fun addGifticon(@Body addInfo: List<AddInfoNoImg>): List<AddInfo>

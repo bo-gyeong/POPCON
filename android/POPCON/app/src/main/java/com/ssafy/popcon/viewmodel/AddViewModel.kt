@@ -4,16 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.popcon.dto.AddInfo
-import com.ssafy.popcon.dto.AddInfoNoImg
-import com.ssafy.popcon.dto.gcpResult
+import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.add.AddRepository
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 
 class AddViewModel(private val addRepository: AddRepository): ViewModel() {
-    private val _gcpResult = MutableLiveData<List<gcpResult>>()
-    val gcpResult: LiveData<List<gcpResult>> = _gcpResult
+    private val _gcpResult = MutableLiveData<List<GCPResult>>()
+    val gcpResult: LiveData<List<GCPResult>> = _gcpResult
+
+    private val _ocrResult = MutableLiveData<List<OCRResult>>()
+    val ocrResult: LiveData<List<OCRResult>> = _ocrResult
 
     fun addFileToGCP(files: Array<MultipartBody.Part>){
         viewModelScope.launch {
@@ -21,9 +22,9 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
         }
     }
 
-    fun useOcr(fileName: String){
+    fun useOcr(fileName: List<String>){
         viewModelScope.launch {
-            addRepository.useOcr(fileName)
+            _ocrResult.value = addRepository.useOcr(fileName)
         }
     }
 

@@ -118,14 +118,14 @@ data class AddInfoNoImg(
     )
 }
 
-data class gcpResult(
+data class GCPResult(
     val fileName: String,
     val filePath: String,
     val id: Long,
     val imageType: Int
 )
 
-data class ocrResult(
+data class OCRResult(
     val barcodeImg: Map<String, String>,
     val barcodeNum: String,
     val brand: String,
@@ -134,4 +134,14 @@ data class ocrResult(
     val productName: String,
     val publisher: String,
     val validation: Int
+)
+
+data class OCRResultDate(
+    val year: String,
+    val month: String,
+    val day: String
+)
+
+data class OCRResultCoordinate(
+    val x1: String
 )
