@@ -14,6 +14,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.databinding.ItemBalloonBinding
+import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.MapBrandLogo
 import com.ssafy.popcon.dto.MapNowPos
 import com.ssafy.popcon.ui.common.MainActivity
@@ -55,13 +57,11 @@ import java.net.URL
 
 private const val TAG = "MapFragment"
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class MapFragment() : Fragment() , CalloutBalloonAdapter{
     private lateinit var binding: FragmentMapBinding
     private lateinit var ballBinding : ItemBalloonBinding
     private lateinit var locationManager: LocationManager
+    lateinit var mapGifticonAdpater: MapGifticonAdpater
     private var getLongitude: Double = 0.0
     private var getLatitude: Double = 0.0
     private lateinit var internalStorage: String
@@ -94,7 +94,7 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         val mapView = binding.mapView
 
         setGifticonBanner()
-        setStore()
+        //setStore()
         setSensor()
 
         // 로고 이미지를 저장할 위치 - 내부 저장소
@@ -180,24 +180,45 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         }
     }
 
+    fun updateViewPager(gifticons : List<Gifticon>) {
+        Log.d(TAG, "updateViewPager: $gifticons")
+        with(binding.viewpagerMapGiftcon) {
+            adapter = MapGifticonAdpater().apply {
+
+                    submitList(gifticons)
+
+            }
+
+            val pageWidth = resources.getDimension(R.dimen.viewpager_item_widwth)
+            val pageMargin = resources.getDimension(R.dimen.viewpager_item_margin)
+            val screenWidth = resources.displayMetrics.widthPixels
+            val offset = screenWidth - pageWidth - pageMargin
+
+            offscreenPageLimit = 3
+            setPageTransformer { page, position ->
+                page.translationX = position * -offset
+            }
+        }
+    }
     //기프티콘 뷰페이저
-    private fun setGifticonBanner() {
+    fun setGifticonBanner() {
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
-        viewModel.mapGifticon.observe(viewLifecycleOwner) {
-            with(binding.viewpagerMapGiftcon) {
-                adapter = MapGifticonAdpater().apply {
+
+        with(binding.viewpagerMapGiftcon) {
+            adapter = MapGifticonAdpater().apply {
+                viewModel.mapGifticon.observe(viewLifecycleOwner) {
                     submitList(it)
                 }
+            }
 
-                val pageWidth = resources.getDimension(R.dimen.viewpager_item_widwth)
-                val pageMargin = resources.getDimension(R.dimen.viewpager_item_margin)
-                val screenWidth = resources.displayMetrics.widthPixels
-                val offset = screenWidth - pageWidth - pageMargin
+            val pageWidth = resources.getDimension(R.dimen.viewpager_item_widwth)
+            val pageMargin = resources.getDimension(R.dimen.viewpager_item_margin)
+            val screenWidth = resources.displayMetrics.widthPixels
+            val offset = screenWidth - pageWidth - pageMargin
 
-                offscreenPageLimit = 3
-                setPageTransformer { page, position ->
-                    page.translationX = position * -offset
-                }
+            offscreenPageLimit = 3
+            setPageTransformer { page, position ->
+                page.translationX = position * -offset
             }
         }
     }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.MapViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -48,14 +49,15 @@ class MapBrandtabFragment : Fragment() {
     //상단 브랜드탭
     fun setBrandTab() {
         viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
-        viewModel.brandsMap.observe(viewLifecycleOwner){
-            brandAdapter = BrandAdapter()
+        brandAdapter = BrandAdapter()
+        brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener{
+            override fun onClick(v: View, brandName: String) {
+                viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+                MapFragment().updateViewPager(viewModel.mapGifticon.value!!)
+            }
+        })
 
-            brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener{
-                override fun onClick(v: View, brandName: String) {
-                    viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
-                }
-            })
+        viewModel.brandsMap.observe(viewLifecycleOwner){
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =

@@ -1,11 +1,8 @@
 package com.ssafy.popcon.ui.brandtab
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -13,14 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ItemBrandTabBinding
 import com.ssafy.popcon.dto.Brand
-import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.dto.User
-import com.ssafy.popcon.generated.callback.OnClickListener
-import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.viewmodel.GifticonViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class BrandAdapter() :
     ListAdapter<Brand, BrandAdapter.BrandViewHolder>(BrandDiffCallback()) {

@@ -1,14 +1,18 @@
 package com.ssafy.popcon.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.viewpager2.widget.ViewPager2
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
 import com.ssafy.popcon.repository.map.MapRepository
 import com.ssafy.popcon.ui.map.MapFragment
+import com.ssafy.popcon.ui.map.MapGifticonAdpater
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import kotlinx.coroutines.launch
 
 class MapViewModel(
@@ -49,11 +53,12 @@ class MapViewModel(
                 val gifticons = gifticonRepository.getGifticonByBrand(
                     GifticonByBrandRequest(
                         user.email!!,
-                        user.social.toString(),
+                        user.social,
                         -1,
                         brandName
                     )
                 )
+                Log.d("TAG", "getGifticons: $gifticons")
                 _mapGifticon.value = gifticons
             }
         }
