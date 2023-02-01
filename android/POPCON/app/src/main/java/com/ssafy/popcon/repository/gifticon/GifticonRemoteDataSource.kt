@@ -33,7 +33,7 @@ class GifticonRemoteDataSource(private val apiClient: GifticonApi) : GifticonDat
         return apiClient.deleteGifticon(barcodeNum)
     }
 
-    override suspend fun getHomeBrands(email: String, social: String): List<Brand> {
+    override suspend fun getHomeBrands(email: String, social: String): List<BrandResponse> {
         return apiClient.getBrandHome(email, social)
     }
 }

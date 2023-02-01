@@ -6,16 +6,12 @@
     <data>
 
         <variable
+            name="clickListener"
+            type="com.ssafy.popcon.ui.brandtab.BrandAdapter.BrandListener" />
+
+        <variable
             name="brand"
             type="com.ssafy.popcon.dto.Brand" />
-
-        <variable
-            name="viewModel"
-            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
-
-        <variable
-            name="user"
-            type="com.ssafy.popcon.dto.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +21,7 @@
         android:layout_margin="4dp"
         android:background="@drawable/edge_brand_tab"
         android:elevation="4dp"
-        android:onClick="@{() -> viewModel.tabClickListener(user, brand.brandName)}"
+        android:onClick="@{()->clickListener.onClick(brand)}"
         android:padding="4dp">
 
         <com.google.android.material.imageview.ShapeableImageView

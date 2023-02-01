@@ -20,7 +20,7 @@ import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.EventObserver
-import com.ssafy.popcon.ui.home.brandtab.BrandTabFragment
+import com.ssafy.popcon.ui.brandtab.BrandTabFragment
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.history.HistoryDialogFragment
 import com.ssafy.popcon.ui.history.HistoryFragment

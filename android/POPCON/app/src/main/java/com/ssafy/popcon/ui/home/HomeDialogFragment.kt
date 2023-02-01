@@ -6,30 +6,29 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
-import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.edit.EditFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
 import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.ui.edit.EditViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
     private lateinit var barNum: String
     private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val editViewModel : EditViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var mainActivity: MainActivity
 
     override fun onStart() {
@@ -124,14 +123,14 @@ class HomeDialogFragment : DialogFragment() {
     }
 
     private fun setButton(gifticon: Gifticon) {
-        Log.d("TAG", "setButton: $gifticon")
         when (gifticon.state) {
             //0:사용가능, 1:사용완료, 2:기간만료
             0 -> {
                 //수정 화면으로
                 binding.btnUse.setOnClickListener {
-                    val args = Bundle()
-                    args.putString("barNum", gifticon.barcodeNum)
+                    /*val args = Bundle()
+                    args.putString("barNum", gifticon.barcodeNum)*/
+                    editViewModel.setBarNum(gifticon.barcodeNum)
                     mainActivity.addFragment(EditFragment())
                 }
             }

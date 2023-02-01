@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui.home.brandtab
+package com.ssafy.popcon.ui.brandtab
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ItemBrandTabBinding
 import com.ssafy.popcon.dto.Brand
+import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.generated.callback.OnClickListener
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 
-class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
+class BrandAdapter(private val clickListener : BrandListener) :
     ListAdapter<Brand, BrandAdapter.BrandViewHolder>(BrandDiffCallback()) {
     var index: Int = 0
-    private lateinit var itemClickListener: OnItemClickListener
     private lateinit var binding: ItemBrandTabBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BrandViewHolder {
@@ -27,7 +28,7 @@ class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
     }
 
     override fun onBindViewHolder(holder: BrandViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), clickListener)
 
         if (index == position) {
             binding.viewBrandTab.setBackgroundResource(R.drawable.edge_brand_tab_select)
@@ -36,7 +37,6 @@ class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
         }
 
         holder.itemView.setOnClickListener {
-            itemClickListener.onClick(it, position)
             index = position
         }
     }
@@ -44,16 +44,15 @@ class BrandAdapter(val viewModel: GifticonViewModel, val user: User) :
     inner class BrandViewHolder(private val binding: ItemBrandTabBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(brand: Brand) {
+        fun bind(brand: Brand, clickListener: BrandListener) {
             binding.brand = brand
-            binding.viewModel = viewModel
-            binding.user = user
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
     }
 
-    interface OnItemClickListener {
-        fun onClick(v: View, position: Int)
+    class BrandListener(val clickListener: (brand: Brand) -> Unit) {
+        fun onClick(brand: Brand) = clickListener(brand)
     }
 }
 

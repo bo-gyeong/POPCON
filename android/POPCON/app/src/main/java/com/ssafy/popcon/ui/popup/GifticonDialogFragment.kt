@@ -21,12 +21,13 @@ import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 
 class GifticonDialogFragment : DialogFragment() {
 
-    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: PopupViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var binding: DialogUseBinding
     private var prevIndex = 0
 
@@ -228,7 +229,7 @@ class GifticonDialogFragment : DialogFragment() {
             }
         }
 
-        viewModel.gifticonByBrand.observe(viewLifecycleOwner) {
+        viewModel.gifticons.observe(viewLifecycleOwner) {
             setViewPager(it)
         }
     }

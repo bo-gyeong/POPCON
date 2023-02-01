@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayoutMediator
@@ -35,6 +36,7 @@ import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.util.Utils.setStatusBarTransparent
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.MapViewModel
@@ -59,7 +61,7 @@ class MapFragment : Fragment() {
     private var getLatitude: Double = 0.0
     private lateinit var internalStorage: String
     private lateinit var fileName: String
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: MapViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     private var param1: String? = null
     private var param2: String? = null
@@ -91,6 +93,7 @@ class MapFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }*/
+
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -102,7 +105,7 @@ class MapFragment : Fragment() {
 
         val mapView = binding.mapView
 
-        //setGifticonBanner()
+        setGifticonBanner()
         setSensor()
 
         // 로고 이미지를 저장할 위치 - 내부 저장소
@@ -129,17 +132,6 @@ class MapFragment : Fragment() {
             "radius" to "500"
         )
         //viewModel.sendUserPosition(nowPos)
-
-        /**
-        viewModel.sendUserPosition(
-        MapNowPos(
-        sharedPreferencesUtil.getUser().email.toString(),
-        sharedPreferencesUtil.getUser().social,
-        getLatitude.toString(),
-        getLongitude.toString(),
-        "500"
-        )
-        )**/
 
         // 현 위치 마커 추가
         var currentMarker = MapPOIItem()
@@ -203,8 +195,10 @@ class MapFragment : Fragment() {
         })*/
     }
 
+    //기프티콘 뷰페이저
     private fun setGifticonBanner() {
-        viewModel.gifticons.observe(viewLifecycleOwner) {
+        viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
+        viewModel.mapGifticon.observe(viewLifecycleOwner) {
             with(binding.viewpagerMapGiftcon) {
                 adapter = MapGifticonAdpater().apply {
                     submitList(it)
@@ -215,7 +209,7 @@ class MapFragment : Fragment() {
                 val screenWidth = resources.displayMetrics.widthPixels
                 val offset = screenWidth - pageWidth - pageMargin
 
-                offscreenPageLimit = it.size
+                offscreenPageLimit = 3
                 setPageTransformer { page, position ->
                     page.translationX = position * -offset
                 }

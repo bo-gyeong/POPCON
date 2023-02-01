@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui.home.brandtab
+package com.ssafy.popcon.ui.brandtab
 
 import android.os.Build
 import android.os.Bundle
@@ -22,12 +22,13 @@ import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import okhttp3.internal.notify
 import kotlin.streams.toList
 
+//홈화면 브랜드탭
 class BrandTabFragment : Fragment() {
     private lateinit var binding: FragmentBrandTabBinding
     private lateinit var brandAdapter: BrandAdapter
-    var brands = mutableListOf<Brand>()
 
     private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     lateinit var mainActivity: MainActivity
@@ -51,32 +52,18 @@ class BrandTabFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //init()
         setBrandTab()
-    }
-
-    private fun init() {
-        brands.clear()
-        brands.add(Brand("", "전체"))
-
-        brandAdapter =
-            BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
-
-        binding.rvBrand.apply {
-            adapter = brandAdapter
-            adapter!!.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-        
-        brandAdapter.submitList(brands)
     }
 
     //상단 브랜드탭
     fun setBrandTab() {
         viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
-        viewModel.brands.observe(viewLifecycleOwner){
+        viewModel.brandsHome.observe(viewLifecycleOwner){
             brandAdapter =
-                BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
+                BrandAdapter(BrandAdapter.BrandListener { brand ->
+                    Log.d("TAG", "setBrandTab: ${brand.brandName}")
+                    viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brand.brandName)
+                })
 
             binding.rvBrand.apply {
                 adapter = brandAdapter
@@ -84,24 +71,13 @@ class BrandTabFragment : Fragment() {
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
 
-            brandAdapter.submitList(it)
-        }
-        /*viewModel.allGifticons.observe(viewLifecycleOwner) {
-            //Log.d("TAG", "setBrandTab: $it")
-            brands.clear()
+            val brands = mutableListOf<Brand>()
             brands.add(Brand("", "전체"))
-            //brands.addAll(Utils.getBrands(it))
-
-            brandAdapter =
-                BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
-
-            binding.rvBrand.apply {
-                adapter = brandAdapter
-                adapter!!.stateRestorationPolicy =
-                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            for(b in it){
+                brands.add(Brand(b.brand_img, b.brand_name))
             }
 
             brandAdapter.submitList(brands)
-        }*/
+        }
     }
 }

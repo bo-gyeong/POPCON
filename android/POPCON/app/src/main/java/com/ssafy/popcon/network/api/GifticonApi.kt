@@ -22,7 +22,7 @@ interface GifticonApi {
     suspend fun getBrandHome(
         @Path("email") email: String,
         @Path("social") social: String,
-    ) : List<Brand>
+    ) : List<BrandResponse>
 
     //현재위치에서 가능한 브랜드 목록
     @POST("local/shake")

@@ -13,3 +13,9 @@ data class GifticonResponse(
     val product_filepath: String?,
     var state : Int
 )
+
+data class BrandResponse(
+    val brand_name : String,
+    val brand_img : String,
+    val cnt : Int
+)
