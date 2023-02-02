@@ -10,9 +10,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.ssafy.popcon.databinding.DialogHistoryBinding
+import com.ssafy.popcon.dto.DeleteRequest
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.common.PopconSnackBar
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -77,9 +80,9 @@ class HistoryDialogFragment : DialogFragment() {
 
         //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
         binding.btnDelete.setOnClickListener {
-            viewModel.deleteGifticon(history.barcodeNum)
-
+            viewModel.deleteGifticon(DeleteRequest(history.barcodeNum), SharedPreferencesUtil(requireContext()).getUser())
             dialog?.dismiss()
+            PopconSnackBar.make(view, "삭제가 완료되었어요").show()
         }
     }
 

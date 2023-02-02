@@ -29,7 +29,7 @@ class GifticonRemoteDataSource(private val apiClient: GifticonApi) : GifticonDat
         return apiClient.getBrandsByLocation(brandRequest)
     }
 
-    override suspend fun deleteGifticon(barcodeNum: String) {
+    override suspend fun deleteGifticon(barcodeNum: DeleteRequest) {
         return apiClient.deleteGifticon(barcodeNum)
     }
 

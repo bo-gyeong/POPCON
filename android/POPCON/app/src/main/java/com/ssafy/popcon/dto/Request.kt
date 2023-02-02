@@ -15,18 +15,22 @@ data class UserDeleteRequest(
 data class GifticonByBrandRequest(
     val email: String,
     val social: String,
-    val hash : Int,
-    val brandName : String
+    val hash: Int,
+    val brandName: String
 )
 
 data class UpdateRequest(
-    val barcodeNum : String,
+    val barcodeNum: String,
     val brandName: String,
-    val due : String,
-    val memo : String,
-    val price : Int,
-    val productName : String,
-    val email : String,
-    val social : String,
-    val state : Int
+    val due: String,
+    val memo: String,
+    val price: Int,
+    val productName: String,
+    val email: String,
+    val social: String,
+    val state: Int
+)
+
+data class DeleteRequest(
+    val barcodeNum: String
 )

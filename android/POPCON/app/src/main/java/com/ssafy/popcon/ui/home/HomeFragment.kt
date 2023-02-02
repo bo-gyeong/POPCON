@@ -1,5 +1,6 @@
 package com.ssafy.popcon.ui.home
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -23,6 +25,7 @@ import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.brandtab.BrandTabFragment
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.common.PopconSnackBar
 import com.ssafy.popcon.ui.history.HistoryDialogFragment
 import com.ssafy.popcon.ui.history.HistoryFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
@@ -36,7 +39,7 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 private const val TAG = "HomeFragment"
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(){
     private lateinit var binding: FragmentHomeBinding
     private lateinit var shakeDetector: ShakeDetector
     lateinit var gifticonAdapter: GiftconAdapter
@@ -48,12 +51,12 @@ class HomeFragment : Fragment() {
         super.onStart()
         mainActivity = activity as MainActivity
 
-
         Log.d(TAG, "onStart: ")
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
         setSensor()
         mainActivity.hideBottomNav(false)
     }
@@ -88,7 +91,7 @@ class HomeFragment : Fragment() {
         viewModel.openGifticonDialogEvent.observe(viewLifecycleOwner, EventObserver {
             Log.d(TAG, "openGifticonDialog: $it")
             val args = Bundle()
-            args.putSerializable("barNum", it)
+            args.putSerializable("gifticon", it)
 
             val dialogFragment = HomeDialogFragment()
             dialogFragment.arguments = args
@@ -98,7 +101,6 @@ class HomeFragment : Fragment() {
 
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
-        Log.d(TAG, "setGifticonAdapter: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
         gifticonAdapter = GiftconAdapter(viewModel)
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.gifticons.observe(viewLifecycleOwner) {
@@ -113,7 +115,9 @@ class HomeFragment : Fragment() {
                         RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
                 }
 
-                gifticonAdapter.submitList(it)
+                gifticonAdapter.apply {
+                    submitList(it)
+                }
             }
         }
     }

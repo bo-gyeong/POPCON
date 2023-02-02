@@ -42,6 +42,6 @@ interface GifticonApi {
 
     //삭제
     @HTTP(method = "DELETE", path = "gifticons", hasBody = true)
-    suspend fun deleteGifticon(@Body barcodeNum: String)
+    suspend fun deleteGifticon(@Body barcodeNum: DeleteRequest)
 
 }

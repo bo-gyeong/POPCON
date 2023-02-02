@@ -12,10 +12,6 @@
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
-
-        <variable
-            name="viewModel"
-            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -122,7 +118,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:background="@drawable/btn_delete"
-            android:onClick="@{()->viewModel.deleteGifticon(gifticon.barcodeNum)}"
             android:text="삭제"
             android:textColor="@color/popcon_white"
             app:layout_constraintBottom_toBottomOf="@id/btn_use"

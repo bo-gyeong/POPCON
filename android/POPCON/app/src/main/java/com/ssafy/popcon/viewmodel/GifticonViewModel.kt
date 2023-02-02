@@ -30,20 +30,20 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     val brandsHome: LiveData<List<BrandResponse>> = _brandsHome
 
     private val _gifticon = MutableLiveData<GifticonResponse>()
-    val gifticon : LiveData<GifticonResponse> = _gifticon
+    val gifticon: LiveData<GifticonResponse> = _gifticon
 
-    private val _openGifticonDialogEvent = MutableLiveData<Event<String>>()
+    private val _openGifticonDialogEvent = MutableLiveData<Event<Gifticon>>()
     val openGifticonDialogEvent = _openGifticonDialogEvent
 
-    fun getGifticonByBarcodeNum(barcodeNum: String){
+    fun getGifticonByBarcodeNum(barcodeNum: String) {
         viewModelScope.launch {
             val gifticon = gifticonRepository.getGifticonByBarNum(barcodeNum)
             _gifticon.value = gifticon
         }
     }
 
-    fun openGifticonDialog(barcodeNum: String) {
-        _openGifticonDialogEvent.value = Event(barcodeNum)
+    fun openGifticonDialog(gifticon: Gifticon) {
+        _openGifticonDialogEvent.value = Event(gifticon)
     }
 
     //사용자의 기프티콘 목록 불러오기
@@ -61,9 +61,11 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
         }
     }
 
-    fun deleteGifticon(barcodeNum: String) {
+    fun deleteGifticon(barcodeNum: DeleteRequest, user: User) {
         viewModelScope.launch {
             gifticonRepository.deleteGifticon(barcodeNum)
+            getGifticonByUser(user)
+            getHomeBrand(user)
         }
     }
 
@@ -74,7 +76,14 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
         } else {
             viewModelScope.launch {
                 Log.d("TAG", "getGifticons: $brandName")
-                val gifticons = gifticonRepository.getGifticonByBrand(GifticonByBrandRequest(user.email!!, user.social.toString(), -1, brandName))
+                val gifticons = gifticonRepository.getGifticonByBrand(
+                    GifticonByBrandRequest(
+                        user.email!!,
+                        user.social.toString(),
+                        -1,
+                        brandName
+                    )
+                )
                 Log.d("TAG", "getGifticons: $gifticons")
                 _gifticons.value = gifticons
             }
