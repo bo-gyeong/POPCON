@@ -119,6 +119,7 @@ public class OcrController {
                             System.out.print(isGS);
                             if (isGS.contains("GS&쿠폰")) {
                                 definePublisher = 0;
+                                break;
                             }
 
                             // 카카오톡
@@ -136,6 +137,7 @@ public class OcrController {
                             System.out.print(isKakao);
                             if (isKakao.contains("kakaotalk")) {
                                 definePublisher = 1;
+                                break;
                             }
 
 
@@ -154,15 +156,71 @@ public class OcrController {
                             System.out.print(isGiftishow);
                             if (isGiftishow.contains("기프티쇼") || isGiftishow.contains("giftishow")) {
                                 definePublisher = 2;
+                                break;
                             }
 
 
+                            // 기프티콘
+                            String checkGifticon = "";
+
+                            if (ress.getBoundingPoly().getVertices(0).getX() > 125 &&
+                                    ress.getBoundingPoly().getVertices(0).getY() > 312 &&
+                                    ress.getBoundingPoly().getVertices(2).getX() < 196 &&
+                                    ress.getBoundingPoly().getVertices(2).getY() < 333){
+                                checkGifticon += ress.getDescription();
+
+                            }
+
+                            String isGifticon = checkGifticon.replace("\n","").replace(" ","");
+                            System.out.print(isGifticon);
+                            if (isGifticon.contains("gifticon")) {
+                                definePublisher = 3;
+                                break;
+                            }
+
+                        }
+
+
+                        List<String> checkVoucher = new ArrayList<>();
+                        checkVoucher.add("금액권");
+                        checkVoucher.add("상품권");
+                        checkVoucher.add("모바일금액권");
+                        checkVoucher.add("모바일상품권");
+                        checkVoucher.add("기프티카드");
+                        checkVoucher.add("디지털상품권");
+                        checkVoucher.add("모바일교환권");
+                        checkVoucher.add("원권");
+
+                        // isVoucher, publisher, brandName, productName, productImg,
+                        // due, barcodeNum, barcodeImg, validation
+
+                        // GS&쿠폰
+                        if (definePublisher==0) {
+
+                            String publisher = "GS&쿠폰";
+
+                            for (EntityAnnotation gsRes : newRes) {
+
+                                // brandName
+                                String checkGsBrand = "";
+
+                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 199 &&
+                                        gsRes.getBoundingPoly().getVertices(0).getY() > 204 &&
+                                        gsRes.getBoundingPoly().getVertices(2).getX() < 430 &&
+                                        gsRes.getBoundingPoly().getVertices(2).getY() < 245){
+                                    checkGsBrand += gsRes.getDescription();
+
+                                }
+
+                                String preBrand = checkGsBrand.replace("\n","").replace(" ","");
+                                System.out.print(preBrand);
 
 
 
 
 
 
+                            }
 
                         }
 
