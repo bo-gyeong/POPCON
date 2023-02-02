@@ -70,14 +70,15 @@ class PopupBrandTabFragment : Fragment() {
             "36.1079"
         )
 
+        viewModel.getBrandByLocation(brandRequest)
+
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
             override fun onClick(v: View, brandName: String) {
-                //viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+                viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
             }
         })
 
-        viewModel.getBrandByLocation(brandRequest)
         viewModel.brands.observe(viewLifecycleOwner) {
             Log.d("TAG", "setBrandTab: $it")
             binding.rvBrand.apply {
@@ -86,11 +87,7 @@ class PopupBrandTabFragment : Fragment() {
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
 
-            brandAdapter.apply {
-                submitList(it)
-                stateRestorationPolicy =
-                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-            }
+            brandAdapter.submitList(it)
         }
     }
 

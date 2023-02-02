@@ -32,4 +32,5 @@ class PopupViewModel(private val gifticonRepository: GifticonRepository): ViewMo
             _gifticons.value = gifticons
         }
     }
+
 }

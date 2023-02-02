@@ -21,6 +21,7 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -141,6 +142,8 @@ class GifticonDialogFragment : DialogFragment() {
     //기프티콘 리스트 추가
     private fun setList() {
         viewModel.brands.observe(viewLifecycleOwner) {
+            viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), it[0].brandName)
+
             if (it.size == 0) {//근처에 매장 없음
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = false

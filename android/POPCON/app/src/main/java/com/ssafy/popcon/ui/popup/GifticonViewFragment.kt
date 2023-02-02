@@ -13,8 +13,10 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.airbnb.lottie.utils.Utils
 import com.ssafy.popcon.databinding.ItemGifticonPopupBinding
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.UpdateRequest
 import com.ssafy.popcon.ui.add.OriginalImgDialogFragment
 import com.ssafy.popcon.ui.history.HistoryDialogFragment
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -38,6 +40,7 @@ class GifticonViewFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,11 +48,21 @@ class GifticonViewFragment : Fragment() {
         useBtnListener()
     }
 
+    private fun setGifticon() : UpdateRequest {
+
+        return UpdateRequest(gifticonInfo!!.barcodeNum, gifticonInfo!!.brand!!.brandName, gifticonInfo!!.due, gifticonInfo!!.memo,
+            gifticonInfo!!.price ?: -1, gifticonInfo!!.productName, SharedPreferencesUtil(requireContext()).getUser().email!!, SharedPreferencesUtil(requireContext()).getUser().social, gifticonInfo!!.state)
+    }
+
+
     //사용완료 버튼 리스너
     private fun useBtnListener() {
         binding.btnUse.setOnClickListener {
             it.isClickable = false
-            viewModel.updateGifticon(gifticonInfo!!)
+
+            gifticonInfo!!.state = 1
+            val req = setGifticon()
+            viewModel.updateGifticon(req)
         }
     }
 

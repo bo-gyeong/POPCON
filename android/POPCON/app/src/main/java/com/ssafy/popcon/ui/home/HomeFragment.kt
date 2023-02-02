@@ -42,10 +42,14 @@ class HomeFragment : Fragment() {
     lateinit var gifticonAdapter: GiftconAdapter
     private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var mainActivity: MainActivity
+    val TAG = "HOME"
 
     override fun onStart() {
         super.onStart()
         mainActivity = activity as MainActivity
+
+
+        Log.d(TAG, "onStart: ")
     }
 
     override fun onResume() {
@@ -61,12 +65,14 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        Log.d(TAG, "onCreateView: ")
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d(TAG, "onViewCreated: ")
         binding.user = SharedPreferencesUtil(requireContext()).getUser()
         binding.viewModel = viewModel
 
@@ -93,15 +99,13 @@ class HomeFragment : Fragment() {
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
         Log.d(TAG, "setGifticonAdapter: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
+        gifticonAdapter = GiftconAdapter(viewModel)
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.gifticons.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 binding.tvNoGifticon.isVisible = true
             } else {
                 binding.tvNoGifticon.isVisible = false
-
-                gifticonAdapter = GiftconAdapter(viewModel)
-
                 binding.rvGifticon.apply {
                     adapter = gifticonAdapter
                     layoutManager = GridLayoutManager(context, 2)
@@ -112,19 +116,6 @@ class HomeFragment : Fragment() {
                 gifticonAdapter.submitList(it)
             }
         }
-
-        //테스트용
-        /*gifticonAdapter = GiftconAdapter()
-        binding.rvGifticon.apply {
-            adapter = gifticonAdapter
-            layoutManager = GridLayoutManager(context, 2)
-            adapter!!.stateRestorationPolicy =
-                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-        }
-
-        val gifticonList = mutableListOf<Gifticon>()
-        makeList(gifticonList)
-        gifticonAdapter.submitList(gifticonList)*/
     }
 
     //홈화면 켜지면 센서 설정
@@ -141,81 +132,5 @@ class HomeFragment : Fragment() {
         })
 
         MainActivity().setShakeSensor(requireContext(), shakeDetector)
-    }
-
-    //테스트용 기프티콘 리스트
-    private fun makeList(gifticonList: MutableList<Gifticon>) {
-        gifticonList.add(
-            Gifticon(
-                "1234-1234",
-                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-                Brand(
-                    "스타벅스",
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-                ),
-
-                "2023-01-29 00:00:00.000000",
-                -1,
-                5000,
-                "유라",
-                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-                "아메리카노 T",
-                "https://user-images.githubusercontent.com/33195517/214759061-e4fad749-656d-4feb-acf0-f1f579cef0b0.png",
-                0
-            )
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234-1234",
-                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-                Brand(
-                    "스타벅스",
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-                ),
-                "2023-02-10 00:00:00.000000",
-                -1,
-                30000,
-                "유라",
-                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-                "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",
-                1
-            )
-        )
-        Gifticon(
-            "1234-1234",
-            "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-            Brand(
-                "스타벅스",
-                "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-            ),
-
-            "2023-01-29 00:00:00.000000",
-            -1,
-            5000,
-            "유라",
-            "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-            "아메리카노 T",
-            "https://user-images.githubusercontent.com/33195517/214759061-e4fad749-656d-4feb-acf0-f1f579cef0b0.png",
-            2
-        )
-        gifticonList.add(
-            Gifticon(
-                "1234-1234",
-                "https://user-images.githubusercontent.com/33195517/214758057-5768a3d2-a441-4ba3-8f68-637143daceb3.png",
-                Brand(
-                    "이디야",
-                    "https://user-images.githubusercontent.com/33195517/211949184-c6e4a8e1-89a2-430c-9ccf-4d0a20546c14.png"
-                ),
-                "2023-02-10 00:00:00.000000",
-                -1,
-                30000,
-                "유라",
-                "https://user-images.githubusercontent.com/33195517/214758165-4e216728-cade-45ff-a635-24599384997c.png",
-                "아이스 카페 라떼 T",
-                "https://user-images.githubusercontent.com/33195517/214758856-5066c400-9544-4501-a80f-00e0ebceba74.png",
-                0
-            )
-        )
     }
 }

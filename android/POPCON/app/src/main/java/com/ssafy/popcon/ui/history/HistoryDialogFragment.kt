@@ -88,7 +88,7 @@ class HistoryDialogFragment : DialogFragment() {
 
         //기프티콘 상태 업데이트
         if (!binding.btnUse.isChecked) {
-            viewModel.updateGifticon(history)
+            //viewModel.updateGifticon(history)
         }
     }
 }

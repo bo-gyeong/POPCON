@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
@@ -15,6 +16,7 @@ import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.UpdateRequest
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.edit.EditFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
@@ -22,25 +24,29 @@ import com.ssafy.popcon.ui.popup.ImageDialogFragment
 import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.ui.edit.EditViewModel
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
     private lateinit var barNum: String
     private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
-    private val editViewModel : EditViewModel by activityViewModels { ViewModelFactory(requireContext()) }
-    private lateinit var mainActivity: MainActivity
+    private val editViewModel: EditViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
+    private lateinit var mainActivity: MainActivity
+    val TAG = "HOME DIALOG"
     override fun onStart() {
         super.onStart()
         GifticonDialogFragment.isShow = true
 
+        Log.d(TAG, "onStart: ")
         mainActivity = activity as MainActivity
     }
 
     override fun onResume() {
         super.onResume()
 
+        Log.d(TAG, "onResume: ")
         //팝업창 크기 설정
         val windowManager =
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -65,13 +71,14 @@ class HomeDialogFragment : DialogFragment() {
     ): View? {
         binding = DialogHomeGifticonBinding.inflate(inflater, container, false)
 
+        Log.d(TAG, "onCreateView: ")
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         val mArgs = arguments
         barNum = mArgs!!.getString("barNum")!!
 
-        binding.badge = Badge("","#000000")
+        binding.badge = Badge("", "#000000")
 
         return binding.root
     }
@@ -86,17 +93,17 @@ class HomeDialogFragment : DialogFragment() {
     private fun setLayout() {
         viewModel.getGifticonByBarcodeNum(barNum)
         viewModel.gifticon.observe(viewLifecycleOwner) { g ->
-            val gifticon = Gifticon(
+            gifticon = Gifticon(
                 g.barcodeNum,
-                g.barcode_filepath?:"",
+                g.barcode_filepath ?: "",
                 Brand("", g.brandName),
                 g.due,
                 g.hash,
                 g.price,
-                g.memo?:"",
-                g.origin_filepath?:"",
+                g.memo ?: "",
+                g.origin_filepath ?: "",
                 g.productName,
-                g.product_filepath?:"",
+                g.product_filepath ?: "",
                 g.state
             )
 
@@ -122,14 +129,19 @@ class HomeDialogFragment : DialogFragment() {
         }
     }
 
+    private lateinit var gifticon: Gifticon
+    private fun setGifticon() : UpdateRequest {
+
+        return UpdateRequest(gifticon.barcodeNum, gifticon.brand!!.brandName, gifticon.due, gifticon.memo,
+            gifticon.price ?: -1, gifticon.productName, SharedPreferencesUtil(requireContext()).getUser().email!!, SharedPreferencesUtil(requireContext()).getUser().social, gifticon.state)
+    }
+
     private fun setButton(gifticon: Gifticon) {
         when (gifticon.state) {
             //0:사용가능, 1:사용완료, 2:기간만료
             0 -> {
                 //수정 화면으로
                 binding.btnUse.setOnClickListener {
-                    /*val args = Bundle()
-                    args.putString("barNum", gifticon.barcodeNum)*/
                     editViewModel.setBarNum(gifticon.barcodeNum)
                     mainActivity.addFragment(EditFragment())
                 }
@@ -141,12 +153,15 @@ class HomeDialogFragment : DialogFragment() {
                 binding.btnUse.setOnClickListener {
                     binding.btnUse.isClickable = false
                     gifticon.state = 0
-                    viewModel.updateGifticon(gifticon)
+
+                    val req = setGifticon()
+                    viewModel.updateGifticon(req)
                 }
             }
             2 -> {
                 //수정 화면으로
                 binding.btnUse.setOnClickListener {
+                    editViewModel.setBarNum(gifticon.barcodeNum)
                     mainActivity.addFragment(EditFragment())
                 }
             }

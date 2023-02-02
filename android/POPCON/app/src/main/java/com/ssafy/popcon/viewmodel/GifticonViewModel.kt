@@ -88,7 +88,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     }
 
     //기프티콘 업데이트
-    fun updateGifticon(gifticon: Gifticon) {
+    fun updateGifticon(gifticon: UpdateRequest) {
         viewModelScope.launch {
             gifticonRepository.updateGifticon(gifticon)
         }

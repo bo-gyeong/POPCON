@@ -21,7 +21,7 @@ class GifticonRemoteDataSource(private val apiClient: GifticonApi) : GifticonDat
         return apiClient.getHistory(userId)
     }
 
-    override suspend fun updateGifticon(gifticon : Gifticon): Gifticon {
+    override suspend fun updateGifticon(gifticon : UpdateRequest): UpdateResponse {
         return apiClient.updateGifticon(gifticon)
     }
 

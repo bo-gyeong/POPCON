@@ -14,6 +14,15 @@ data class GifticonResponse(
     var state : Int
 )
 
+data class UpdateResponse(
+    val barcodeNum : String,
+    val brandName: String,
+    val due : String,
+    val memo : String,
+    val price : Int,
+    val productName : String,
+    val state : Int
+)
 data class BrandResponse(
     val brand_name : String,
     val brand_img : String,

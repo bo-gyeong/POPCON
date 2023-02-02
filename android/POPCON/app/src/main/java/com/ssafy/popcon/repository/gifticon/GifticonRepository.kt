@@ -23,7 +23,7 @@ class GifticonRepository(private val remoteDataSource: GifticonRemoteDataSource)
         return remoteDataSource.getHistory(userId)
     }
 
-    suspend fun updateGifticon(gifticon: Gifticon): Gifticon {
+    suspend fun updateGifticon(gifticon: UpdateRequest): UpdateResponse {
         return remoteDataSource.updateGifticon(gifticon)
     }
 

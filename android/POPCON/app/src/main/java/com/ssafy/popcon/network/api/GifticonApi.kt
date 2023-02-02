@@ -38,7 +38,7 @@ interface GifticonApi {
 
     //업데이트
     @HTTP(method = "PUT", path = "gifticons", hasBody = true)
-    suspend fun updateGifticon(@Body gifticon: Gifticon): Gifticon
+    suspend fun updateGifticon(@Body gifticon: UpdateRequest): UpdateResponse
 
     //삭제
     @HTTP(method = "DELETE", path = "gifticons", hasBody = true)
