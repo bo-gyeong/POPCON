@@ -31,8 +31,8 @@ class ApplicationClass : Application() {
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
                 // 로그캣에 okhttp.OkHttpClient로 검색하면 http 통신 내용을 보여줍니다.
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .addInterceptor(AuthInterceptor())
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .connectTimeout(30, TimeUnit.SECONDS).build()
 
             retrofit = Retrofit.Builder()
