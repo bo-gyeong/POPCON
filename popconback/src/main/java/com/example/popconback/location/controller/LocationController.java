@@ -174,7 +174,7 @@ public class LocationController {
             notes = "현위치 기반 기프티콘 사용가능 한 모든 매장",
             httpMethod = "POST")
     @PostMapping({"/search"})
-    public List<Object> localSearch(@RequestBody LocationShakeDto locationShakeDto) throws Exception{
+    public ResponseEntity<List<Object>> localSearch(@RequestBody LocationShakeDto locationShakeDto) throws Exception{
         try {
             String email = locationShakeDto.getEmail();
             String social = locationShakeDto.getSocial();
@@ -283,12 +283,14 @@ public class LocationController {
 
 
 
-            return finalResults;
+            return new ResponseEntity<>(finalResults, HttpStatus.OK);
         }
         catch (NoSuchElementException e) {
             System.out.println(e);
+
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
         }
-        return null;
+
     }
 
     @ApiOperation(value = "localSearchByBrand",
@@ -311,7 +313,7 @@ public class LocationController {
             locationShakeDto.setX(x);
             locationShakeDto.setY(y);
 
-            List<Object> finalResults = localSearch(locationShakeDto);
+            List<Object> finalResults = localSearch(locationShakeDto).getBody();
 
             List<Object> nowResults = new ArrayList<>();
 

@@ -294,6 +294,7 @@ public class GoogleOcrController {
                                 for (String word : checkVoucher) {
                                     if(productName.contains(word)) {
                                         isVoucher = 1;
+                                        break;
                                     }
                                 }
 
