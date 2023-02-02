@@ -91,7 +91,6 @@ class SettingsFragment : Fragment() {
             clickJoin()
 
             if (user!!.social == "카카오") {
-                Log.d(TAG, "onViewCreated: ???????????")
                 ivTitleAccount.setImageResource(R.drawable.kakaotalk_icon)
                 signOutKakao()
                 withdrawKakao()
@@ -131,10 +130,10 @@ class SettingsFragment : Fragment() {
                         if (term > selectValue){
                             term = selectValue
                         }
-                        userInfo = User(user.email, user.social, selectValue, user.alarm, user.manner_temp, term, user.timezone, user.token)
+                        userInfo = User(user.email, user.social, selectValue, user.alarm, "the world",user.manner_temp, term, user.timezone, user.token)
                     }
-                    1 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, selectValue, user.timezone, user.token)
-                    2 -> userInfo = User(user.email, user.social, user.nday, user.alarm, user.manner_temp, user.term, selectValue, user.token)
+                    1 -> userInfo = User(user.email, user.social, user.nday, user.alarm, "the world", user.manner_temp, selectValue, user.timezone, user.token)
+                    2 -> userInfo = User(user.email, user.social, user.nday, user.alarm, "the world", user.manner_temp, user.term, selectValue, user.token)
                 }
                 SharedPreferencesUtil(requireContext()).updateUser(userInfo!!)
                 user = userInfo
@@ -193,16 +192,16 @@ class SettingsFragment : Fragment() {
         var userInfo: User
         binding.switchNoti.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                userInfo = User(user.email, user.social, user.nday, 1, user.manner_temp, user.term, user.timezone, user.token)
+                userInfo = User(user.email, user.social, user.nday, 1, "the world", user.manner_temp, user.term, user.timezone, user.token)
                 notiActive()
             } else {
-                userInfo = User(user.email, user.social, user.nday, 0, user.manner_temp, user.term, user.timezone, user.token)
+                userInfo = User(user.email, user.social, user.nday, 0, "the world", user.manner_temp, user.term, user.timezone, user.token)
                 notiInactive()
             }
             SharedPreferencesUtil(requireContext()).updateUser(userInfo)
             user = userInfo
 
-            viewModel.updateUser(user, -308222648)
+            viewModel.updateUser(user, 177784539)
         }
     }
 

@@ -29,7 +29,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"
-            android:name="com.ssafy.popcon.ui.popup.PopupBrandTabFragment"
+            android:name="com.ssafy.popcon.ui.brandtab.PopupBrandTabFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"

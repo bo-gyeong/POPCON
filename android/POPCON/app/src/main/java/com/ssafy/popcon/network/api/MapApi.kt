@@ -15,8 +15,5 @@ import retrofit2.http.QueryMap
 interface MapApi {
     // 현재 위치 보내기  --> DataClass 만들어서 하나의 객체만 Body로 보내야하는듯
     @GET("local")
-    suspend fun sendUserPosition(@QueryMap nowPos: Map<String, String>):  ArrayList<MapBrandLogo>
-    //suspend fun sendUserPosition(@Body mapNowPos:MapNowPos):  ArrayList<MapBrandLogo>
-
-
+    suspend fun sendUserPosition(@QueryMap nowPos: Map<String, String>):  List<MapBrandLogo>
 }

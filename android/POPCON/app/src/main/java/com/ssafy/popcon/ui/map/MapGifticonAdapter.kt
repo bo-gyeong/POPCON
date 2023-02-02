@@ -4,18 +4,11 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.ssafy.popcon.databinding.ItemMapGiftconBinding
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.popup.GifticonPreviewFragment.Companion.newInstance
-import com.ssafy.popcon.ui.popup.GifticonViewFragment.Companion.newInstance
 import com.ssafy.popcon.util.Utils
 
 private const val TAG = "GifticonMap_싸피"
@@ -54,5 +47,4 @@ class BannerDiffCallback : DiffUtil.ItemCallback<Gifticon>() {
     override fun areContentsTheSame(oldItem: Gifticon, newItem: Gifticon): Boolean {
         return oldItem == newItem
     }
-
 }

@@ -42,9 +42,10 @@
                 android:id="@+id/iv_product_preview"
                 imageUrl="@{gifticon.product_filepath}"
                 android:layout_width="100dp"
-                android:layout_height="0dp"
-                android:background="@color/popcon_white"
-                android:scaleType="centerInside"
+                android:layout_height="100dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/edge_preview"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

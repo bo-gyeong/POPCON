@@ -13,6 +13,7 @@ import com.ssafy.popcon.repository.map.MapRemoteDataSource
 import com.ssafy.popcon.repository.map.MapRepository
 import com.ssafy.popcon.repository.user.UserRemoteDataSource
 import com.ssafy.popcon.repository.user.UserRepository
+import com.ssafy.popcon.ui.edit.EditViewModel
 import com.ssafy.popcon.util.RetrofitUtil
 
 class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
@@ -30,7 +31,10 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
             modelClass.isAssignableFrom(MapViewModel::class.java) -> {
                 val mapRepo =
                     MapRepository(MapRemoteDataSource(RetrofitUtil.mapService))
-                MapViewModel(mapRepo) as T
+                val gifticonRepo =
+                    GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
+
+                MapViewModel(gifticonRepo, mapRepo) as T
             }
             modelClass.isAssignableFrom(AddViewModel::class.java) -> {
                 val addRepo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
@@ -39,6 +43,14 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
             modelClass.isAssignableFrom(FCMViewModel::class.java) -> {
                 val fcmRepo = FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService))
                 FCMViewModel(fcmRepo) as T
+            }
+            modelClass.isAssignableFrom(EditViewModel::class.java) -> {
+                EditViewModel() as T
+            }
+            modelClass.isAssignableFrom(PopupViewModel::class.java) -> {
+                val gifticonRepo =
+                    GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
+                PopupViewModel(gifticonRepo) as T
             }
             else -> {
                 throw IllegalArgumentException("Failed to create ViewModel: ${modelClass.name}")

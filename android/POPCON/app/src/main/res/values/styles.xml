@@ -152,4 +152,10 @@
         <item name="windowMinWidthMinor">0%</item>
     </style>
 
+    <!--  EditText  -->
+    <style name="AddEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
+        <item name="boxStrokeColor">@color/popcon_orange</item>
+        <item name="boxBackgroundColor">@color/popcon_white</item>
+    </style>
+
 </resources>
