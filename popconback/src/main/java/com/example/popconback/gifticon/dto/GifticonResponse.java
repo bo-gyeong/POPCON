@@ -13,6 +13,10 @@ import java.util.Map;
 @ToString
 public class GifticonResponse {
     // 발행처, 브랜드, 상품명, 상품좌표, 사용기한, 바코드번호, 바코드좌표
+
+    @ApiModelProperty(name = "isVoucher", value = "0:금액권x / 1:금액권o", example = "0 or 1")
+    private int isVoucher;
+
     @ApiModelProperty(name = "publisher", value = "발행처", example = "GS&쿠폰")
     private String publisher;
     @ApiModelProperty(name = "brand", value = "브랜드명", example = "스타벅스")
@@ -34,7 +38,8 @@ public class GifticonResponse {
 
     public GifticonResponse() {}
 
-    public GifticonResponse(String publisher, String brandName, String productName, Map<String, String> productImg, Map<String, String> due, String barcodeNum,Map<String, String> barcodeImg, int validation){
+    public GifticonResponse(int isVoucher, String publisher, String brandName, String productName, Map<String, String> productImg, Map<String, String> due, String barcodeNum,Map<String, String> barcodeImg, int validation){
+        this.isVoucher = isVoucher;
         this.publisher = publisher;
         this.brandName = brandName;
         this.productName = productName;
