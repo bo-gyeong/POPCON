@@ -43,4 +43,7 @@ public class Gifticon {
     private int state;
     private String memo;
 
+
+    private int isVoucher;
+
 }

@@ -32,6 +32,33 @@ public class BrandService {
 
     }
 
+    public int checkBrand (String brandName) {
+
+        int checked = 0;
+
+        List<Brand> allBrandList = brandrepository.findAll();
+        List<String> allBrandNames = new ArrayList<>();
+        try {
+            for (Brand brand : allBrandList) {
+                String nowBrand = brand.getBrandName();
+                allBrandNames.add(nowBrand);
+
+            }
+
+            for (String now : allBrandNames) {
+                if (brandName.contains(now)) {
+                    checked = 1;
+                }
+            }
+        }
+        catch (NullPointerException e) {
+            System.out.println(e);
+        }
+
+
+        return checked;
+    }
+
     public List<ResponseBrandDto> brandListOrderByGifticonCount (){
         List<Brand> brandList = brandrepository.findAllByOrderByCountOfGifticonsDesc();
 
