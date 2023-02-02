@@ -91,7 +91,6 @@ class SettingsFragment : Fragment() {
             clickJoin()
 
             if (user!!.social == "카카오") {
-                Log.d(TAG, "onViewCreated: ???????????")
                 ivTitleAccount.setImageResource(R.drawable.kakaotalk_icon)
                 signOutKakao()
                 withdrawKakao()
@@ -202,7 +201,7 @@ class SettingsFragment : Fragment() {
             SharedPreferencesUtil(requireContext()).updateUser(userInfo)
             user = userInfo
 
-            viewModel.updateUser(user, -308222648)
+            viewModel.updateUser(user, 177784539)
         }
     }
 

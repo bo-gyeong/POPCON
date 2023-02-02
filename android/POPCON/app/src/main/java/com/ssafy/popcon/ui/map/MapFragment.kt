@@ -184,7 +184,7 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         Log.d(TAG, "updateViewPager: $gifticons")
         with(binding.viewpagerMapGiftcon) {
             adapter = MapGifticonAdpater().apply {
-                    submitList(gifticons)
+                submitList(gifticons)
             }
 
             val pageWidth = resources.getDimension(R.dimen.viewpager_item_widwth)

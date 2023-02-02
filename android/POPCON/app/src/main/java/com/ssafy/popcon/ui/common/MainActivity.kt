@@ -30,6 +30,7 @@ import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
+
 private const val TAG = "MainActivity_싸피"
 
 class MainActivity : AppCompatActivity() {
