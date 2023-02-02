@@ -26,4 +26,6 @@ public class UpdateGifticonDto {
     private int state;
     @ApiModelProperty(name = "memo", value = "유저 메모", example = "유라 우수 참여")
     private String memo;
+    @ApiModelProperty(name = "isVoucher", value = "0:그냥 기프티콘, 1:금액권", example = "1")
+    private int  isVoucher;
 }

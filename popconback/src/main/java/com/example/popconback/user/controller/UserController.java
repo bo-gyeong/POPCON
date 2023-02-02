@@ -34,11 +34,18 @@ public class UserController {
     private final UserService userservice;
 
 
+
+    @ApiOperation(value = "login",
+            notes = "회원 정보 DB에 저장",
+            httpMethod = "POST")
     @PostMapping("/login") // 로그인
     public ResponseEntity<ResponseToken> login(@RequestBody CreateUserDto createUserDto){
         return ResponseEntity.ok(userservice.login(createUserDto));// 카카오 토큰을 받아와서 사용자 정부 추출
     }
 
+    @ApiOperation(value = "refresh",
+            notes = "리프레시토큰발급",
+            httpMethod = "GET")
     @GetMapping("/refresh") // 리프레시하기
     public ResponseEntity<ResponseToken> refresh(HttpServletRequest request){// 필터에서 안걸러지면 유효기간 남아있는거임
         String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];

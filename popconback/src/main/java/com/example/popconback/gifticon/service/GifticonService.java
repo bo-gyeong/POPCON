@@ -55,32 +55,36 @@ public class GifticonService {
         user.setEmail(email);
         user.setSocial(social);
         int hash = user.hashCode();
-        List<Gifticon>list = gifticonRepository.findByUser_Hash(hash, Sort.by(asc("due")));
+
         List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
 
-        for (Gifticon gifticon:list) {
-            ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
-            BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
+        for (int i = 0; i < 2; i++){
+            List<Gifticon>list = gifticonRepository.findByUser_HashAndState(hash,i, Sort.by(asc("due")));
+            for (Gifticon gifticon:list) {
+                ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
+                BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
 
-            BrandForRLGUDto brand = new BrandForRLGUDto();// 브랜드는 따로 복사
-            BeanUtils.copyProperties(gifticon.getBrand(),brand);
-            rgifticon.setBrand(brand);
+                BrandForRLGUDto brand = new BrandForRLGUDto();// 브랜드는 따로 복사
+                BeanUtils.copyProperties(gifticon.getBrand(),brand);
+                rgifticon.setBrand(brand);
 
-            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
-            for (GifticonFiles gifticonfile: gflist
-                 ) {
-                if(gifticonfile.getImageType() == 0){// 0:
-                    rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+                for (GifticonFiles gifticonfile: gflist
+                ) {
+                    if(gifticonfile.getImageType() == 0){// 0:
+                        rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                    }
+                    if(gifticonfile.getImageType() == 1){// 1:
+                        rgifticon.setProduct_filepath(gifticonfile.getFilePath());
+                    }
+                    if(gifticonfile.getImageType() == 2){// 2: 원본
+                        rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                    }
                 }
-                if(gifticonfile.getImageType() == 1){// 1:
-                    rgifticon.setProduct_filepath(gifticonfile.getFilePath());
-                }
-                if(gifticonfile.getImageType() == 2){// 2: 원본
-                    rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
-                }
+
+                rlist.add(rgifticon);
             }
 
-            rlist.add(rgifticon);
         }
         return rlist;
     }

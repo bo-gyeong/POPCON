@@ -3,8 +3,7 @@ package com.example.popconback.configurations;
 import com.example.popconback.user.dto.UserDto;
 import com.example.popconback.user.service.UserService;
 import com.example.popconback.utils.JwtUtil;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.SignatureException;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info("authorization: {}", authorization);
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
-            log.error("authorization 이 없습니다.");
+            //log.error("authorization이없습니다.");
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,6 +52,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
+
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+
             // 토큰에서 유저 정보 꺼내기
             String userName = JwtUtil.getUserName(token, secretKey);// 일단 world로 가정
             log.info("userName : {}", userName);
@@ -71,32 +73,32 @@ public class JwtFilter extends OncePerRequestFilter {
 
         } catch (ExpiredJwtException e) {
             log.error("토큰이 만료되었습니다.");
-            response.setStatus(401);
+            response.setContentType("application/json;charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+            JSONObject responseJson = new JSONObject();
+            responseJson.put("message", e.getMessage());
+            responseJson.put("code", 401);
+
+            response.getWriter().print(responseJson);
 
         } catch (UnsupportedJwtException e) {
+            log.info("지원하지 않는 형식 서명입니다.");
+            response.setStatus(403);
+        } catch (MalformedJwtException e) {
+            log.info("유효하지 않은 구성의 JWT 토큰입니다.");
+            request.setAttribute("exception", 403);
+        } catch (SignatureException e) {
             log.info("잘못된 JWT 서명입니다.");
             response.setStatus(403);
+        }catch(IllegalArgumentException e){
+            log.info("JWT 토큰이 잘못되었습니다.");
+            response.setStatus(403);
         }
-
     }
 
 }
-//        catch (SignatureException e) {
-//            log.info("잘못된 JWT 서명입니다.");
-//            response.setStatus(403).setAttribute("exception", ErrorCode.WRONG_TYPE_SIGNATURE.getCode());
-//        } catch (MalformedJwtException e) {
-//            log.info("유효하지 않은 구성의 JWT 토큰입니다.");
-//            request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN.getCode());
-//        } catch (ExpiredJwtException e) {
-//            log.info("만료된 JWT 토큰입니다.");
-//            request.setAttribute("exception", ErrorCode.EXPIRED_ACCESS_TOKEN.getCode());
-//        } catch (UnsupportedJwtException e) {
-//            log.info("지원되지 않는 형식이나 구성의 JWT 토큰입니다.");
-//            request.setAttribute("exception", ErrorCode.WRONG_TYPE_TOKEN.getCode());
-//        } catch (IllegalArgumentException e) {
-//            log.info(e.toString().split(":")[1].trim());
-//            request.setAttribute("exception", ErrorCode.INVALID_ACCESS_TOKEN.getCode());
-//        }
+
 
 
 

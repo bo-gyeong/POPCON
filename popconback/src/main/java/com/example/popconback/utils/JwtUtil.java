@@ -1,14 +1,14 @@
 package com.example.popconback.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
+
 public class JwtUtil {
 
-    public static String getUserName(String token, String secretKey){
+    public static String getUserName(String token, String secretKey) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                 .getBody().get("UserName",String.class);
     }
