@@ -33,6 +33,7 @@ import com.soundcloud.android.crop.Crop
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.*
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.onSingleClickListener
 import com.ssafy.popcon.ui.home.HomeFragment
@@ -182,16 +183,13 @@ class AddFragment : Fragment(), onItemClick {
                         }
 
                         viewModel.addFileToGCP(multipartFiles.toTypedArray())
-                        viewModel.gcpResult.observe(viewLifecycleOwner){
+                        viewModel.gcpResult.observe(viewLifecycleOwner, EventObserver{
                             for (gcpResult in it){
                                 fileNames.add(gcpResult.fileName)
                             }
 
-
-
-
                             viewModel.useOcr(fileNames.toTypedArray())
-                            viewModel.ocrResult.observe(viewLifecycleOwner){
+                            viewModel.ocrResult.observe(viewLifecycleOwner, EventObserver{
                                 for (ocrResult in it){
                                     ocrResults.add(ocrResult)
                                 }
@@ -199,6 +197,7 @@ class AddFragment : Fragment(), onItemClick {
                                 for (i in 0 until clipData.itemCount){
                                     val cropImgUri = cropXY(i, PRODUCT)
                                     val cropBarcodeUri = cropXY(i, BARCODE)
+
                                     productImgUris.add(GifticonImg(cropImgUri))
                                     barcodeImgUris.add(GifticonImg(cropBarcodeUri))
                                     delImgUris.add(cropImgUri)
@@ -207,8 +206,8 @@ class AddFragment : Fragment(), onItemClick {
 
                                 fillContent(0)
                                 makeImgList()
-                            }
-                        }
+                            })
+                        })
                     } else{  //수동 크롭
                         if (clickCv == PRODUCT){
                             productImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
@@ -285,17 +284,23 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // ocrResult 날짜 조합
-    private fun jsonParsingDate(value: Map<String, String>): String {
+    private fun jsonParsingDate(value: Map<String, String>?): String {
+        if (value == null){
+            return ""
+        }
+
         val jsonObject = JsonParser.parseString(value.toString()).asJsonObject
         val result = Gson().fromJson(jsonObject, OCRResultDate::class.java)
-
         return "${result.Y}-${result.M}-${result.D}"
     }
 
     // ocrResult 이미지 좌표 split
-    private fun jsonParsingCoordinate(value: String): OCRResultCoordinate{
-        val jsonObject = JsonParser.parseString(value).asJsonObject
+    private fun jsonParsingCoordinate(value: Map<String, String>?): OCRResultCoordinate{
+        if(value == null){
+            return OCRResultCoordinate("0", "0", "0", "0", "0", "0", "0", "0")
+        }
 
+        val jsonObject = JsonParser.parseString(value.toString()).asJsonObject
         return Gson().fromJson(jsonObject, OCRResultCoordinate::class.java)
     }
 
@@ -305,10 +310,10 @@ class AddFragment : Fragment(), onItemClick {
         val coordinate: OCRResultCoordinate
         if (type == PRODUCT){
             fileName = "popconImg${PRODUCT}"
-            coordinate = jsonParsingCoordinate(ocrResults[idx].productImg.toString())
+            coordinate = jsonParsingCoordinate(ocrResults[idx].productImg)
         } else{
             fileName = "popconImg${BARCODE}"
-            coordinate = jsonParsingCoordinate(ocrResults[idx].barcodeImg.toString())
+            coordinate = jsonParsingCoordinate(ocrResults[idx].barcodeImg)
         }
 
         val x1 = coordinate.x1.toInt()
@@ -316,8 +321,12 @@ class AddFragment : Fragment(), onItemClick {
         val x4 = coordinate.x4.toInt()
         val y4 = coordinate.y4.toInt()
         val bitmap = uriToBitmap(originalImgUris[idx].imgUri)
-        val newBitmap = Bitmap.createBitmap(bitmap, x1, y1, (x4-x1), (y4-y1))
 
+        if (x1 == 0 && x4 == 0){
+            return saveFile(fileName + System.currentTimeMillis(), bitmap)!!
+        }
+
+        val newBitmap = Bitmap.createBitmap(bitmap, x1, y1, (x4-x1), (y4-y1))
         return saveFile(fileName + System.currentTimeMillis(), newBitmap)!!
     }
 
