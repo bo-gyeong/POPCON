@@ -121,7 +121,7 @@ public class GoogleOcrController {
             defaultValue = "None"
     )
     @PostMapping("/ocr")
-    public ResponseEntity<List<GifticonResponse>> detectText(String[] fileNames) throws Exception {
+    public ResponseEntity<List<GifticonResponse>> detectText(@RequestBody String[] fileNames) throws Exception {
 
         List<GifticonResponse> finalResult = new ArrayList<>();
 
