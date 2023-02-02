@@ -77,7 +77,9 @@ class AddFragment : Fragment(), onItemClick {
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
     var clickCv = ""
-    var effectiveness = false
+    var effectivenessBrand = false
+    var effectivenessBarcode = false
+    var effectivenessDate = false
 
     val PRODUCT = "Product"
     val BARCODE = "Barcode"
@@ -143,6 +145,7 @@ class AddFragment : Fragment(), onItemClick {
         brandChk()
         brandBarcodeNum()
         dateFormat()
+        changeChkState()
 
         binding.btnOriginalSee.setOnClickListener {
             if (originalImgUris.size != 0){
@@ -155,11 +158,11 @@ class AddFragment : Fragment(), onItemClick {
         }
 
         binding.btnRegi.setOnClickListener {
-            if (chkClickImgCnt() && chkEffectiveness()){
-                //viewModel.addGifticonImg(makeAddImgInfoList())
+            //if (chkClickImgCnt() && chkEffectiveness()){
+                viewModel.addGifticonImg(makeAddImgInfoList())
                 viewModel.addGifticon(makeAddInfoList())
                 mainActivity.changeFragment(HomeFragment())
-            }
+            //}
         }
     }
 
@@ -275,6 +278,14 @@ class AddFragment : Fragment(), onItemClick {
             user.email!!,
             user.social
         )
+
+        binding.cbPrice.isChecked
+        binding.lPrice.visibility = View.GONE
+        if (ocrResults[idx].isVoucher == 1){
+            binding.cbPrice.isChecked = true
+            binding.lPrice.visibility = View.VISIBLE
+        }
+
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
     }
@@ -320,13 +331,13 @@ class AddFragment : Fragment(), onItemClick {
         val y1 = coordinate.y1.toInt()
         val x4 = coordinate.x4.toInt()
         val y4 = coordinate.y4.toInt()
+
         val bitmap = uriToBitmap(originalImgUris[idx].imgUri)
-
+        var newBitmap = Bitmap.createBitmap(bitmap, 0, 0, 100, 100)
         if (x1 == 0 && x4 == 0){
-            return saveFile(fileName + System.currentTimeMillis(), bitmap)!!
+            return saveFile(fileName + System.currentTimeMillis(), newBitmap)!!
         }
-
-        val newBitmap = Bitmap.createBitmap(bitmap, x1, y1, (x4-x1), (y4-y1))
+        newBitmap = Bitmap.createBitmap(bitmap, x1, y1, (x4-x1), (y4-y1))
         return saveFile(fileName + System.currentTimeMillis(), newBitmap)!!
     }
 
@@ -483,16 +494,18 @@ class AddFragment : Fragment(), onItemClick {
     private fun brandChk(){
         binding.etProductBrand.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-                effectiveness = false
 
-                if (p0!!.length > 5){
-                    binding.tilProductBrand.error = "올바른 브랜드를 입력해주세요"
-                    effectiveness = false
-                } else{
-                    effectiveness = true
-                    binding.tilProductBrand.error = null
-                    binding.tilProductBrand.isErrorEnabled = false
-                }
+                viewModel.chkBrand(p0.toString())
+                viewModel.brandChk.observe(viewLifecycleOwner, EventObserver{
+                    if (it.result == 0){
+                        binding.tilProductBrand.error = "올바른 브랜드를 입력해주세요"
+                        effectivenessBrand = false
+                    } else{
+                        binding.tilProductBrand.error = null
+                        binding.tilProductBrand.isErrorEnabled = false
+                        effectivenessBrand = true
+                    }
+                })
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -507,16 +520,17 @@ class AddFragment : Fragment(), onItemClick {
     private fun brandBarcodeNum(){
         binding.etBarcode.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-                effectiveness = false
-
-                if (p0!!.length > 5){
-                    binding.tilBarcode.error = "이미 등록된 바코드 번호입니다"
-                    effectiveness = false
-                } else{
-                    effectiveness = true
-                    binding.tilBarcode.error = null
-                    binding.tilBarcode.isErrorEnabled = false
-                }
+                viewModel.chkBarcode(p0.toString())
+                viewModel.barcodeChk.observe(viewLifecycleOwner, EventObserver{
+                    if (it.result == 0){
+                        binding.tilBarcode.error = "이미 등록된 바코드 번호입니다"
+                        effectivenessBarcode = false
+                    } else{
+                        binding.tilBarcode.error = null
+                        binding.tilBarcode.isErrorEnabled = false
+                        effectivenessBarcode = true
+                    }
+                })
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -534,56 +548,43 @@ class AddFragment : Fragment(), onItemClick {
             override fun afterTextChanged(p0: Editable?) {
                 val dateLength = binding.etDate.text!!.length
                 val nowText = p0.toString()
-                effectiveness = false
 
                 when (dateLength){
-                    5 -> {
-                        val newYear = nowText.substring(0, 4).toInt()
-                        val nowYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(System.currentTimeMillis()).toInt()
-
-                        if (newYear < nowYear || newYear > 2100){
-                            binding.tilDate.error = "정확한 날짜를 입력해주세요"
-                        } else{
-                            binding.tilDate.error = null
-                            binding.tilDate.isErrorEnabled = false
-                        }
-                        effectiveness = false
-                    }
-
-                    8 -> {
-                        if (nowText.substring(5, 7).toInt() > 12){
-                            binding.tilDate.error = "정확한 날짜를 입력해주세요"
-                        } else{
-                            binding.tilDate.error = null
-                            binding.tilDate.isErrorEnabled = false
-                        }
-                        effectiveness = false
-                    }
-
                     10 -> {
+                        val newYear = nowText.substring(0, 4).toInt()
                         val newMonth = nowText.substring(5, 7).toInt()
                         val newDay = nowText.substring(8).toInt()
 
+                        val nowYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(System.currentTimeMillis()).toInt()
                         val nowDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())
                         val nowDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(nowDateFormat)
                         val newDate =  SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(p0.toString())
                         val calDate = newDate!!.compareTo(nowDate)
-                        effectiveness = false
+                        effectivenessDate = false
 
-                        if (newDay > dateArr[newMonth-1]){
+                        if (newYear < nowYear || newYear > 2100 || newYear.toString().length < 4){
+                            binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                        } else if(newMonth < 1 || newMonth > 12){
+                            binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                        } else if(newDay > dateArr[newMonth-1] || newDay == 0){
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
                         } else if (calDate < 0){
                             binding.tilDate.error = "이미 지난 날짜입니다"
                         } else{
-                            effectiveness = true
                             binding.tilDate.error = null
                             binding.tilDate.isErrorEnabled = false
+                            effectivenessDate = true
                         }
                     }
                     else -> {
-                        effectiveness = false
                         binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                        effectivenessDate = false
                     }
+                }
+
+                if (dateLength < 10){
+                    binding.tilDate.error = "정확한 날짜를 입력해주세요"
+                    effectivenessDate = false
                 }
             }
 
@@ -630,7 +631,8 @@ class AddFragment : Fragment(), onItemClick {
     // 유효성 검사
     private fun chkEffectiveness(): Boolean {
         if (binding.ivBarcodeImg.drawable == null || binding.ivCouponImg.drawable == null
-            || binding.etProductName.text.toString() == "" || !effectiveness
+            || binding.etProductName.text.toString() == ""
+            || !effectivenessBrand || !effectivenessBarcode || !effectivenessDate
             || binding.cbPrice.isChecked && binding.etPrice.text.toString() == ""
             || binding.cbPrice.isChecked && binding.etPrice.text.toString() == "0"
         ) {

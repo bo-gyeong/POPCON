@@ -127,6 +127,7 @@ data class GCPResult(
 )
 
 data class OCRResult(
+    val isVoucher: Int,
     val barcodeImg: Map<String, String>,
     val barcodeNum: String,
     val brandName: String,

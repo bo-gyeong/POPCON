@@ -11,6 +11,15 @@ class AddRepository(private val remoteDataSource: AddRemoteDataSource) {
     suspend fun useOcr(fileName: Array<String>): List<OCRResult>{
         return remoteDataSource.useOcr(fileName)
     }
+
+    suspend fun chkBrand(brandName: String): ChkValidation{
+        return remoteDataSource.chkBrand(brandName)
+    }
+
+    suspend fun chkBarcode(barcodeNum: String): ChkValidation{
+        return remoteDataSource.chkBarcode(barcodeNum)
+    }
+
     suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfo>{
         return remoteDataSource.addGifticon(addInfo)
     }

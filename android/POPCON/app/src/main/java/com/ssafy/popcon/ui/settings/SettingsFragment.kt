@@ -202,7 +202,7 @@ class SettingsFragment : Fragment() {
             user = userInfo
 
             //viewModel.updateUser(user, 177784539)
-            viewModel.updateUser(user, -308222648)
+            viewModel.updateUser(user, -997299520)
         }
     }
 

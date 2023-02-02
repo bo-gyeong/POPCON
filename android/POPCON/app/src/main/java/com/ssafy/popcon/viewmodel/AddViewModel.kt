@@ -18,6 +18,12 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
     private val _ocrResult = MutableLiveData<Event<List<OCRResult>>>()
     val ocrResult: LiveData<Event<List<OCRResult>>> = _ocrResult
 
+    private val _brandChk = MutableLiveData<Event<ChkValidation>>()
+    val brandChk = _brandChk
+
+    private val _barcodeChk = MutableLiveData<Event<ChkValidation>>()
+    val barcodeChk = _barcodeChk
+
     fun addFileToGCP(files: Array<MultipartBody.Part>){
         viewModelScope.launch {
             _gcpResult.value = Event(addRepository.addFileToGCP(files))
@@ -27,6 +33,18 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
     fun useOcr(fileName: Array<String>){
         viewModelScope.launch {
             _ocrResult.value = Event(addRepository.useOcr(fileName))
+        }
+    }
+
+    fun chkBrand(brandName: String){
+        viewModelScope.launch {
+            _brandChk.value = Event(addRepository.chkBrand(brandName))
+        }
+    }
+
+    fun chkBarcode(barcodeNum: String){
+        viewModelScope.launch {
+            _barcodeChk.value = Event(addRepository.chkBarcode(barcodeNum))
         }
     }
 
