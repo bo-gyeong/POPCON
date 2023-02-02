@@ -51,10 +51,6 @@
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="kakao${KAKAO_API_KEY}" />
-
         <service
             android:name=".fcm.FirebaseMessagingService"
             android:exported="true">

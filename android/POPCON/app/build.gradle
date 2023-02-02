@@ -9,7 +9,6 @@ plugins {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 def kakaoApiKey = properties.getProperty('kakao_map_key')
-
 android {
     namespace 'com.ssafy.popcon'
     compileSdk 32
