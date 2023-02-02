@@ -170,7 +170,8 @@ public class GifticonService {
             return responDto; //본인꺼 아니면 건들지 마시오
         }
 
-        BeanUtils.copyProperties(updateGifticonDto, gifticon);
+        BeanUtils.copyProperties(updateGifticonDto, gifticon,"email","social");
+
 
         gifticon.setBrand(brandrepository.findByBrandName(updateGifticonDto.getBrandName()));
         BeanUtils.copyProperties(gifticonRepository.save(gifticon),responDto);

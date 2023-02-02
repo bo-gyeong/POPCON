@@ -32,7 +32,7 @@ public class UserService {
     private String secretkey;
     @Value("${app.sec}")
     private String appkey;
-    private Long expiredMs = 1000 * 60 * 60l;
+    private Long expiredMs = 1000 * 60 * 60 * 24l;
     private Long expiredMsRe= expiredMs*24*30;
     public ResponsCreateUserDto CreateUser (CreateUserDto createuserDto){
         UserDto user = new UserDto();

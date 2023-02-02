@@ -47,9 +47,11 @@ dependencies {
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 	implementation group: 'com.google.guava', name: 'guava', version: '23.0'
 
-	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
-	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
+//	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
+//	implementation group: 'com.google.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
 
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-starter', version: '1.2.5.RELEASE'
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-gcp-storage', version: '1.2.5.RELEASE'
 
 }
 
