@@ -56,7 +56,7 @@ class BrandTabFragment : Fragment() {
     }
 
     //상단 브랜드탭
-    fun setBrandTab() {
+    private fun setBrandTab() {
         viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object: BrandAdapter.OnItemClickListener{

@@ -20,7 +20,7 @@ data class BrandResponse(
     val cnt : Int
 )
 
-data class SigninResponse(
+data class TokenResponse(
     val acessToken : String,
     val refreshToekn : String
 )

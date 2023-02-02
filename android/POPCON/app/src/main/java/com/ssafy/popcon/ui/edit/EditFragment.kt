@@ -23,8 +23,6 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 class EditFragment : Fragment() {
     private lateinit var binding: FragmentEditBinding
     private lateinit var mainActivity: MainActivity
-
-    //private lateinit var barNum: String
     private val editViewModel: EditViewModel by activityViewModels {
         ViewModelFactory(
             requireContext()
@@ -81,7 +79,6 @@ class EditFragment : Fragment() {
 
     private fun setLayout() {
         editViewModel.barNum.observe(viewLifecycleOwner) {
-
             viewModel.getGifticonByBarcodeNum(it)
             viewModel.gifticon.observe(viewLifecycleOwner) { g ->
                 val gifticon = Gifticon(
@@ -118,6 +115,7 @@ class EditFragment : Fragment() {
                 Log.d("TAG", "setLayout: ${binding.gifticon}")
 
                 //viewModel.updateGifticon(binding.gifticon)
+
             }
         }
     }

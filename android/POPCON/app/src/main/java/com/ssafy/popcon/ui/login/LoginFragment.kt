@@ -20,13 +20,14 @@ import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentLoginBinding
-import com.ssafy.popcon.dto.SigninResponse
+import com.ssafy.popcon.dto.TokenResponse
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.repository.auth.AuthRemoteDataSource
+import com.ssafy.popcon.repository.auth.AuthRepository
 import com.ssafy.popcon.repository.user.UserRemoteDataSource
 import com.ssafy.popcon.repository.user.UserRepository
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
-import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.UserViewModel
@@ -35,7 +36,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import retrofit2.http.POST
 import java.util.*
 
 private const val TAG = "LoginFragment_싸피"
@@ -43,7 +43,7 @@ private const val TAG = "LoginFragment_싸피"
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
-    lateinit var tokens: SigninResponse
+    lateinit var tokens: TokenResponse
 
     private var userUUID: String = ""
     var user = User("", "")
@@ -180,11 +180,11 @@ class LoginFragment : Fragment() {
                             user = User("abc@naver.com", "카카오")
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
-                            val userRepo =
-                                UserRepository(UserRemoteDataSource(RetrofitUtil.userService))
+                            val authRepo = AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
+
 
                             val job = CoroutineScope(Dispatchers.IO).launch {
-                                tokens = userRepo.signIn(user)
+                                tokens = authRepo.signIn(user)
                             }
                             runBlocking {
                                 job.join()

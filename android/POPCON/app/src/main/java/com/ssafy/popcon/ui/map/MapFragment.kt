@@ -33,6 +33,7 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.databinding.ItemBalloonBinding
+import com.ssafy.popcon.dto.BrandRequest
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.MapBrandLogo
 import com.ssafy.popcon.dto.MapNowPos
@@ -57,11 +58,10 @@ import java.net.URL
 
 private const val TAG = "MapFragment"
 
-class MapFragment() : Fragment() , CalloutBalloonAdapter{
+class MapFragment : Fragment(), CalloutBalloonAdapter {
     private lateinit var binding: FragmentMapBinding
-    private lateinit var ballBinding : ItemBalloonBinding
+    private lateinit var ballBinding: ItemBalloonBinding
     private lateinit var locationManager: LocationManager
-    lateinit var mapGifticonAdpater: MapGifticonAdpater
     private var getLongitude: Double = 0.0
     private var getLatitude: Double = 0.0
     private lateinit var internalStorage: String
@@ -79,11 +79,6 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,7 +89,7 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         val mapView = binding.mapView
 
         setGifticonBanner()
-        //setStore()
+        setStore()
         setSensor()
 
         // 로고 이미지를 저장할 위치 - 내부 저장소
@@ -129,7 +124,8 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         }
     }
 
-    inner class CustomBalloonAdapter(private val stores : List<MapBrandLogo>) : CalloutBalloonAdapter {
+    inner class CustomBalloonAdapter(private val stores: List<MapBrandLogo>) :
+        CalloutBalloonAdapter {
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
             val name = poiItem?.itemName
@@ -150,17 +146,23 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
     }
 
     private fun setStore() {
-        val nowPos = mapOf<String, String>(
-            "email" to sharedPreferencesUtil.getUser().email.toString(),
-            "social" to sharedPreferencesUtil.getUser().social.toString(),
-            "x" to getLatitude.toString(),
-            "y" to getLongitude.toString(),
-            "radius" to "500"
+        locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        getUserLocation()
+
+        val request = BrandRequest(
+            sharedPreferencesUtil.getUser().email.toString(),
+            sharedPreferencesUtil.getUser().social.toString(),
+            getUserLocation().toString(),
+            getLatitude.toString()
         )
 
-        //y : 위도 latitude
-        viewModel.getStoreInfo(nowPos)
+        //y : 위도 latitude 경 127도, 위 37도
+        Log.d(TAG, "setStore Request: $getLongitude")
+        Log.d(TAG, "setStore Request: $getLatitude")
+        viewModel.getStoreInfo(request)
         viewModel.mapBrandLogo.observe(viewLifecycleOwner) {
+            Log.d(TAG, "setStore: $it")
             binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(it))
 
             for (store in it) {
@@ -173,6 +175,8 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
                 marker.itemName = store.placeName
                 marker.mapPoint = position
                 marker.markerType = MapPOIItem.MarkerType.BluePin
+                //marker.markerType = MapPOIItem.MarkerType.CustomImage
+                //marker.customImageResourceId = R.drawable.
                 marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
 
                 binding.mapView.addPOIItem(marker)
@@ -180,31 +184,9 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
         }
     }
 
-    fun updateViewPager(gifticons : List<Gifticon>) {
-        Log.d(TAG, "updateViewPager: $gifticons")
-        with(binding.viewpagerMapGiftcon) {
-            adapter = MapGifticonAdpater().apply {
-                submitList(gifticons)
-            }
-
-            val pageWidth = resources.getDimension(R.dimen.viewpager_item_widwth)
-            val pageMargin = resources.getDimension(R.dimen.viewpager_item_margin)
-            val screenWidth = resources.displayMetrics.widthPixels
-            val offset = screenWidth - pageWidth - pageMargin
-
-            offscreenPageLimit = 3
-            setPageTransformer { page, position ->
-                page.translationX = position * -offset
-            }
-        }
-    }
     //기프티콘 뷰페이저
     fun setGifticonBanner() {
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
-
-        viewModel.mapGifticon.observe(viewLifecycleOwner){
-            binding.tvTest.text = it.toString()
-        }
 
         with(binding.viewpagerMapGiftcon) {
             adapter = MapGifticonAdpater().apply {
@@ -260,6 +242,7 @@ class MapFragment() : Fragment() , CalloutBalloonAdapter{
                 location =
                     locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             }
+
             getLongitude = location?.longitude!!
             getLatitude = location?.latitude!!
         }

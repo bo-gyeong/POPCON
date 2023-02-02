@@ -3,6 +3,6 @@
     <dimen name="viewpager_item_widwth">340dp</dimen>
     <dimen name="viewpager_item_margin">16dp</dimen>
     <dimen name="design_fab_size_normal" tools:override="true">58dp</dimen>
-    <dimen name="design_fab_image_size" tools:override="true">40dp</dimen>
+    <dimen name="design_fab_image_size" tools:override="true">30dp</dimen>
     <dimen name="radius_small">12dp</dimen>
 </resources>
