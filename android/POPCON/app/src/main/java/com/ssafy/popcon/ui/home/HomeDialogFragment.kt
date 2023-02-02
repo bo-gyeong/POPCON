@@ -11,13 +11,13 @@ import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.UpdateRequest
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.common.PopconSnackBar
 import com.ssafy.popcon.ui.edit.EditFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
@@ -26,11 +26,13 @@ import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.ui.edit.EditViewModel
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import kotlinx.coroutines.*
+import kotlin.math.log
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
     private lateinit var barNum: String
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private val editViewModel: EditViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     private lateinit var mainActivity: MainActivity
@@ -71,7 +73,6 @@ class HomeDialogFragment : DialogFragment() {
     ): View? {
         binding = DialogHomeGifticonBinding.inflate(inflater, container, false)
 
-        Log.d(TAG, "onCreateView: ")
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
@@ -79,14 +80,23 @@ class HomeDialogFragment : DialogFragment() {
         barNum = mArgs!!.getString("barNum")!!
 
         binding.badge = Badge("", "#000000")
-
         return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setLayout()
+
+        //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+        binding.btnDelete.setOnClickListener {
+            viewModel.deleteGifticon(gifticon.barcodeNum)
+
+            dialog?.dismiss()
+
+            PopconSnackBar.make(view, "삭제가 완료되었어요").show()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -95,18 +105,17 @@ class HomeDialogFragment : DialogFragment() {
         viewModel.gifticon.observe(viewLifecycleOwner) { g ->
             gifticon = Gifticon(
                 g.barcodeNum,
-                g.barcode_filepath ?: "",
+                g.barcode_filepath?:"",
                 Brand("", g.brandName),
                 g.due,
                 g.hash,
                 g.price,
                 g.memo ?: "",
-                g.origin_filepath ?: "",
+                g.origin_filepath?:"",
                 g.productName,
-                g.product_filepath ?: "",
+                g.product_filepath?:"",
                 g.state
             )
-
             binding.gifticon = gifticon
             binding.badge = Utils.calDday(gifticon)
             setButton(gifticon)
@@ -120,23 +129,33 @@ class HomeDialogFragment : DialogFragment() {
                 dialogFragment.show(childFragmentManager, "originalUrl")
             }
 
-            //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
-            binding.btnDelete.setOnClickListener {
-                viewModel.deleteGifticon(gifticon.barcodeNum)
-
-                dialog?.dismiss()
-            }
         }
+
+
     }
 
-    private lateinit var gifticon: Gifticon
-    private fun setGifticon() : UpdateRequest {
 
-        return UpdateRequest(gifticon.barcodeNum, gifticon.brand!!.brandName, gifticon.due, gifticon.memo,
-            gifticon.price ?: -1, gifticon.productName, SharedPreferencesUtil(requireContext()).getUser().email!!, SharedPreferencesUtil(requireContext()).getUser().social, gifticon.state)
+    private lateinit var gifticon: Gifticon
+    private fun setGifticon(): UpdateRequest {
+
+        return UpdateRequest(
+            gifticon.barcodeNum,
+            gifticon.brand!!.brandName,
+            gifticon.due,
+            gifticon.memo,
+            gifticon.price ?: -1,
+            gifticon.productName,
+            SharedPreferencesUtil(requireContext()).getUser().email!!,
+            SharedPreferencesUtil(requireContext()).getUser().social,
+            gifticon.state
+        )
     }
 
     private fun setButton(gifticon: Gifticon) {
+        binding.btnDelete.setOnClickListener {
+            viewModel.deleteGifticon(gifticon.barcodeNum)
+        }
+
         when (gifticon.state) {
             //0:사용가능, 1:사용완료, 2:기간만료
             0 -> {

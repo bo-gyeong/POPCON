@@ -98,6 +98,7 @@ class GifticonDialogFragment : DialogFragment() {
 
         binding.vpGifticon.adapter = gifticonViewAdapter
         binding.vpGifticon.offscreenPageLimit = previewAdapter.sidePreviewCount * 2 + 1
+
         binding.vpGifticon.addOnPageChangeListener(
             OnSyncPageChangeListener(
                 binding.vpPreview,
@@ -105,7 +106,8 @@ class GifticonDialogFragment : DialogFragment() {
             )
         )
 
-        binding.vpPreview.setPageTransformer(false
+        binding.vpPreview.setPageTransformer(
+            false
         ) { page, position ->
             Log.d("TAG", "transformPage: $position")
             page.translationX = position * -40
@@ -121,19 +123,28 @@ class GifticonDialogFragment : DialogFragment() {
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
+
                 }
 
                 override fun onPageSelected(position: Int) {
-                    Log.d("TAG", "onPageSelected: $position")
-                    val v: View = binding.vpPreview.getChildAt(position)
-                    v.findViewById<ImageView>(R.id.bg_black).isVisible = false
-                    v.findViewById<ImageView>(R.id.edge_preview).isVisible = true
+                    if (position >= useList.size) {
+                        currentItem = useList.size - 1
+                        prevIndex = currentItem - 1
+                    }
 
-                    val oldV: View = binding.vpPreview.getChildAt(prevIndex)
-                    oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
-                    oldV.findViewById<ImageView>(R.id.edge_preview).isVisible = false
+                    if (currentItem != prevIndex) {
 
-                    prevIndex = position
+                        val v: View = binding.vpPreview.getChildAt(currentItem)
+
+                        v.findViewById<ImageView>(R.id.bg_black).isVisible = false
+                        v.findViewById<ImageView>(R.id.edge_preview).isVisible = true
+
+                        val oldV: View = binding.vpPreview.getChildAt(prevIndex)
+                        oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
+                        oldV.findViewById<ImageView>(R.id.edge_preview).isVisible = false
+
+                        prevIndex = currentItem
+                    }
                 }
             })
         }
@@ -142,7 +153,10 @@ class GifticonDialogFragment : DialogFragment() {
     //기프티콘 리스트 추가
     private fun setList() {
         viewModel.brands.observe(viewLifecycleOwner) {
-            viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), it[0].brandName)
+            viewModel.getGifticons(
+                SharedPreferencesUtil(requireContext()).getUser(),
+                it[0].brandName
+            )
 
             if (it.size == 0) {//근처에 매장 없음
                 binding.cvBrandTab.isVisible = false

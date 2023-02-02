@@ -70,7 +70,7 @@ class GifticonViewFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
         binding.gifticon = gifticonInfo
-        if (gifticonInfo?.price == null) {
+        if (gifticonInfo?.price == -1) {
             binding.btnUse.isVisible = true
             binding.btnPrice.isVisible = false
             binding.tvLeft.isVisible = false

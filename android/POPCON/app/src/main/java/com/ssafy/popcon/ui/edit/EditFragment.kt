@@ -142,7 +142,6 @@ class EditFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setGifticon(): UpdateRequest {
-        gifticon.barcodeNum = binding.etBarcode.text.toString()
         gifticon.productName = binding.etProductName.text.toString()
         gifticon.brand?.brandName = binding.etProductBrand.text.toString()
         gifticon.due = binding.etDate.text.toString()
@@ -210,7 +209,7 @@ class EditFragment : Fragment() {
     // 유효성 검사
     private fun chkEffectiveness(): Boolean {
         if (binding.ivBarcodeImg.drawable == null || binding.ivCouponImg.drawable == null
-            || binding.etDate.text == null || binding.etBarcode.text == null
+            || binding.etDate.text == null
         ) {
             return false
         }

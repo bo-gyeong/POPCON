@@ -32,12 +32,13 @@ class PreviewAdapter(
                 position,
                 object : PreviewListener {
                     override fun onClick(position: Int) {
-                        syncToViewPager.setCurrentItem(getRealPosition(position), true)
-                        syncWithViewPager.setCurrentItem(getRealPosition(position), true)
+                        /*syncToViewPager.setCurrentItem(getRealPosition(position), true)
+                        syncWithViewPager.setCurrentItem(getRealPosition(position), true)*/
                     }
 
                     override fun onSelect(position: Int) {
-
+                        syncToViewPager.setCurrentItem(getRealPosition(position), true)
+                        syncWithViewPager.setCurrentItem(getRealPosition(position), true)
                     }
                 })
         }

@@ -2,6 +2,7 @@ package com.ssafy.popcon.viewmodel
 
 import android.os.Build
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,8 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
 import com.ssafy.popcon.ui.common.Event
+import com.ssafy.popcon.ui.common.PopconSnackBar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.streams.toList
 
@@ -47,7 +50,6 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     fun getGifticonByUser(user: User) {
         viewModelScope.launch {
             val gifticons = gifticonRepository.getGifticonByUser(user)
-
             _gifticons.value = gifticons
         }
     }
