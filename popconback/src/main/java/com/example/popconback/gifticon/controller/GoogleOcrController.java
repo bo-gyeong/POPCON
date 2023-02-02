@@ -121,7 +121,7 @@ public class GoogleOcrController {
             defaultValue = "None"
     )
     @PostMapping("/ocr")
-    public List<GifticonResponse> detectText(String[] fileNames) throws Exception {
+    public ResponseEntity<List<GifticonResponse>> detectText(String[] fileNames) throws Exception {
 
         List<GifticonResponse> finalResult = new ArrayList<>();
 
@@ -160,12 +160,27 @@ public class GoogleOcrController {
                             break;
                         }
 
+                        List<EntityAnnotation> resList = res.getTextAnnotationsList();
+                        List<EntityAnnotation> newRes = new ArrayList<>(resList.subList(1,resList.size()));
+                        List<String> descList = new ArrayList<>();
+
+                        for (EntityAnnotation ress : newRes) {
+                            if (ress.getBoundingPoly().getVertices(0).getX() > 200 && ress.getBoundingPoly().getVertices(2).getY() < 117){
+                                descList.add(ress.getDescription());
+                                System.out.println(ress.getDescription());
+                            }
+
+                        }
+
+
+
                         // For full list of available annotations, see http://g.co/cloud/vision/docs
                         for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
                             //System.out.format("%s", annotation.getDescription());
 
                             String descript = annotation.getDescription();
                             String trimDescript = descript.replace(" ","");
+
 
                             //System.out.println(descript);
 
@@ -179,12 +194,20 @@ public class GoogleOcrController {
                             checkVoucher.add("디지털상품권");
                             checkVoucher.add("모바일교환권");
                             checkVoucher.add("원권");
+                            checkVoucher.add("천원");
+                            checkVoucher.add("만원");
+                            checkVoucher.add("0원");
+
 
 
 
                             if(trimDescript.contains("GS&쿠폰")) {
 
                                 String onlyWords = descript.replace("\n","");
+
+                                System.out.println(onlyWords);
+
+
 
                                 String[] findProductName = onlyWords.split("유효기간");
 
@@ -223,8 +246,16 @@ public class GoogleOcrController {
 
                                 String barcodeNum = lineList.get(lineList.size()-1).replace("-","");
 
-                                String brandName = lineList.get(lineList.size()-3);
+                                String preBrandName = lineList.get(lineList.size()-3);
 
+                                String brandName = "";
+
+                                for (String chk : checkVoucher) {
+                                    if (preBrandName.contains(chk)) {
+                                        brandName = preBrandName.replace(chk, "").replace(" ", "");
+                                        break;
+                                    }
+                                }
 
 
 
@@ -255,7 +286,10 @@ public class GoogleOcrController {
 
                                 int isVoucher = 0;
 
-                                String productName = findProductName[0];
+                                //String productName = findProductName[0];
+                                String productName = lineList.get(lineList.size()-7);
+
+                                System.out.println(productName);
 
                                 for (String word : checkVoucher) {
                                     if(productName.contains(word)) {
@@ -270,6 +304,7 @@ public class GoogleOcrController {
                                 finalGifticonResponse = gifticonResponse;
 
                                 //System.out.println(gifticonResponse);
+                                break;
 
 
 
@@ -317,7 +352,20 @@ public class GoogleOcrController {
                                 expiration.put("D",fullExpiration.substring(10,12));
 
                                 String barcodeNum = lineList.get(lineList.size()-5).replace(" ","");
-                                String brandName = lineList.get(0);
+                                String preBrandName = lineList.get(0);
+
+
+                                String brandName = "";
+
+                                for (String chk : checkVoucher) {
+                                    if (preBrandName.contains(chk)) {
+                                        brandName = preBrandName.replace(chk, "").replace(" ", "");
+                                        break;
+                                    }
+                                }
+
+
+
                                 int validation = 0;
 
 
@@ -362,6 +410,8 @@ public class GoogleOcrController {
 
                                 finalGifticonResponse = gifticonResponse;
 
+                                break;
+
 
                             }
                             else if (trimDescript.contains("giftishow")) {
@@ -373,7 +423,7 @@ public class GoogleOcrController {
                                 String productName = findProductName.split("교환처:")[0];
 
                                 String findBrandName = findProductName.split("교환처:")[1];
-                                String brandName = findBrandName.split("유효기간:")[0];
+                                String preBrandName = findBrandName.split("유효기간:")[0];
 
                                 String findExpiration = findBrandName.split("유효기간:")[1];
 
@@ -412,6 +462,14 @@ public class GoogleOcrController {
                                 String findBarcode = onlyWords.split("상품명:")[0];
                                 String barcodeNum = findBarcode.substring(findBarcode.length()-12,findBarcode.length());
 
+                                String brandName = "";
+
+                                for (String chk : checkVoucher) {
+                                    if (preBrandName.contains(chk)) {
+                                        brandName = preBrandName.replace(chk, "").replace(" ", "");
+                                        break;
+                                    }
+                                }
 
                                 int validation = 0;
 
@@ -454,6 +512,8 @@ public class GoogleOcrController {
 
                                 finalGifticonResponse = gifticonResponse;
 
+                                break;
+
 
 
                             }
@@ -491,9 +551,9 @@ public class GoogleOcrController {
                                 barcodePosition.put("y4", "383");
 
                                 String[] fullBrand = lineList.get(lineList.size()-5).split("1");
-                                String brandName = fullBrand[1].trim();
+                                String preBrandName = fullBrand[1].trim();
 
-                                String[] findProductName = onlyWords.split(brandName);
+                                String[] findProductName = onlyWords.split(preBrandName);
 
                                 String productName = findProductName[1].split("교환수량")[0];
 
@@ -509,6 +569,15 @@ public class GoogleOcrController {
 
                                 String barcodeNum = lineList.get(lineList.size()-2).replace(" ","");
                                 System.out.println(barcodeNum);
+
+                                String brandName = "";
+
+                                for (String chk : checkVoucher) {
+                                    if (preBrandName.contains(chk)) {
+                                        brandName = preBrandName.replace(chk, "").replace(" ", "");
+                                        break;
+                                    }
+                                }
 
                                 int validation = 0;
 
@@ -552,6 +621,8 @@ public class GoogleOcrController {
 
                                 finalGifticonResponse = gifticonResponse;
 
+                                break;
+
 
 
 
@@ -560,6 +631,8 @@ public class GoogleOcrController {
                                 GifticonResponse gifticonResponse = new GifticonResponse(-1,"직접 입력해주세요.", "직접 입력해주세요.", "직접 입력해주세요.", null, null,"직접 입력해주세요.",null,-1);
 
                                 finalGifticonResponse = gifticonResponse;
+
+                                break;
 
                             }
 
@@ -586,10 +659,11 @@ public class GoogleOcrController {
 
         System.out.println(finalResult);
 
-        return finalResult;
+        return new ResponseEntity<>(finalResult,HttpStatus.OK);
 
 
     }
+
 
 }
 
