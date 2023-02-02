@@ -53,15 +53,15 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
 
     // user 초기화
     private fun userInit(){
-        //val shardPreference = SharedPreferencesUtil(requireContext()).preferences
-        /*user = User(
+        val shardPreference = SharedPreferencesUtil(requireContext()).preferences
+        user = User(
             user.email,
             user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
             shardPreference.getInt("noti_interval", 1),
             shardPreference.getInt("noti_time", 1)
-        )*/
+        )
     }
 
     private fun showDlgContent(notiListPosition: Int){

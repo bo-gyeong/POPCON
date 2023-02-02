@@ -37,12 +37,12 @@ class SettingsFragment : Fragment() {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var user: User
-    //private lateinit var shardPreference:SharedPreferences
+    private lateinit var shardPreference:SharedPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         user = SharedPreferencesUtil(requireContext()).getUser()
-        //shardPreference = SharedPreferencesUtil(requireContext()).preferences
+        shardPreference = SharedPreferencesUtil(requireContext()).preferences
         mainActivity = context as MainActivity
     }
 
@@ -57,14 +57,14 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        /*user = User(
+        user = User(
             user.email,
             user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
             shardPreference.getInt("noti_interval", 1),
             shardPreference.getInt("noti_time", 1)
-        )*/
+        )
         binding.user = user
 
         return binding.root

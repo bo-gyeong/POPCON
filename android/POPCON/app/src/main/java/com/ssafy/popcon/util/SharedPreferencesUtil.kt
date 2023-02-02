@@ -9,7 +9,7 @@ import com.ssafy.popcon.dto.User
 
 class SharedPreferencesUtil(context: Context) {
     val SHARED_PREFERENCES_NAME = "popcon_preference"
-    private val preferences: SharedPreferences =
+    val preferences: SharedPreferences =
         context.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
 
     var accessToken: String?
