@@ -61,6 +61,21 @@ public class OcrController {
 
         List<GifticonResponse> finalResult = new ArrayList<>();
 
+        int definePublisher = -1; // 0:gs , 1:kakao , 2:giftishow , 3:gifticon
+
+        // GS&쿠폰
+        String checkGS = "";
+
+        // 카카오톡
+        String checkKakao = "";
+
+        // 기프티쇼
+        String checkGiftishow = "";
+
+        // 기프티콘
+        String checkGifticon = "";
+
+
 
 
         try {
@@ -100,89 +115,85 @@ public class OcrController {
                         List<EntityAnnotation> newRes = new ArrayList<>(resList.subList(1,resList.size()));
                         List<String> descList = new ArrayList<>();
 
-                        int definePublisher = -1; // 0:gs , 1:kakao , 2:giftishow , 3:gifticon
 
                         for (EntityAnnotation ress : newRes) {
 
-                            // GS&쿠폰
-                            String checkGS = "";
+
 
                             if (ress.getBoundingPoly().getVertices(0).getX() > 288 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 245 &&
                                     ress.getBoundingPoly().getVertices(2).getX() < 384 &&
                                     ress.getBoundingPoly().getVertices(2).getY() < 272){
-                                checkGS += ress.getDescription().replaceAll("(\r\n|\r|\n|\n\r)", " ");
+                                checkGS += ((String)ress.getDescription().replaceAll("\n", "").replaceAll(" ",""));
+                                //System.out.println(checkGS);
 
-                            }
 
-                            String isGS = checkGS.replaceAll("(\r\n|\r|\n|\n\r)", " ");
+
+                            String isGS = checkGS.replaceAll("\n", "").replaceAll(" ","");
                             System.out.println(isGS);
-                            if (isGS.contains("GS&쿠폰")) {
+                            if (isGS.equals("GS&쿠폰")) {
                                 definePublisher = 0;
 
                                 System.out.println(definePublisher);
                                 break;
-                            }
+                            }}
 
-                            // 카카오톡
-                            String checkKakao = "";
 
-                            if (ress.getBoundingPoly().getVertices(0).getX() > 218 &&
+
+                            else if (ress.getBoundingPoly().getVertices(0).getX() > 218 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 1499 &&
                                     ress.getBoundingPoly().getVertices(2).getX() < 584 &&
                                     ress.getBoundingPoly().getVertices(2).getY() < 1558){
                                 checkKakao += ress.getDescription();
 
-                            }
 
-                            String isKakao = checkKakao.replace("\n","").replace(" ","");
+
+                            String isKakao = checkKakao.replaceAll("\n", "").replaceAll(" ","");
                             System.out.print(isKakao);
                             if (isKakao.contains("kakaotalk")) {
                                 definePublisher = 1;
-                                //break;
-                            }
+                                break;
+                            }}
 
 
-                            // 기프티쇼
-                            String checkGiftishow = "";
 
-                            if (ress.getBoundingPoly().getVertices(0).getX() > 56 &&
+
+                            else if (ress.getBoundingPoly().getVertices(0).getX() > 56 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 413 &&
                                     ress.getBoundingPoly().getVertices(2).getX() < 398 &&
                                     ress.getBoundingPoly().getVertices(2).getY() < 444){
                                 checkGiftishow += ress.getDescription();
 
-                            }
 
-                            String isGiftishow = checkGiftishow.replace("\n","").replace(" ","");
+
+                            String isGiftishow = checkGiftishow.replaceAll("\n", "").replaceAll(" ","");
                             System.out.print(isGiftishow);
                             if (isGiftishow.contains("기프티쇼") || isGiftishow.contains("giftishow")) {
                                 definePublisher = 2;
-                                //break;
-                            }
+                                break;
+                            }}
 
 
-                            // 기프티콘
-                            String checkGifticon = "";
 
-                            if (ress.getBoundingPoly().getVertices(0).getX() > 125 &&
+
+                            else if (ress.getBoundingPoly().getVertices(0).getX() > 0 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 312 &&
-                                    ress.getBoundingPoly().getVertices(2).getX() < 196 &&
+                                    ress.getBoundingPoly().getVertices(2).getX() < 320 &&
                                     ress.getBoundingPoly().getVertices(2).getY() < 333){
                                 checkGifticon += ress.getDescription();
 
-                            }
 
-                            String isGifticon = checkGifticon.replace("\n","").replace(" ","");
+
+                            String isGifticon = checkGifticon.replaceAll("\n", "").replaceAll(" ","");
                             System.out.print(isGifticon);
                             if (isGifticon.contains("gifticon")) {
                                 definePublisher = 3;
-                                //break;
-                            }
+                                break;
+                            }}
 
                         }
 
-                        System.out.println(definePublisher);
+                        System.out.println(definePublisher);}
 
                         List<String> checkVoucher = new ArrayList<>();
                         checkVoucher.add("금액권");
@@ -193,6 +204,19 @@ public class OcrController {
                         checkVoucher.add("디지털상품권");
                         checkVoucher.add("모바일교환권");
                         checkVoucher.add("원권");
+                        checkVoucher.add("천원");
+                        checkVoucher.add("만원");
+
+                    for (AnnotateImageResponse res : responses) {
+                        if (res.hasError()) {
+                            System.out.format("Error: %s%n", res.getError().getMessage());
+                            break;
+                        }
+
+                        List<EntityAnnotation> resList = res.getTextAnnotationsList();
+                        List<EntityAnnotation> newRes = new ArrayList<>(resList.subList(1,resList.size()));
+
+                        //System.out.println(newRes);
 
                         // isVoucher, publisher, brandName, productName, productImg,
                         // due, barcodeNum, barcodeImg, validation
@@ -202,50 +226,83 @@ public class OcrController {
 
                             String publisher = "GS&쿠폰";
 
+                            // brandName
+                            String checkGsBrand = "";
+                            // productName
+                            String checkGsProduct = "";
+                            // due
+                            String checkGsDue = "";
+                            // barcodeNum
+                            String checkGsBarcode = "";
+
+                            String brandName = "";
+
+                            String productName = "";
+
+                            String barcodeNum = "";
+
+                            String preDue = "";
+
+                            int isVoucher = 0;
+
+                            int validation = 0;
+
+                            Map<String, String> expiration = new HashMap<>();
+
+                            Map<String, String> productPosition = new HashMap<>();
+
+                            Map<String, String> barcodePosition = new HashMap<>();
+
+
                             for (EntityAnnotation gsRes : newRes) {
+                                //System.out.println(gsRes.getBoundingPoly().getVertices(0));
+                                //System.out.println(gsRes.getBoundingPoly().getVertices(2));
 
-                                // brandName
-                                String checkGsBrand = "";
 
-                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 199 &&
-                                        gsRes.getBoundingPoly().getVertices(0).getY() > 204 &&
+
+                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 200 &&
+                                        gsRes.getBoundingPoly().getVertices(0).getY() > 205 &&
                                         gsRes.getBoundingPoly().getVertices(2).getX() < 430 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getY() < 245){
-                                    checkGsBrand += gsRes.getDescription();
+                                        gsRes.getBoundingPoly().getVertices(2).getY() < 250){
+                                    checkGsBrand += gsRes.getDescription().replaceAll("\n","").replaceAll(" ","");
+                                    //System.out.println(checkGsBrand);
 
                                 }
 
-                                String preBrandName = checkGsBrand.replace("\n","").replace(" ","");
-                                System.out.print(preBrandName);
+                                String preBrandName = checkGsBrand.replaceAll("\n","").replaceAll(" ","");
+                                System.out.println(preBrandName);
 
-                                String brandName = "";
+
 
                                 for (String chk : checkVoucher) {
                                     if (preBrandName.contains(chk)) {
-                                        brandName = preBrandName.replace(chk, "").replace(" ", "");
+                                        brandName = preBrandName.replaceAll(chk,"").replaceAll(" ","");
                                         break;
+                                    }
+                                    else {
+                                        brandName = preBrandName;
                                     }
                                 }
 
 
-                                // productName
-                                String checkGsProduct = "";
+
 
                                 if (gsRes.getBoundingPoly().getVertices(0).getX() > 200 &&
                                         gsRes.getBoundingPoly().getVertices(0).getY() > 17 &&
                                         gsRes.getBoundingPoly().getVertices(2).getX() < 430 &&
                                         gsRes.getBoundingPoly().getVertices(2).getY() < 120){
-                                    checkGsProduct += gsRes.getDescription();
+                                    checkGsProduct += gsRes.getDescription().replaceAll("\n","");
+                                    //System.out.println(checkGsProduct);
 
                                 }
 
-                                String productName = checkGsProduct.replace("\n","");
-                                System.out.print(productName);
+                                productName = checkGsProduct.replaceAll("\n","");
+                                System.out.println(productName);
 
 
                                 // isVoucher
 
-                                int isVoucher = 0;
+
 
 
                                 for (String word : checkVoucher) {
@@ -256,72 +313,43 @@ public class OcrController {
                                 }
 
 
-                                // due
-                                String checkGsDue = "";
+
 
                                 if (gsRes.getBoundingPoly().getVertices(0).getX() > 199 &&
                                         gsRes.getBoundingPoly().getVertices(0).getY() > 143 &&
                                         gsRes.getBoundingPoly().getVertices(2).getX() < 329 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getY() < 171){
-                                    checkGsDue += gsRes.getDescription();
+                                        gsRes.getBoundingPoly().getVertices(2).getY() < 171) {
+                                    checkGsDue += gsRes.getDescription().replaceAll("\n", "").replaceAll(" ", "");
+                                    //System.out.println(checkGsDue);
+                                }
+
+
+
+                                preDue = checkGsDue.replaceAll("\n","").replaceAll(" ","");
+                                System.out.println(preDue);
+
+
+
+
+
+                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 96 &&
+                                        gsRes.getBoundingPoly().getVertices(0).getY() > 354 &&
+                                        gsRes.getBoundingPoly().getVertices(2).getX() < 330 &&
+                                        gsRes.getBoundingPoly().getVertices(2).getY() < 381){
+                                    checkGsBarcode += gsRes.getDescription().replaceAll("\n","").replaceAll(" ","").replaceAll("-","");
+                                    System.out.println(checkGsBarcode);
 
                                 }
 
-                                String preDue = checkGsDue.replace("\n","").replace(" ","");
-                                System.out.print(preDue);
-
-                                Map<String, String> expiration = new HashMap<>();
-
-                                expiration.put("Y",preDue.substring(0,4));
-                                expiration.put("M",preDue.substring(5,7));
-                                expiration.put("D",preDue.substring(8,10));
+                                barcodeNum = checkGsBarcode.replaceAll("\n","").replaceAll(" ","").replaceAll("-","");
+                                System.out.println(barcodeNum);
 
 
-                                // barcodeNum
-                                String checkGsBarcode = "";
-
-                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 122 &&
-                                        gsRes.getBoundingPoly().getVertices(0).getY() > 351 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getX() < 317 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getY() < 386){
-                                    checkGsBarcode += gsRes.getDescription();
-
-                                }
-
-                                String barcodeNum = checkGsBarcode.replace("\n","").replace(" ","").replace("-","");
-                                System.out.print(barcodeNum);
-
-
-                                // validation
-                                int validation = 0;
-
-                                try {
-                                    Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
-
-                                    if (byBarcodeNum.isPresent()) {
-                                        validation = 1;
-                                    }
-
-
-                                    Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
-
-                                    if (byBrandName.isEmpty()) {
-                                        validation = 2;
-                                    }
-
-
-                                    if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
-                                        validation = 3;
-                                    }
-                                }
-                                catch (NullPointerException e) {
-                                    System.out.println(e);
-                                }
 
 
 
                                 // barcodeImg, productImg
-                                Map<String, String> productPosition = new HashMap<>();
+
 
                                 productPosition.put("x1", "25");
                                 productPosition.put("y1", "31");
@@ -332,7 +360,7 @@ public class OcrController {
                                 productPosition.put("x4", "183");
                                 productPosition.put("y4", "187");
 
-                                Map<String, String> barcodePosition = new HashMap<>();
+
 
                                 barcodePosition.put("x1", "0");
                                 barcodePosition.put("y1", "282");
@@ -344,49 +372,121 @@ public class OcrController {
                                 barcodePosition.put("y4", "347");
 
 
-                                GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
-                                finalGifticonResponse = gifticonResponse;
-
-                                System.out.println(gifticonResponse);
-                                //break;
 
 
                             }
+                            expiration.put("Y",preDue.substring(0,4));
+                            expiration.put("M",preDue.substring(5,7));
+                            expiration.put("D",preDue.substring(8,10));
+
+                            // validation
+
+
+                            try {
+                                Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
+
+                                if (byBarcodeNum.isPresent()) {
+                                    validation = 1;
+                                }
+
+
+                                Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
+
+                                if (byBrandName.isEmpty()) {
+                                    validation = 2;
+                                }
+
+
+                                if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
+                                    validation = 3;
+                                }
+                            }
+                            catch (NullPointerException e) {
+                                System.out.println(e);
+                            }
+
+
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+
+                            finalGifticonResponse = gifticonResponse;
+
+                            finalResult.add(finalGifticonResponse);
+
+                            System.out.println(gifticonResponse);
+                            break;
+
 
                         }
                         else if (definePublisher==1) {
 
                             String publisher = "kakaotalk";
 
+                            // brandName
+                            String checkKakaoBrand = "";
+                            // productName
+                            String checkKakadoProduct = "";
+                            // isVoucher
+                            int isVoucher = 0;
+                            // due
+                            String checkKakaoDue = "";
+
+                            String brandName = "";
+
+                            String productName = "";
+
+                            String checkKakaoBarcode = "";
+
+                            String preBrandName = "";
+
+                            String barcodeNum = "";
+
+                            String preDue = "";
+
+                            int validation = 0;
+
+                            Map<String, String> expiration = new HashMap<>();
+
+                            Map<String, String> productPosition = new HashMap<>();
+
+                            Map<String, String> barcodePosition = new HashMap<>();
+
+
+
                             for (EntityAnnotation kakaoRes : newRes) {
 
-                                // brandName
-                                String checkKakaoBrand = "";
 
-                                if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 200 &&
-                                        kakaoRes.getBoundingPoly().getVertices(0).getY() > 1213 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getX() < 722 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getY() < 245){
-                                    checkKakaoBrand += kakaoRes.getDescription();
+
+                                if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 66 &&
+                                        kakaoRes.getBoundingPoly().getVertices(0).getY() > 742 &&
+                                        kakaoRes.getBoundingPoly().getVertices(2).getX() < 576 &&
+                                        kakaoRes.getBoundingPoly().getVertices(2).getY() < 801){
+                                    checkKakaoBrand += kakaoRes.getDescription().replaceAll("\n","").replaceAll(" ","");
 
                                 }
 
-                                String preBrandName = checkKakaoBrand.replace("\n","").replace(" ","");
-                                System.out.print(preBrandName);
+                                preBrandName = checkKakaoBrand.replace("\n","").replace(" ","");
+                                System.out.println(preBrandName);
 
-                                String brandName = "";
+
 
                                 for (String chk : checkVoucher) {
+
                                     if (preBrandName.contains(chk)) {
                                         brandName = preBrandName.replace(chk, "").replace(" ", "");
+                                        System.out.println(brandName);
                                         break;
+                                    }
+                                    else {
+                                        brandName = preBrandName;
                                     }
                                 }
 
 
-                                // productName
-                                String checkKakadoProduct = "";
+
+
+
+
 
                                 if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 40 &&
                                         kakaoRes.getBoundingPoly().getVertices(0).getY() > 798 &&
@@ -396,13 +496,11 @@ public class OcrController {
 
                                 }
 
-                                String productName = checkKakadoProduct.replace("\n","");
-                                System.out.print(productName);
+                                productName = checkKakadoProduct.replace("\n","");
+                                System.out.println(productName);
 
 
-                                // isVoucher
 
-                                int isVoucher = 0;
 
 
                                 for (String word : checkVoucher) {
@@ -413,8 +511,6 @@ public class OcrController {
                                 }
 
 
-                                // due
-                                String checkKakaoDue = "";
 
                                 if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 420 &&
                                         kakaoRes.getBoundingPoly().getVertices(0).getY() > 1303 &&
@@ -424,18 +520,16 @@ public class OcrController {
 
                                 }
 
-                                String preDue = checkKakaoDue.replace("\n","").replace(" ","");
-                                System.out.print(preDue);
+                                preDue = checkKakaoDue.replace("\n","").replace(" ","");
+                                System.out.println(preDue);
 
-                                Map<String, String> expiration = new HashMap<>();
 
-                                expiration.put("Y",preDue.substring(0,4));
-                                expiration.put("M",preDue.substring(5,7));
-                                expiration.put("D",preDue.substring(8,10));
+
+
 
 
                                 // barcodeNum
-                                String checkKakaoBarcode = "";
+
 
                                 if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 135 &&
                                         kakaoRes.getBoundingPoly().getVertices(0).getY() > 1105 &&
@@ -445,40 +539,16 @@ public class OcrController {
 
                                 }
 
-                                String barcodeNum = checkKakaoBarcode.replace("\n","").replace(" ","");
-                                System.out.print(barcodeNum);
+                                barcodeNum = checkKakaoBarcode.replace("\n","").replace(" ","");
+                                System.out.println(barcodeNum);
 
 
-                                // validation
-                                int validation = 0;
 
-                                try {
-                                    Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
-
-                                    if (byBarcodeNum.isPresent()) {
-                                        validation = 1;
-                                    }
-
-
-                                    Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
-
-                                    if (byBrandName.isEmpty()) {
-                                        validation = 2;
-                                    }
-
-
-                                    if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
-                                        validation = 3;
-                                    }
-                                }
-                                catch (NullPointerException e) {
-                                    System.out.println(e);
-                                }
 
 
 
                                 // barcodeImg, productImg
-                                Map<String, String> productPosition = new HashMap<>();
+
 
                                 productPosition.put("x1", "71");
                                 productPosition.put("y1", "80");
@@ -490,7 +560,7 @@ public class OcrController {
                                 productPosition.put("y4", "678");
 
 
-                                Map<String, String> barcodePosition = new HashMap<>();
+
 
                                 barcodePosition.put("x1", "71");
                                 barcodePosition.put("y1", "975");
@@ -502,25 +572,91 @@ public class OcrController {
                                 barcodePosition.put("y4", "1070");
 
 
-                                GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
-                                finalGifticonResponse = gifticonResponse;
-
-                                //System.out.println(gifticonResponse);
-                                //break;
 
 
                             }
+
+
+                            expiration.put("Y",preDue.substring(0,4));
+                            expiration.put("M",preDue.substring(5,7));
+                            expiration.put("D",preDue.substring(8,10));
+
+                            // validation
+
+
+                            try {
+                                Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
+
+                                if (byBarcodeNum.isPresent()) {
+                                    validation = 1;
+                                }
+
+
+                                Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
+
+                                if (byBrandName.isEmpty()) {
+                                    validation = 2;
+                                }
+
+
+                                if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
+                                    validation = 3;
+                                }
+                            }
+                            catch (NullPointerException e) {
+                                System.out.println(e);
+                            }
+
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+
+                            finalGifticonResponse = gifticonResponse;
+
+                            finalResult.add(finalGifticonResponse);
+
+
+
+                            System.out.println(gifticonResponse);
+                            break;
 
                         }
                         else if (definePublisher==2) {
 
                             String publisher = "giftishow";
+                            // brandName
+                            String checkGiftishowBrand = "";
+
+                            String brandName = "";
+                            // productName
+                            String checkGiftishowProduct = "";
+
+                            String productName = "";
+
+                            // isVoucher
+                            int isVoucher = 0;
+
+                            // due
+                            String checkGiftishowDue = "";
+
+                            String preDue = "";
+
+                            Map<String, String> expiration = new HashMap<>();
+
+                            // barcodeNum
+                            String checkGiftishowBarcode = "";
+
+                            String barcodeNum = "";
+
+                            // validation
+                            int validation = 0;
+
+                            Map<String, String> productPosition = new HashMap<>();
+
+                            Map<String, String> barcodePosition = new HashMap<>();
+
 
                             for (EntityAnnotation giftishowRes : newRes) {
 
-                                // brandName
-                                String checkGiftishowBrand = "";
 
                                 if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 105 &&
                                         giftishowRes.getBoundingPoly().getVertices(0).getY() > 579 &&
@@ -533,18 +669,20 @@ public class OcrController {
                                 String preBrandName = checkGiftishowBrand.replace("\n","").replace(" ","");
                                 System.out.print(preBrandName);
 
-                                String brandName = "";
+
 
                                 for (String chk : checkVoucher) {
                                     if (preBrandName.contains(chk)) {
                                         brandName = preBrandName.replace(chk, "").replace(" ", "");
                                         break;
                                     }
+                                    else {
+                                        brandName = preBrandName;
+                                    }
                                 }
 
 
-                                // productName
-                                String checkGiftishowProduct = "";
+
 
                                 if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 105 &&
                                         giftishowRes.getBoundingPoly().getVertices(0).getY() > 556 &&
@@ -554,13 +692,11 @@ public class OcrController {
 
                                 }
 
-                                String productName = checkGiftishowProduct.replace("\n","");
+                                productName = checkGiftishowProduct.replace("\n","");
                                 System.out.print(productName);
 
 
-                                // isVoucher
 
-                                int isVoucher = 0;
 
 
                                 for (String word : checkVoucher) {
@@ -571,8 +707,7 @@ public class OcrController {
                                 }
 
 
-                                // due
-                                String checkGiftishowDue = "";
+
 
                                 if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 127 &&
                                         giftishowRes.getBoundingPoly().getVertices(0).getY() > 602 &&
@@ -582,18 +717,11 @@ public class OcrController {
 
                                 }
 
-                                String preDue = checkGiftishowDue.replace("\n","").replace(" ","");
+                                preDue = checkGiftishowDue.replace("\n","").replace(" ","");
                                 System.out.print(preDue);
 
-                                Map<String, String> expiration = new HashMap<>();
-
-                                expiration.put("Y",preDue.substring(0,4));
-                                expiration.put("M",preDue.substring(5,7));
-                                expiration.put("D",preDue.substring(8,10));
 
 
-                                // barcodeNum
-                                String checkGiftishowBarcode = "";
 
                                 if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 74 &&
                                         giftishowRes.getBoundingPoly().getVertices(0).getY() > 504 &&
@@ -603,40 +731,15 @@ public class OcrController {
 
                                 }
 
-                                String barcodeNum = checkGiftishowBarcode.replace("\n","").replace(" ","");
+                                barcodeNum = checkGiftishowBarcode.replace("\n","").replace(" ","");
                                 System.out.print(barcodeNum);
 
 
-                                // validation
-                                int validation = 0;
-
-                                try {
-                                    Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
-
-                                    if (byBarcodeNum.isPresent()) {
-                                        validation = 1;
-                                    }
-
-
-                                    Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
-
-                                    if (byBrandName.isEmpty()) {
-                                        validation = 2;
-                                    }
-
-
-                                    if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
-                                        validation = 3;
-                                    }
-                                }
-                                catch (NullPointerException e) {
-                                    System.out.println(e);
-                                }
 
 
 
                                 // barcodeImg, productImg
-                                Map<String, String> productPosition = new HashMap<>();
+
 
                                 productPosition.put("x1", "26");
                                 productPosition.put("y1", "210");
@@ -648,7 +751,7 @@ public class OcrController {
                                 productPosition.put("y4", "330");
 
 
-                                Map<String, String> barcodePosition = new HashMap<>();
+
 
                                 barcodePosition.put("x1", "44");
                                 barcodePosition.put("y1", "458");
@@ -660,28 +763,92 @@ public class OcrController {
                                 barcodePosition.put("y4", "492");
 
 
-                                GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
-                                finalGifticonResponse = gifticonResponse;
-
-                                //System.out.println(gifticonResponse);
-                                //break;
 
 
                             }
+                            expiration.put("Y",preDue.substring(0,4));
+                            expiration.put("M",preDue.substring(5,7));
+                            expiration.put("D",preDue.substring(8,10));
+
+                            try {
+                                Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
+
+                                if (byBarcodeNum.isPresent()) {
+                                    validation = 1;
+                                }
+
+
+                                Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
+
+                                if (byBrandName.isEmpty()) {
+                                    validation = 2;
+                                }
+
+
+                                if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
+                                    validation = 3;
+                                }
+                            }
+                            catch (NullPointerException e) {
+                                System.out.println(e);
+                            }
+
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+
+                            finalGifticonResponse = gifticonResponse;
+
+                            finalResult.add(finalGifticonResponse);
+
+
+
+                            System.out.println(gifticonResponse);
+                            break;
 
                         }
                         else if (definePublisher==3) {
 
                             String publisher = "gifticon";
 
+                            // brandName
+                            String checkGifticonBrand = "";
+
+                            String brandName = "";
+
+                            String productName = "";
+
+                            // productName
+                            String checkGifticonProduct = "";
+
+                            // isVoucher
+                            int isVoucher = 0;
+
+                            // due
+                            String checkGifticonDue = "";
+
+                            String preDue = "";
+
+                            Map<String, String> expiration = new HashMap<>();
+
+                            // barcodeNum
+                            String checkGifticonBarcode = "";
+
+                            String barcodeNum = "";
+
+                            // validation
+                            int validation = 0;
+
+                            Map<String, String> productPosition = new HashMap<>();
+                            Map<String, String> barcodePosition = new HashMap<>();
+
+
+
                             for (EntityAnnotation gifticonRes : newRes) {
 
-                                // brandName
-                                String checkGifticonBrand = "";
+
 
                                 if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 183 &&
-                                        gifticonRes.getBoundingPoly().getVertices(0).getY() > 290 &&
+                                        gifticonRes.getBoundingPoly().getVertices(0).getY() > 286 &&
                                         gifticonRes.getBoundingPoly().getVertices(2).getX() < 320 &&
                                         gifticonRes.getBoundingPoly().getVertices(2).getY() < 314){
                                     checkGifticonBrand += gifticonRes.getDescription();
@@ -689,20 +856,23 @@ public class OcrController {
                                 }
 
                                 String preBrandName = checkGifticonBrand.replace("\n","").replace(" ","");
-                                System.out.print(preBrandName);
+                                System.out.println(preBrandName);
 
-                                String brandName = "";
+
 
                                 for (String chk : checkVoucher) {
                                     if (preBrandName.contains(chk)) {
                                         brandName = preBrandName.replace(chk, "").replace(" ", "");
                                         break;
                                     }
+                                    else {
+                                        brandName = preBrandName;
+                                    }
+
                                 }
 
 
-                                // productName
-                                String checkGifticonProduct = "";
+
 
                                 if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 126 &&
                                         gifticonRes.getBoundingPoly().getVertices(0).getY() > 214 &&
@@ -712,13 +882,10 @@ public class OcrController {
 
                                 }
 
-                                String productName = checkGifticonProduct.replace("\n","");
+                                productName = checkGifticonProduct.replace("\n","");
                                 System.out.print(productName);
 
 
-                                // isVoucher
-
-                                int isVoucher = 0;
 
 
                                 for (String word : checkVoucher) {
@@ -729,8 +896,7 @@ public class OcrController {
                                 }
 
 
-                                // due
-                                String checkGifticonDue = "";
+
 
                                 if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 196 &&
                                         gifticonRes.getBoundingPoly().getVertices(0).getY() > 273 &&
@@ -740,18 +906,11 @@ public class OcrController {
 
                                 }
 
-                                String preDue = checkGifticonDue.replace("\n","").replace(" ","");
+                                preDue = checkGifticonDue.replace("\n","").replace(" ","");
                                 System.out.print(preDue);
 
-                                Map<String, String> expiration = new HashMap<>();
-
-                                expiration.put("Y",preDue.substring(0,4));
-                                expiration.put("M",preDue.substring(5,7));
-                                expiration.put("D",preDue.substring(8,10));
 
 
-                                // barcodeNum
-                                String checkGifticonBarcode = "";
 
                                 if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 89 &&
                                         gifticonRes.getBoundingPoly().getVertices(0).getY() > 390 &&
@@ -761,40 +920,14 @@ public class OcrController {
 
                                 }
 
-                                String barcodeNum = checkGifticonBarcode.replace("\n","").replace(" ","");
+                                barcodeNum = checkGifticonBarcode.replace("\n","").replace(" ","");
                                 System.out.print(barcodeNum);
 
-
-                                // validation
-                                int validation = 0;
-
-                                try {
-                                    Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
-
-                                    if (byBarcodeNum.isPresent()) {
-                                        validation = 1;
-                                    }
-
-
-                                    Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
-
-                                    if (byBrandName.isEmpty()) {
-                                        validation = 2;
-                                    }
-
-
-                                    if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
-                                        validation = 3;
-                                    }
-                                }
-                                catch (NullPointerException e) {
-                                    System.out.println(e);
-                                }
 
 
 
                                 // barcodeImg, productImg
-                                Map<String, String> productPosition = new HashMap<>();
+
 
                                 productPosition.put("x1", "28");
                                 productPosition.put("y1", "217");
@@ -806,7 +939,7 @@ public class OcrController {
                                 productPosition.put("y4", "229");
 
 
-                                Map<String, String> barcodePosition = new HashMap<>();
+
 
                                 barcodePosition.put("x1", "80");
                                 barcodePosition.put("y1", "345");
@@ -817,15 +950,50 @@ public class OcrController {
                                 barcodePosition.put("x4", "237");
                                 barcodePosition.put("y4", "383");
 
-                                GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
-                                finalGifticonResponse = gifticonResponse;
-
-                                //System.out.println(gifticonResponse);
-                                //break;
 
 
                             }
+                            expiration.put("Y",preDue.substring(0,4));
+                            expiration.put("M",preDue.substring(5,7));
+                            expiration.put("D",preDue.substring(8,10));
+
+                            try {
+                                Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
+
+                                if (byBarcodeNum.isPresent()) {
+                                    validation = 1;
+                                }
+
+
+                                Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
+
+                                if (byBrandName.isEmpty()) {
+                                    validation = 2;
+                                }
+
+
+                                if (byBarcodeNum.isPresent() && byBrandName.isEmpty()) {
+                                    validation = 3;
+                                }
+                            }
+                            catch (NullPointerException e) {
+                                System.out.println(e);
+                            }
+
+
+
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+
+                            finalGifticonResponse = gifticonResponse;
+
+                            finalResult.add(finalGifticonResponse);
+
+
+
+                            System.out.println(gifticonResponse);
+                            break;
+
 
                         }
                         finalResult.add(finalGifticonResponse);
