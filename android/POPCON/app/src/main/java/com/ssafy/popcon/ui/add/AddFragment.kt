@@ -15,6 +15,7 @@ import android.provider.MediaStore.Images
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,6 +68,7 @@ class AddFragment : Fragment(), onItemClick {
     private var delImgUris = ArrayList<Uri>()
     private var multipartFiles = ArrayList<MultipartBody.Part>()
     private var ocrResults = ArrayList<OCRResult>()
+    private var fileNames = ArrayList<String>()
     private var originalImgUris = ArrayList<GifticonImg>()
     private var productImgUris = ArrayList<GifticonImg>()
     private var barcodeImgUris = ArrayList<GifticonImg>()
@@ -118,6 +120,7 @@ class AddFragment : Fragment(), onItemClick {
             delImgUris.clear()
             multipartFiles.clear()
             ocrResults.clear()
+            fileNames.clear()
 
             openGalleryFirst()
         }
@@ -152,6 +155,7 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.btnRegi.setOnClickListener {
             if (chkClickImgCnt() && chkEffectiveness()){
+                //viewModel.addGifticonImg(makeAddImgInfoList())
                 viewModel.addGifticon(makeAddInfoList())
                 mainActivity.changeFragment(HomeFragment())
             }
@@ -175,41 +179,36 @@ class AddFragment : Fragment(), onItemClick {
 
                             val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
                             multipartFiles.add(realData!!)
-
-//                            val cropImgUri = cropXY(i, PRODUCT)
-//                            val cropBarcodeUri = cropXY(i, BARCODE)
-//                            cropXyImgUris.add(GifticonImg(cropImgUri))
-//                            barcodeImgUris.add(GifticonImg(cropBarcodeUri))
-//                            delImgUris.add(cropImgUri)
-//                            delImgUris.add(cropBarcodeUri)
                         }
-                        viewModel.addFileToGCP(multipartFiles.toTypedArray())
 
-                        val fileNames = ArrayList<String>()
+                        viewModel.addFileToGCP(multipartFiles.toTypedArray())
                         viewModel.gcpResult.observe(viewLifecycleOwner){
                             for (gcpResult in it){
                                 fileNames.add(gcpResult.fileName)
                             }
-                        }
 
-                        viewModel.useOcr(fileNames)
-                        viewModel.ocrResult.observe(viewLifecycleOwner){
-                            for (ocrResult in it){
-                                ocrResults.add(ocrResult)
+
+
+
+                            viewModel.useOcr(fileNames.toTypedArray())
+                            viewModel.ocrResult.observe(viewLifecycleOwner){
+                                for (ocrResult in it){
+                                    ocrResults.add(ocrResult)
+                                }
+
+                                for (i in 0 until clipData.itemCount){
+                                    val cropImgUri = cropXY(i, PRODUCT)
+                                    val cropBarcodeUri = cropXY(i, BARCODE)
+                                    productImgUris.add(GifticonImg(cropImgUri))
+                                    barcodeImgUris.add(GifticonImg(cropBarcodeUri))
+                                    delImgUris.add(cropImgUri)
+                                    delImgUris.add(cropBarcodeUri)
+                                }
+
+                                fillContent(0)
+                                makeImgList()
                             }
                         }
-
-                        for (i in 0 until clipData.itemCount){
-                            val cropImgUri = cropXY(i, PRODUCT)
-                            val cropBarcodeUri = cropXY(i, BARCODE)
-                            productImgUris.add(GifticonImg(cropImgUri))
-                            barcodeImgUris.add(GifticonImg(cropBarcodeUri))
-                            delImgUris.add(cropImgUri)
-                            delImgUris.add(cropBarcodeUri)
-                        }
-
-                        fillContent(0)
-                        makeImgList()
                     } else{  //수동 크롭
                         if (clickCv == PRODUCT){
                             productImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
@@ -254,6 +253,14 @@ class AddFragment : Fragment(), onItemClick {
         }
     }
 
+    // ocr결과 null체크
+    private fun ocrResultNullChk(value: String?): String{
+        if (value == null){
+            return ""
+        }
+        return value
+    }
+
     // View 값 채우기
     private fun fillContent(idx: Int){
         imgNum = idx
@@ -262,10 +269,10 @@ class AddFragment : Fragment(), onItemClick {
             originalImgUris[idx].imgUri,
             productImgUris[idx].imgUri,
             barcodeImgUris[idx].imgUri,
-            ocrResults[idx].barcodeNum,
-            ocrResults[idx].brand,
-            ocrResults[idx].productName,
-            jsonParsingDate(binding.etDate.text.toString()),
+            ocrResultNullChk(ocrResults[idx].barcodeNum),
+            ocrResultNullChk(ocrResults[idx].brandName),
+            ocrResultNullChk(ocrResults[idx].productName),
+            jsonParsingDate(ocrResults[idx].due),
             user.email!!,
             user.social
         )
@@ -278,23 +285,8 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // ocrResult 날짜 조합
-    private fun jsonParsingDate(value: String): String {
-//        var year = ""
-//        var month = ""
-//        var day = ""
-//
-//        val splitFirst = date.split(",")
-//        for (i in 0 until splitFirst.size){
-//            when(splitFirst[i].substring(1, 2)){
-//                "Y" -> year = splitFirst[i].substring(5, 9)
-//                "M" -> month = splitFirst[i].substring(5, 7)
-//                "D" -> day = splitFirst[i].substring(5, 7)
-//            }
-//        }
-//        result = "${year}-${month}-${day}"
-
-
-        val jsonObject = JsonParser.parseString(value).asJsonObject
+    private fun jsonParsingDate(value: Map<String, String>): String {
+        val jsonObject = JsonParser.parseString(value.toString()).asJsonObject
         val result = Gson().fromJson(jsonObject, OCRResultDate::class.java)
 
         return "${result.Y}-${result.M}-${result.D}"
@@ -313,10 +305,10 @@ class AddFragment : Fragment(), onItemClick {
         val coordinate: OCRResultCoordinate
         if (type == PRODUCT){
             fileName = "popconImg${PRODUCT}"
-            coordinate = jsonParsingCoordinate(ocrResults[idx].productImg["productImg"]!!)
+            coordinate = jsonParsingCoordinate(ocrResults[idx].productImg.toString())
         } else{
             fileName = "popconImg${BARCODE}"
-            coordinate = jsonParsingCoordinate(ocrResults[idx].barcodeImg["productImg"]!!)
+            coordinate = jsonParsingCoordinate(ocrResults[idx].barcodeImg.toString())
         }
 
         val x1 = coordinate.x1.toInt()
@@ -444,10 +436,27 @@ class AddFragment : Fragment(), onItemClick {
         )
     }
 
-    private fun makeAddInfoList(): MutableList<AddInfoNoImg>{
-        val addInfos = mutableListOf<AddInfoNoImg>()
+    private fun makeAddImgInfoList(): Array<AddImgInfo>{
+        val imgInfo = mutableListOf<AddImgInfo>()
         for (i in 0 until originalImgUris.size){
-            addInfos.add(
+            val productData = productImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
+            val barcodeData = barcodeImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
+
+            imgInfo.add(
+                AddImgInfo(
+                    arrayOf(productData, barcodeData),
+                    binding.etBarcode.text.toString(),
+                    fileNames[i]
+                )
+            )
+        }
+        return imgInfo.toTypedArray()
+    }
+
+    private fun makeAddInfoList(): MutableList<AddInfoNoImg>{
+        val addInfo = mutableListOf<AddInfoNoImg>()
+        for (i in 0 until originalImgUris.size){
+            addInfo.add(
                 AddInfoNoImg(
                     binding.etBarcode.text.toString(),
                     binding.etProductBrand.text.toString(),
@@ -458,7 +467,7 @@ class AddFragment : Fragment(), onItemClick {
                 )
             )
         }
-        return addInfos
+        return addInfo
     }
 
     // 브랜드 존재여부 검사
@@ -598,14 +607,13 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // 리사이클러뷰의 기프티콘 이미지 모두 클릭했는지 확인
-   private fun chkClickImgCnt(): Boolean{
+    private fun chkClickImgCnt(): Boolean{
         if (chkCnt >= originalImgUris.size){
             for (i in 0 until delImgUris.size){
                 delCropImg(delImgUris[i])
             }
             return true
         }
-
         Toast.makeText(requireContext(), "등록한 기프티콘을 확인해주세요", Toast.LENGTH_SHORT).show()
         return false
     }

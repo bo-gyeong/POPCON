@@ -21,6 +21,7 @@ android {
         versionCode 1
         versionName "1.0"
         manifestPlaceholders["kakao"] = kakaoApiKey
+        manifestPlaceholders["KAKAO_API_KEY"] = "kakao_api_key"
 
         buildConfigField "String", "naverClientID", properties["naver_client_id"]
         buildConfigField "String", "naverClientSecret", properties["naver_client_secret"]

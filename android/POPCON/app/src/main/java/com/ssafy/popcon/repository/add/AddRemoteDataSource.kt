@@ -9,7 +9,7 @@ class AddRemoteDataSource(private val apiClient:AddApi): AddDataSource {
         return apiClient.addFileToGCP(files)
     }
 
-    override suspend fun useOcr(fileName: List<String>): List<OCRResult> {
+    override suspend fun useOcr(fileName: Array<String>): List<OCRResult> {
         return apiClient.useOCR(fileName)
     }
 
@@ -17,7 +17,7 @@ class AddRemoteDataSource(private val apiClient:AddApi): AddDataSource {
         return apiClient.addGifticon(addInfo)
     }
 
-    override suspend fun addGifticonImg(files: List<MultipartBody.Part>) {
-        return apiClient.addGifticonImg(files)
+    override suspend fun addGifticonImg(imgInfo: Array<AddImgInfo>) {
+        return apiClient.addGifticonImg(imgInfo)
     }
 }

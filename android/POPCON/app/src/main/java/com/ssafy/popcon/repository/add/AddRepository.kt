@@ -8,14 +8,14 @@ class AddRepository(private val remoteDataSource: AddRemoteDataSource) {
         return remoteDataSource.addFileToGCP(files)
     }
 
-    suspend fun useOcr(fileName: List<String>): List<OCRResult>{
+    suspend fun useOcr(fileName: Array<String>): List<OCRResult>{
         return remoteDataSource.useOcr(fileName)
     }
     suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfo>{
         return remoteDataSource.addGifticon(addInfo)
     }
 
-    suspend fun addGifticonImg(files: List<MultipartBody.Part>){
-        return remoteDataSource.addGifticonImg(files)
+    suspend fun addGifticonImg(imgInfo: Array<AddImgInfo>){
+        return remoteDataSource.addGifticonImg(imgInfo)
     }
 }

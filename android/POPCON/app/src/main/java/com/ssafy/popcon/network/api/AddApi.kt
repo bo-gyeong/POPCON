@@ -14,13 +14,19 @@ interface AddApi {
     @POST("files/add_origin")
     suspend fun addFileToGCP(@Part files:Array<MultipartBody.Part>): List<GCPResult>
 
-    @GET("gcp/ocr")
-    suspend fun useOCR(@Query("fileName") fileName:List<String>): List<OCRResult>
+    @POST("gcp/ocr")
+    suspend fun useOCR(@Body fileName:Array<String>): List<OCRResult>
+
+    @GET("gcp/ocr/check_brand")
+    suspend fun chkBrand(@Query("brandName") brandName: String): ChkValidation
+
+    @GET("gcp/ocr/check_barcode")
+    suspend fun chkBarcode(@Query("barcodeNum") barcodeNum: String): ChkValidation
 
     @POST("gifticons")
     suspend fun addGifticon(@Body addInfo: List<AddInfoNoImg>): List<AddInfo>
 
     @Multipart
-    @POST("gifticons/files/upload")
-    suspend fun addGifticonImg(@Part files: List<MultipartBody.Part>)
+    @POST("files/register_gifticon")
+    suspend fun addGifticonImg(@Part imgInfo: Array<AddImgInfo>)
 }

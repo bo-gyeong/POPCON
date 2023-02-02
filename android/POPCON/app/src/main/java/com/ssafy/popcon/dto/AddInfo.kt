@@ -3,6 +3,7 @@ package com.ssafy.popcon.dto
 import android.net.Uri
 import androidx.core.net.toUri
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import okhttp3.MultipartBody
 import java.util.Date
 
 data class GifticonImg(
@@ -128,8 +129,8 @@ data class GCPResult(
 data class OCRResult(
     val barcodeImg: Map<String, String>,
     val barcodeNum: String,
-    val brand: String,
-    val expiration: Map<String, String>,
+    val brandName: String,
+    val due: Map<String, String>,
     val productImg: Map<String, String>,
     val productName: String,
     val publisher: String,
@@ -151,4 +152,14 @@ data class OCRResultCoordinate(
     val x3: String,
     val y4: String,
     val x4: String
+)
+
+data class AddImgInfo(
+    val files: Array<MultipartBody.Part>,
+    val barcodeNum: String,
+    val originalImgName: String
+)
+
+data class ChkValidation(
+    val result: Int
 )

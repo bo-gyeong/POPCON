@@ -22,7 +22,7 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
         }
     }
 
-    fun useOcr(fileName: List<String>){
+    fun useOcr(fileName: Array<String>){
         viewModelScope.launch {
             _ocrResult.value = addRepository.useOcr(fileName)
         }
@@ -34,9 +34,9 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
         }
     }
 
-    fun addGifticonImg(files: List<MultipartBody.Part>){
+    fun addGifticonImg(imgInfo: Array<AddImgInfo>){
         viewModelScope.launch {
-            addRepository.addGifticonImg(files)
+            addRepository.addGifticonImg(imgInfo)
         }
     }
 }
