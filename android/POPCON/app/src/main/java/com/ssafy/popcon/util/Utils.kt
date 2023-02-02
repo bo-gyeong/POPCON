@@ -65,7 +65,6 @@ object Utils {
         }
     }
 
-
     fun makeDateTimeException(eventDate: String): String {
 //    eventDate : 2023-07-14 10:12:14
         val cal = Calendar.getInstance()
@@ -75,7 +74,6 @@ object Utils {
         return "${t_dateFormat.format(cal.time)}"
     }
 
-
     fun findRemainingDay(eventDate: String): Int {
 //    eventDate : 2023-07-14 10:12:14
         var today = Calendar.getInstance()
@@ -83,10 +81,5 @@ object Utils {
         var eventDate = sf.parse(eventDate)
         val remainingDay = (eventDate.time - today.time.time) / (60 * 60 * 24 * 1000)
         return remainingDay.toInt() + 1
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    fun getBrands(gifticons: List<Gifticon>): List<Brand> {
-        return gifticons.stream().map { gc -> gc.brand }?.distinct()!!.toList()
     }
 }

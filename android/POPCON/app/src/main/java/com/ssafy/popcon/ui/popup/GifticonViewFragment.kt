@@ -80,7 +80,7 @@ class GifticonViewFragment : Fragment() {
 
         binding.ivProductPreview.setOnClickListener {
             val args = Bundle()
-            args.putString("originalUrl", gifticonInfo!!.origin_filepath)
+            args.putString("url", gifticonInfo!!.origin_filepath)
 
             val dialogFragment = ImageDialogFragment()
             dialogFragment.arguments = args

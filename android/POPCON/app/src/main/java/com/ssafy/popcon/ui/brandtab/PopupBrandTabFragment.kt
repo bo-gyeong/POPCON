@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui.popup
+package com.ssafy.popcon.ui.brandtab
 
 import android.Manifest
 import android.content.Context
@@ -15,20 +15,19 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.BrandRequest
-import com.ssafy.popcon.ui.home.brandtab.BrandAdapter
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
+//팝업화면 브랜드탭
 class PopupBrandTabFragment : Fragment() {
     private lateinit var binding: FragmentBrandTabBinding
     lateinit var brandAdapter: BrandAdapter
-    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: PopupViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     lateinit var mainActivity: MainActivity
     private lateinit var locationManager: LocationManager
     private var getLongitude: Double = 0.0
@@ -53,7 +52,7 @@ class PopupBrandTabFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //setBrandTab()
+        setBrandTab()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -71,12 +70,16 @@ class PopupBrandTabFragment : Fragment() {
             "36.1079"
         )
 
+        brandAdapter = BrandAdapter()
+        brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
+            override fun onClick(v: View, brandName: String) {
+                //viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+            }
+        })
+
         viewModel.getBrandByLocation(brandRequest)
-
         viewModel.brands.observe(viewLifecycleOwner) {
-            brandAdapter =
-                BrandAdapter(viewModel, SharedPreferencesUtil(requireContext()).getUser())
-
+            Log.d("TAG", "setBrandTab: $it")
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =

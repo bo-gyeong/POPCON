@@ -17,26 +17,30 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _gifticons = MutableLiveData<List<Gifticon>>()
     val gifticons: LiveData<List<Gifticon>> = _gifticons
 
-    private val _allGifticons =  MutableLiveData<List<Gifticon>>()
-    val allGifticons : LiveData<List<Gifticon>> = _allGifticons
-
     private val _gifticonByBrand = MutableLiveData<List<Gifticon>>() //popup 화면에서 사용
     val gifticonByBrand: LiveData<List<Gifticon>> = _gifticonByBrand
 
     private val _history = MutableLiveData<List<Gifticon>>()
     val history: LiveData<List<Gifticon>> = _history
 
-    private val _openHistoryEvent = MutableLiveData<Event<String>>()
-    val openHistoryEvent: LiveData<Event<String>> = _openHistoryEvent
+    private val _brandsHome = MutableLiveData<List<BrandResponse>>()
+    val brandsHome: LiveData<List<BrandResponse>> = _brandsHome
 
-    private val _brands = MutableLiveData<List<Brand>>()
-    val brands: LiveData<List<Brand>> = _brands
+    private val _gifticon = MutableLiveData<GifticonResponse>()
+    val gifticon : LiveData<GifticonResponse> = _gifticon
 
-    private val _brandsHome = MutableLiveData<List<Brand>>()
-    val brandsHome: LiveData<List<Brand>> = _brandsHome
+    private val _openGifticonDialogEvent = MutableLiveData<Event<String>>()
+    val openGifticonDialogEvent = _openGifticonDialogEvent
 
-    fun openHistory(user: User) {
-        _openHistoryEvent.value = Event(user.email!!)
+    fun getGifticonByBarcodeNum(barcodeNum: String){
+        viewModelScope.launch {
+            val gifticon = gifticonRepository.getGifticonByBarNum(barcodeNum)
+            _gifticon.value = gifticon
+        }
+    }
+
+    fun openGifticonDialog(barcodeNum: String) {
+        _openGifticonDialogEvent.value = Event(barcodeNum)
     }
 
     //사용자의 기프티콘 목록 불러오기
@@ -45,14 +49,13 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
             val gifticons = gifticonRepository.getGifticonByUser(user)
 
             _gifticons.value = gifticons
-            _allGifticons.value = gifticons
         }
     }
 
     fun getHomeBrand(user: User) {
         viewModelScope.launch {
-            //var homeBrand = gifticonRepository.getBrandByUser(user)
-            //_brandsHome.value = homeBrand.add(Brand("전체", ""))
+            var homeBrand = gifticonRepository.getHomeBrands(user)
+            _brandsHome.value = homeBrand
         }
     }
 
@@ -63,12 +66,14 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     }
 
     //상단 탭 클릭리스너
-    fun tabClickListener(user: User, brandName: String) {
+    fun getGifticons(user: User, brandName: String) {
         if (brandName == "전체") {
             getGifticonByUser(user)
         } else {
             viewModelScope.launch {
+                Log.d("TAG", "getGifticons: $brandName")
                 val gifticons = gifticonRepository.getGifticonByBrand(GifticonByBrandRequest(user.email!!, user.social.toString(), -1, brandName))
+                Log.d("TAG", "getGifticons: $gifticons")
                 _gifticons.value = gifticons
             }
         }
@@ -86,15 +91,6 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     fun updateGifticon(gifticon: Gifticon) {
         viewModelScope.launch {
             gifticonRepository.updateGifticon(gifticon)
-        }
-    }
-
-    //현재위치에서 브랜드 받기
-    fun getBrandByLocation(request: BrandRequest) {
-        viewModelScope.launch {
-            val brands = gifticonRepository.getBrandsByLocation(request)
-            Log.d("TAG", "getBrandByLocation: $brands")
-            _brands.value = brands
         }
     }
 }

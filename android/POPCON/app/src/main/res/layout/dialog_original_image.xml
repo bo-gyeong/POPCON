@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="originalUrl"
+            name="url"
             type="String" />
     </data>
 
@@ -13,8 +13,8 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/iv_original_img"
-            imageUrl="@{originalUrl}"
+            android:id="@+id/iv_img"
+            imageUrl="@{url}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

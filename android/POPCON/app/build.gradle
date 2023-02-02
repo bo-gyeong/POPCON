@@ -8,6 +8,7 @@ plugins {
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def kakaoApiKey = properties.getProperty('kakao_map_key')
 
 android {
     namespace 'com.ssafy.popcon'
@@ -19,15 +20,14 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders["kakao"] = kakaoApiKey
 
         buildConfigField "String", "naverClientID", properties["naver_client_id"]
         buildConfigField "String", "naverClientSecret", properties["naver_client_secret"]
-        buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
         buildConfigField "String", "FIREBASE_GOOGLE_CLOUD_KEY", properties['firebase_google_cloud_key']
         buildConfigField "String", "BASE_URL", properties['base_url']
+        buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
 
-        manifestPlaceholders["KAKAO_API_KEY"] = "kakao_api_key"
-        manifestPlaceholders["KAKAO_LOGIN_KEY"] = "kakao_login_key"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -37,6 +37,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

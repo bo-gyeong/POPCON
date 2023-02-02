@@ -41,9 +41,9 @@ class ImageDialogFragment : DialogFragment() {
         binding = DialogOriginalImageBinding.inflate(inflater, container, false)
 
         val mArgs = arguments
-        originalUrl = mArgs!!.getString("originalUrl").toString()
+        originalUrl = mArgs!!.getString("url").toString()
 
-        binding.originalUrl = originalUrl
+        binding.url = originalUrl
 
         return binding.root
     }

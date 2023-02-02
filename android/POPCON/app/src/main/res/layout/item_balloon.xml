@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="store"
+            type="com.ssafy.popcon.dto.MapBrandLogo" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ballView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_brandName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@{store.placeName}"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="스타벅스 구미 인동점" />
+
+            <TextView
+                android:id="@+id/tv_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTint="@color/popcon_orange"
+                android:padding="8dp"
+                android:text="@{store.phone}"
+                android:textColor="@color/popcon_due_blue"
+                app:drawableLeftCompat="@drawable/ic_baseline_phone_24"
+                app:layout_constraintStart_toStartOf="@id/tv_brandName"
+                app:layout_constraintTop_toBottomOf="@id/tv_brandName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
