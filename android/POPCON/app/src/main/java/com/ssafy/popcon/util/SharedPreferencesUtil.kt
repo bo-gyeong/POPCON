@@ -1,14 +1,30 @@
 package com.ssafy.popcon.util
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.util.Log
+import com.ssafy.popcon.dto.SigninResponse
 import com.ssafy.popcon.dto.User
 
 class SharedPreferencesUtil(context: Context) {
     val SHARED_PREFERENCES_NAME = "popcon_preference"
-    var preferences: SharedPreferences =
-        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val preferences: SharedPreferences =
+        context.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE)
+
+    var accessToken: String?
+        set(value) {
+            val editor = preferences.edit()
+            editor.putString("accessToken", value).apply()
+        }
+        get() = preferences.getString("accessToken", "")!!
+
+    var refreshToken: String?
+        set(value) {
+            val editor = preferences.edit()
+            editor.putString("refreshToken", value).apply()
+        }
+        get() = preferences.getString("refreshToken", "")!!
 
     //로그인 유저 추가
     fun addUser(user: User) {
@@ -48,7 +64,7 @@ class SharedPreferencesUtil(context: Context) {
     }
 
     // 유저의 알림 상태 받기
-    fun getUserNotiInfo(): User{
+    fun getUserNotiInfo(): User {
         val id = preferences.getString("id", "")
         return if (id != "") {
             val type = preferences.getString("type", "비회원")

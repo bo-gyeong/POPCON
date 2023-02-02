@@ -9,23 +9,33 @@ import android.os.Bundle
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
+import com.ssafy.popcon.dto.Badge
+import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.edit.EditFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
 import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.ui.edit.EditViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
-    private lateinit var gifticon : Gifticon
+    private lateinit var barNum: String
     private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val editViewModel : EditViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    private lateinit var mainActivity: MainActivity
 
     override fun onStart() {
         super.onStart()
         GifticonDialogFragment.isShow = true
+
+        mainActivity = activity as MainActivity
     }
 
     override fun onResume() {
@@ -59,39 +69,87 @@ class HomeDialogFragment : DialogFragment() {
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         val mArgs = arguments
-        gifticon = mArgs!!.getSerializable("gifticon") as Gifticon
+        barNum = mArgs!!.getString("barNum")!!
 
-        binding.gifticon = gifticon as Gifticon?
-        binding.badge = Utils.calDday(gifticon)
+        binding.badge = Badge("","#000000")
+
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setLayout()
+    }
 
-        binding.ivProductPreview.setOnClickListener {
-            val args = Bundle()
-            args.putString("originalUrl", gifticon!!.origin_filepath)
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setLayout() {
+        viewModel.getGifticonByBarcodeNum(barNum)
+        viewModel.gifticon.observe(viewLifecycleOwner) { g ->
+            val gifticon = Gifticon(
+                g.barcodeNum,
+                g.barcode_filepath?:"",
+                Brand("", g.brandName),
+                g.due,
+                g.hash,
+                g.price,
+                g.memo?:"",
+                g.origin_filepath?:"",
+                g.productName,
+                g.product_filepath?:"",
+                g.state
+            )
 
-            val dialogFragment = ImageDialogFragment()
-            dialogFragment.arguments = args
-            dialogFragment.show(childFragmentManager, "originalUrl")
-        }
+            binding.gifticon = gifticon
+            binding.badge = Utils.calDday(gifticon)
+            setButton(gifticon)
 
-        //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
-        binding.btnDelete.setOnClickListener {
-            viewModel.deleteGifticon(gifticon.barcodeNum)
+            binding.ivProductPreview.setOnClickListener {
+                val args = Bundle()
+                args.putString("originalUrl", gifticon.origin_filepath)
 
-            dialog?.dismiss()
+                val dialogFragment = ImageDialogFragment()
+                dialogFragment.arguments = args
+                dialogFragment.show(childFragmentManager, "originalUrl")
+            }
+
+            //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+            binding.btnDelete.setOnClickListener {
+                viewModel.deleteGifticon(gifticon.barcodeNum)
+
+                dialog?.dismiss()
+            }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun setButton(gifticon: Gifticon) {
+        when (gifticon.state) {
+            //0:사용가능, 1:사용완료, 2:기간만료
+            0 -> {
+                //수정 화면으로
+                binding.btnUse.setOnClickListener {
+                    /*val args = Bundle()
+                    args.putString("barNum", gifticon.barcodeNum)*/
+                    editViewModel.setBarNum(gifticon.barcodeNum)
+                    mainActivity.addFragment(EditFragment())
+                }
+            }
+            1 -> {
+                binding.btnUse.text = "되돌리기"
 
-        //기프티콘 상태 업데이트
-        if (!binding.btnUse.isChecked) {
-            viewModel.updateGifticon(gifticon)
+                //사용 가능 상태로 업데이트
+                binding.btnUse.setOnClickListener {
+                    binding.btnUse.isClickable = false
+                    gifticon.state = 0
+                    viewModel.updateGifticon(gifticon)
+                }
+            }
+            2 -> {
+                //수정 화면으로
+                binding.btnUse.setOnClickListener {
+                    mainActivity.addFragment(EditFragment())
+                }
+            }
         }
     }
 }
