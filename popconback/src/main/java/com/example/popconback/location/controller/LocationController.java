@@ -45,7 +45,7 @@ public class LocationController {
             notes = "흔들었을때 사용가능한 주변 매장 브랜드",
             httpMethod = "POST")
     @PostMapping({"/shake"})
-    public List<ResponseBrandDto> shakeSearch(@RequestBody LocationShakeDto locationShakeDto) throws NoSuchElementException {
+    public ResponseEntity<List<ResponseBrandDto>> shakeSearch(@RequestBody LocationShakeDto locationShakeDto) throws NoSuchElementException {
         try {
             String email = locationShakeDto.getEmail();
             String social = locationShakeDto.getSocial();
@@ -161,12 +161,12 @@ public class LocationController {
                 }
             }
 
-            return brandInfoList;
+            return new ResponseEntity<>(brandInfoList,HttpStatus.OK);
         } catch (NoSuchElementException e) {
             System.out.println(e);
+            return new ResponseEntity<>(null,HttpStatus.OK);
         }
-        System.out.println("결과가 없습니다.");
-        return null;
+
     }
 
 
@@ -174,7 +174,7 @@ public class LocationController {
             notes = "현위치 기반 기프티콘 사용가능 한 모든 매장",
             httpMethod = "POST")
     @PostMapping({"/search"})
-    public List<Object> localSearch(@RequestBody LocationShakeDto locationShakeDto) throws Exception{
+    public ResponseEntity<List<Object>> localSearch(@RequestBody LocationShakeDto locationShakeDto) throws Exception{
         try {
             String email = locationShakeDto.getEmail();
             String social = locationShakeDto.getSocial();
@@ -266,9 +266,7 @@ public class LocationController {
 
                     LocationResponse locationResponse = new LocationResponse(phone, placeName, xPos, yPos, brandInfo);
 
-                    //ResponseSearchByBrand responseSearchByBrand = new ResponseSearchByBrand(phone, placeName, xPos, yPos, brandInfo);
 
-                    //locationResponse.setResponseSearchByBrand(responseSearchByBrand);
 
                     ResponseEntity<LocationResponse> locationResponseBody = new ResponseEntity<LocationResponse>(locationResponse, HttpStatus.OK);
                     finalResults.add(locationResponseBody.getBody());
@@ -283,19 +281,23 @@ public class LocationController {
 
 
 
-            return finalResults;
+            return new ResponseEntity<>(finalResults, HttpStatus.OK);
         }
         catch (NoSuchElementException e) {
             System.out.println(e);
+            return new ResponseEntity<>(null,HttpStatus.OK);
+
+
         }
-        return null;
+
+
     }
 
     @ApiOperation(value = "localSearchByBrand",
             notes = "현위치 기반 기프티콘 사용가능 한 지정 브랜드 매장",
             httpMethod = "POST")
     @PostMapping({"/search/byBrand"})
-    public List<Object> searchByBrand(@RequestBody LocationSearchByBrandDto locationSearchByBrandDto) throws Exception {
+    public ResponseEntity<List<Object>> searchByBrand(@RequestBody LocationSearchByBrandDto locationSearchByBrandDto) throws Exception {
         try {
 
             LocationShakeDto locationShakeDto = new LocationShakeDto();
@@ -311,7 +313,7 @@ public class LocationController {
             locationShakeDto.setX(x);
             locationShakeDto.setY(y);
 
-            List<Object> finalResults = localSearch(locationShakeDto);
+            List<Object> finalResults = localSearch(locationShakeDto).getBody();
 
             List<Object> nowResults = new ArrayList<>();
 
@@ -330,13 +332,15 @@ public class LocationController {
                 }
 
             }
-            return nowResults;
+            return new ResponseEntity<>(nowResults,HttpStatus.OK);
         }
         catch (NoSuchElementException e) {
             System.out.println(e);
+            return new ResponseEntity<>(null,HttpStatus.OK);
+        }
         }
 
-        return null;
-    }
+
+
 
 }
