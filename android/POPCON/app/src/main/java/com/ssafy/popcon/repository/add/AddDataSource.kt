@@ -8,6 +8,6 @@ interface AddDataSource {
     suspend fun useOcr(fileName:Array<String>): List<OCRResult>
     suspend fun chkBrand(brandName: String): ChkValidation
     suspend fun chkBarcode(barcodeNum: String): ChkValidation
-    suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfo>
+    suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfoNoImg>
     suspend fun addGifticonImg(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
 }

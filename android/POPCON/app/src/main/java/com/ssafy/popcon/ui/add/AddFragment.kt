@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.loader.content.CursorLoader
@@ -50,6 +51,7 @@ import okio.BufferedSink
 import okio.ByteString.Companion.toByteString
 import okio.source
 import org.json.JSONObject
+import org.w3c.dom.Text
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -73,6 +75,7 @@ class AddFragment : Fragment(), onItemClick {
     private var originalImgUris = ArrayList<GifticonImg>()
     private var productImgUris = ArrayList<GifticonImg>()
     private var barcodeImgUris = ArrayList<GifticonImg>()
+    private var gifticonInfoList = ArrayList<AddInfo>()
     private lateinit var addImgAdapter: AddImgAdapter
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
@@ -86,6 +89,7 @@ class AddFragment : Fragment(), onItemClick {
 
     companion object{
         var chkCnt = 1
+        var clickItemPos = 0
     }
 
     override fun onAttach(context: Context) {
@@ -142,11 +146,6 @@ class AddFragment : Fragment(), onItemClick {
             }
         })
 
-        brandChk()
-        brandBarcodeNum()
-        dateFormat()
-        changeChkState()
-
         binding.btnOriginalSee.setOnClickListener {
             if (originalImgUris.size != 0){
                 seeOriginalImgDialog(originalImgUris[imgNum])
@@ -154,15 +153,20 @@ class AddFragment : Fragment(), onItemClick {
         }
 
         binding.cbPrice.setOnClickListener{
-            changeChkState()
+            clickChkState(imgNum)
         }
+
+        productChk()
+        brandChk()
+        brandBarcodeNum()
+        dateFormat()
+        setMemo()
 
         binding.btnRegi.setOnClickListener {
             if (chkClickImgCnt() && chkEffectiveness()){
                 //viewModel.addGifticonImg(makeAddImgInfoList())
-                //viewModel.addGifticon(makeAddInfoList())
-                //mainActivity.changeFragment(HomeFragment())
-                Toast.makeText(requireContext(), "통과", Toast.LENGTH_SHORT).show()
+                viewModel.addGifticon(makeAddInfoList())
+                mainActivity.changeFragment(HomeFragment())
             }
         }
     }
@@ -206,6 +210,8 @@ class AddFragment : Fragment(), onItemClick {
                                     barcodeImgUris.add(GifticonImg(cropBarcodeUri))
                                     delImgUris.add(cropImgUri)
                                     delImgUris.add(cropBarcodeUri)
+
+                                    addGifticonInfo(i)
                                 }
 
                                 fillContent(0)
@@ -264,11 +270,8 @@ class AddFragment : Fragment(), onItemClick {
         return value
     }
 
-    // View 값 채우기
-    private fun fillContent(idx: Int){
-        imgNum = idx
-
-        binding.addInfo = AddInfo(
+    private fun addGifticonInfo(idx: Int){
+        val addInfo = AddInfo(
             originalImgUris[idx].imgUri,
             productImgUris[idx].imgUri,
             barcodeImgUris[idx].imgUri,
@@ -276,16 +279,28 @@ class AddFragment : Fragment(), onItemClick {
             ocrResultNullChk(ocrResults[idx].brandName),
             ocrResultNullChk(ocrResults[idx].productName),
             jsonParsingDate(ocrResults[idx].due),
+            ocrResults[idx].isVoucher,
+            0,  // -1을 기본값으로
+            "",
             user.email!!,
             user.social
         )
+        gifticonInfoList.add(addInfo)
+    }
 
-        binding.cbPrice.isChecked
+    // View 값 채우기
+    private fun fillContent(idx: Int){
+        imgNum = idx
+        binding.addInfo = gifticonInfoList[idx]
+
+        binding.cbPrice.isChecked = false
         binding.lPrice.visibility = View.GONE
-        if (ocrResults[idx].isVoucher == 1){
-            binding.cbPrice.isChecked = true
-            binding.lPrice.visibility = View.VISIBLE
-        }
+//        if (gifticonInfoList[idx].voucherChk == 1){
+//            binding.cbPrice.isChecked = true
+//            binding.lPrice.visibility = View.VISIBLE
+//        }
+        changeChkState(imgNum)
+        setPrice()
 
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
@@ -425,7 +440,7 @@ class AddFragment : Fragment(), onItemClick {
 
     // 상단 리사이클러뷰 만들기
     private fun makeImgList(){
-        addImgAdapter = AddImgAdapter(originalImgUris, productImgUris, barcodeImgUris, this)
+        addImgAdapter = AddImgAdapter(gifticonInfoList, originalImgUris, productImgUris, barcodeImgUris, this)
 
         binding.rvCouponList.apply {
             adapter = addImgAdapter
@@ -457,42 +472,34 @@ class AddFragment : Fragment(), onItemClick {
         )
     }
 
-    private fun makeAddImgInfoList(): Array<AddImgInfo>{
-        val imgInfo = mutableListOf<AddImgInfo>()
-        for (i in 0 until originalImgUris.size){
-            val productData = productImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
-            val barcodeData = barcodeImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
+    // 상품명 리스트에 저장
+    private fun productChk(){
+        binding.etProductName.addTextChangedListener (object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                val pLength = p0.toString().length
+                if(pLength < 1){
+                    binding.tilProductName.error = "상품명을 입력해주세요"
+                } else{
+                    binding.tilProductName.error = null
+                    binding.tilProductName.isErrorEnabled = false
 
-            imgInfo.add(
-                AddImgInfo(
-                    arrayOf(productData, barcodeData),
-                    binding.etBarcode.text.toString(),
-                    fileNames[i]
-                )
-            )
-        }
-        return imgInfo.toTypedArray()
-    }
+                    gifticonInfoList[imgNum].productName = binding.etProductName.text.toString()
+                }
+            }
 
-    private fun makeAddInfoList(): MutableList<AddInfoNoImg>{
-        val addInfo = mutableListOf<AddInfoNoImg>()
-        for (i in 0 until originalImgUris.size){
-            addInfo.add(
-                AddInfoNoImg(
-                    binding.etBarcode.text.toString(),
-                    binding.etProductBrand.text.toString(),
-                    binding.etProductName.text.toString(),
-                    binding.etDate.text.toString(),
-                    user.email!!,
-                    user.social
-                )
-            )
-        }
-        return addInfo
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
     }
 
     // 브랜드 존재여부 검사
     private fun brandChk(){
+        binding.tilProductBrand.error = "브랜드를 입력해주세요"
+        effectivenessBarcode = false
+
         binding.etProductBrand.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
                 viewModel.chkBrand(p0.toString())
@@ -504,6 +511,8 @@ class AddFragment : Fragment(), onItemClick {
                         binding.tilProductBrand.error = null
                         binding.tilProductBrand.isErrorEnabled = false
                         effectivenessBrand = true
+
+                        gifticonInfoList[imgNum].brandName = binding.etProductBrand.text.toString()
                     }
                 })
             }
@@ -528,12 +537,23 @@ class AddFragment : Fragment(), onItemClick {
                     if (it.result == 0){
                         binding.tilBarcode.error = "이미 등록된 바코드 번호입니다"
                         effectivenessBarcode = false
+                    } else if (it.result != 1){
+                        binding.tilBarcode.error = "바코드 번호를 입력해주세요"
+                        effectivenessBarcode = false
                     } else{
                         binding.tilBarcode.error = null
                         binding.tilBarcode.isErrorEnabled = false
                         effectivenessBarcode = true
+
+                        gifticonInfoList[imgNum].barcodeNum = binding.etBarcode.text.toString()
                     }
                 })
+//
+//                val bLength = binding.etBarcode.text.toString().length
+//                if(bLength < 1){
+//                    binding.tilBarcode.error = "바코드 번호를 입력해주세요"
+//                    effectivenessBarcode = false
+//                }
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -577,6 +597,8 @@ class AddFragment : Fragment(), onItemClick {
                             binding.tilDate.error = null
                             binding.tilDate.isErrorEnabled = false
                             effectivenessDate = true
+
+                            gifticonInfoList[imgNum].due = nowText
                         }
                     }
                     else -> {
@@ -608,15 +630,102 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // 체크박스 클릭 시 상태변화
-    private fun changeChkState(){
+    private fun clickChkState(idx: Int){
         val chkState = binding.cbPrice.isChecked
         if (!chkState){
+            gifticonInfoList[idx].isVoucher = 0
+            gifticonInfoList[imgNum].price = -1
+            binding.cbPrice.isChecked = false
+            binding.lPrice.visibility = View.GONE
+        } else{
+            gifticonInfoList[idx].isVoucher = 1
+            binding.cbPrice.isChecked = true
+            binding.lPrice.visibility = View.VISIBLE
+        }
+    }
+
+    // 체크박스 상태에 따른 변화
+    private fun changeChkState(idx: Int){
+        val voucherChk = gifticonInfoList[idx].isVoucher
+        if (voucherChk != 1){
             binding.cbPrice.isChecked = false
             binding.lPrice.visibility = View.GONE
         } else{
             binding.cbPrice.isChecked = true
             binding.lPrice.visibility = View.VISIBLE
         }
+    }
+
+    // price를 리스트에 저장
+    private fun setPrice(){
+        binding.etPrice.addTextChangedListener (object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                val pLength = p0.toString().length
+                if(pLength > 0){
+                    gifticonInfoList[imgNum].price = binding.etPrice.text.toString().toInt()
+                } else{
+                    gifticonInfoList[imgNum].price = -1
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
+    }
+
+    // memo를 리스트에 저장
+    private fun setMemo(){
+        binding.etWriteMemo.addTextChangedListener (object : TextWatcher{
+            override fun afterTextChanged(p0: Editable?) {
+                gifticonInfoList[imgNum].memo = binding.etWriteMemo.text.toString()
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+        })
+    }
+
+    private fun makeAddImgInfoList(): Array<AddImgInfo>{
+        val imgInfo = mutableListOf<AddImgInfo>()
+        for (i in 0 until originalImgUris.size){
+            val productData = productImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
+            val barcodeData = barcodeImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
+
+            imgInfo.add(
+                AddImgInfo(
+                    arrayOf(productData, barcodeData),
+                    binding.etBarcode.text.toString(),
+                    fileNames[i]
+                )
+            )
+        }
+        return imgInfo.toTypedArray()
+    }
+
+    private fun makeAddInfoList(): MutableList<AddInfoNoImg>{
+        val addInfo = mutableListOf<AddInfoNoImg>()
+        for (i in 0 until gifticonInfoList.size){
+            addInfo.add(
+                AddInfoNoImg(
+                    gifticonInfoList[i].barcodeNum,
+                    gifticonInfoList[i].brandName,
+                    gifticonInfoList[i].productName,
+                    gifticonInfoList[i].due,
+                    gifticonInfoList[i].isVoucher,
+                    gifticonInfoList[i].price,
+                    gifticonInfoList[i].memo,
+                    user.email!!,
+                    user.social
+                )
+            )
+        }
+        return addInfo
     }
 
     // 리사이클러뷰의 기프티콘 이미지 모두 클릭했는지 확인

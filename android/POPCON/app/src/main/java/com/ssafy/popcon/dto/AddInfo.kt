@@ -14,13 +14,14 @@ data class AddInfo(
     val originalImgUri:Uri,
     val gifticonImgUri: Uri,
     val barcodeImgUri:Uri,
-    val barcodeNum:String,
-    val brandName:String,
-    val productName:String,
-    val due:String,
-    val price:Int,
+    var barcodeNum:String,
+    var brandName:String,
+    var productName:String,
+    var due:String,
+    var isVoucher: Int,
+    var price:Int,
     val state:Int,
-    val memo:String,
+    var memo:String,
     val email: String,
     val social: String
 ){
@@ -32,6 +33,9 @@ data class AddInfo(
         brandName:String,
         product:String,
         due:String,
+        isVoucher: Int,
+        price: Int,
+        memo:String,
         email: String,
         social: String
     ): this (
@@ -42,9 +46,10 @@ data class AddInfo(
         brandName,
         product,
         due,
+        isVoucher,
+        price,
         0,
-        0,
-        "",
+        memo,
         email,
         social
     )
@@ -59,6 +64,7 @@ data class AddInfo(
         "",
         "",
         0,
+        -1,
         0,
         "",
         "",
@@ -69,6 +75,8 @@ data class AddInfo(
         barcodeNum:String,
         brandName:String,
         due:String,
+        voucherChk: Int,
+        price: Int,
         product:String,
         email: String,
         social: String
@@ -80,7 +88,8 @@ data class AddInfo(
         brandName,
         product,
         due,
-        0,
+        voucherChk,
+        price,
         0,
         "",
         email,
@@ -93,17 +102,19 @@ data class AddInfoNoImg(
     val brandName: String,
     val productName: String,
     val due: String,
+    val isVoucher: Int,
     val price: Int,
     val memo: String,
     val email: String,
     val social: String,
-    val state: Int
+    val state: Int = 0
 ){
     constructor(
         barcodeNum:String,
         brandName:String,
         productName:String,
         due:String,
+        isVoucher: Int,
         email: String,
         social:String
     ): this (
@@ -111,6 +122,7 @@ data class AddInfoNoImg(
         brandName,
         productName,
         due,
+        isVoucher,
         0,
         "",
         email,
@@ -129,11 +141,11 @@ data class GCPResult(
 data class OCRResult(
     val isVoucher: Int,
     val barcodeImg: Map<String, String>,
-    val barcodeNum: String,
+    var barcodeNum: String,
     val brandName: String,
     val due: Map<String, String>,
     val productImg: Map<String, String>,
-    val productName: String,
+    var productName: String,
     val publisher: String,
     val validation: Int
 )

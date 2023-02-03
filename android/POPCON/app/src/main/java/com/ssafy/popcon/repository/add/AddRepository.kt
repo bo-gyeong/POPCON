@@ -20,7 +20,7 @@ class AddRepository(private val remoteDataSource: AddRemoteDataSource) {
         return remoteDataSource.chkBarcode(barcodeNum)
     }
 
-    suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfo>{
+    suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfoNoImg>{
         return remoteDataSource.addGifticon(addInfo)
     }
 

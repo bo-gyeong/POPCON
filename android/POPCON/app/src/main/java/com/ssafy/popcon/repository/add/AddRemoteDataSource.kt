@@ -21,7 +21,7 @@ class AddRemoteDataSource(private val apiClient:AddApi): AddDataSource {
         return apiClient.chkBarcode(barcodeNum)
     }
 
-    override suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfo> {
+    override suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfoNoImg> {
         return apiClient.addGifticon(addInfo)
     }
 
