@@ -162,7 +162,7 @@ public class LocationController {
             }
 
             return new ResponseEntity<>(brandInfoList,HttpStatus.OK);
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NullPointerException e) {
             System.out.println(e);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }
@@ -283,10 +283,9 @@ public class LocationController {
 
             return new ResponseEntity<>(finalResults, HttpStatus.OK);
         }
-        catch (NoSuchElementException e) {
+        catch (NoSuchElementException | NullPointerException e) {
             System.out.println(e);
             return new ResponseEntity<>(null,HttpStatus.OK);
-
 
         }
 
@@ -334,7 +333,7 @@ public class LocationController {
             }
             return new ResponseEntity<>(nowResults,HttpStatus.OK);
         }
-        catch (NoSuchElementException e) {
+        catch (NoSuchElementException | NullPointerException e) {
             System.out.println(e);
             return new ResponseEntity<>(null,HttpStatus.OK);
         }
