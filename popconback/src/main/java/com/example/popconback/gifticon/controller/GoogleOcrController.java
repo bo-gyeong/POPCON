@@ -255,6 +255,10 @@ public class GoogleOcrController {
                                     break;
                                 }}
 
+                            else {
+                                definePublisher = -1;
+                            }
+
                         }
 
                         System.out.println(definePublisher);}
@@ -440,9 +444,12 @@ public class GoogleOcrController {
 
 
                             }
-                            expiration.put("Y",preDue.substring(0,4));
-                            expiration.put("M",preDue.substring(5,7));
-                            expiration.put("D",preDue.substring(8,10));
+                            if (preDue.length()>0) {
+                                expiration.put("Y",preDue.substring(0,4));
+                                expiration.put("M",preDue.substring(5,7));
+                                expiration.put("D",preDue.substring(8,10));
+                            }
+
 
                             // validation
 
@@ -641,10 +648,12 @@ public class GoogleOcrController {
 
                             }
 
+                            if (preDue.length()>0) {
+                                expiration.put("Y",preDue.substring(0,4));
+                                expiration.put("M",preDue.substring(5,7));
+                                expiration.put("D",preDue.substring(8,10));
+                            }
 
-                            expiration.put("Y",preDue.substring(0,4));
-                            expiration.put("M",preDue.substring(5,7));
-                            expiration.put("D",preDue.substring(8,10));
 
                             // validation
 
@@ -831,9 +840,12 @@ public class GoogleOcrController {
 
 
                             }
-                            expiration.put("Y",preDue.substring(0,4));
-                            expiration.put("M",preDue.substring(5,7));
-                            expiration.put("D",preDue.substring(8,10));
+                            if (preDue.length()>0) {
+                                expiration.put("Y",preDue.substring(0,4));
+                                expiration.put("M",preDue.substring(5,7));
+                                expiration.put("D",preDue.substring(8,10));
+                            }
+
 
                             try {
                                 Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
@@ -1018,9 +1030,12 @@ public class GoogleOcrController {
 
 
                             }
-                            expiration.put("Y",preDue.substring(0,4));
-                            expiration.put("M",preDue.substring(5,7));
-                            expiration.put("D",preDue.substring(8,10));
+                            if (preDue.length()>0) {
+                                expiration.put("Y",preDue.substring(0,4));
+                                expiration.put("M",preDue.substring(5,7));
+                                expiration.put("D",preDue.substring(8,10));
+                            }
+
 
                             try {
                                 Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
@@ -1081,7 +1096,7 @@ public class GoogleOcrController {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e);
         }
         return new ResponseEntity<>(finalResult,HttpStatus.OK);
 
