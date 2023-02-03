@@ -58,7 +58,8 @@ public class GifticonService {
 
         List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
 
-        for (int i = 0; i < 2; i++){
+        for (int i = 0; i < 3; i++){
+            if(i == 1){continue;}
             List<Gifticon>list = gifticonRepository.findByUser_HashAndState(hash,i, Sort.by(asc("due")));
             for (Gifticon gifticon:list) {
                 ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
@@ -198,31 +199,35 @@ public class GifticonService {
             return rlist;
         }
 
-        List <Gifticon>list = gifticonRepository.findByUser_HashAndBrand_BrandName(hash,sortGifticonDto.getBrandName());
-        for (Gifticon gifticon: list
-             ) {
-            ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
-            BeanUtils.copyProperties(gifticon, rgifticon);
-
-            BrandForRLGUDto rbrand = new BrandForRLGUDto();
-            BeanUtils.copyProperties(gifticon.getBrand(),rbrand);
-            rgifticon.setBrand(rbrand);
-
-            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
-            for (GifticonFiles gifticonfile: gflist
+        for (int i = 0; i < 3; i++){
+            if(i == 1){continue;}
+            List <Gifticon>list = gifticonRepository.findByUser_HashAndBrand_BrandNameAndState(hash,sortGifticonDto.getBrandName(),i,Sort.by(asc("due")));
+            for (Gifticon gifticon: list
             ) {
-                if (gifticonfile.getImageType() == 0) {// 0: 바코드
-                    rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
+                BeanUtils.copyProperties(gifticon, rgifticon);
+
+                BrandForRLGUDto rbrand = new BrandForRLGUDto();
+                BeanUtils.copyProperties(gifticon.getBrand(),rbrand);
+                rgifticon.setBrand(rbrand);
+
+                List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+                for (GifticonFiles gifticonfile: gflist
+                ) {
+                    if (gifticonfile.getImageType() == 0) {// 0: 바코드
+                        rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                    }
+                    if (gifticonfile.getImageType() == 1) {// 1: 상품
+                        rgifticon.setProduct_filepath(gifticonfile.getFilePath());
+                    }
+                    if (gifticonfile.getImageType() == 2) {// 2: 원본
+                        rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                    }
                 }
-                if (gifticonfile.getImageType() == 1) {// 1: 상품
-                    rgifticon.setProduct_filepath(gifticonfile.getFilePath());
-                }
-                if (gifticonfile.getImageType() == 2) {// 2: 원본
-                    rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
-                }
+                rlist.add(rgifticon);
             }
-            rlist.add(rgifticon);
         }
+
         return rlist;
     }
 
