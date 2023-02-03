@@ -36,13 +36,26 @@ public class FileController {
             notes = "등록하기 버튼 누른 후 상품,바코드 이미지 저장 및 db 업데이트",
             httpMethod = "POST")
     @PostMapping(value="/register_gifticon", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public List<List<InputFile>> registerGifticon(RegisterGifticonDto[] registerGifticonDtoList){
+    public List<List<InputFile>> registerGifticon(MultipartFile[] files, RegisterGifticonDto[] registerGifticonDtoList){
         LOGGER.debug("Call registerGifticon API");
 
         List<List<InputFile>> allResultList = new ArrayList<>();
 
         for (RegisterGifticonDto registerGifticonDto : registerGifticonDtoList) {
-            allResultList.add(fileService.registerGifticon(registerGifticonDto));
+            String fileId = registerGifticonDto.getFilesId();
+            List<MultipartFile> nowFiles = new ArrayList<>();
+            for (MultipartFile file : files) {
+                String idFromFileName = file.getOriginalFilename();
+                assert idFromFileName != null;
+                if (idFromFileName.contains(fileId)) {
+                    nowFiles.add(file);
+
+                }
+
+            }
+            MultipartFile[] inputFiles = nowFiles.toArray(new MultipartFile[0]);
+
+            allResultList.add(fileService.registerGifticon(inputFiles,registerGifticonDto));
         }
 
         return allResultList;
