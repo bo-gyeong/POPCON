@@ -63,7 +63,7 @@ public class GoogleOcrController {
 
             if (byBarcodeNum.isPresent()) {
                 CheckValidationDto checkValidationDto = new CheckValidationDto(0);
-                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
             } else {
                 CheckValidationDto checkValidationDto = new CheckValidationDto(1);
                 return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
@@ -94,7 +94,7 @@ public class GoogleOcrController {
         try {
             if (byBrandName.isEmpty()) {
                 CheckValidationDto checkValidationDto = new CheckValidationDto(0);
-                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
             }
             else {
                 CheckValidationDto checkValidationDto = new CheckValidationDto(1);
@@ -1060,7 +1060,20 @@ public class GoogleOcrController {
 
 
                         }
-                        finalResult.add(finalGifticonResponse);
+                        else {
+                            GifticonResponse gifticonResponse = new GifticonResponse(-1,"", "", "", null, null,"",null,-1);
+
+                            finalGifticonResponse = gifticonResponse;
+
+                            finalResult.add(finalGifticonResponse);
+
+
+
+                            System.out.println(gifticonResponse);
+                            break;
+
+                        }
+
 
                     }
 
