@@ -84,24 +84,26 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
                         brandName
                     )
                 )
-                Log.d("TAG", "getGifticons: $gifticons")
+                Log.d("TAG", "getGifticonssssss: $gifticons")
                 _gifticons.value = gifticons
             }
         }
     }
 
     //히스토리 목록 불러오기
-    fun getHistory(userId: String) {
+    fun getHistory(req: UserDeleteRequest) {
         viewModelScope.launch {
-            val history = gifticonRepository.getHistory(userId)
+            val history = gifticonRepository.getHistory(req)
             _history.value = history
         }
     }
 
     //기프티콘 업데이트
-    fun updateGifticon(gifticon: UpdateRequest) {
+    fun updateGifticon(gifticon: UpdateRequest, user: User) {
         viewModelScope.launch {
             gifticonRepository.updateGifticon(gifticon)
+            getGifticonByUser(user)
+            getHomeBrand(user)
         }
     }
 }

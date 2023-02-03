@@ -103,8 +103,7 @@ class EditFragment : Fragment() {
             PopconSnackBar.make(view, "수정이 완료되었어요").show()
 
             val req = setGifticon()
-            viewModel.updateGifticon(req)
-            viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
+            viewModel.updateGifticon(req, SharedPreferencesUtil(requireContext()).getUser())
         }
 
         viewModel.getGifticonByBarcodeNum(barNum)

@@ -33,8 +33,8 @@ interface GifticonApi {
     suspend fun getGifticonByBrand(@Body gifticonByBrandRequest: GifticonByBrandRequest): List<Gifticon>
 
     //히스토리
-    @GET("gifticons/{userId}/{}")
-    suspend fun getHistory(@Path("userId") userId: String): List<Gifticon>
+    @POST("gifticons/history")
+    suspend fun getHistory(@Body req: UserDeleteRequest): List<Gifticon>
 
     //업데이트
     @HTTP(method = "PUT", path = "gifticons", hasBody = true)

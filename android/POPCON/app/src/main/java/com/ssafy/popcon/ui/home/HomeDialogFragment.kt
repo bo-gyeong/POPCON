@@ -101,10 +101,48 @@ class HomeDialogFragment : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
-        binding.gifticon = gifticonFromHome
-        binding.badge = Utils.calDday(gifticonFromHome)
+        /*binding.gifticon = gifticonFromHome
+        binding.badge = Utils.calDday(gifticonFromHome)*/
         setButton(gifticonFromHome)
         viewModel.getGifticonByBarcodeNum(gifticonFromHome.barcodeNum)
+
+        viewModel.gifticon.observe(viewLifecycleOwner) { g ->
+            val gifticon = Gifticon(
+                g.barcodeNum,
+                g.barcode_filepath?:"",
+                Brand("", g.brandName),
+                g.due,
+                g.hash,
+                g.price,
+                g.memo?:"",
+                g.origin_filepath?:"",
+                g.productName,
+                g.product_filepath?:"",
+                g.state
+            )
+
+            binding.gifticon = gifticon
+            binding.badge = Utils.calDday(gifticon)
+            setButton(gifticon)
+
+            binding.ivProductPreview.setOnClickListener {
+                val args = Bundle()
+                args.putString("originalUrl", gifticon.origin_filepath)
+
+                val dialogFragment = ImageDialogFragment()
+                dialogFragment.arguments = args
+                dialogFragment.show(childFragmentManager, "originalUrl")
+            }
+
+            /*//삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+            binding.btnDelete.setOnClickListener {
+                viewModel.deleteGifticon(DeleteRequest(gifticon.barcodeNum))
+
+                dialog?.dismiss()
+            }*/
+        }
+
+
         binding.ivProductPreview.setOnClickListener {
             val args = Bundle()
             args.putString("originalUrl", gifticonFromHome.origin_filepath)
@@ -149,7 +187,7 @@ class HomeDialogFragment : DialogFragment() {
                     gifticon.state = 0
 
                     val req = setGifticon()
-                    viewModel.updateGifticon(req)
+                    viewModel.updateGifticon(req, SharedPreferencesUtil(requireContext()).getUser())
                 }
             }
             2 -> {

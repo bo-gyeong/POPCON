@@ -44,6 +44,7 @@ class BrandAdapter() :
 
         fun bind(brand: Brand) {
             binding.brand = brand
+
             binding.executePendingBindings()
         }
     }

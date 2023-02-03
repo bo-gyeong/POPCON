@@ -62,7 +62,7 @@ class GifticonViewFragment : Fragment() {
 
             gifticonInfo!!.state = 1
             val req = setGifticon()
-            viewModel.updateGifticon(req)
+            viewModel.updateGifticon(req, SharedPreferencesUtil(requireContext()).getUser())
         }
     }
 
