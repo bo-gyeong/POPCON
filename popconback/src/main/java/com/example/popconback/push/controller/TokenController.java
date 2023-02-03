@@ -123,5 +123,11 @@ public class TokenController {
     public void even_pushmessage() throws IOException {
         pushmessage(2);
     }
+
+    @Scheduled(cron="0 10 22 * * ?")
+    public void crontest() throws IOException {
+        System.out.println("tetetete");
+    }
+
 }
 
