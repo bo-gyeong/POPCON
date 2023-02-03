@@ -341,7 +341,7 @@ public class GifticonService {
     public List<GifticonDto> getPushGifticon (int hash, int Dday){// 사용한 기프티콘이나 기간지난거는 스테이트로 구분 하면 되는
         Date date = java.sql.Date.valueOf(LocalDate.now().plusDays(Dday));
         List<GifticonDto> rlist = new ArrayList<>();
-        List <Gifticon> list = gifticonRepository.findByUser_HashAndDueLessThanEqualAndState(hash, date,1);
+        List <Gifticon> list = gifticonRepository.findByUser_HashAndDueLessThanEqualAndState(hash, date,0);
         for (Gifticon gifticon:list
              ) {
             GifticonDto responDto = new GifticonDto();
