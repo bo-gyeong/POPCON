@@ -1,6 +1,7 @@
 package com.ssafy.popcon.repository.user
 
 import com.ssafy.popcon.dto.SigninResponse
+import com.ssafy.popcon.dto.UpdateUserInfo
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import com.ssafy.popcon.network.api.UserApi
@@ -22,7 +23,7 @@ class UserRemoteDataSource(private val apiClient: UserApi) : UserDataSource {
         return apiClient.withdraw(user)
     }
 
-    override suspend fun updateUser(user: User, hash: Int): User {
-        return apiClient.updateUser(user, hash)
+    override suspend fun updateUser(user: User): User {
+        return apiClient.updateUser(user)
     }
 }

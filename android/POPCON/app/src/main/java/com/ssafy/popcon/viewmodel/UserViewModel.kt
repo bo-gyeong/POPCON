@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.dto.SigninResponse
+import com.ssafy.popcon.dto.UpdateUserInfo
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import com.ssafy.popcon.repository.user.UserRepository
@@ -39,9 +40,9 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
-    fun updateUser(user: User, hash: Int){
+    fun updateUser(user: User){
         viewModelScope.launch {
-            _user.value = userRepository.updateUser(user, hash)
+            _user.value = userRepository.updateUser(user)
         }
     }
 }

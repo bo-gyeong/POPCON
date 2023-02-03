@@ -1,6 +1,7 @@
 package com.ssafy.popcon.network.api
 
 import com.ssafy.popcon.dto.SigninResponse
+import com.ssafy.popcon.dto.UpdateUserInfo
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import retrofit2.http.Body
@@ -25,6 +26,6 @@ interface UserApi {
     suspend fun withdraw(@Body user: UserDeleteRequest)
 
     // 회원정보 변경
-    @POST("user/update/{hash}")
-    suspend fun updateUser(@Body user: User, @Path("hash") hash:Int): User
+    @POST("user/update")
+    suspend fun updateUser(@Body user: User): User
 }
