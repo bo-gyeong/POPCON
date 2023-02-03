@@ -164,3 +164,10 @@ data class AddImgInfo(
 data class ChkValidation(
     val result: Int
 )
+
+data class AddImgInfoResult(
+    val id: Long,
+    val imageType: Int,
+    val fileName: String,
+    val filePath: String
+)

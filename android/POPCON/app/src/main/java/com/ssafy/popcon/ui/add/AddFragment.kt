@@ -158,11 +158,12 @@ class AddFragment : Fragment(), onItemClick {
         }
 
         binding.btnRegi.setOnClickListener {
-            //if (chkClickImgCnt() && chkEffectiveness()){
-                viewModel.addGifticonImg(makeAddImgInfoList())
-                viewModel.addGifticon(makeAddInfoList())
-                mainActivity.changeFragment(HomeFragment())
-            //}
+            if (chkClickImgCnt() && chkEffectiveness()){
+                //viewModel.addGifticonImg(makeAddImgInfoList())
+                //viewModel.addGifticon(makeAddInfoList())
+                //mainActivity.changeFragment(HomeFragment())
+                Toast.makeText(requireContext(), "통과", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -417,7 +418,7 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // 크롭되면서 새로 생성된 이미지 삭제
-    private fun delCropImg(delImgUri: Uri){
+    fun delCropImg(delImgUri: Uri){
         val file = File(getPath(delImgUri))
         file.delete()
     }
@@ -494,7 +495,6 @@ class AddFragment : Fragment(), onItemClick {
     private fun brandChk(){
         binding.etProductBrand.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-
                 viewModel.chkBrand(p0.toString())
                 viewModel.brandChk.observe(viewLifecycleOwner, EventObserver{
                     if (it.result == 0){
@@ -518,6 +518,9 @@ class AddFragment : Fragment(), onItemClick {
 
     // 바코드 번호 중복 검사
     private fun brandBarcodeNum(){
+        binding.tilBarcode.error = "바코드 번호를 입력해주세요"
+        effectivenessBarcode = false
+
         binding.etBarcode.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
                 viewModel.chkBarcode(p0.toString())
@@ -619,9 +622,6 @@ class AddFragment : Fragment(), onItemClick {
     // 리사이클러뷰의 기프티콘 이미지 모두 클릭했는지 확인
     private fun chkClickImgCnt(): Boolean{
         if (chkCnt >= originalImgUris.size){
-            for (i in 0 until delImgUris.size){
-                delCropImg(delImgUris[i])
-            }
             return true
         }
         Toast.makeText(requireContext(), "등록한 기프티콘을 확인해주세요", Toast.LENGTH_SHORT).show()
@@ -632,12 +632,18 @@ class AddFragment : Fragment(), onItemClick {
     private fun chkEffectiveness(): Boolean {
         if (binding.ivBarcodeImg.drawable == null || binding.ivCouponImg.drawable == null
             || binding.etProductName.text.toString() == ""
-            || !effectivenessBrand || !effectivenessBarcode || !effectivenessDate
+            || !effectivenessBrand || binding.etProductBrand.text.toString() ==""
+            || !effectivenessBarcode || binding.etBarcode.text.toString() ==""
+            || !effectivenessDate || binding.etDate.text.toString() ==""
             || binding.cbPrice.isChecked && binding.etPrice.text.toString() == ""
             || binding.cbPrice.isChecked && binding.etPrice.text.toString() == "0"
         ) {
             Toast.makeText(requireContext(), "입력 정보를 확인해주세요", Toast.LENGTH_SHORT).show()
             return false
+        }
+
+        for (i in 0 until delImgUris.size){
+            delCropImg(delImgUris[i])
         }
         return true
     }

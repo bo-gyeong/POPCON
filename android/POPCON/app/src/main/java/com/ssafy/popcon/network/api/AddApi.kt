@@ -28,5 +28,5 @@ interface AddApi {
 
     @Multipart
     @POST("files/register_gifticon")
-    suspend fun addGifticonImg(@Part imgInfo: Array<AddImgInfo>)
+    suspend fun addGifticonImg(@Part imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
 }
