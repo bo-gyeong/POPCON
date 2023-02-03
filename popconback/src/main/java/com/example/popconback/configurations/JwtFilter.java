@@ -87,7 +87,7 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setStatus(403);
         } catch (MalformedJwtException e) {
             log.info("유효하지 않은 구성의 JWT 토큰입니다.");
-            request.setAttribute("exception", 403);
+            response.setStatus(403);
         } catch (SignatureException e) {
             log.info("잘못된 JWT 서명입니다.");
             response.setStatus(403);
