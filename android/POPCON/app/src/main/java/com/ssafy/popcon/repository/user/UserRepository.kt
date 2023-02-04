@@ -1,7 +1,6 @@
 package com.ssafy.popcon.repository.user
 
 import com.ssafy.popcon.dto.SigninResponse
-import com.ssafy.popcon.dto.UpdateUserInfo
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 

@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.popcon.dto.SigninResponse
-import com.ssafy.popcon.dto.UpdateUserInfo
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import com.ssafy.popcon.repository.user.UserRepository

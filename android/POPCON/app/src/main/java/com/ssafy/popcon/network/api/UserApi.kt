@@ -1,14 +1,11 @@
 package com.ssafy.popcon.network.api
 
 import com.ssafy.popcon.dto.SigninResponse
-import com.ssafy.popcon.dto.UpdateUserInfo
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.HTTP
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface UserApi {
     @POST("user/login")
