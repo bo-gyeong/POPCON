@@ -80,7 +80,7 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
                 binding.tvSelect.text = requireContext().resources.getText(R.string.interval)
                 binding.tvSelect.visibility = View.VISIBLE
 
-                binding.npSelect.minValue = 0
+                binding.npSelect.minValue = 1
                 binding.npSelect.maxValue = user.nday
                 binding.npSelect.value = user.term
             }

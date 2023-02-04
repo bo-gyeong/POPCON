@@ -95,26 +95,6 @@ class LoginFragment : Fragment() {
 
     private fun init() {
         mainActivity = activity as MainActivity
-
-        kakaoLoginState()
-    }
-
-    private fun kakaoLoginState() {
-        KakaoSdk.init(mainActivity, BuildConfig.KAKAO_API_KEY)
-
-        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-            if (error != null) {
-                // 동의화면에서 동의 누르기 전에 뜸
-                Log.d(TAG, "init_error: ${error}")
-                if (tokenInfo == null) {
-                    // 디비에 값 저장
-                    Log.d(TAG, "kakaoLoginState: ")
-                }
-            } else if (tokenInfo != null) {
-                // 로그인 되어있는 상태
-                Log.d(TAG, "init_tokenInfo: ${tokenInfo}")
-            }
-        }
     }
 
     private fun kakaoLogin() {
@@ -148,7 +128,27 @@ class LoginFragment : Fragment() {
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             UserApiClient.instance.me { meUser, error ->
                                 val email = meUser?.kakaoAccount?.email.toString()
-                                user = User(email, "카카오")
+
+                                user = User("abc@naver.com", "카카오")
+                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                val userRepo =
+                                    UserRepository(UserRemoteDataSource(RetrofitUtil.userService))
+
+                                val job = CoroutineScope(Dispatchers.IO).launch {
+                                    tokens = userRepo.signIn(user)
+                                }
+                                runBlocking {
+                                    job.join()
+                                    ApplicationClass.sharedPreferencesUtil.accessToken = tokens.acessToken
+                                    ApplicationClass.sharedPreferencesUtil.refreshToken = tokens.refreshToekn
+                                    Log.d(TAG, "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
+                                }
+
+
+
+
+
+                                //user = User(email, "카카오")
                                 SharedPreferencesUtil(requireContext()).addUser(user)
 
                                 viewModel.signInKakao(user)

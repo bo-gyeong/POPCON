@@ -149,7 +149,6 @@ class SettingsFragment : Fragment() {
     // 설정에서 로그인화면으로 이동 및 로그인정보 삭제
     private fun settingsToLogin() {
         SharedPreferencesUtil(requireContext()).deleteUser()
-        mainActivity.onBackPressed()
         mainActivity.changeFragment(LoginFragment())
     }
 
@@ -235,7 +234,19 @@ class SettingsFragment : Fragment() {
                 R.color.popcon_grey_04
             )
         )
+        binding.tvNotiSettingFirstText.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
         binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
+        binding.tvNotiSettingIntervalText.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.popcon_grey_04
@@ -279,7 +290,19 @@ class SettingsFragment : Fragment() {
                 R.color.popcon_transparent_grey_07
             )
         )
+        binding.tvNotiSettingFirstText.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
         binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
+        binding.tvNotiSettingIntervalText.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.popcon_transparent_grey_07
