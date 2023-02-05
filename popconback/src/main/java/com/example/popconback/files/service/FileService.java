@@ -11,5 +11,5 @@ public interface FileService {
     List<InputFile> uploadFiles(MultipartFile[] files);
 
 
-    List<InputFile> registerGifticon(MultipartFile[] files,RegisterGifticonDto registerGifticonDto);
+    List<InputFile> registerGifticon(RegisterGifticonDto registerGifticonDto);
 }
