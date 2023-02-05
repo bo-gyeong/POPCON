@@ -207,6 +207,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
         //y : 위도 latitude 경 127도, 위 37도
         viewModel.getStoreInfo(request)
         viewModel.store.observe(viewLifecycleOwner) {
+            Log.d(TAG, "setStore: $it")
             binding.mapView.removeAllPOIItems()
             binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(it))
 

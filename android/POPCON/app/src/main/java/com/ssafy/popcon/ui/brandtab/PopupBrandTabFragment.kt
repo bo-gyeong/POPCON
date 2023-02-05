@@ -67,9 +67,9 @@ class PopupBrandTabFragment : Fragment() {
             user.email!!,
             user.social.toString(),
             //getLongitude.toString(),
-            "128.4176",
+            "128.64995",
             //getLatitude.toString(),
-            "36.1079"
+            "35.85655"
         )
 
         viewModel.getBrandByLocation(storeRequest, SharedPreferencesUtil(requireContext()).getUser())

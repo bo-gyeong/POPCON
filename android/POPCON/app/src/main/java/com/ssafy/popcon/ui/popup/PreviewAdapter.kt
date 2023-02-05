@@ -1,5 +1,6 @@
 package com.ssafy.popcon.ui.popup
 
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -70,6 +71,11 @@ class PreviewAdapter(
     interface PreviewListener {
         fun onClick(position: Int)
         fun onSelect(position: Int)
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        super.destroyItem(container, position, `object`)
+
     }
 }
 
