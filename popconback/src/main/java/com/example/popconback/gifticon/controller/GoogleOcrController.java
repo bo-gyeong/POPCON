@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Api(value = "GoogleOcrController")
 @SwaggerDefinition(tags = {@Tag(name = "GoogleOcrController",
@@ -297,7 +298,7 @@ public class GoogleOcrController {
                             break;
                         }
                         if (definePublisher==-1) {
-                            GifticonResponse gifticonResponse = new GifticonResponse(-1,"", "", "", null, null,"",null,-1);
+                            GifticonResponse gifticonResponse = new GifticonResponse(-1,-1,"", "", "", null, null,"",null,-1);
 
                             finalGifticonResponse = gifticonResponse;
 
@@ -349,6 +350,8 @@ public class GoogleOcrController {
                             Map<String, String> productPosition = new HashMap<>();
 
                             Map<String, String> barcodePosition = new HashMap<>();
+
+                            int price = -1;
 
 
                             for (EntityAnnotation gsRes : newRes) {
@@ -473,6 +476,61 @@ public class GoogleOcrController {
 
 
                             }
+                            int[] checkPriceList = IntStream.rangeClosed(1000,500000).toArray();
+
+                            if (isVoucher == 1) {
+                                if (productName.contains("만원")) {
+                                    int nowIdx = productName.indexOf("만원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-2))) {
+                                        String checkInt = productName.substring(nowIdx-2,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                    else if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else if (productName.contains("천원")) {
+                                    int nowIdx = productName.indexOf("천원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*1000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else {
+                                    for (int prices : checkPriceList) {
+                                        if (productName.contains(String.valueOf(prices))) {
+                                            price = prices;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+
                             if (preDue.length()>0) {
                                 expiration.put("Y",preDue.substring(0,4));
                                 expiration.put("M",preDue.substring(5,7));
@@ -507,7 +565,7 @@ public class GoogleOcrController {
                             }
 
 
-                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,price,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
                             finalGifticonResponse = gifticonResponse;
 
@@ -550,6 +608,8 @@ public class GoogleOcrController {
                             Map<String, String> productPosition = new HashMap<>();
 
                             Map<String, String> barcodePosition = new HashMap<>();
+
+                            int price = -1;
 
 
 
@@ -676,6 +736,60 @@ public class GoogleOcrController {
 
 
                             }
+                            int[] checkPriceList = IntStream.rangeClosed(1000,500000).toArray();
+
+                            if (isVoucher == 1) {
+                                if (productName.contains("만원")) {
+                                    int nowIdx = productName.indexOf("만원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-2))) {
+                                        String checkInt = productName.substring(nowIdx-2,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                    else if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else if (productName.contains("천원")) {
+                                    int nowIdx = productName.indexOf("천원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*1000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else {
+                                    for (int prices : checkPriceList) {
+                                        if (productName.contains(String.valueOf(prices))) {
+                                            price = prices;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
 
                             if (preDue.length()>0) {
                                 expiration.put("Y",preDue.substring(0,4));
@@ -710,7 +824,7 @@ public class GoogleOcrController {
                                 System.out.println(e);
                             }
 
-                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,price,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
                             finalGifticonResponse = gifticonResponse;
 
@@ -755,6 +869,8 @@ public class GoogleOcrController {
                             Map<String, String> productPosition = new HashMap<>();
 
                             Map<String, String> barcodePosition = new HashMap<>();
+
+                            int price = -1;
 
 
                             for (EntityAnnotation giftishowRes : newRes) {
@@ -869,6 +985,62 @@ public class GoogleOcrController {
 
 
                             }
+                            int[] checkPriceList = IntStream.rangeClosed(1000,500000).toArray();
+
+                            if (isVoucher == 1) {
+                                if (productName.contains("만원")) {
+                                    int nowIdx = productName.indexOf("만원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-2))) {
+                                        String checkInt = productName.substring(nowIdx-2,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                    else if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else if (productName.contains("천원")) {
+                                    int nowIdx = productName.indexOf("천원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*1000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else {
+                                    for (int prices : checkPriceList) {
+                                        if (productName.contains(String.valueOf(prices))) {
+                                            price = prices;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+
+
                             if (preDue.length()>0) {
                                 expiration.put("Y",preDue.substring(0,4));
                                 expiration.put("M",preDue.substring(5,7));
@@ -899,7 +1071,7 @@ public class GoogleOcrController {
                                 System.out.println(e);
                             }
 
-                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,price,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
                             finalGifticonResponse = gifticonResponse;
 
@@ -945,6 +1117,8 @@ public class GoogleOcrController {
 
                             Map<String, String> productPosition = new HashMap<>();
                             Map<String, String> barcodePosition = new HashMap<>();
+
+                            int price = -1;
 
 
 
@@ -1059,6 +1233,61 @@ public class GoogleOcrController {
 
 
                             }
+                            int[] checkPriceList = IntStream.rangeClosed(1000,500000).toArray();
+
+                            if (isVoucher == 1) {
+                                if (productName.contains("만원")) {
+                                    int nowIdx = productName.indexOf("만원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-2))) {
+                                        String checkInt = productName.substring(nowIdx-2,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                    else if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*10000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else if (productName.contains("천원")) {
+                                    int nowIdx = productName.indexOf("천원");
+
+                                    if (Character.isDigit(productName.charAt(nowIdx-1))) {
+                                        String checkInt = productName.substring(nowIdx-1,nowIdx);
+                                        try{
+                                            int prePrice = Integer.parseInt(checkInt);
+                                            price = prePrice*1000;
+                                            System.out.println(prePrice);
+                                        }
+                                        catch (NumberFormatException ex){
+                                            ex.printStackTrace();
+                                        }
+                                    }
+                                }
+                                else {
+                                    for (int prices : checkPriceList) {
+                                        if (productName.contains(String.valueOf(prices))) {
+                                            price = prices;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+
                             if (preDue.length()>0) {
                                 expiration.put("Y",preDue.substring(0,4));
                                 expiration.put("M",preDue.substring(5,7));
@@ -1091,7 +1320,7 @@ public class GoogleOcrController {
 
 
 
-                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
+                            GifticonResponse gifticonResponse = new GifticonResponse(isVoucher,price,publisher, brandName, productName, productPosition, expiration,barcodeNum,barcodePosition, validation);
 
                             finalGifticonResponse = gifticonResponse;
 
