@@ -2,9 +2,11 @@ package com.ssafy.popcon.ui.map
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
@@ -12,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -43,12 +46,13 @@ import java.net.URL
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
+class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener, MapView.POIItemEventListener {
     private lateinit var binding: FragmentMapBinding
     private val ACCESS_FINE_LOCATION = 1000     // Request Code
     private lateinit var ballBinding: ItemBalloonBinding
     lateinit var mainActivity: MainActivity
     private val viewModel: MapViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    var storeMap = HashMap<String, String>()
 
     private lateinit var locationManager: LocationManager
     private var getLongitude: Double = 0.0
@@ -81,6 +85,8 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
 
         binding.mapView.setMapViewEventListener(this)
         binding.mapView.setCalloutBalloonAdapter(this)
+        binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+        binding.mapView.setPOIItemEventListener(this)
 
         if (checkLocationService()) {
             // GPS가 켜져있을 경우
@@ -206,11 +212,11 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
         //y : 위도 latitude 경 127도, 위 37도
         viewModel.getStoreInfo(request)
         viewModel.store.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setStore: $it")
+            storeMap.clear()
             binding.mapView.removeAllPOIItems()
-            binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(it))
 
             for (store in it) {
+                storeMap.put(store.placeName, store.phone)
                 val marker = MapPOIItem()
                 val position = MapPoint.mapPointWithGeoCoord(
                     store.ypos.toDouble(),
@@ -282,26 +288,26 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
         TODO("Not yet implemented")
     }
 
-    inner class CustomBalloonAdapter(private val stores: List<Store>) :
-        CalloutBalloonAdapter {
+    inner class CustomBalloonAdapter(inflater: LayoutInflater) : CalloutBalloonAdapter {
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.item_balloon, null)
+        val name: TextView = mCalloutBalloon.findViewById(R.id.tv_brandName)
+        val phone: TextView = mCalloutBalloon.findViewById(R.id.tv_phone)
+
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
-            val name = poiItem?.itemName
-            for (store in stores) {
-                if (store.placeName == name) {
-                    ballBinding.store = store
-                    break
-                }
-            }
+            name.text = poiItem?.itemName
+            phone.text = storeMap[poiItem?.itemName]
 
-            return ballBinding.root
+            return mCalloutBalloon
         }
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
-            return ballBinding.root
+            stopTracking()
+            return mCalloutBalloon
         }
     }
+
 
     //화면 켜지면 센서 설정
     private fun setSensor() {
@@ -340,7 +346,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
 
     override fun onMapViewInitialized(p0: MapView?) {
         Log.d(TAG, "onMapViewInitialized: ")
-        //TODO("Not yet implemented")
     }
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
@@ -361,12 +366,35 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
 
     override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
         stopTracking()
-        Log.d(TAG, "onMapViewDragStarted: ")
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
+
+
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
+
+        var intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:" + ballBinding.tvPhone.text)
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(
+        p0: MapView?,
+        p1: MapPOIItem?,
+        p2: MapPOIItem.CalloutBalloonButtonType?
+    ) {
+    }
+
+    override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
     }
 }
