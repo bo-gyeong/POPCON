@@ -5,7 +5,7 @@ import java.io.Serializable
 data class Gifticon(
     var barcodeNum: String,
     val barcode_filepath: String,
-    val brand: Brand?,
+    var brand: Brand?,
     var due: String, //example: 2023-01-10 00:00:00.000000
     val hash: Int,
     var price: Int?, //금액권 아니면 -1

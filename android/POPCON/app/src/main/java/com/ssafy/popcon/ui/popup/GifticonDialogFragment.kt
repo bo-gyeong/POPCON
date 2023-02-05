@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
+import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -92,82 +93,82 @@ class GifticonDialogFragment : DialogFragment() {
 
     //상품이미지 미리보기, 기프티콘 사용화면
     private fun setViewPager() {
-        viewModel.gifticons.observe(viewLifecycleOwner, EventObserver{
-                useList ->
-            //Log.d(TAG, "setViewPager: $useList")
+        viewModel.gifticons.observe(viewLifecycleOwner, EventObserver { useList ->
+            val previewAdapter =
+                PreviewAdapter(
+                    childFragmentManager,
+                    useList as MutableList<Gifticon>, binding.vpGifticon, binding.vpPreview
+                )
+            val gifticonViewAdapter = GifticonViewAdapter(
+                childFragmentManager,
+                useList as MutableList<Gifticon>
+            )
 
+            binding.vpGifticon.adapter = gifticonViewAdapter
+            binding.vpGifticon.offscreenPageLimit = previewAdapter.sidePreviewCount * 2 + 1
 
-            binding.vpPreview.apply {
-                addOnPageChangeListener(object : OnPageChangeListener {
-                    override fun onPageScrollStateChanged(state: Int) {
-                    }
+            binding.vpPreview.adapter = previewAdapter
 
-                    override fun onPageScrolled(
-                        position: Int,
-                        positionOffset: Float,
-                        positionOffsetPixels: Int
-                    ) {
+        })
 
-                    }
+        binding.vpPreview.addOnPageChangeListener(
+            OnSyncPageChangeListener(
+                binding.vpGifticon,
+                binding.vpPreview
+            )
+        )
 
-                    override fun onPageSelected(position: Int) {
-                        Log.d(TAG, "onPageSelected: {$position, $prevIndex}")
-                        if (useList.size != 1) {
-                            if (position >= useList.size) {
-                                currentItem = useList.size - 1
-                                prevIndex = currentItem - 1
-                            }
+        binding.vpGifticon.addOnPageChangeListener(
+            OnSyncPageChangeListener(
+                binding.vpPreview,
+                binding.vpGifticon
+            )
+        )
 
-                            if (currentItem != prevIndex) {
+        binding.vpPreview.setPageTransformer(
+            false
+        ) { page, position ->
+            page.translationX = position * -40
+        }
 
-                                val v: View = binding.vpPreview.getChildAt(currentItem)
+        binding.vpPreview.apply {
+            addOnPageChangeListener(object : OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+                }
 
-                                v.findViewById<ImageView>(R.id.bg_black).isVisible = false
-                                v.findViewById<ImageView>(R.id.edge_preview).isVisible = true
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
 
-                                val oldV: View = binding.vpPreview.getChildAt(prevIndex)
-                                oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
-                                oldV.findViewById<ImageView>(R.id.edge_preview).isVisible = false
+                }
 
-                                prevIndex = currentItem
-                            }
+                override fun onPageSelected(position: Int) {
+                    val count = binding.vpPreview.adapter!!.count - 4
+                    if (count != 1) {
+                        if (position >= count) {
+                            currentItem = count - 1
+                            prevIndex = currentItem - 1
                         }
 
+                        if (currentItem != prevIndex) {
+
+                            val v: View = binding.vpPreview.getChildAt(currentItem)
+
+                            v.findViewById<ImageView>(R.id.bg_black).isVisible = false
+                            v.findViewById<ImageView>(R.id.edge_preview).isVisible = true
+
+                            val oldV: View = binding.vpPreview.getChildAt(prevIndex)
+                            oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
+                            oldV.findViewById<ImageView>(R.id.edge_preview).isVisible = false
+
+                            prevIndex = currentItem
+                        }
                     }
-                })
-
-                val previewAdapter =
-                    PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
-                val gifticonViewAdapter = GifticonViewAdapter(childFragmentManager, useList)
-
-
-                binding.vpGifticon.adapter = gifticonViewAdapter
-                binding.vpGifticon.offscreenPageLimit = previewAdapter.sidePreviewCount * 2 + 1
-
-                binding.vpPreview.adapter = previewAdapter
-                binding.vpPreview.addOnPageChangeListener(
-                    OnSyncPageChangeListener(
-                        binding.vpGifticon,
-                        binding.vpPreview
-                    )
-                )
-                Log.d(TAG, "setViewPager: ${binding.vpPreview.adapter?.count}")
-
-                binding.vpGifticon.addOnPageChangeListener(
-                    OnSyncPageChangeListener(
-                        binding.vpPreview,
-                        binding.vpGifticon
-                    )
-                )
-
-                binding.vpPreview.setPageTransformer(
-                    false
-                ) { page, position ->
-                    Log.d("TAG", "transformPage: $position")
-                    page.translationX = position * -40
                 }
-            }
-        })
+            })
+        }
     }
 
     //기프티콘 리스트 추가

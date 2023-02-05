@@ -108,4 +108,8 @@ class GifticonViewFragment : Fragment() {
             return fragment
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }
