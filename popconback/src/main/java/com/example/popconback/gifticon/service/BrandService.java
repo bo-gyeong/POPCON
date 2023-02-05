@@ -2,7 +2,6 @@ package com.example.popconback.gifticon.service;
 
 import com.example.popconback.gifticon.domain.Brand;
 
-import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
 import com.example.popconback.gifticon.dto.ResponseBrandDto;
 import com.example.popconback.gifticon.repository.Brandrepository;
 

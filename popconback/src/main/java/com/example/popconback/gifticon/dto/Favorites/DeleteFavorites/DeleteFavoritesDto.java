@@ -1,4 +1,4 @@
-package com.example.popconback.gifticon.dto.DeleteFavorites;
+package com.example.popconback.gifticon.dto.Favorites.DeleteFavorites;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

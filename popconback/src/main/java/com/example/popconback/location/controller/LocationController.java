@@ -1,6 +1,6 @@
 package com.example.popconback.location.controller;
 
-import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
+import com.example.popconback.gifticon.dto.Gifticon.ListGifticonUser.ResponseListGifticonUserDto;
 import com.example.popconback.gifticon.dto.LocationSearchByBrandDto;
 import com.example.popconback.gifticon.dto.LocationShakeDto;
 import com.example.popconback.gifticon.dto.ResponseBrandDto;

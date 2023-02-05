@@ -5,22 +5,20 @@ import com.example.popconback.gifticon.domain.Brand;
 import com.example.popconback.gifticon.domain.Favorites;
 import com.example.popconback.gifticon.domain.Gifticon;
 import com.example.popconback.gifticon.domain.GifticonFiles;
-import com.example.popconback.gifticon.dto.CreateFavorites.CreateFavoritesDto;
-import com.example.popconback.gifticon.dto.CreateFavorites.ResponseCreateFavoritesDto;
-import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
-import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
-import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
+import com.example.popconback.gifticon.dto.Favorites.CreateFavorites.CreateFavoritesDto;
+import com.example.popconback.gifticon.dto.Favorites.CreateFavorites.ResponseCreateFavoritesDto;
+import com.example.popconback.gifticon.dto.Gifticon.CreateGifticon.CreateGifticonDto;
+import com.example.popconback.gifticon.dto.Gifticon.CreateGifticon.ResponseCreateGifticonDto;
+import com.example.popconback.gifticon.dto.Favorites.DeleteFavorites.DeleteFavoritesDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
-import com.example.popconback.gifticon.dto.HistoryGifticon.GifticonHistoryDto;
-import com.example.popconback.gifticon.dto.HistoryGifticon.ResponseGifticonHistoryDto;
-import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
-import com.example.popconback.gifticon.dto.ListGifticonUser.BrandForRLGUDto;
-import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
-import com.example.popconback.gifticon.dto.ResponseBrandDto;
-import com.example.popconback.gifticon.dto.SortBrand.SordBrandDto;
-import com.example.popconback.gifticon.dto.SortGifticonDto;
-import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
-import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
+import com.example.popconback.gifticon.dto.Gifticon.HistoryGifticon.GifticonHistoryDto;
+import com.example.popconback.gifticon.dto.Gifticon.HistoryGifticon.ResponseGifticonHistoryDto;
+import com.example.popconback.gifticon.dto.Favorites.ListFavorites.ResponseListFavoritesDto;
+import com.example.popconback.gifticon.dto.Gifticon.ListGifticonUser.BrandForRLGUDto;
+import com.example.popconback.gifticon.dto.Gifticon.ListGifticonUser.ResponseListGifticonUserDto;
+import com.example.popconback.gifticon.dto.Gifticon.ListGifticonUser.ListGifticonUserDto;
+import com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon.ResponseUpdateGifticonDto;
+import com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon.UpdateGifticonDto;
 import com.example.popconback.gifticon.repository.Favoritesrepository;
 import com.example.popconback.gifticon.repository.Brandrepository;
 import com.example.popconback.gifticon.repository.GifticonFilesRepository;
@@ -185,7 +183,7 @@ public class GifticonService {
     }
 
 
-    public List<ResponseListGifticonUserDto> sortGifticon (SortGifticonDto sortGifticonDto,int hash){
+    public List<ResponseListGifticonUserDto> sortGifticon (ListGifticonUserDto sortGifticonDto, int hash){
 
         Optional<User> user = userRepository.findById(hash);
         List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
@@ -380,9 +378,9 @@ public class GifticonService {
 
     public void check_overdate(){
         Date date =java.sql.Date.valueOf(LocalDate.now());
-        List <Gifticon> list = gifticonRepository.findByDueAndState(date,1);
+        List <Gifticon> list = gifticonRepository.findByDueAndState(date,0);
         for (Gifticon gifticon: list) {
-            gifticon.setState(0);
+            gifticon.setState(2);
             gifticonRepository.save(gifticon);
         }
     }

@@ -1,31 +1,31 @@
 package com.example.popconback.gifticon.controller;
 
-import com.example.popconback.gifticon.domain.Brand;
-import com.example.popconback.gifticon.dto.CreateFavorites.CreateFavoritesDto;
-import com.example.popconback.gifticon.dto.CreateFavorites.ResponseCreateFavoritesDto;
-import com.example.popconback.gifticon.dto.CreateGifticon.CreateGifticonDto;
-import com.example.popconback.gifticon.dto.CreateGifticon.ResponseCreateGifticonDto;
-import com.example.popconback.gifticon.dto.DeleteFavorites.DeleteFavoritesDto;
-import com.example.popconback.gifticon.dto.DeleteGifticon.DeleteGifticonDto;
+import com.example.popconback.gifticon.dto.Favorites.CreateFavorites.CreateFavoritesDto;
+import com.example.popconback.gifticon.dto.Favorites.CreateFavorites.ResponseCreateFavoritesDto;
+import com.example.popconback.gifticon.dto.Gifticon.CreateGifticon.CreateGifticonDto;
+import com.example.popconback.gifticon.dto.Gifticon.CreateGifticon.ResponseCreateGifticonDto;
+import com.example.popconback.gifticon.dto.Favorites.DeleteFavorites.DeleteFavoritesDto;
+import com.example.popconback.gifticon.dto.Gifticon.DeleteGifticon.DeleteGifticonDto;
 import com.example.popconback.gifticon.dto.GifticonDto;
-import com.example.popconback.gifticon.dto.HistoryGifticon.GifticonHistoryDto;
-import com.example.popconback.gifticon.dto.HistoryGifticon.ResponseGifticonHistoryDto;
-import com.example.popconback.gifticon.dto.ListFavorites.ResponseListFavoritesDto;
-import com.example.popconback.gifticon.dto.ListGifticonUser.ResponseListGifticonUserDto;
-import com.example.popconback.gifticon.dto.ResponseBrandDto;
-import com.example.popconback.gifticon.dto.SortBrand.SordBrandDto;
-import com.example.popconback.gifticon.dto.SortGifticonDto;
-import com.example.popconback.gifticon.dto.UpdateGifticon.ResponseUpdateGifticonDto;
-import com.example.popconback.gifticon.dto.UpdateGifticon.UpdateGifticonDto;
+import com.example.popconback.gifticon.dto.Gifticon.HistoryGifticon.GifticonHistoryDto;
+import com.example.popconback.gifticon.dto.Gifticon.HistoryGifticon.ResponseGifticonHistoryDto;
+import com.example.popconback.gifticon.dto.Favorites.ListFavorites.ResponseListFavoritesDto;
+import com.example.popconback.gifticon.dto.Gifticon.ListGifticonUser.ResponseListGifticonUserDto;
+import com.example.popconback.gifticon.dto.Gifticon.ListGifticonUser.ListGifticonUserDto;
+import com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon.ResponseUpdateGifticonDto;
+import com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon.UpdateGifticonDto;
 import com.example.popconback.gifticon.service.GifticonService;
 import com.example.popconback.user.dto.UserDto;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.tool.schema.ast.SqlScriptParserException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +107,7 @@ public class GifticonController {
 
     @ApiOperation(value = "기프티콘 정렬", notes = "기프티콘 브랜드별 정렬", httpMethod = "POST") // get 으로 수정
     @PostMapping("/brand") //기프티콘 브랜드별 정렬 // 사용한거 표시 제외하고 보낼지 말지 고민
-    public ResponseEntity<List<ResponseListGifticonUserDto>> SortGifticon (@RequestBody SortGifticonDto sortGifticonDto,Authentication authentication){
+    public ResponseEntity<List<ResponseListGifticonUserDto>> SortGifticon (@RequestBody ListGifticonUserDto sortGifticonDto, Authentication authentication){
         UserDto us= (UserDto)authentication.getPrincipal();
             return ResponseEntity.ok(gifticonService.sortGifticon(sortGifticonDto,us.hashCode()));
    }
@@ -130,7 +130,7 @@ public class GifticonController {
 
     @ApiOperation(value = "기프티콘 삭제", notes = "기프티콘 삭제", httpMethod = "DELETE")
     @DeleteMapping("") //기프티콘 삭제
-    public ResponseEntity<Void> DeleteGifticon (@RequestBody DeleteGifticonDto deleteGifticonDto,Authentication authentication){
+    public ResponseEntity<Void> DeleteGifticon (@RequestBody DeleteGifticonDto deleteGifticonDto,Authentication authentication) {
         UserDto us= (UserDto)authentication.getPrincipal();
         gifticonService.deleteGifticon(deleteGifticonDto.getBarcodeNum(),us.hashCode());
         return ResponseEntity.ok().build();
@@ -149,7 +149,7 @@ public class GifticonController {
         return ResponseEntity.ok(gifticonService.brandListOrderByGifticonCountEachUser(email,social));
     }
 
-    //@Scheduled(cron = "0 0 09 * * ?")
+    @Scheduled(cron = "0 59 23 * * ?")
     @ApiOperation(value = "기프티콘 상태 업데이트", notes = "기프티콘 유호기간 체크 후 상태 변경 / 서버용 API", httpMethod = "GET")
     @GetMapping("/check")// 유효기간 지난거 상태 변경
     public void Check_Overdate () {

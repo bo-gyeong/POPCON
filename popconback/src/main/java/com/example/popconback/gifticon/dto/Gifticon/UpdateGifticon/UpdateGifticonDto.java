@@ -1,14 +1,17 @@
-package com.example.popconback.gifticon.dto.CreateGifticon;
+package com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon;
 
 import io.swagger.annotations.ApiModelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class ResponseCreateGifticonDto {
+public class UpdateGifticonDto {
 
+    @ApiModelProperty(name = "email", value = "유저 계정 이메일", example = "abc@naver.com")
+    private String email;
+    @ApiModelProperty(name = "social", value = "소셜 로그인 구분, ex)'카카오', '네이버'", example = "카카오")
+    private String social;
     @ApiModelProperty(name = "barcodeNum", value = "바코드 넘버", example = "1234-5678-9999")
     private String barcodeNum;
     @ApiModelProperty(name = "brandName", value = "브랜드명", example = "스타벅스")
@@ -16,7 +19,6 @@ public class ResponseCreateGifticonDto {
     @ApiModelProperty(name = "productName", value = "상품명", example = "아이스 카페 아메리카노 Tall")
     private String productName;
     @ApiModelProperty(name = "due", value = "유효기간", example = "2023-01-10 00:00:00.000000")
-    @JsonFormat( shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date due;
     @ApiModelProperty(name = "price", value = "int:금액권의 잔여금액, -1:교환권", example = "-1")
     private int price;

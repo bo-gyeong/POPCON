@@ -1,4 +1,4 @@
-package com.example.popconback.gifticon.dto.UpdateGifticon;
+package com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;

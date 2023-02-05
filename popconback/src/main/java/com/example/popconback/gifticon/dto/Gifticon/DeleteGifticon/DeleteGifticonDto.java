@@ -1,4 +1,4 @@
-package com.example.popconback.gifticon.dto.DeleteGifticon;
+package com.example.popconback.gifticon.dto.Gifticon.DeleteGifticon;
 
 import lombok.Data;
 
