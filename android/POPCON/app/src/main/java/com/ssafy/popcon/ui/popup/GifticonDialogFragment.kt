@@ -174,7 +174,7 @@ class GifticonDialogFragment : DialogFragment() {
     //기프티콘 리스트 추가
     private fun setBrandTab() {
         viewModel.brands.observe(viewLifecycleOwner) {
-            if (it.size == 0) {//근처에 매장 없음
+            if (it.isEmpty()) {//근처에 매장 없음
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = false
                 binding.vpPreview.isVisible = false
