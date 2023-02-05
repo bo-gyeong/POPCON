@@ -1,10 +1,13 @@
 package com.ssafy.popcon.repository.add
 
-import com.ssafy.popcon.dto.AddInfo
-import com.ssafy.popcon.dto.AddInfoNoImg
-import com.ssafy.popcon.dto.ocrResult
+import com.ssafy.popcon.dto.*
+import okhttp3.MultipartBody
 
 interface AddDataSource {
-    suspend fun useOcr(filePath:String): ocrResult
-    suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfo>
+    suspend fun addFileToGCP(files:Array<MultipartBody.Part>): List<GCPResult>
+    suspend fun useOcr(fileName:Array<String>): List<OCRResult>
+    suspend fun chkBrand(brandName: String): ChkValidation
+    suspend fun chkBarcode(barcodeNum: String): ChkValidation
+    suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfoNoImg>
+    suspend fun addGifticonImg(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
 }

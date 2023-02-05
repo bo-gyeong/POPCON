@@ -1,17 +1,32 @@
 package com.ssafy.popcon.network.api
 
-import com.ssafy.popcon.dto.AddInfo
-import com.ssafy.popcon.dto.AddInfoNoImg
-import com.ssafy.popcon.dto.ocrResult
+import com.ssafy.popcon.dto.*
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface AddApi {
-    @GET("gcp/ocr")
-    suspend fun useOCR(@Query("filePath") filePath:String): ocrResult
+    @Multipart
+    @POST("files/add_origin")
+    suspend fun addFileToGCP(@Part files:Array<MultipartBody.Part>): List<GCPResult>
+
+    @POST("gcp/ocr/test")
+    suspend fun useOCR(@Body fileName:Array<String>): List<OCRResult>
+
+    @GET("gcp/ocr/check_brand")
+    suspend fun chkBrand(@Query("brandName") brandName: String): ChkValidation
+
+    @GET("gcp/ocr/check_barcode")
+    suspend fun chkBarcode(@Query("barcodeNum") barcodeNum: String): ChkValidation
 
     @POST("gifticons")
-    suspend fun addGifticon(@Body addInfo: List<AddInfoNoImg>): List<AddInfo>
+    suspend fun addGifticon(@Body addInfo: List<AddInfoNoImg>): List<AddInfoNoImg>
+
+    @Multipart
+    @POST("files/register_gifticon")
+    suspend fun addGifticonImg(@Part imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
 }
