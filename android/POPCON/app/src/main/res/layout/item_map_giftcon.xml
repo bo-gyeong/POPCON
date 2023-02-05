@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
@@ -22,24 +23,24 @@
             android:layout_height="match_parent"
             android:background="@color/transparent"
             android:elevation="2dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:cardCornerRadius="12dp"
-            app:cardUseCompatPadding="true">
+            app:cardUseCompatPadding="true"
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:background="@color/popcon_white"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/popcon_white">
 
                 <ImageView
                     android:id="@+id/iv_product_preview_map"
                     imageUrl="@{gifticon.product_filepath}"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:background="@color/popcon_white"
                     android:paddingStart="16dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:background="@color/popcon_white"
                     android:scaleType="centerInside"
                     app:circularflow_defaultRadius="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -1,15 +1,10 @@
 package com.ssafy.popcon.repository.user
 
-import com.ssafy.popcon.dto.SigninResponse
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import com.ssafy.popcon.network.api.UserApi
 
 class UserRemoteDataSource(private val apiClient: UserApi) : UserDataSource {
-    override suspend fun signIn(user: User): SigninResponse {
-        return apiClient.signIn(user)
-    }
-
     override suspend fun signInNaver(user: User): User {
         return apiClient.signInNaver(user)
     }

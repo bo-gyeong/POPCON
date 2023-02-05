@@ -7,7 +7,7 @@
 
         <variable
             name="store"
-            type="com.ssafy.popcon.dto.MapBrandLogo" />
+            type="com.ssafy.popcon.dto.Store" />
     </data>
 
     <androidx.cardview.widget.CardView

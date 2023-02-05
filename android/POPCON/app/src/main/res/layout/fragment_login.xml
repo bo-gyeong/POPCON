@@ -4,13 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/popcon_orange"
+    android:fitsSystemWindows="true">
 
-    <Button
-        android:id="@+id/btn_nonmember_login"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/popcon_gif"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="로그인 없이 시작하기"
+        android:layout_marginTop="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -18,12 +21,13 @@
         android:id="@+id/btn_kakao_login"
         android:layout_width="350dp"
         android:layout_height="50dp"
+        android:layout_marginTop="100dp"
         android:background="@drawable/kakao_login_large_wide"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@id/btn_naver_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_nonmember_login" />
+        app:layout_constraintTop_toBottomOf="@+id/popcon_gif" />
 
     <TextView
         android:id="@+id/btn_naver_login"
@@ -31,12 +35,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="30dp"
         android:background="@drawable/edge_signin_naver"
         android:drawableLeft="@drawable/sign_naver"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/sign_naver"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_kakao_login" />
 </androidx.constraintlayout.widget.ConstraintLayout>

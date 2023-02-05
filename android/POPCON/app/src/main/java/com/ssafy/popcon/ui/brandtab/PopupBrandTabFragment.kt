@@ -17,8 +17,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
-import com.ssafy.popcon.dto.BrandRequest
+import com.ssafy.popcon.dto.StoreRequest
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.popup.GifticonPreviewFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -33,6 +34,7 @@ class PopupBrandTabFragment : Fragment() {
     private var getLongitude: Double = 0.0
     private var getLatitude: Double = 0.0
 
+    val TAG = "POPUP BRAND TAB"
     override fun onStart() {
         super.onStart()
         mainActivity = activity as MainActivity
@@ -61,23 +63,27 @@ class PopupBrandTabFragment : Fragment() {
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         getUserLocation()
         val user = SharedPreferencesUtil(requireContext()).getUser()
-        val brandRequest = BrandRequest(
+        val storeRequest = StoreRequest(
             user.email!!,
             user.social.toString(),
             //getLongitude.toString(),
-            "128.4176",
+            "128.64995",
             //getLatitude.toString(),
-            "36.1079"
+            "35.85655"
         )
+
+        viewModel.getBrandByLocation(storeRequest, SharedPreferencesUtil(requireContext()).getUser())
 
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
             override fun onClick(v: View, brandName: String) {
-                //viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+                Log.d(TAG, "onClick: $brandName")
+                viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+
+                //GifticonPreviewFragment()
             }
         })
 
-        viewModel.getBrandByLocation(brandRequest)
         viewModel.brands.observe(viewLifecycleOwner) {
             Log.d("TAG", "setBrandTab: $it")
             binding.rvBrand.apply {
@@ -86,11 +92,7 @@ class PopupBrandTabFragment : Fragment() {
                     RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
 
-            brandAdapter.apply {
-                submitList(it)
-                stateRestorationPolicy =
-                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-            }
+            brandAdapter.submitList(it)
         }
     }
 
