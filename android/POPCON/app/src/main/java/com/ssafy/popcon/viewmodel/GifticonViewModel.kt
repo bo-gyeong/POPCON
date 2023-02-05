@@ -102,8 +102,9 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     fun updateGifticon(gifticon: UpdateRequest, user: User) {
         viewModelScope.launch {
             gifticonRepository.updateGifticon(gifticon)
-            getGifticonByUser(user)
+            getHistory(UserDeleteRequest(user.email!!, user.social))
             getHomeBrand(user)
+            getGifticonByUser(user)
         }
     }
 }

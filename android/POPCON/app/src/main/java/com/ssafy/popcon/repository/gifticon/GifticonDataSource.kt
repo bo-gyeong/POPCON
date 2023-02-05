@@ -8,7 +8,7 @@ interface GifticonDataSource {
     suspend fun getGifticonByBrand(gifticonByBrandRequest: GifticonByBrandRequest): List<Gifticon>
     suspend fun getHistory(req: UserDeleteRequest): List<Gifticon>
     suspend fun updateGifticon(gifticon: UpdateRequest) : UpdateResponse
-    suspend fun getBrandsByLocation(brandRequest: BrandRequest) : List<Brand>
+    suspend fun getBrandsByLocation(storeRequest: StoreRequest) : List<Brand>
     suspend fun deleteGifticon(barcodeNum : DeleteRequest)
     suspend fun getHomeBrands(email: String, social: String) : List<BrandResponse>
 }

@@ -19,16 +19,22 @@ class MapViewModel(
     private val _mapGifticon = MutableLiveData<List<Gifticon>>()
     val mapGifticon: LiveData<List<Gifticon>> = _mapGifticon
 
-    // 현재 위치 기반 지도에서 띄워줄
-    private var _mapBrandLogo = MutableLiveData<List<MapBrandLogo>>()
-    val mapBrandLogo: LiveData<List<MapBrandLogo>> = _mapBrandLogo
+    // 현재 위치 기반 지도에서 띄워줄 매장
+    private var _store = MutableLiveData<List<Store>>()
+    val store: LiveData<List<Store>> = _store
 
     private val _brandsMap = MutableLiveData<List<BrandResponse>>()
     val brandsMap: LiveData<List<BrandResponse>> = _brandsMap
 
-    fun getStoreInfo(storeRequest: BrandRequest) {
+    fun getStoreInfo(storeRequest: StoreRequest) {
         viewModelScope.launch {
-            _mapBrandLogo.value = mapRepository.getStoreByLocation(storeRequest)
+            _store.value = mapRepository.getStoreByLocation(storeRequest)
+        }
+    }
+
+    fun getStoreByBrand(storeByBrandRequest: StoreByBrandRequest) {
+        viewModelScope.launch {
+            _store.value = mapRepository.getStoreByBrand(storeByBrandRequest)
         }
     }
 
@@ -42,11 +48,8 @@ class MapViewModel(
     //상단 탭 클릭리스너
     fun getGifticons(user: User, brandName: String) {
         if (brandName == "전체") {
-            Log.d("TAG", "getGifticonsssssss1: ")
-
             getGifticonByUser(user)
         } else {
-            Log.d("TAG", "getGifticonsssssss1: ")
             viewModelScope.launch {
                 val gifticons = gifticonRepository.getGifticonByBrand(
                     GifticonByBrandRequest(
@@ -56,10 +59,7 @@ class MapViewModel(
                         brandName
                     )
                 )
-                Log.d("TAG", "getGifticonsssssss2: $gifticons")
                 _mapGifticon.value = gifticons
-                Log.d("TAG", "getGifticonsssssss3: $gifticons")
-
             }
         }
     }

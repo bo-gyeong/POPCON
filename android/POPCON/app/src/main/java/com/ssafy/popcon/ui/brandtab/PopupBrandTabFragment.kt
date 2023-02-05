@@ -17,8 +17,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
-import com.ssafy.popcon.dto.BrandRequest
+import com.ssafy.popcon.dto.StoreRequest
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.popup.GifticonPreviewFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -33,6 +34,7 @@ class PopupBrandTabFragment : Fragment() {
     private var getLongitude: Double = 0.0
     private var getLatitude: Double = 0.0
 
+    val TAG = "POPUP BRAND TAB"
     override fun onStart() {
         super.onStart()
         mainActivity = activity as MainActivity
@@ -61,7 +63,7 @@ class PopupBrandTabFragment : Fragment() {
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         getUserLocation()
         val user = SharedPreferencesUtil(requireContext()).getUser()
-        val brandRequest = BrandRequest(
+        val storeRequest = StoreRequest(
             user.email!!,
             user.social.toString(),
             //getLongitude.toString(),
@@ -70,12 +72,15 @@ class PopupBrandTabFragment : Fragment() {
             "36.1079"
         )
 
-        viewModel.getBrandByLocation(brandRequest)
+        viewModel.getBrandByLocation(storeRequest, SharedPreferencesUtil(requireContext()).getUser())
 
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
             override fun onClick(v: View, brandName: String) {
+                Log.d(TAG, "onClick: $brandName")
                 viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
+
+                //GifticonPreviewFragment()
             }
         })
 

@@ -6,9 +6,12 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,7 +21,6 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
-import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.login.LoginFragment
@@ -77,6 +79,12 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: 로그인 필요")
             changeFragment(LoginFragment())
         }
+    }
+
+    fun updateStatusBarColor(color: String?) { // Color must be in hexadecimal fromat
+        val window: Window = window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.setStatusBarColor(Color.parseColor(color))
     }
 
     //navigation bar 설정
@@ -141,7 +149,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     // 위치, 갤러리, 전화 권한
-    private fun checkPermissions() {
+     fun checkPermissions() {
         checkPermission = CheckPermission(this)
 
         if (!checkPermission.runtimeCheckPermission(this, *runtimePermissions)) {

@@ -47,11 +47,10 @@ class HomeFragment : Fragment(){
     private lateinit var mainActivity: MainActivity
     val TAG = "HOME"
 
-    override fun onStart() {
-        super.onStart()
-        mainActivity = activity as MainActivity
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
-        Log.d(TAG, "onStart: ")
+        mainActivity = activity as MainActivity
     }
 
     override fun onResume() {
@@ -68,7 +67,7 @@ class HomeFragment : Fragment(){
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        Log.d(TAG, "onCreateView: ")
+        mainActivity.updateStatusBarColor("#FFFFFF")
         return binding.root
     }
 

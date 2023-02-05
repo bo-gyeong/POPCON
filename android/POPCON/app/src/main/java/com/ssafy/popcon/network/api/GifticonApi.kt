@@ -26,7 +26,7 @@ interface GifticonApi {
 
     //현재위치에서 가능한 브랜드 목록
     @POST("local/shake")
-    suspend fun getBrandsByLocation(@Body request: BrandRequest): List<Brand>
+    suspend fun getBrandsByLocation(@Body request: StoreRequest): List<Brand>
 
     //브랜드 별 사용자 기프티콘 목록
     @POST("gifticons/brand")

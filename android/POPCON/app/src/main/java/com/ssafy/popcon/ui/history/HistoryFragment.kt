@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentHistoryBinding
@@ -20,10 +21,11 @@ import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class HistoryFragment : Fragment() {
+    val TAG = "HISTORY"
     private lateinit var binding: FragmentHistoryBinding
     private lateinit var mainActivity: MainActivity
     lateinit var historyAdapter: HistoryAdapter
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels{ ViewModelFactory(requireContext()) }
 
     override fun onStart() {
         super.onStart()
@@ -76,8 +78,9 @@ class HistoryFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView: ")
         GifticonDialogFragment.isShow = false
     }
 }

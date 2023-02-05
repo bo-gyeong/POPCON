@@ -34,11 +34,15 @@ class HomeDialogFragment : DialogFragment() {
 
     private lateinit var mainActivity: MainActivity
     val TAG = "HOME DIALOG"
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        GifticonDialogFragment.isShow = true
+    }
+
     override fun onStart() {
         super.onStart()
-        GifticonDialogFragment.isShow = true
 
-        Log.d(TAG, "onStart: ")
         mainActivity = activity as MainActivity
     }
 

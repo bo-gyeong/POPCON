@@ -1,6 +1,5 @@
 package com.ssafy.popcon.repository.gifticon
 
-import com.kakao.sdk.user.UserApiClient
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.network.api.GifticonApi
 
@@ -25,8 +24,8 @@ class GifticonRemoteDataSource(private val apiClient: GifticonApi) : GifticonDat
         return apiClient.updateGifticon(gifticon)
     }
 
-    override suspend fun getBrandsByLocation(brandRequest: BrandRequest): List<Brand> {
-        return apiClient.getBrandsByLocation(brandRequest)
+    override suspend fun getBrandsByLocation(storeRequest: StoreRequest): List<Brand> {
+        return apiClient.getBrandsByLocation(storeRequest)
     }
 
     override suspend fun deleteGifticon(barcodeNum: DeleteRequest) {

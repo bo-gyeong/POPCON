@@ -24,7 +24,7 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 class HistoryDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHistoryBinding
     private lateinit var history: String
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
 
     override fun onStart() {
@@ -107,6 +107,8 @@ class HistoryDialogFragment : DialogFragment() {
                 binding.btnUse.isClickable = false
                 val req = UpdateRequest(g.barcodeNum, g.brandName, g.due, g.memo ?: "", g.price ?: -1, g.productName, SharedPreferencesUtil(requireContext()).getUser().email!!, SharedPreferencesUtil(requireContext()).getUser().social, 0)
                 viewModel.updateGifticon(req, SharedPreferencesUtil(requireContext()).getUser())
+
+                dialog?.dismiss()
             }
         }
 

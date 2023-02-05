@@ -1,10 +1,18 @@
 package com.ssafy.popcon.dto
 
-data class BrandRequest(
+data class StoreRequest(
     val email: String?,
     val social: String?,
     val x: String?,
     val y: String?
+)
+
+data class StoreByBrandRequest(
+    val brandName: String,
+    val email: String,
+    val social: String,
+    val x: String,
+    val y: String
 )
 
 data class UserDeleteRequest(

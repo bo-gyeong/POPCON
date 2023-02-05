@@ -1,12 +1,17 @@
 package com.ssafy.popcon.network.api
 
-import com.ssafy.popcon.dto.BrandRequest
-import com.ssafy.popcon.dto.MapBrandLogo
+import com.ssafy.popcon.dto.StoreRequest
+import com.ssafy.popcon.dto.Store
+import com.ssafy.popcon.dto.StoreByBrandRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface MapApi {
-    // 현재 위치 보내기  --> DataClass 만들어서 하나의 객체만 Body로 보내야하는듯
+    //현재위치에서 매장 검색
     @POST("local/search")
-    suspend fun getStoreByLocation(@Body storeRequest : BrandRequest):  List<MapBrandLogo>
+    suspend fun getStoreByLocation(@Body storeRequest : StoreRequest):  List<Store>
+
+    //현재위치에서
+    @POST("local/search/byBrand")
+    suspend fun getStoreByBrand(@Body storeRequest: StoreByBrandRequest) : List<Store>
 }

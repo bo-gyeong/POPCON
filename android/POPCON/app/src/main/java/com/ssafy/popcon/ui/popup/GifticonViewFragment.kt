@@ -8,14 +8,10 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.airbnb.lottie.utils.Utils
+import androidx.fragment.app.activityViewModels
 import com.ssafy.popcon.databinding.ItemGifticonPopupBinding
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.UpdateRequest
-import com.ssafy.popcon.ui.add.OriginalImgDialogFragment
-import com.ssafy.popcon.ui.history.HistoryDialogFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -23,7 +19,7 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 class GifticonViewFragment : Fragment() {
     private var gifticonInfo: Gifticon? = null
     lateinit var binding: ItemGifticonPopupBinding
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +44,11 @@ class GifticonViewFragment : Fragment() {
         useBtnListener()
     }
 
-    private fun setGifticon() : UpdateRequest {
+    private fun makeGifticon() : UpdateRequest {
 
         return UpdateRequest(gifticonInfo!!.barcodeNum, gifticonInfo!!.brand!!.brandName, gifticonInfo!!.due, gifticonInfo!!.memo,
             gifticonInfo!!.price ?: -1, gifticonInfo!!.productName, SharedPreferencesUtil(requireContext()).getUser().email!!, SharedPreferencesUtil(requireContext()).getUser().social, gifticonInfo!!.state)
     }
-
 
     //사용완료 버튼 리스너
     private fun useBtnListener() {
@@ -61,7 +56,7 @@ class GifticonViewFragment : Fragment() {
             it.isClickable = false
 
             gifticonInfo!!.state = 1
-            val req = setGifticon()
+            val req = makeGifticon()
             viewModel.updateGifticon(req, SharedPreferencesUtil(requireContext()).getUser())
         }
     }
