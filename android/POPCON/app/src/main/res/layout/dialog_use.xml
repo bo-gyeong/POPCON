@@ -19,6 +19,7 @@
 
         <TextView
             android:id="@+id/tv_noBrand"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="근처에 매장이 없어요"

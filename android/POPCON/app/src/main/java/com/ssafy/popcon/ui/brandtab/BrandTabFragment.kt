@@ -17,6 +17,7 @@ import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.history.HistoryFragment
+import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
@@ -56,7 +57,7 @@ class BrandTabFragment : Fragment() {
     }
 
     //상단 브랜드탭
-    fun setBrandTab() {
+    private fun setBrandTab() {
         viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object: BrandAdapter.OnItemClickListener{

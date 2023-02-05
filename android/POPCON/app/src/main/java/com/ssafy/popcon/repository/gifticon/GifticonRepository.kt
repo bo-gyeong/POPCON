@@ -19,19 +19,19 @@ class GifticonRepository(private val remoteDataSource: GifticonRemoteDataSource)
         return remoteDataSource.getGifticonByBrand(gifticonByBrandRequest)
     }
 
-    suspend fun getHistory(userId: String): List<Gifticon> {
-        return remoteDataSource.getHistory(userId)
+    suspend fun getHistory(req: UserDeleteRequest): List<Gifticon> {
+        return remoteDataSource.getHistory(req)
     }
 
-    suspend fun updateGifticon(gifticon: Gifticon): Gifticon {
+    suspend fun updateGifticon(gifticon: UpdateRequest): UpdateResponse {
         return remoteDataSource.updateGifticon(gifticon)
     }
 
-    suspend fun getBrandsByLocation(brandRequest: BrandRequest): List<Brand> {
-        return remoteDataSource.getBrandsByLocation(brandRequest)
+    suspend fun getBrandsByLocation(storeRequest: StoreRequest): List<Brand> {
+        return remoteDataSource.getBrandsByLocation(storeRequest)
     }
 
-    suspend fun deleteGifticon(barcodeNum: String) {
+    suspend fun deleteGifticon(barcodeNum: DeleteRequest) {
         return remoteDataSource.deleteGifticon(barcodeNum)
     }
 }

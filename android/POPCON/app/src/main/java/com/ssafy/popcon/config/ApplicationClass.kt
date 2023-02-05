@@ -8,6 +8,7 @@ import com.navercorp.nid.NaverIdLoginSDK
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.util.AuthInterceptor
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.util.TokenAuthenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,6 +21,7 @@ class ApplicationClass : Application() {
 
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit
+        lateinit var refreshRetrofit: Retrofit
 
         // 모든 퍼미션 관련 배열
         val requiredPermissions = arrayOf(
@@ -31,9 +33,10 @@ class ApplicationClass : Application() {
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
                 .connectTimeout(5000, TimeUnit.MILLISECONDS)
                 // 로그캣에 okhttp.OkHttpClient로 검색하면 http 통신 내용을 보여줍니다.
+                .authenticator(TokenAuthenticator())
                 .addInterceptor(AuthInterceptor())
                 .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .connectTimeout(30, TimeUnit.SECONDS).build()
+                .build()
 
             retrofit = Retrofit.Builder()
                 .baseUrl(url)
@@ -42,6 +45,22 @@ class ApplicationClass : Application() {
                 .build()
 
             return retrofit
+        }
+
+        fun makeRefreshRetrofit(url: String): Retrofit {
+            val okHttpClient = OkHttpClient.Builder()
+                .readTimeout(5000, TimeUnit.MILLISECONDS)
+                .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build()
+
+            refreshRetrofit = Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+                .client(okHttpClient)
+                .build()
+
+            return refreshRetrofit
         }
     }
 
@@ -62,6 +81,7 @@ class ApplicationClass : Application() {
         //shared preference 초기화
 
         makeRetrofit(SERVER_URL)
+        makeRefreshRetrofit(SERVER_URL)
         setNaverModule(applicationContext)
     }
 }

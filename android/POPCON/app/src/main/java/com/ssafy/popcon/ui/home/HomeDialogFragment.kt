@@ -6,34 +6,42 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.ssafy.popcon.databinding.DialogHomeGifticonBinding
-import com.ssafy.popcon.dto.Badge
-import com.ssafy.popcon.dto.Brand
-import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.common.PopconSnackBar
 import com.ssafy.popcon.ui.edit.EditFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.ui.popup.ImageDialogFragment
 import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
 import com.ssafy.popcon.ui.edit.EditViewModel
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import kotlinx.coroutines.*
+import kotlin.math.log
 
 class HomeDialogFragment : DialogFragment() {
     private lateinit var binding: DialogHomeGifticonBinding
-    private lateinit var barNum: String
-    private val viewModel: GifticonViewModel by viewModels { ViewModelFactory(requireContext()) }
-    private val editViewModel : EditViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    private lateinit var gifticonFromHome: Gifticon
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    private val editViewModel: EditViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+
     private lateinit var mainActivity: MainActivity
+    val TAG = "HOME DIALOG"
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        GifticonDialogFragment.isShow = true
+    }
 
     override fun onStart() {
         super.onStart()
-        GifticonDialogFragment.isShow = true
 
         mainActivity = activity as MainActivity
     }
@@ -41,6 +49,7 @@ class HomeDialogFragment : DialogFragment() {
     override fun onResume() {
         super.onResume()
 
+        Log.d(TAG, "onResume: ")
         //팝업창 크기 설정
         val windowManager =
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -69,22 +78,38 @@ class HomeDialogFragment : DialogFragment() {
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
         val mArgs = arguments
-        barNum = mArgs!!.getString("barNum")!!
+        gifticonFromHome = mArgs!!.getSerializable("gifticon") as Gifticon
 
-        binding.badge = Badge("","#000000")
-
+        binding.badge = Badge("", "#000000")
         return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setLayout()
+
+        //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+        binding.btnDelete.setOnClickListener {
+
+            Log.d(TAG, "onViewCreated: ${gifticonFromHome.barcodeNum}")
+            viewModel.deleteGifticon(
+                DeleteRequest(gifticonFromHome.barcodeNum),
+                SharedPreferencesUtil(requireContext()).getUser()
+            )
+
+            dialog?.dismiss()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
-        viewModel.getGifticonByBarcodeNum(barNum)
+        /*binding.gifticon = gifticonFromHome
+        binding.badge = Utils.calDday(gifticonFromHome)*/
+        setButton(gifticonFromHome)
+        viewModel.getGifticonByBarcodeNum(gifticonFromHome.barcodeNum)
+
         viewModel.gifticon.observe(viewLifecycleOwner) { g ->
             val gifticon = Gifticon(
                 g.barcodeNum,
@@ -113,13 +138,38 @@ class HomeDialogFragment : DialogFragment() {
                 dialogFragment.show(childFragmentManager, "originalUrl")
             }
 
-            //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
+            /*//삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
             binding.btnDelete.setOnClickListener {
-                viewModel.deleteGifticon(gifticon.barcodeNum)
+                viewModel.deleteGifticon(DeleteRequest(gifticon.barcodeNum))
 
                 dialog?.dismiss()
-            }
+            }*/
         }
+
+
+        binding.ivProductPreview.setOnClickListener {
+            val args = Bundle()
+            args.putString("originalUrl", gifticonFromHome.origin_filepath)
+
+            val dialogFragment = ImageDialogFragment()
+            dialogFragment.arguments = args
+            dialogFragment.show(childFragmentManager, "originalUrl")
+        }
+    }
+
+    private fun setGifticon(): UpdateRequest {
+
+        return UpdateRequest(
+            gifticonFromHome.barcodeNum,
+            gifticonFromHome.brand!!.brandName,
+            gifticonFromHome.due,
+            gifticonFromHome.memo,
+            gifticonFromHome.price ?: -1,
+            gifticonFromHome.productName,
+            SharedPreferencesUtil(requireContext()).getUser().email!!,
+            SharedPreferencesUtil(requireContext()).getUser().social,
+            gifticonFromHome.state
+        )
     }
 
     private fun setButton(gifticon: Gifticon) {
@@ -128,8 +178,6 @@ class HomeDialogFragment : DialogFragment() {
             0 -> {
                 //수정 화면으로
                 binding.btnUse.setOnClickListener {
-                    /*val args = Bundle()
-                    args.putString("barNum", gifticon.barcodeNum)*/
                     editViewModel.setBarNum(gifticon.barcodeNum)
                     mainActivity.addFragment(EditFragment())
                 }
@@ -141,12 +189,15 @@ class HomeDialogFragment : DialogFragment() {
                 binding.btnUse.setOnClickListener {
                     binding.btnUse.isClickable = false
                     gifticon.state = 0
-                    viewModel.updateGifticon(gifticon)
+
+                    val req = setGifticon()
+                    viewModel.updateGifticon(req, SharedPreferencesUtil(requireContext()).getUser())
                 }
             }
             2 -> {
                 //수정 화면으로
                 binding.btnUse.setOnClickListener {
+                    editViewModel.setBarNum(gifticon.barcodeNum)
                     mainActivity.addFragment(EditFragment())
                 }
             }

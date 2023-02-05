@@ -5,14 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.viewpager2.widget.ViewPager2
-import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.gifticon.GifticonRepository
 import com.ssafy.popcon.repository.map.MapRepository
-import com.ssafy.popcon.ui.map.MapFragment
-import com.ssafy.popcon.ui.map.MapGifticonAdpater
-import com.ssafy.popcon.util.SharedPreferencesUtil
 import kotlinx.coroutines.launch
 
 class MapViewModel(
@@ -24,16 +19,22 @@ class MapViewModel(
     private val _mapGifticon = MutableLiveData<List<Gifticon>>()
     val mapGifticon: LiveData<List<Gifticon>> = _mapGifticon
 
-    // 현재 위치 기반 지도에서 띄워줄
-    private var _mapBrandLogo = MutableLiveData<List<MapBrandLogo>>()
-    val mapBrandLogo: LiveData<List<MapBrandLogo>> = _mapBrandLogo
+    // 현재 위치 기반 지도에서 띄워줄 매장
+    private var _store = MutableLiveData<List<Store>>()
+    val store: LiveData<List<Store>> = _store
 
     private val _brandsMap = MutableLiveData<List<BrandResponse>>()
     val brandsMap: LiveData<List<BrandResponse>> = _brandsMap
 
-    fun getStoreInfo(nowPos: Map<String, String>) {
+    fun getStoreInfo(storeRequest: StoreRequest) {
         viewModelScope.launch {
-            _mapBrandLogo.value = mapRepository.sendUserPosition(nowPos)
+            _store.value = mapRepository.getStoreByLocation(storeRequest)
+        }
+    }
+
+    fun getStoreByBrand(storeByBrandRequest: StoreByBrandRequest) {
+        viewModelScope.launch {
+            _store.value = mapRepository.getStoreByBrand(storeByBrandRequest)
         }
     }
 
@@ -58,7 +59,6 @@ class MapViewModel(
                         brandName
                     )
                 )
-                Log.d("TAG", "getGifticons: $gifticons")
                 _mapGifticon.value = gifticons
             }
         }

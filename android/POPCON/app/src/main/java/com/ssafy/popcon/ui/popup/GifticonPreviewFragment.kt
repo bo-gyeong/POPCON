@@ -33,7 +33,7 @@ class GifticonPreviewFragment : Fragment() {
             binding.edgePreview.isVisible = true
         }
 
-        binding.ivProductPreview.setOnClickListener {
+        binding.clPreview.setOnClickListener {
             mListener.onSelect(pos)
             mListener.onClick(pos)
         }

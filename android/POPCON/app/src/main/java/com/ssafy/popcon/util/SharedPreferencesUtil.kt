@@ -3,8 +3,6 @@ package com.ssafy.popcon.util
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.util.Log
-import com.ssafy.popcon.dto.SigninResponse
 import com.ssafy.popcon.dto.User
 
 class SharedPreferencesUtil(context: Context) {

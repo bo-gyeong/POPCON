@@ -3,22 +3,22 @@ package com.ssafy.popcon.dto
 import java.io.Serializable
 
 data class Gifticon(
-    val barcodeNum: String,
+    var barcodeNum: String,
     val barcode_filepath: String,
     val brand: Brand?,
-    val due: String, //example: 2023-01-10 00:00:00.000000
+    var due: String, //example: 2023-01-10 00:00:00.000000
     val hash: Int,
-    val price: Int?, //금액권 아니면 -1
-    val memo: String,
+    var price: Int?, //금액권 아니면 -1
+    var memo: String,
     val origin_filepath: String,
-    val productName: String,
+    var productName: String,
     val product_filepath: String,
     var state : Int
 ) : Serializable
 
 data class Brand(
     val brandImg: String?,
-    val brandName: String
+    var brandName: String
 ) {
     override fun equals(other: Any?): Boolean {
         return if (other is Brand)
