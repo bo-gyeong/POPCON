@@ -277,6 +277,7 @@ class AddFragment : Fragment(), onItemClick {
         dialogCreate = dialog.create()
     }
 
+    // 상태에 따라 다이얼로그 만들기/없애기
     private fun changeProgressDialogState(state: Boolean){
         if (state){
             dialogCreate.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
@@ -782,6 +783,11 @@ class AddFragment : Fragment(), onItemClick {
             return false
         }
         return true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        changeProgressDialogState(false)
     }
 
     override fun onDestroy() {
