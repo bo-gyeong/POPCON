@@ -25,10 +25,11 @@ class AddRepository(private val remoteDataSource: AddRemoteDataSource) {
         return remoteDataSource.addGifticon(addInfo)
     }
 
-    suspend fun addGifticonImg(
-        files:Array<MultipartBody.Part>,
-        imgInfo: Array<AddImgInfo>
-    ): List<AddImgInfoResult>{
-        return remoteDataSource.addGifticonImg(files, imgInfo)
+    suspend fun addGifticonImg(files:Array<MultipartBody.Part>): List<AddImgInfoResult>{
+        return remoteDataSource.addGifticonImg(files)
+    }
+
+    suspend fun addGifticonImgInfo(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>{
+        return remoteDataSource.addGifticonImgInfo(imgInfo)
     }
 }

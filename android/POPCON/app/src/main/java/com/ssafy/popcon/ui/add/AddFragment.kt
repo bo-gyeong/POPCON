@@ -17,6 +17,7 @@ import android.provider.MediaStore.Images
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -160,7 +161,8 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.btnRegi.setOnClickListener {
             if (chkClickImgCnt() && chkEffectiveness()){
-                viewModel.addGifticonImg(makeAddImgMultipartList(), makeAddImgInfoList())
+                viewModel.addGifticonImg(makeAddImgMultipartList())
+                viewModel.addGifticonImgInfo(makeAddImgInfoList())
                 //viewModel.addGifticon(makeAddInfoList())
 
                 for (i in 0 until delImgUris.size){
@@ -731,9 +733,10 @@ class AddFragment : Fragment(), onItemClick {
 
             imgInfo.add(
                 AddImgInfo(
-                    productImgName,
                     binding.etBarcode.text.toString(),
-                    fileNames[i]
+                    fileNames[i],
+                    productImgName,
+                    barcodeImgName
                 )
             )
         }

@@ -168,9 +168,10 @@ data class OCRResultCoordinate(
 )
 
 data class AddImgInfo(
-    val filesId: String,
     val barcodeNum: String,
-    val originFileName: String
+    val originGcpFileName: String,
+    val productGcpFileName: String,
+    val barcodeGcpFileName: String
 )
 
 data class ChkValidation(

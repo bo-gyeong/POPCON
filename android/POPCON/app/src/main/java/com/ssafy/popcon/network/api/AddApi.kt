@@ -16,7 +16,7 @@ interface AddApi {
     @POST("files/add_origin")
     suspend fun addFileToGCP(@Part files:Array<MultipartBody.Part>): List<GCPResult>
 
-    @POST("gcp/ocr/test")
+    @POST("gcp/ocr")
     suspend fun useOCR(@Body fileName:Array<String>): List<OCRResult>
 
     @GET("gcp/ocr/check_brand")
@@ -30,8 +30,8 @@ interface AddApi {
 
     @Multipart
     @POST("files/register_gifticon")
-    suspend fun addGifticonImg(
-        @Part files:Array<MultipartBody.Part>
-        , @PartMap imgInfo: Array<AddImgInfo>
-    ): List<AddImgInfoResult>
+    suspend fun addGifticonImg(@Part files:Array<MultipartBody.Part>): List<AddImgInfoResult>
+
+    @POST("files/register_gifticon")
+    suspend fun addGifticonImgInfo(@Body imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
 }

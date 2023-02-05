@@ -54,12 +54,15 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
         }
     }
 
-    fun addGifticonImg(
-        files:Array<MultipartBody.Part>,
-        imgInfo: Array<AddImgInfo>
-    ){
+    fun addGifticonImg(files:Array<MultipartBody.Part>){
         viewModelScope.launch {
-            addRepository.addGifticonImg(files, imgInfo)
+            addRepository.addGifticonImg(files)
+        }
+    }
+
+    fun addGifticonImgInfo(imgInfo: Array<AddImgInfo>){
+        viewModelScope.launch {
+            addRepository.addGifticonImgInfo(imgInfo)
         }
     }
 }

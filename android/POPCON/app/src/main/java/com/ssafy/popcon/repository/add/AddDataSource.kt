@@ -2,7 +2,6 @@ package com.ssafy.popcon.repository.add
 
 import com.ssafy.popcon.dto.*
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 
 interface AddDataSource {
     suspend fun addFileToGCP(files:Array<MultipartBody.Part>): List<GCPResult>
@@ -10,8 +9,6 @@ interface AddDataSource {
     suspend fun chkBrand(brandName: String): ChkValidation
     suspend fun chkBarcode(barcodeNum: String): ChkValidation
     suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfoNoImg>
-    suspend fun addGifticonImg(
-        files:Array<MultipartBody.Part>,
-        imgInfo: Array<AddImgInfo>
-    ): List<AddImgInfoResult>
+    suspend fun addGifticonImg(files:Array<MultipartBody.Part>): List<AddImgInfoResult>
+    suspend fun addGifticonImgInfo(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
 }
