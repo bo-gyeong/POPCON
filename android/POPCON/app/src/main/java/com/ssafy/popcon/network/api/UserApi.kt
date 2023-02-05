@@ -1,6 +1,5 @@
 package com.ssafy.popcon.network.api
 
-import com.ssafy.popcon.dto.SigninResponse
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import retrofit2.http.Body
@@ -8,9 +7,6 @@ import retrofit2.http.HTTP
 import retrofit2.http.POST
 
 interface UserApi {
-    @POST("user/login")
-    suspend fun signIn(@Body user: User) : SigninResponse
-
     //네이버 로그인
     @POST("user/login/naver")
     suspend fun signInNaver(@Body user: User): User

@@ -1,5 +1,9 @@
 package com.ssafy.popcon.ui.login
 
+import android.R.attr
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.target.DrawableImageViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
@@ -18,15 +26,15 @@ import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
 import com.ssafy.popcon.BuildConfig
+import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentLoginBinding
-import com.ssafy.popcon.dto.SigninResponse
+import com.ssafy.popcon.dto.TokenResponse
 import com.ssafy.popcon.dto.User
-import com.ssafy.popcon.repository.user.UserRemoteDataSource
-import com.ssafy.popcon.repository.user.UserRepository
+import com.ssafy.popcon.repository.auth.AuthRemoteDataSource
+import com.ssafy.popcon.repository.auth.AuthRepository
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
-import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.UserViewModel
@@ -35,15 +43,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import retrofit2.http.POST
 import java.util.*
+
 
 private const val TAG = "LoginFragment_싸피"
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
-    lateinit var tokens: SigninResponse
+    lateinit var tokens: TokenResponse
 
     private var userUUID: String = ""
     var user = User("", "")
@@ -51,17 +59,28 @@ class LoginFragment : Fragment() {
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     lateinit var mainActivity: MainActivity
 
-    override fun onStart() {
-        super.onStart()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         mainActivity = activity as MainActivity
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        Glide.with(requireContext()).load(R.raw.pop).into(object : DrawableImageViewTarget(binding.popconGif){
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                if (resource is GifDrawable) {
+                    (resource as GifDrawable).setLoopCount(1)
+                }
+                super.onResourceReady(resource, transition)
+            }
+        })
+        mainActivity.updateStatusBarColor("#F7B733")
         return binding.root
     }
 
@@ -86,10 +105,6 @@ class LoginFragment : Fragment() {
         binding.run {
             kakaoLogin()
             naverLogin()
-        }
-
-        binding.btnNonmemberLogin.setOnClickListener {
-            nonMemberLogin()
         }
     }
 
@@ -180,17 +195,22 @@ class LoginFragment : Fragment() {
                             user = User("abc@naver.com", "카카오")
                             SharedPreferencesUtil(requireContext()).addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
-                            val userRepo =
-                                UserRepository(UserRemoteDataSource(RetrofitUtil.userService))
+                            val authRepo =
+                                AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
 
                             val job = CoroutineScope(Dispatchers.IO).launch {
-                                tokens = userRepo.signIn(user)
+                                tokens = authRepo.signIn(user)
                             }
                             runBlocking {
                                 job.join()
-                                ApplicationClass.sharedPreferencesUtil.accessToken = tokens.acessToken
-                                ApplicationClass.sharedPreferencesUtil.refreshToken = tokens.refreshToekn
-                                Log.d(TAG, "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
+                                ApplicationClass.sharedPreferencesUtil.accessToken =
+                                    tokens.acessToken
+                                ApplicationClass.sharedPreferencesUtil.refreshToken =
+                                    tokens.refreshToekn
+                                Log.d(
+                                    TAG,
+                                    "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
+                                )
                             }
                             mainActivity.changeFragment(HomeFragment())
                         }

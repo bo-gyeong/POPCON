@@ -10,9 +10,10 @@ class AuthInterceptor : Interceptor {
         var req =
             chain.request().newBuilder().addHeader(
                 "Authorization",
-                "Bearer " + ApplicationClass.sharedPreferencesUtil.accessToken ?: ""
+                "Bearer ${ApplicationClass.sharedPreferencesUtil.accessToken ?: ""}"
             ).build()
-        //Log.d("TAG", "intercept: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
+        Log.d("TAG", "auth intercept: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
+
         return chain.proceed(req)
     }
 }

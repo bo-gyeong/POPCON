@@ -214,9 +214,11 @@
                                 android:textColor="@color/popcon_black_03"
                                 android:textSize="15sp" />
 
-                            <EditText
-                                android:id="@+id/et_barcode"
+                            <TextView
+                                android:id="@+id/tv_barcode"
                                 android:layout_width="match_parent"
+                                android:textColor="@color/popcon_black"
+                                android:textSize="18sp"
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/popcon_grey_09"
                                 android:text="@{gifticon.barcodeNum}" />
