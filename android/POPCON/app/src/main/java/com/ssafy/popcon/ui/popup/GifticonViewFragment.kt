@@ -2,6 +2,7 @@ package com.ssafy.popcon.ui.popup
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +66,7 @@ class GifticonViewFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
         binding.gifticon = gifticonInfo
+        Log.d("TAG", "setLayout: $gifticonInfo")
         if (gifticonInfo?.price == -1) {
             binding.btnUse.isVisible = true
             binding.btnPrice.isVisible = false
@@ -107,5 +109,9 @@ class GifticonViewFragment : Fragment() {
             fragment.arguments = args
             return fragment
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
