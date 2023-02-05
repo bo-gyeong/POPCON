@@ -2,6 +2,7 @@ package com.ssafy.popcon.repository.add
 
 import com.ssafy.popcon.dto.*
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class AddRepository(private val remoteDataSource: AddRemoteDataSource) {
     suspend fun addFileToGCP(files: Array<MultipartBody.Part>): List<GCPResult>{
@@ -24,7 +25,10 @@ class AddRepository(private val remoteDataSource: AddRemoteDataSource) {
         return remoteDataSource.addGifticon(addInfo)
     }
 
-    suspend fun addGifticonImg(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>{
-        return remoteDataSource.addGifticonImg(imgInfo)
+    suspend fun addGifticonImg(
+        files:Array<MultipartBody.Part>,
+        imgInfo: Array<AddImgInfo>
+    ): List<AddImgInfoResult>{
+        return remoteDataSource.addGifticonImg(files, imgInfo)
     }
 }

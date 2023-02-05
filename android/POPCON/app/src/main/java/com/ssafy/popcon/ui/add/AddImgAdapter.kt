@@ -18,6 +18,7 @@ class AddImgAdapter(
     , var originalImgUriList: ArrayList<GifticonImg>
     , var cropXyImgUriList: ArrayList<GifticonImg>
     , var barcodeImgUriList: ArrayList<GifticonImg>
+    , var fileNames: ArrayList<String>
     , _onItemClick: onItemClick
 ):
     RecyclerView.Adapter<AddImgAdapter.AddImgViewHolder>() {
@@ -63,6 +64,7 @@ class AddImgAdapter(
                 originalImgUriList.removeAt(bindingAdapterPosition)
                 cropXyImgUriList.removeAt(bindingAdapterPosition)
                 barcodeImgUriList.removeAt(bindingAdapterPosition)
+                fileNames.removeAt(bindingAdapterPosition)
                 notifyItemRemoved(bindingAdapterPosition)
 
                 if (bindingAdapterPosition == nowClick){

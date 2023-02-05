@@ -85,6 +85,6 @@ class ApplicationClass : Application() {
 
         makeRetrofit(SERVER_URL)
         kakaoLoginState()
-        //setNaverModule(applicationContext)
+        setNaverModule(applicationContext)
     }
 }

@@ -3,6 +3,7 @@ package com.ssafy.popcon.repository.add
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.network.api.AddApi
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class AddRemoteDataSource(private val apiClient:AddApi): AddDataSource {
     override suspend fun addFileToGCP(files: Array<MultipartBody.Part>): List<GCPResult> {
@@ -25,7 +26,10 @@ class AddRemoteDataSource(private val apiClient:AddApi): AddDataSource {
         return apiClient.addGifticon(addInfo)
     }
 
-    override suspend fun addGifticonImg(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult> {
-        return apiClient.addGifticonImg(imgInfo)
+    override suspend fun addGifticonImg(
+        files: Array<MultipartBody.Part>,
+        imgInfo: Array<AddImgInfo>
+    ): List<AddImgInfoResult> {
+        return apiClient.addGifticonImg(files, imgInfo)
     }
 }

@@ -168,9 +168,9 @@ data class OCRResultCoordinate(
 )
 
 data class AddImgInfo(
-    val files: Array<MultipartBody.Part>,
+    val filesId: String,
     val barcodeNum: String,
-    val originalImgName: String
+    val originFileName: String
 )
 
 data class ChkValidation(

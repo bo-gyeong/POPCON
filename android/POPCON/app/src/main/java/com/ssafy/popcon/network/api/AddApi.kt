@@ -2,11 +2,13 @@ package com.ssafy.popcon.network.api
 
 import com.ssafy.popcon.dto.*
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Query
 
 interface AddApi {
@@ -28,5 +30,8 @@ interface AddApi {
 
     @Multipart
     @POST("files/register_gifticon")
-    suspend fun addGifticonImg(@Part imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
+    suspend fun addGifticonImg(
+        @Part files:Array<MultipartBody.Part>
+        , @PartMap imgInfo: Array<AddImgInfo>
+    ): List<AddImgInfoResult>
 }

@@ -2,12 +2,14 @@ package com.ssafy.popcon.ui.add
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,14 +17,12 @@ import android.provider.MediaStore.Images
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.loader.content.CursorLoader
@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.soundcloud.android.crop.Crop
+import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.*
@@ -48,19 +49,11 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.BufferedSink
-import okio.ByteString.Companion.toByteString
 import okio.source
-import org.json.JSONObject
-import org.w3c.dom.Text
 import java.io.*
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.io.path.Path
 
 private const val TAG = "###_AddFragment"
 class AddFragment : Fragment(), onItemClick {
@@ -76,6 +69,8 @@ class AddFragment : Fragment(), onItemClick {
     private var productImgUris = ArrayList<GifticonImg>()
     private var barcodeImgUris = ArrayList<GifticonImg>()
     private var gifticonInfoList = ArrayList<AddInfo>()
+    private lateinit var dialog: AlertDialog.Builder
+    private lateinit var dialogCreate: AlertDialog
     private lateinit var addImgAdapter: AddImgAdapter
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
@@ -118,6 +113,7 @@ class AddFragment : Fragment(), onItemClick {
         super.onViewCreated(view, savedInstanceState)
 
         chkCnt = 1
+        makeProgressDialog()
         openGalleryFirst()
 
         binding.cvAddCoupon.setOnClickListener {
@@ -164,8 +160,12 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.btnRegi.setOnClickListener {
             if (chkClickImgCnt() && chkEffectiveness()){
-                //viewModel.addGifticonImg(makeAddImgInfoList())
-                viewModel.addGifticon(makeAddInfoList())
+                viewModel.addGifticonImg(makeAddImgMultipartList(), makeAddImgInfoList())
+                //viewModel.addGifticon(makeAddInfoList())
+
+                for (i in 0 until delImgUris.size){
+                    delCropImg(delImgUris[i])
+                }
                 mainActivity.changeFragment(HomeFragment())
             }
         }
@@ -270,6 +270,22 @@ class AddFragment : Fragment(), onItemClick {
         return value
     }
 
+    // 로딩화면 띄우기
+    private fun makeProgressDialog(){
+        dialog = AlertDialog.Builder(requireContext())
+        dialog.setView(R.layout.dialog_progress).setCancelable(false)
+        dialogCreate = dialog.create()
+    }
+
+    private fun changeProgressDialogState(state: Boolean){
+        if (state){
+            dialogCreate.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+            dialogCreate.show()
+        } else{
+            dialogCreate.dismiss()
+        }
+    }
+
     private fun addGifticonInfo(idx: Int){
         val addInfo = AddInfo(
             originalImgUris[idx].imgUri,
@@ -295,15 +311,12 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.cbPrice.isChecked = false
         binding.lPrice.visibility = View.GONE
-//        if (gifticonInfoList[idx].voucherChk == 1){
-//            binding.cbPrice.isChecked = true
-//            binding.lPrice.visibility = View.VISIBLE
-//        }
         changeChkState(imgNum)
         setPrice()
 
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
+        changeProgressDialogState(false)
     }
 
     override fun onClick(idx: Int) {
@@ -363,6 +376,8 @@ class AddFragment : Fragment(), onItemClick {
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) //Intent.EXTRA_ALLOW_MULTIPLE
         intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         result.launch(intent)
+
+        changeProgressDialogState(true)
     }
 
     // cardView를 클릭했을 때 나오는 갤러리
@@ -440,7 +455,9 @@ class AddFragment : Fragment(), onItemClick {
 
     // 상단 리사이클러뷰 만들기
     private fun makeImgList(){
-        addImgAdapter = AddImgAdapter(gifticonInfoList, originalImgUris, productImgUris, barcodeImgUris, this)
+        addImgAdapter = AddImgAdapter(
+            gifticonInfoList, originalImgUris, productImgUris, barcodeImgUris, fileNames, this
+        )
 
         binding.rvCouponList.apply {
             adapter = addImgAdapter
@@ -691,15 +708,29 @@ class AddFragment : Fragment(), onItemClick {
         })
     }
 
-    private fun makeAddImgInfoList(): Array<AddImgInfo>{
-        val imgInfo = mutableListOf<AddImgInfo>()
+    private fun makeAddImgMultipartList(): Array<MultipartBody.Part>{
+        val multipartImg = mutableListOf<MultipartBody.Part>()
         for (i in 0 until originalImgUris.size){
             val productData = productImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
             val barcodeData = barcodeImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
 
+            multipartImg.add(productData)
+            multipartImg.add(barcodeData)
+        }
+
+        return multipartImg.toTypedArray()
+    }
+
+    private fun makeAddImgInfoList(): Array<AddImgInfo>{
+        val imgInfo = mutableListOf<AddImgInfo>()
+        for (i in 0 until originalImgUris.size){
+            val tmp:RequestBody =File(getPath(productImgUris[i].imgUri)).name.toRequestBody("text/plain".toMediaTypeOrNull())
+            val productImgName = File(getPath(productImgUris[i].imgUri)).name
+            val barcodeImgName = File(getPath(barcodeImgUris[i].imgUri)).name
+
             imgInfo.add(
                 AddImgInfo(
-                    arrayOf(productData, barcodeData),
+                    productImgName,
                     binding.etBarcode.text.toString(),
                     fileNames[i]
                 )
@@ -749,10 +780,6 @@ class AddFragment : Fragment(), onItemClick {
         ) {
             Toast.makeText(requireContext(), "입력 정보를 확인해주세요", Toast.LENGTH_SHORT).show()
             return false
-        }
-
-        for (i in 0 until delImgUris.size){
-            delCropImg(delImgUris[i])
         }
         return true
     }

@@ -26,7 +26,7 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
 
     fun addFileToGCP(files: Array<MultipartBody.Part>){
         viewModelScope.launch {
-            _gcpResult.value = Event(addRepository.addFileToGCP(files))
+            _gcpResult.postValue(Event(addRepository.addFileToGCP(files)))
         }
     }
 
@@ -54,9 +54,12 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
         }
     }
 
-    fun addGifticonImg(imgInfo: Array<AddImgInfo>){
+    fun addGifticonImg(
+        files:Array<MultipartBody.Part>,
+        imgInfo: Array<AddImgInfo>
+    ){
         viewModelScope.launch {
-            addRepository.addGifticonImg(imgInfo)
+            addRepository.addGifticonImg(files, imgInfo)
         }
     }
 }
