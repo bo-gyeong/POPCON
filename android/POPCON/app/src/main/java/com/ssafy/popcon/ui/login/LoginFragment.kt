@@ -51,6 +51,10 @@ class LoginFragment : Fragment() {
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     lateinit var mainActivity: MainActivity
 
+    companion object{
+        var fromSettingsFragment = false
+    }
+
     override fun onStart() {
         super.onStart()
         mainActivity = activity as MainActivity
@@ -73,15 +77,8 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        mainActivity = activity as MainActivity
-
-        //자동로그인
-        if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
-            mainActivity.changeFragment(HomeFragment())
-        }
-
         init()
+        chkRoute()
 
         binding.run {
             kakaoLogin()
@@ -95,6 +92,19 @@ class LoginFragment : Fragment() {
 
     private fun init() {
         mainActivity = activity as MainActivity
+    }
+
+    // 앱을 처음 실행한 것인지, 로그아웃 또는 회원탈퇴를 한 직후인지 확인
+    private fun chkRoute(){
+        if (!fromSettingsFragment){
+            //자동로그인
+            if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
+                mainActivity.changeFragment(HomeFragment())
+            }
+        } else{
+            SharedPreferencesUtil(requireContext()).deleteUser()
+            fromSettingsFragment = false
+        }
     }
 
     private fun kakaoLogin() {

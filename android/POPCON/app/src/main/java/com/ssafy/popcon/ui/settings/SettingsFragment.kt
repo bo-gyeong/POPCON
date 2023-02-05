@@ -148,7 +148,7 @@ class SettingsFragment : Fragment() {
 
     // 설정에서 로그인화면으로 이동 및 로그인정보 삭제
     private fun settingsToLogin() {
-        SharedPreferencesUtil(requireContext()).deleteUser()
+        LoginFragment.fromSettingsFragment = true
         mainActivity.changeFragment(LoginFragment())
     }
 
@@ -341,7 +341,6 @@ class SettingsFragment : Fragment() {
                     viewModel.withdraw(UserDeleteRequest(user.email!!, user.social))
                     Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                 }
-                SharedPreferencesUtil(requireContext()).deleteUser()
                 settingsToLogin()
             }
         }
@@ -366,7 +365,6 @@ class SettingsFragment : Fragment() {
                         //서버에서 토큰 삭제에 성공한 상태입니다.
 
                         viewModel.withdraw(UserDeleteRequest(user.email!!, user.social.toString()))
-                        SharedPreferencesUtil(requireContext()).deleteUser()
                         settingsToLogin()
                     }
 
