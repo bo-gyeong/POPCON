@@ -105,64 +105,42 @@ public class FileServiceImpl implements FileService{
 
 
 
-    public List<InputFile> registerGifticon(MultipartFile[] files,RegisterGifticonDto registerGifticonDto) {
+    public List<InputFile> registerGifticon(RegisterGifticonDto registerGifticonDto) {
 
         LOGGER.debug("Start gifticon registering service");
         List<InputFile> inputFiles = new ArrayList<>();
 
-        //MultipartFile[] files = registerGifticonDto.getFiles();
 
         String barcodeNum = registerGifticonDto.getBarcodeNum();
 
         Gifticon nowGifticon = gifticonRepository.findByBarcodeNum(barcodeNum);
 
-        String originFileName = registerGifticonDto.getOriginFileName();
+        String originFileName = registerGifticonDto.getOriginGcpFileName();
 
         InputFile originImage = fileRepository.findByFileName(originFileName);
 
-        Arrays.asList(files).forEach(file -> {
-            String originalFileName = file.getOriginalFilename();
-            if(originalFileName == null){
-                throw new BadRequestException("Original file name is null");
-            }
-            else if(originalFileName.contains("Barcode")) {
+        String barcodeFileName = registerGifticonDto.getBarcodeGcpFileName();
 
-                try {
-                    Path path = new File(originalFileName).toPath();
+        InputFile barcodeImage = fileRepository.findByFileName(barcodeFileName);
 
-                    String contentType = Files.probeContentType(path);
-                    FileDto fileDto = dataBucketUtil.uploadFile(file, originalFileName, contentType);
+        String productFileName = registerGifticonDto.getProductGcpFileName();
 
-                    if (fileDto != null) {
-                        inputFiles.add(new InputFile(1, nowGifticon, fileDto.getFileName(), fileDto.getFilePath()));
-                        LOGGER.debug("File uploaded successfully, file name: {} and url: {}",fileDto.getFileName(), fileDto.getFilePath());
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Error occurred while uploading. Error: ", e);
-                    throw new GCPFileUploadException("Error occurred while uploading");
-                }
-            }
-            else if(originalFileName.contains("Product")) {
-                try {
-                    Path path = new File(originalFileName).toPath();
+        InputFile productImage = fileRepository.findByFileName(productFileName);
 
-                    String contentType = Files.probeContentType(path);
-                    FileDto fileDto = dataBucketUtil.uploadFile(file, originalFileName, contentType);
 
-                    if (fileDto != null) {
-                        inputFiles.add(new InputFile(2, nowGifticon, fileDto.getFileName(), fileDto.getFilePath()));
-                        LOGGER.debug("File uploaded successfully, file name: {} and url: {}",fileDto.getFileName(), fileDto.getFilePath());
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Error occurred while uploading. Error: ", e);
-                    throw new GCPFileUploadException("Error occurred while uploading");
-                }
-            }
-
-        });
 
         originImage.setGifticon(nowGifticon);
-        fileRepository.save(originImage);
+
+        barcodeImage.setGifticon(nowGifticon);
+        barcodeImage.setImageType(1);
+
+        productImage.setGifticon(nowGifticon);
+        productImage.setImageType(2);
+
+        inputFiles.add(originImage);
+        inputFiles.add(barcodeImage);
+        inputFiles.add(productImage);
+
 
         fileRepository.saveAll(inputFiles);
         LOGGER.debug("File details successfully saved in the database");

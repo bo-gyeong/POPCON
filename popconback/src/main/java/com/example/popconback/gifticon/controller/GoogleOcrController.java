@@ -58,13 +58,20 @@ public class GoogleOcrController {
     @GetMapping("/ocr/check_barcode")
     public ResponseEntity<CheckValidationDto> checkBarcode(@RequestParam(value = "barcodeNum") String barcodeNum) throws Exception {
 
+        if (barcodeNum.length() == 0) {
+            CheckValidationDto checkValidationDto = new CheckValidationDto(-1);
+            return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
+        }
+
+
         try {
             Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
 
             if (byBarcodeNum.isPresent()) {
                 CheckValidationDto checkValidationDto = new CheckValidationDto(0);
                 return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
-            } else {
+            }
+            else {
                 CheckValidationDto checkValidationDto = new CheckValidationDto(1);
                 return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
             }
@@ -145,6 +152,8 @@ public class GoogleOcrController {
         try {
             for (String fileName : fileNames) {
 
+                definePublisher = -1;
+
                 GifticonResponse finalGifticonResponse = null;
 
                 System.out.println(fileName);
@@ -183,83 +192,90 @@ public class GoogleOcrController {
                         for (EntityAnnotation ress : newRes) {
 
 
-
                             if (ress.getBoundingPoly().getVertices(0).getX() > 288 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 245 &&
                                     ress.getBoundingPoly().getVertices(2).getX() < 384 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 272){
-                                checkGS += ((String)ress.getDescription().replaceAll("\n", "").replaceAll(" ",""));
+                                    ress.getBoundingPoly().getVertices(2).getY() < 272) {
+                                checkGS += ((String) ress.getDescription().replaceAll("\n", "").replaceAll(" ", ""));
                                 //System.out.println(checkGS);
 
 
-
-                                String isGS = checkGS.replaceAll("\n", "").replaceAll(" ","");
+                                String isGS = checkGS.replaceAll("\n", "").replaceAll(" ", "");
                                 System.out.println(isGS);
-                                if (isGS.equals("GS&쿠폰")) {
+                                if (isGS.contains("GS&쿠폰")) {
                                     definePublisher = 0;
 
                                     System.out.println(definePublisher);
                                     break;
-                                }}
+                                }
+                            }
 
+                        }
+                        for (EntityAnnotation ress : newRes) {
 
-
-                            else if (ress.getBoundingPoly().getVertices(0).getX() > 218 &&
+                            if (ress.getBoundingPoly().getVertices(0).getX() > 218 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 1499 &&
                                     ress.getBoundingPoly().getVertices(2).getX() < 584 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 1558){
+                                    ress.getBoundingPoly().getVertices(2).getY() < 1558) {
                                 checkKakao += ress.getDescription();
 
 
-
-                                String isKakao = checkKakao.replaceAll("\n", "").replaceAll(" ","");
+                                String isKakao = checkKakao.replaceAll("\n", "").replaceAll(" ", "");
                                 System.out.print(isKakao);
                                 if (isKakao.contains("kakaotalk")) {
                                     definePublisher = 1;
                                     break;
-                                }}
+                                }
+                            }
 
+                        }
 
+                        for (EntityAnnotation ress : newRes) {
 
-
-                            else if (ress.getBoundingPoly().getVertices(0).getX() > 56 &&
+                            if (ress.getBoundingPoly().getVertices(0).getX() > 56 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 413 &&
                                     ress.getBoundingPoly().getVertices(2).getX() < 398 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 444){
+                                    ress.getBoundingPoly().getVertices(2).getY() < 444) {
                                 checkGiftishow += ress.getDescription();
 
 
-
-                                String isGiftishow = checkGiftishow.replaceAll("\n", "").replaceAll(" ","");
+                                String isGiftishow = checkGiftishow.replaceAll("\n", "").replaceAll(" ", "");
                                 System.out.print(isGiftishow);
                                 if (isGiftishow.contains("기프티쇼") || isGiftishow.contains("giftishow")) {
                                     definePublisher = 2;
                                     break;
-                                }}
+                                }
+                            }
+
+                        }
+
+                        for (EntityAnnotation ress : newRes) {
 
 
-
-
-                            else if (ress.getBoundingPoly().getVertices(0).getX() > 0 &&
+                            if (ress.getBoundingPoly().getVertices(0).getX() > 0 &&
                                     ress.getBoundingPoly().getVertices(0).getY() > 312 &&
                                     ress.getBoundingPoly().getVertices(2).getX() < 320 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 333){
+                                    ress.getBoundingPoly().getVertices(2).getY() < 333) {
                                 checkGifticon += ress.getDescription();
 
 
-
-                                String isGifticon = checkGifticon.replaceAll("\n", "").replaceAll(" ","");
+                                String isGifticon = checkGifticon.replaceAll("\n", "").replaceAll(" ", "");
                                 System.out.print(isGifticon);
                                 if (isGifticon.contains("gifticon")) {
                                     definePublisher = 3;
                                     break;
-                                }}
-
-                            else {
-                                definePublisher = -1;
+                                }
                             }
 
                         }
+
+//                            else {
+//                                break;
+//
+//
+//                            }
+
+
 
                         System.out.println(definePublisher);}
 
@@ -279,6 +295,19 @@ public class GoogleOcrController {
                         if (res.hasError()) {
                             System.out.format("Error: %s%n", res.getError().getMessage());
                             break;
+                        }
+                        if (definePublisher==-1) {
+                            GifticonResponse gifticonResponse = new GifticonResponse(-1,"", "", "", null, null,"",null,-1);
+
+                            finalGifticonResponse = gifticonResponse;
+
+                            finalResult.add(finalGifticonResponse);
+
+
+
+                            System.out.println(gifticonResponse);
+                            break;
+
                         }
 
                         List<EntityAnnotation> resList = res.getTextAnnotationsList();
@@ -1075,19 +1104,7 @@ public class GoogleOcrController {
 
 
                         }
-                        else {
-                            GifticonResponse gifticonResponse = new GifticonResponse(-1,"", "", "", null, null,"",null,-1);
 
-                            finalGifticonResponse = gifticonResponse;
-
-                            finalResult.add(finalGifticonResponse);
-
-
-
-                            System.out.println(gifticonResponse);
-                            break;
-
-                        }
 
 
                     }

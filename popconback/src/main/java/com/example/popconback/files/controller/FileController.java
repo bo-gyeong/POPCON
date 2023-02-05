@@ -32,31 +32,22 @@ public class FileController {
         return fileService.uploadFiles(files);
     }
 
+    // file올리면 gcp파일이름+url주고 -> dto (세장 gcp파일 이름 & 바코드) 받은다음 이미지타입 및 바코드 db 저장
     @ApiOperation(value = "registerGifticon",
             notes = "등록하기 버튼 누른 후 상품,바코드 이미지 저장 및 db 업데이트",
             httpMethod = "POST")
-    @PostMapping(value="/register_gifticon", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public List<List<InputFile>> registerGifticon(MultipartFile[] files, RegisterGifticonDto[] registerGifticonDtoList){
+    @PostMapping(value="/register_gifticon")
+    public List<List<InputFile>> registerGifticon(@RequestBody RegisterGifticonDto[] registerGifticonDtoList){
         LOGGER.debug("Call registerGifticon API");
 
         List<List<InputFile>> allResultList = new ArrayList<>();
 
         for (RegisterGifticonDto registerGifticonDto : registerGifticonDtoList) {
-            String fileId = registerGifticonDto.getFilesId();
-            List<MultipartFile> nowFiles = new ArrayList<>();
-            for (MultipartFile file : files) {
-                String idFromFileName = file.getOriginalFilename();
-                assert idFromFileName != null;
-                if (idFromFileName.contains(fileId)) {
-                    nowFiles.add(file);
-
-                }
-
+            allResultList.add(fileService.registerGifticon(registerGifticonDto));
             }
-            MultipartFile[] inputFiles = nowFiles.toArray(new MultipartFile[0]);
 
-            allResultList.add(fileService.registerGifticon(inputFiles,registerGifticonDto));
-        }
+
+
 
         return allResultList;
     }
