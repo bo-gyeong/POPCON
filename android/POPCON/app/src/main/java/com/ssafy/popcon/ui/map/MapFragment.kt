@@ -8,6 +8,7 @@ import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ import net.daum.mf.map.api.CalloutBalloonAdapter
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
+import net.daum.mf.map.api.MapView.MapViewEventListener
 import java.io.File
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -42,7 +44,7 @@ import java.net.URL
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), CalloutBalloonAdapter {
+class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
     private lateinit var binding: FragmentMapBinding
     private val ACCESS_FINE_LOCATION = 1000     // Request Code
     private lateinit var ballBinding: ItemBalloonBinding
@@ -73,8 +75,12 @@ class MapFragment : Fragment(), CalloutBalloonAdapter {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
+
+        binding.mapView.setMapViewEventListener(this)
+        binding.mapView.setCalloutBalloonAdapter(this)
 
         if (checkLocationService()) {
             // GPS가 켜져있을 경우
@@ -92,6 +98,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter {
         // 위치 업데이트 버튼 클릭시 화면 가운데를 현재 위치 변경
         binding.btnUpdatePosition.setOnClickListener {
             moveMapUserToPosition(binding.mapView)
+            startTracking()
         }
     }
 
@@ -114,6 +121,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter {
             }
         }
     }
+
 
     private fun moveMapUserToPosition(mapView: MapView) {
         getUserLocation()
@@ -171,12 +179,16 @@ class MapFragment : Fragment(), CalloutBalloonAdapter {
         )
         binding.mapView.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
+
+        binding.mapView.setShowCurrentLocationMarker(true)
     }
 
     // 위치추적 중지
     private fun stopTracking() {
         binding.mapView.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOff
+
+        binding.mapView.setShowCurrentLocationMarker(false)
     }
 
     var markers = mutableListOf<MapPOIItem>()
@@ -217,7 +229,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter {
         }
     }
 
-    fun resizeBitmapImage(source: Bitmap, maxResolution: Int): Bitmap? {
+    private fun resizeBitmapImage(source: Bitmap, maxResolution: Int): Bitmap? {
         val width = source.width
         val height = source.height
         var newWidth = width
@@ -240,7 +252,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter {
     }
 
     //기프티콘 뷰페이저
-    fun setGifticonBanner() {
+    private fun setGifticonBanner() {
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
 
         with(binding.viewpagerMapGiftcon) {
@@ -326,6 +338,38 @@ class MapFragment : Fragment(), CalloutBalloonAdapter {
         canvas.drawBitmap(x, rect, rect, paint)
 
         return resizeBitmapImage(output, 60)!!
+    }
+
+    override fun onMapViewInitialized(p0: MapView?) {
+        Log.d(TAG, "onMapViewInitialized: ")
+        //TODO("Not yet implemented")
+    }
+
+    override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
+
+    }
+
+    override fun onMapViewZoomLevelChanged(p0: MapView?, p1: Int) {
+    }
+
+    override fun onMapViewSingleTapped(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewDoubleTapped(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewLongPressed(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
+        stopTracking()
+        Log.d(TAG, "onMapViewDragStarted: ")
+    }
+
+    override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
     }
 }
 /*

@@ -98,6 +98,7 @@ class HomeFragment : Fragment(){
         })
     }
 
+    
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
         gifticonAdapter = GiftconAdapter(viewModel)
