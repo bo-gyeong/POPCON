@@ -1,10 +1,7 @@
-package com.example.popconback.gifticon.dto;
+package com.example.popconback.location.dto;
 
-import com.example.popconback.location.controller.LocationResponse;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class LocationSearchByBrandDto {

@@ -1,11 +1,12 @@
 package com.example.popconback.location.controller;
 
 import com.example.popconback.gifticon.dto.Gifticon.ListGifticonUser.ResponseListGifticonUserDto;
-import com.example.popconback.gifticon.dto.LocationSearchByBrandDto;
-import com.example.popconback.gifticon.dto.LocationShakeDto;
+import com.example.popconback.location.dto.LocationSearchByBrandDto;
+import com.example.popconback.location.dto.LocationShakeDto;
 import com.example.popconback.gifticon.dto.ResponseBrandDto;
 import com.example.popconback.gifticon.service.BrandService;
 import com.example.popconback.gifticon.service.GifticonService;
+import com.example.popconback.location.dto.LocationResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;

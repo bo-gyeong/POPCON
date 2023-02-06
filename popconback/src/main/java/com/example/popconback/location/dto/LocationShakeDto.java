@@ -1,4 +1,4 @@
-package com.example.popconback.gifticon.dto;
+package com.example.popconback.location.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

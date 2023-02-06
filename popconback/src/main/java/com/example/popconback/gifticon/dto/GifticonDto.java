@@ -1,7 +1,5 @@
 package com.example.popconback.gifticon.dto;
 
-import com.example.popconback.gifticon.domain.GifticonFiles;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,5 +38,4 @@ public class GifticonDto {
     @ApiModelProperty(name = "isVoucher", value = "0:그냥 기프티콘, 1:금액권", example = "1")
     private int  isVoucher;
 
-    //private List<GifticonFiles> filesList = new ArrayList<>();
 }
