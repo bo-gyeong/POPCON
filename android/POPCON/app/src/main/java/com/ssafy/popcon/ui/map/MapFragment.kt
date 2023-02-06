@@ -1,6 +1,8 @@
 package com.ssafy.popcon.ui.map
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,21 +13,28 @@ import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.databinding.ItemBalloonBinding
-import com.ssafy.popcon.dto.Store
+import com.ssafy.popcon.dto.DonateRequest
+import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.StoreByBrandRequest
 import com.ssafy.popcon.dto.StoreRequest
+import com.ssafy.popcon.ui.common.DragListener
+import com.ssafy.popcon.ui.common.DragShadowBuilder
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
@@ -258,12 +267,41 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         return Bitmap.createScaledBitmap(source, newWidth, newHeight, true)
     }
 
+    lateinit var donateNumber: String
+
     //기프티콘 뷰페이저
     private fun setGifticonBanner() {
+        val targetView = binding.ivPresent
+        var gifticonAdapter = MapGifticonAdpater(targetView, viewModel)
+        gifticonAdapter.setOnLongClickListener(object : MapGifticonAdpater.OnLongClickListener {
+            override fun onLongClick(v: View, gifticon: Gifticon) {
+                Log.d(TAG, "onLongClick: $gifticon")
+                val item = ClipData.Item(v.tag as? CharSequence)
+                val dragData = ClipData(
+                    v.tag as? CharSequence,
+                    arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
+                    item
+                )
+                val shadow = DragShadowBuilder(v)
+                val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
+                donateNumber = gifticon.barcodeNum
+
+                val req = DonateRequest(
+                    gifticon.barcodeNum,
+                    location.longitude.toString(),
+                    location.latitude.toString()
+                )
+                gifticonAdapter.setOnDragListener(DragListener(targetView, req, viewModel))
+                binding.ivPresent.setOnDragListener(DragListener(targetView, req, viewModel))
+
+                v.startDrag(dragData, shadow, v, 0)
+            }
+        })
+
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
 
         with(binding.viewpagerMapGiftcon) {
-            adapter = MapGifticonAdpater().apply {
+            adapter = gifticonAdapter.apply {
                 viewModel.mapGifticon.observe(viewLifecycleOwner) {
                     submitList(it)
                 }
@@ -322,6 +360,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                 }
             }
         })
+
         MainActivity().setShakeSensor(requireContext(), shakeDetector)
     }
 
@@ -370,13 +409,34 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+        Log.d(TAG, "onMapViewDragEnded: ")
+        val user = SharedPreferencesUtil(requireContext()).getUser()
+        val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
+        if (viewModel.brandName == "전체") {
+            viewModel.getStoreInfo(
+                StoreRequest(
+                    user.email,
+                    user.social,
+                    location.longitude.toString(),
+                    location.latitude.toString()
+                )
+            )
+        } else {
+            viewModel.getStoreByBrand(
+                StoreByBrandRequest(
+                    viewModel.brandName,
+                    user.email!!,
+                    user.social,
+                    location.longitude.toString(), location.latitude.toString()
+                )
+            )
+        }
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
     }
 
     override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
-
 
     }
 

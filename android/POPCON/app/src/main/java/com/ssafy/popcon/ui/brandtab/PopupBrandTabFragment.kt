@@ -72,7 +72,10 @@ class PopupBrandTabFragment : Fragment() {
             //"35.85655"
         )
 
-        viewModel.getBrandByLocation(storeRequest, SharedPreferencesUtil(requireContext()).getUser())
+        viewModel.getBrandByLocation(
+            storeRequest,
+            SharedPreferencesUtil(requireContext()).getUser()
+        )
 
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {

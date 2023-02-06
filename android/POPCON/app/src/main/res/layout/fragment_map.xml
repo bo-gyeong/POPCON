@@ -16,6 +16,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <ImageView
+            android:id="@+id/iv_present"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:src="@drawable/popcon_logo"
+            app:layout_constraintBottom_toBottomOf="@+id/mapView"
+            app:layout_constraintEnd_toEndOf="@+id/mapView"
+            app:layout_constraintStart_toStartOf="@+id/mapView"
+            app:layout_constraintTop_toTopOf="@+id/mapView" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"
             android:name="com.ssafy.popcon.ui.brandtab.MapBrandtabFragment"
@@ -36,8 +47,8 @@
             android:scaleType="centerCrop"
             android:src="@drawable/my_location_fill0_wght400_grad0_opsz48"
             app:backgroundTint="@color/popcon_orange"
-            app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
             app:tint="@color/popcon_white"
             app:useCompatPadding="true"
             tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
@@ -54,7 +65,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

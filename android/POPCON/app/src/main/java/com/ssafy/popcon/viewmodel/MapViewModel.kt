@@ -26,6 +26,8 @@ class MapViewModel(
     private val _brandsMap = MutableLiveData<List<BrandResponse>>()
     val brandsMap: LiveData<List<BrandResponse>> = _brandsMap
 
+    var brandName : String = "전체"
+
     fun getStoreInfo(storeRequest: StoreRequest) {
         viewModelScope.launch {
             _store.value = mapRepository.getStoreByLocation(storeRequest)
@@ -34,7 +36,9 @@ class MapViewModel(
 
     fun getStoreByBrand(storeByBrandRequest: StoreByBrandRequest) {
         viewModelScope.launch {
+            Log.d("TAG", "getStoreByBrand: $brandName")
             _store.value = mapRepository.getStoreByBrand(storeByBrandRequest)
+            brandName = storeByBrandRequest.brandName
         }
     }
 
