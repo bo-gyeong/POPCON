@@ -1,4 +1,4 @@
-package com.example.popconback.gifticon.dto.Present;
+package com.example.popconback.gifticon.dto.Present.PossiblePresentList;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
