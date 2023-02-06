@@ -1,43 +1,59 @@
 package com.ssafy.popcon.ui.common
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.view.View
 
-class DragShadowBuilder(v: View) : View.DragShadowBuilder(v) {
+class DragShadowBuilder() : View.DragShadowBuilder() {
+    private var shadow: Drawable? = null
 
-    private val shadow = ColorDrawable(Color.LTGRAY)
+    companion object {
+        fun fromResource(ctx: Context, resId: Int): View.DragShadowBuilder {
+            val builder = DragShadowBuilder()
+            val dr = ctx.resources.getDrawable(resId)
+            val bitmap = dr as BitmapDrawable
+            val resized = BitmapDrawable(
+                ctx.resources,
+                Bitmap.createScaledBitmap(bitmap.bitmap, 100, 100, true)
+            )
+            builder.shadow = resized
 
-    // Defines a callback that sends the drag shadow dimensions and touch point
-    // back to the system.
-    override fun onProvideShadowMetrics(size: Point, touch: Point) {
+            builder.shadow?.let {
+                it.setBounds(0, 0, it.minimumWidth, it.minimumWidth)
+            }
 
-        // Set the width of the shadow to half the width of the original View.
-        val width: Int = view.height / 2
+            return builder
+        }
 
-        // Set the height of the shadow to half the height of the original View.
-        val height: Int = view.height / 2
+        fun fromBitmap(ctx: Context, bm: Bitmap): View.DragShadowBuilder {
 
-        // The drag shadow is a ColorDrawable. This sets its dimensions to be the
-        // same as the Canvas that the system provides. As a result, the drag shadow
-        // fills the Canvas.
-        shadow.setBounds(0, 0, width, height)
+            val builder = DragShadowBuilder()
+            builder.shadow = BitmapDrawable(ctx.resources, bm)
 
-        // Set the size parameter's width and height values. These get back to
-        // the system through the size parameter.
-        size.set(width, height)
+            builder.shadow?.let {
+                it.setBounds(0, 0, it.minimumWidth / 2, it.minimumHeight / 2)
+            }
 
-        // Set the touch point's position to be in the middle of the drag shadow.
-        touch.set(width / 2, height / 2)
+            return builder
+        }
     }
 
-    // Defines a callback that draws the drag shadow in a Canvas that the system
-    // constructs from the dimensions passed to onProvideShadowMetrics().
+    override fun onProvideShadowMetrics(outShadowSize: Point, outShadowTouchPoint: Point) {
+        outShadowSize?.x = shadow?.minimumWidth
+        outShadowSize?.y = shadow?.minimumHeight
+
+        outShadowTouchPoint?.x = (outShadowSize!!.x / 2)
+        outShadowTouchPoint?.y = (outShadowSize!!.y / 2)
+    }
+
     override fun onDrawShadow(canvas: Canvas) {
 
-        // Draw the ColorDrawable on the Canvas passed in from the system.
-        shadow.draw(canvas)
+        shadow?.draw(canvas)
     }
 }

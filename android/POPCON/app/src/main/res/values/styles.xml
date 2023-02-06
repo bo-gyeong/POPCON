@@ -16,6 +16,7 @@
     <style name="TextHeadline32">
         <item name="android:textSize">32sp</item>
         <item name="android:textColor">@color/popcon_black_01</item>
+        <item name="fontFamily">@font/noto_sans</item>
     </style>
 
     <style name="TextHeadline32.White">
@@ -44,6 +45,7 @@
 
     <style name="TextMedium.Purple">
         <item name="android:textColor">@color/popcon_purple</item>
+        <item name="fontFamily">@font/noto_sans_medium</item>
     </style>
 
     <style name="TextMedium.Purple.Bold">
@@ -67,8 +69,11 @@
         <item name="android:textColor">@color/popcon_white</item>
     </style>
 
-    <style name="TextSubtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+
+    <style name="TextSubtitle2">
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/popcon_black_01</item>
+        <item name="fontFamily">@font/noto_sans_medium</item>
     </style>
 
     <style name="TextSubtitle2.Black02">
@@ -79,11 +84,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextSubtitle2.Purple">
-        <item name="android:textColor">@color/popcon_purple</item>
+    <style name="TextSubtitle2.Brown">
+        <item name="android:textColor">@color/popcon_brown</item>
     </style>
 
-    <style name="TextSubtitle2.Purple.Bold">
+    <!-- brand 이름 -->
+    <style name="TextSubtitle2.Brown.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 

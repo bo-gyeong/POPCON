@@ -20,8 +20,8 @@
             android:id="@+id/iv_present"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:src="@drawable/present"
             android:visibility="gone"
-            android:src="@drawable/popcon_logo"
             app:layout_constraintBottom_toBottomOf="@+id/mapView"
             app:layout_constraintEnd_toEndOf="@+id/mapView"
             app:layout_constraintStart_toStartOf="@+id/mapView"
@@ -43,14 +43,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/my_location_fill0_wght400_grad0_opsz48"
             app:backgroundTint="@color/popcon_orange"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
             app:tint="@color/popcon_white"
-            app:useCompatPadding="true"
+            tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_find"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/search_gifticon"
+            app:backgroundTint="@color/popcon_orange"
+            app:layout_constraintStart_toStartOf="@id/btn_update_position"
+            app:layout_constraintTop_toBottomOf="@id/btn_update_position"
+            app:tint="@color/popcon_white"
             tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
         <androidx.viewpager2.widget.ViewPager2

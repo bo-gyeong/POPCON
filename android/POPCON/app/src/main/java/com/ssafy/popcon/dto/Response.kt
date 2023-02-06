@@ -33,3 +33,8 @@ data class TokenResponse(
     val acessToken : String,
     val refreshToekn : String
 )
+
+data class FindDonateResponse(
+    val allNearPresentList : List<Present>,
+    val gettablePresentList : List<Present>
+)

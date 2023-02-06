@@ -1,8 +1,6 @@
 package com.ssafy.popcon.repository.map
 
-import com.ssafy.popcon.dto.StoreRequest
-import com.ssafy.popcon.dto.Store
-import com.ssafy.popcon.dto.StoreByBrandRequest
+import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.network.api.MapApi
 
 class MapRemoteDataSource(private val apiClient: MapApi) : MapDataSource {
@@ -13,5 +11,17 @@ class MapRemoteDataSource(private val apiClient: MapApi) : MapDataSource {
 
     override suspend fun getStoreByBrand(storeByBrandRequest: StoreByBrandRequest): List<Store> {
         return apiClient.getStoreByBrand(storeByBrandRequest)
+    }
+
+    override suspend fun getPresent(presentRequest: FindPresentRequest): FindDonateResponse {
+        return apiClient.getPresents(presentRequest)
+    }
+
+    override suspend fun getPresent(getPresentRequest: GetPresentRequest) {
+        return apiClient.getPresent(getPresentRequest)
+    }
+
+    override suspend fun givePresent(donateRequest: DonateRequest) {
+        return apiClient.givePresent(donateRequest)
     }
 }

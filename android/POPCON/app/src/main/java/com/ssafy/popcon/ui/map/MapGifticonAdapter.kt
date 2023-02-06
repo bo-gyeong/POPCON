@@ -1,5 +1,6 @@
 package com.ssafy.popcon.ui.map
 
+import android.location.LocationManager
 import android.os.Build
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.ItemMapGiftconBinding
 import com.ssafy.popcon.dto.DonateRequest
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.common.DragListener
 import com.ssafy.popcon.ui.common.DragShadowBuilder
 import com.ssafy.popcon.util.Utils
@@ -20,7 +22,7 @@ import com.ssafy.popcon.viewmodel.MapViewModel
 
 private const val TAG = "GifticonMap_싸피"
 
-class MapGifticonAdpater(val target: ImageView, val viewModel: MapViewModel) :
+class MapGifticonAdpater(val target: ImageView, val viewModel: MapViewModel, val user: User, val lm : LocationManager) :
     ListAdapter<Gifticon, MapGifticonAdpater.GifticonMapViewHolder>(BannerDiffCallback()) {
     private lateinit var binding: ItemMapGiftconBinding
 
@@ -32,7 +34,7 @@ class MapGifticonAdpater(val target: ImageView, val viewModel: MapViewModel) :
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: GifticonMapViewHolder, position: Int) {
         holder.bind(getItem(position))
-        holder.itemView.setOnDragListener(DragListener(target, null, viewModel))
+        holder.itemView.setOnDragListener(DragListener(target, null, viewModel, user, lm))
         holder.itemView.setOnLongClickListener { v ->
             longClickListener.onLongClick(v, getItem(position))
             true
