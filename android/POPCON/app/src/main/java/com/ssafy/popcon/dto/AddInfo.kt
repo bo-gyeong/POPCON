@@ -123,11 +123,29 @@ data class AddInfoNoImg(
         productName,
         due,
         isVoucher,
-        0,
+        -1,
         "",
         email,
         social,
         0
+    )
+}
+
+data class AddInfoNoImgBoolean(
+    var productName: Boolean,
+    var brandName: Boolean,
+    var barcodeNum: Boolean,
+    var due: Boolean,
+    var isVoucher: Boolean,
+    var price: Boolean
+){
+    constructor(): this(
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
     )
 }
 
@@ -147,6 +165,7 @@ data class OCRResult(
     val productImg: Map<String, String>,
     var productName: String,
     val publisher: String,
+    val price: Int,
     val validation: Int
 )
 

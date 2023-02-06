@@ -26,11 +26,11 @@ class AddRemoteDataSource(private val apiClient:AddApi): AddDataSource {
         return apiClient.addGifticon(addInfo)
     }
 
-    override suspend fun addGifticonImg(files: Array<MultipartBody.Part>): List<AddImgInfoResult> {
-        return apiClient.addGifticonImg(files)
+    override fun addImgInfoNonSuspend(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult> {
+        return apiClient.addImgInfoNonSuspend(imgInfo)
     }
 
-    override suspend fun addGifticonImgInfo(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult> {
-        return apiClient.addGifticonImgInfo(imgInfo)
+    override suspend fun addImgInfo(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult> {
+        return apiClient.addImgInfo(imgInfo)
     }
 }

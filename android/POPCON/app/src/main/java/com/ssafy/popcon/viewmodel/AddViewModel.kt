@@ -11,6 +11,7 @@ import com.ssafy.popcon.ui.common.Event
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 
+private const val TAG = "AddViewModel___"
 class AddViewModel(private val addRepository: AddRepository): ViewModel() {
     private val _gcpResult = MutableLiveData<Event<List<GCPResult>>>()
     val gcpResult: LiveData<Event<List<GCPResult>>> = _gcpResult
@@ -24,9 +25,14 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
     private val _barcodeChk = MutableLiveData<Event<ChkValidation>>()
     val barcodeChk = _barcodeChk
 
+    private val _addImgInfoResult = MutableLiveData<Event<List<AddImgInfoResult>>>()
+    val addImgInfoResult = _addImgInfoResult
+
     fun addFileToGCP(files: Array<MultipartBody.Part>){
         viewModelScope.launch {
-            _gcpResult.postValue(Event(addRepository.addFileToGCP(files)))
+            Log.d(TAG, "addFileToGCP: 111")
+            _gcpResult.value = Event(addRepository.addFileToGCP(files))
+            //addImgInfo(makeAddImgInfoList())
         }
     }
 
@@ -50,19 +56,16 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
 
     fun addGifticon(addInfo: List<AddInfoNoImg>){
         viewModelScope.launch {
+            Log.d(TAG, "addGifticon: 222")
             addRepository.addGifticon(addInfo)
         }
     }
 
-    fun addGifticonImg(files:Array<MultipartBody.Part>){
+    fun addImgInfo(imgInfo: Array<AddImgInfo>){
+        Log.d(TAG, "addImgInfo: 111")
         viewModelScope.launch {
-            addRepository.addGifticonImg(files)
-        }
-    }
-
-    fun addGifticonImgInfo(imgInfo: Array<AddImgInfo>){
-        viewModelScope.launch {
-            addRepository.addGifticonImgInfo(imgInfo)
+            Log.d(TAG, "addImgInfo: 222")
+            addImgInfoResult.value = Event(addRepository.addImgInfo(imgInfo))
         }
     }
 }
