@@ -138,7 +138,7 @@ class SettingsFragment : Fragment() {
                 SharedPreferencesUtil(requireContext()).updateUser(userInfo!!)
                 user = userInfo
 
-                viewModel.updateUser(user, -308222648)
+                viewModel.updateUser(user)
                 viewModel.user.observe(viewLifecycleOwner){
                     binding.user = it
                 }
@@ -148,8 +148,7 @@ class SettingsFragment : Fragment() {
 
     // 설정에서 로그인화면으로 이동 및 로그인정보 삭제
     private fun settingsToLogin() {
-        SharedPreferencesUtil(requireContext()).deleteUser()
-        mainActivity.onBackPressed()
+        LoginFragment.fromSettingsFragment = true
         mainActivity.changeFragment(LoginFragment())
     }
 
@@ -201,8 +200,7 @@ class SettingsFragment : Fragment() {
             SharedPreferencesUtil(requireContext()).updateUser(userInfo)
             user = userInfo
 
-            //viewModel.updateUser(user, 177784539)
-            viewModel.updateUser(user, -997299520)
+            viewModel.updateUser(user)
         }
     }
 
@@ -236,7 +234,19 @@ class SettingsFragment : Fragment() {
                 R.color.popcon_grey_04
             )
         )
+        binding.tvNotiSettingFirstText.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
         binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
+        binding.tvNotiSettingIntervalText.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.popcon_grey_04
@@ -280,7 +290,19 @@ class SettingsFragment : Fragment() {
                 R.color.popcon_transparent_grey_07
             )
         )
+        binding.tvNotiSettingFirstText.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
         binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
+        binding.tvNotiSettingIntervalText.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.popcon_transparent_grey_07
@@ -319,7 +341,6 @@ class SettingsFragment : Fragment() {
                     viewModel.withdraw(UserDeleteRequest(user.email!!, user.social))
                     Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                 }
-                SharedPreferencesUtil(requireContext()).deleteUser()
                 settingsToLogin()
             }
         }
@@ -344,7 +365,6 @@ class SettingsFragment : Fragment() {
                         //서버에서 토큰 삭제에 성공한 상태입니다.
 
                         viewModel.withdraw(UserDeleteRequest(user.email!!, user.social.toString()))
-                        SharedPreferencesUtil(requireContext()).deleteUser()
                         settingsToLogin()
                     }
 

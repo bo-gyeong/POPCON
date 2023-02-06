@@ -135,17 +135,26 @@
                         android:layout_height="wrap_content"
                         android:text="@string/noti_title_first"
                         android:textColor="@color/popcon_black_03"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent" />
+                        android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_noti_setting_first"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{String.valueOf(user.nday)}"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
-                        app:layout_constraintLeft_toLeftOf="parent"/>
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_noti_setting_first"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{String.valueOf(user.nday)}"/>
+
+                        <TextView
+                            android:id="@+id/tv_noti_setting_first_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/first" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -167,17 +176,26 @@
                         android:layout_height="wrap_content"
                         android:text="@string/noti_title_interval"
                         android:textColor="@color/popcon_black_03"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent" />
+                        android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_noti_setting_interval"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{String.valueOf(user.term)}"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
-                        app:layout_constraintLeft_toLeftOf="parent"/>
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_noti_setting_interval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{String.valueOf(user.term)}"/>
+
+                        <TextView
+                            android:id="@+id/tv_noti_setting_interval_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/interval" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -199,16 +217,12 @@
                         android:layout_height="wrap_content"
                         android:text="@string/noti_title_time"
                         android:textColor="@color/popcon_black_03"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_noti_setting_time"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_noti_title"
-                        app:layout_constraintLeft_toLeftOf="parent"/>
+                        android:layout_height="wrap_content"/>
 
                 </LinearLayout>
 

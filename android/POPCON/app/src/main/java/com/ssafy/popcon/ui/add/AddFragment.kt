@@ -2,15 +2,16 @@ package com.ssafy.popcon.ui.add
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
+import android.os.*
 import android.provider.MediaStore.Images
 import android.provider.OpenableColumns
 import android.text.Editable
@@ -22,15 +23,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.loader.content.CursorLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.soundcloud.android.crop.Crop
+import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.*
@@ -41,32 +42,23 @@ import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okio.BufferedSink
-import okio.ByteString.Companion.toByteString
 import okio.source
-import org.json.JSONObject
-import org.w3c.dom.Text
 import java.io.*
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.io.path.Path
 
 private const val TAG = "###_AddFragment"
 class AddFragment : Fragment(), onItemClick {
     private lateinit var binding: FragmentAddBinding
     private lateinit var mainActivity: MainActivity
-    private val viewModel: AddViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    private val viewModel: AddViewModel by viewModels { ViewModelFactory(requireContext()) }
 
     private var delImgUris = ArrayList<Uri>()
     private var multipartFiles = ArrayList<MultipartBody.Part>()
@@ -76,13 +68,13 @@ class AddFragment : Fragment(), onItemClick {
     private var productImgUris = ArrayList<GifticonImg>()
     private var barcodeImgUris = ArrayList<GifticonImg>()
     private var gifticonInfoList = ArrayList<AddInfo>()
+    private var gifticonEffectiveness = ArrayList<AddInfoNoImgBoolean>()
+    private lateinit var dialog: AlertDialog.Builder
+    private lateinit var dialogCreate: AlertDialog
     private lateinit var addImgAdapter: AddImgAdapter
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
     var clickCv = ""
-    var effectivenessBrand = false
-    var effectivenessBarcode = false
-    var effectivenessDate = false
 
     val PRODUCT = "Product"
     val BARCODE = "Barcode"
@@ -118,17 +110,11 @@ class AddFragment : Fragment(), onItemClick {
         super.onViewCreated(view, savedInstanceState)
 
         chkCnt = 1
+        makeProgressDialog()
         openGalleryFirst()
 
         binding.cvAddCoupon.setOnClickListener {
-            for (i in 0 until delImgUris.size){
-                delCropImg(delImgUris[i])
-            }
-            delImgUris.clear()
-            multipartFiles.clear()
-            ocrResults.clear()
-            fileNames.clear()
-
+            makeProgressDialogOnBackPressed()
             openGalleryFirst()
         }
 
@@ -164,9 +150,19 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.btnRegi.setOnClickListener {
             if (chkClickImgCnt() && chkEffectiveness()){
-                //viewModel.addGifticonImg(makeAddImgInfoList())
-                viewModel.addGifticon(makeAddInfoList())
-                mainActivity.changeFragment(HomeFragment())
+                makeProgressDialog()
+                changeProgressDialogState(true)
+                
+                viewModel.addOtherFileToGCP(makeAddImgMultipartList())
+                viewModel.gcpOtherResult.observe(viewLifecycleOwner, EventObserver{
+                    viewModel.addImgInfo(makeAddImgInfoList(it))
+                    for (i in 0 until delImgUris.size){
+                        delCropImg(delImgUris[i])
+                    }
+
+                    viewModel.addGifticon(makeAddInfoList())
+                    mainActivity.changeFragment(HomeFragment())
+                })
             }
         }
     }
@@ -178,13 +174,12 @@ class AddFragment : Fragment(), onItemClick {
                     val clipData = it.data!!.clipData
 
                     if (clipData != null) {  //첫 add
-                        originalImgUris = ArrayList()
-                        productImgUris = ArrayList()
-                        barcodeImgUris = ArrayList()
+                        cvAddCouponClick()
 
                         for (i in 0 until clipData.itemCount){
                             val originalImgUri = clipData.getItemAt(i).uri
                             originalImgUris.add(GifticonImg(originalImgUri))
+                            gifticonEffectiveness.add(AddInfoNoImgBoolean())
 
                             val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
                             multipartFiles.add(realData!!)
@@ -201,8 +196,8 @@ class AddFragment : Fragment(), onItemClick {
                                 for (ocrResult in it){
                                     ocrResults.add(ocrResult)
                                 }
-
-                                for (i in 0 until clipData.itemCount){
+                                
+                                for (i in 0 until it.size){  //clipData.itemCount
                                     val cropImgUri = cropXY(i, PRODUCT)
                                     val cropBarcodeUri = cropXY(i, BARCODE)
 
@@ -226,6 +221,8 @@ class AddFragment : Fragment(), onItemClick {
                             barcodeImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
                             delImgUris.add(barcodeImgUris[imgNum].imgUri)
                         }
+
+                        updateGifticonInfo(imgNum)
                         fillContent(imgNum)
                     }
                 }
@@ -270,7 +267,53 @@ class AddFragment : Fragment(), onItemClick {
         return value
     }
 
+    // 사진 추가버튼 클릭 시 기존 값 초기화
+    private fun cvAddCouponClick(){
+        originalImgUris.clear()
+        productImgUris.clear()
+        barcodeImgUris.clear()
+        fileNames.clear()
+        ocrResults.clear()
+        delImgUris.clear()
+        multipartFiles.clear()
+        gifticonInfoList.clear()
+        gifticonEffectiveness.clear()
+
+        for (i in 0 until delImgUris.size){
+            delCropImg(delImgUris[i])
+        }
+    }
+
+    // 로딩화면 띄우기
+    private fun makeProgressDialog(){
+        dialog = AlertDialog.Builder(requireContext())
+        dialog.setView(R.layout.dialog_progress).setCancelable(false)
+        dialogCreate = dialog.create()
+    }
+
+    // 사진추가 버튼 클릭 시 뒤로가기
+    private fun makeProgressDialogOnBackPressed(){
+        dialog = AlertDialog.Builder(requireContext())
+        dialog.setView(R.layout.dialog_progress).setCancelable(true)
+        dialogCreate = dialog.create()
+    }
+
+    // 상태에 따라 다이얼로그 만들기/없애기
+    private fun changeProgressDialogState(state: Boolean){
+        if (state){
+            dialogCreate.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+            dialogCreate.show()
+        } else{
+            dialogCreate.dismiss()
+        }
+    }
+
     private fun addGifticonInfo(idx: Int){
+        var price = ocrResults[idx].price
+        if (price == -1){
+            price = 0
+        }
+
         val addInfo = AddInfo(
             originalImgUris[idx].imgUri,
             productImgUris[idx].imgUri,
@@ -280,12 +323,30 @@ class AddFragment : Fragment(), onItemClick {
             ocrResultNullChk(ocrResults[idx].productName),
             jsonParsingDate(ocrResults[idx].due),
             ocrResults[idx].isVoucher,
-            0,  // -1을 기본값으로
+            price,
             "",
             user.email!!,
             user.social
         )
         gifticonInfoList.add(addInfo)
+    }
+
+    private fun updateGifticonInfo(idx: Int){
+        val addInfo = AddInfo(
+            originalImgUris[idx].imgUri,
+            productImgUris[idx].imgUri,
+            barcodeImgUris[idx].imgUri,
+            ocrResultNullChk(gifticonInfoList[idx].barcodeNum),
+            ocrResultNullChk(gifticonInfoList[idx].brandName),
+            ocrResultNullChk(gifticonInfoList[idx].productName),
+            gifticonInfoList[idx].due,
+            gifticonInfoList[idx].isVoucher,
+            gifticonInfoList[idx].price,
+            "",
+            user.email!!,
+            user.social
+        )
+        gifticonInfoList[idx] = addInfo
     }
 
     // View 값 채우기
@@ -295,18 +356,16 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.cbPrice.isChecked = false
         binding.lPrice.visibility = View.GONE
-//        if (gifticonInfoList[idx].voucherChk == 1){
-//            binding.cbPrice.isChecked = true
-//            binding.lPrice.visibility = View.VISIBLE
-//        }
         changeChkState(imgNum)
         setPrice()
 
         binding.ivCouponImgPlus.visibility = View.GONE
         binding.ivBarcodeImgPlus.visibility = View.GONE
+        changeProgressDialogState(false)
     }
 
     override fun onClick(idx: Int) {
+        updateGifticonInfo(idx)
         fillContent(idx)
     }
 
@@ -360,9 +419,11 @@ class AddFragment : Fragment(), onItemClick {
     // add탭 클릭하자마자 나오는 갤러리
     private fun openGalleryFirst() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) //Intent.EXTRA_ALLOW_MULTIPLE
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         result.launch(intent)
+
+        changeProgressDialogState(true)
     }
 
     // cardView를 클릭했을 때 나오는 갤러리
@@ -440,7 +501,15 @@ class AddFragment : Fragment(), onItemClick {
 
     // 상단 리사이클러뷰 만들기
     private fun makeImgList(){
-        addImgAdapter = AddImgAdapter(gifticonInfoList, originalImgUris, productImgUris, barcodeImgUris, this)
+        addImgAdapter = AddImgAdapter(
+            gifticonInfoList,
+            originalImgUris,
+            productImgUris,
+            barcodeImgUris,
+            fileNames,
+            gifticonEffectiveness,
+            this
+        )
 
         binding.rvCouponList.apply {
             adapter = addImgAdapter
@@ -479,10 +548,12 @@ class AddFragment : Fragment(), onItemClick {
                 val pLength = p0.toString().length
                 if(pLength < 1){
                     binding.tilProductName.error = "상품명을 입력해주세요"
+                    gifticonEffectiveness[imgNum].productName = false
                 } else{
                     binding.tilProductName.error = null
                     binding.tilProductName.isErrorEnabled = false
 
+                    gifticonEffectiveness[imgNum].productName = true
                     gifticonInfoList[imgNum].productName = binding.etProductName.text.toString()
                 }
             }
@@ -498,7 +569,6 @@ class AddFragment : Fragment(), onItemClick {
     // 브랜드 존재여부 검사
     private fun brandChk(){
         binding.tilProductBrand.error = "브랜드를 입력해주세요"
-        effectivenessBarcode = false
 
         binding.etProductBrand.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
@@ -506,12 +576,12 @@ class AddFragment : Fragment(), onItemClick {
                 viewModel.brandChk.observe(viewLifecycleOwner, EventObserver{
                     if (it.result == 0){
                         binding.tilProductBrand.error = "올바른 브랜드를 입력해주세요"
-                        effectivenessBrand = false
+                        gifticonEffectiveness[imgNum].brandName = false
                     } else{
                         binding.tilProductBrand.error = null
                         binding.tilProductBrand.isErrorEnabled = false
-                        effectivenessBrand = true
 
+                        gifticonEffectiveness[imgNum].brandName = true
                         gifticonInfoList[imgNum].brandName = binding.etProductBrand.text.toString()
                     }
                 })
@@ -528,32 +598,25 @@ class AddFragment : Fragment(), onItemClick {
     // 바코드 번호 중복 검사
     private fun brandBarcodeNum(){
         binding.tilBarcode.error = "바코드 번호를 입력해주세요"
-        effectivenessBarcode = false
 
         binding.etBarcode.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
                 viewModel.chkBarcode(p0.toString())
                 viewModel.barcodeChk.observe(viewLifecycleOwner, EventObserver{
+                    gifticonEffectiveness[imgNum].barcodeNum = false
+
                     if (it.result == 0){
                         binding.tilBarcode.error = "이미 등록된 바코드 번호입니다"
-                        effectivenessBarcode = false
                     } else if (it.result != 1){
                         binding.tilBarcode.error = "바코드 번호를 입력해주세요"
-                        effectivenessBarcode = false
                     } else{
                         binding.tilBarcode.error = null
                         binding.tilBarcode.isErrorEnabled = false
-                        effectivenessBarcode = true
 
+                        gifticonEffectiveness[imgNum].barcodeNum = true
                         gifticonInfoList[imgNum].barcodeNum = binding.etBarcode.text.toString()
                     }
                 })
-//
-//                val bLength = binding.etBarcode.text.toString().length
-//                if(bLength < 1){
-//                    binding.tilBarcode.error = "바코드 번호를 입력해주세요"
-//                    effectivenessBarcode = false
-//                }
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -581,9 +644,15 @@ class AddFragment : Fragment(), onItemClick {
                         val nowYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(System.currentTimeMillis()).toInt()
                         val nowDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())
                         val nowDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(nowDateFormat)
-                        val newDate =  SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(p0.toString())
-                        val calDate = newDate!!.compareTo(nowDate)
-                        effectivenessDate = false
+                        var newDate = Date()
+                        try {
+                            newDate =  SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(p0.toString())!!
+                        } catch (e: java.lang.Exception){
+                            newDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(nowDateFormat)!!
+                        }
+
+                        val calDate = newDate.compareTo(nowDate)
+                        gifticonEffectiveness[imgNum].due = false
 
                         if (newYear < nowYear || newYear > 2100 || newYear.toString().length < 4){
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
@@ -596,20 +665,19 @@ class AddFragment : Fragment(), onItemClick {
                         } else{
                             binding.tilDate.error = null
                             binding.tilDate.isErrorEnabled = false
-                            effectivenessDate = true
-
+                            gifticonEffectiveness[imgNum].due = true
                             gifticonInfoList[imgNum].due = nowText
                         }
                     }
                     else -> {
                         binding.tilDate.error = "정확한 날짜를 입력해주세요"
-                        effectivenessDate = false
+                        gifticonEffectiveness[imgNum].due = false
                     }
                 }
 
                 if (dateLength < 10){
                     binding.tilDate.error = "정확한 날짜를 입력해주세요"
-                    effectivenessDate = false
+                    gifticonEffectiveness[imgNum].due = false
                 }
             }
 
@@ -637,10 +705,12 @@ class AddFragment : Fragment(), onItemClick {
             gifticonInfoList[imgNum].price = -1
             binding.cbPrice.isChecked = false
             binding.lPrice.visibility = View.GONE
+            gifticonEffectiveness[imgNum].isVoucher = false
         } else{
             gifticonInfoList[idx].isVoucher = 1
             binding.cbPrice.isChecked = true
             binding.lPrice.visibility = View.VISIBLE
+            gifticonEffectiveness[imgNum].isVoucher = true
         }
     }
 
@@ -650,9 +720,11 @@ class AddFragment : Fragment(), onItemClick {
         if (voucherChk != 1){
             binding.cbPrice.isChecked = false
             binding.lPrice.visibility = View.GONE
+            gifticonEffectiveness[imgNum].isVoucher = false
         } else{
             binding.cbPrice.isChecked = true
             binding.lPrice.visibility = View.VISIBLE
+            gifticonEffectiveness[imgNum].isVoucher = true
         }
     }
 
@@ -660,10 +732,12 @@ class AddFragment : Fragment(), onItemClick {
     private fun setPrice(){
         binding.etPrice.addTextChangedListener (object : TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
-                val pLength = p0.toString().length
-                if(pLength > 0){
+                var pLength = p0.toString().length
+                if(pLength > 2){  //100원대부터
+                    gifticonEffectiveness[imgNum].price = true
                     gifticonInfoList[imgNum].price = binding.etPrice.text.toString().toInt()
                 } else{
+                    gifticonEffectiveness[imgNum].price = false
                     gifticonInfoList[imgNum].price = -1
                 }
             }
@@ -691,23 +765,41 @@ class AddFragment : Fragment(), onItemClick {
         })
     }
 
-    private fun makeAddImgInfoList(): Array<AddImgInfo>{
-        val imgInfo = mutableListOf<AddImgInfo>()
+    // 등록하기 클릭 시 디비에 저장할 이미지 리스트 생성
+    private fun makeAddImgMultipartList(): Array<MultipartBody.Part>{
+        val multipartImg = mutableListOf<MultipartBody.Part>()
         for (i in 0 until originalImgUris.size){
             val productData = productImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
             val barcodeData = barcodeImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
 
+            multipartImg.add(productData)
+            multipartImg.add(barcodeData)
+        }
+
+        return multipartImg.toTypedArray()
+    }
+
+    // 등록하기 클릭 시 디비에 저장할 이미지 정보 리스트 생성
+    private fun makeAddImgInfoList(gcpResult: List<GCPResult>): Array<AddImgInfo>{
+        var idx = 0
+        val imgInfo = mutableListOf<AddImgInfo>()
+        for (i in 0 until gcpResult.size step(2)){
+            val productImgName = gcpResult[i].fileName
+            val barcodeImgName = gcpResult[i+1].fileName
+
             imgInfo.add(
                 AddImgInfo(
-                    arrayOf(productData, barcodeData),
                     binding.etBarcode.text.toString(),
-                    fileNames[i]
+                    fileNames[idx++],
+                    productImgName,
+                    barcodeImgName
                 )
             )
         }
         return imgInfo.toTypedArray()
     }
 
+    // 등록하기 클릭 시 디비에 저장할 기프티콘 정보 리스트 생성
     private fun makeAddInfoList(): MutableList<AddInfoNoImg>{
         val addInfo = mutableListOf<AddInfoNoImg>()
         for (i in 0 until gifticonInfoList.size){
@@ -737,24 +829,38 @@ class AddFragment : Fragment(), onItemClick {
         return false
     }
 
+    // 기프티콘 정보담긴 리스트 내용 검사
+    private fun chkAllList(): Boolean{
+        for (gifticon in gifticonEffectiveness){
+            if (!gifticon.productName || !gifticon.brandName
+                || !gifticon.barcodeNum || !gifticon.due){
+                Log.d(TAG, "chkAllList111: ${gifticon.productName}\n ${gifticon.brandName}\n" +
+                        "${gifticon.barcodeNum}\n${gifticon.due}\n")
+                return false
+            }
+            if (gifticon.isVoucher && !gifticon.price){
+                Log.d(TAG, "chkAllList222: ${gifticon.isVoucher}\n ${gifticon.price}\n")
+                return false
+            }
+        }
+        return true
+    }
+
     // 유효성 검사
     private fun chkEffectiveness(): Boolean {
-        if (binding.ivBarcodeImg.drawable == null || binding.ivCouponImg.drawable == null
-            || binding.etProductName.text.toString() == ""
-            || !effectivenessBrand || binding.etProductBrand.text.toString() ==""
-            || !effectivenessBarcode || binding.etBarcode.text.toString() ==""
-            || !effectivenessDate || binding.etDate.text.toString() ==""
-            || binding.cbPrice.isChecked && binding.etPrice.text.toString() == ""
-            || binding.cbPrice.isChecked && binding.etPrice.text.toString() == "0"
+        if (binding.ivBarcodeImg.drawable == null
+            || binding.ivCouponImg.drawable == null
+            || !chkAllList()
         ) {
             Toast.makeText(requireContext(), "입력 정보를 확인해주세요", Toast.LENGTH_SHORT).show()
             return false
         }
-
-        for (i in 0 until delImgUris.size){
-            delCropImg(delImgUris[i])
-        }
         return true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        changeProgressDialogState(false)
     }
 
     override fun onDestroy() {
