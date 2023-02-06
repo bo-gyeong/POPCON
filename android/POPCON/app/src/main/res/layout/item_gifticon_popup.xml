@@ -55,7 +55,7 @@
 
         <TextView
             android:id="@+id/tv_brand"
-            style="@style/TextSubtitle2.Purple.Bold"
+            style="@style/TextSubtitle2.Brown.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

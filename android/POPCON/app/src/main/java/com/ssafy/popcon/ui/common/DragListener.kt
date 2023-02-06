@@ -11,9 +11,15 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.ssafy.popcon.dto.DonateRequest
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.MapViewModel
 
-open class DragListener(private val target: ImageView, private val req: DonateRequest?, private val viewModel: MapViewModel) : OnDragListener {
+open class DragListener(
+    private val target: ImageView,
+    private val req: DonateRequest?,
+    private val viewModel: MapViewModel, private val user: User
+) : OnDragListener {
     override fun onDrag(v: View, e: DragEvent): Boolean {
         when (e.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
@@ -29,9 +35,8 @@ open class DragListener(private val target: ImageView, private val req: DonateRe
             DragEvent.ACTION_DRAG_ENTERED -> {
                 // Applies a green tint to the View.
                 if (v == target) {
-                    (v as? ImageView)?.setColorFilter(Color.BLUE)
+                    (v as? ImageView)?.setColorFilter(Color.LTGRAY)
                     v.invalidate()
-
                 }
                 true
             }
@@ -62,7 +67,7 @@ open class DragListener(private val target: ImageView, private val req: DonateRe
                     v.invalidate()
 
                     Log.d("드랍", "onDrag: $req")
-                    //viewModel.donateGifticon(req)
+                    viewModel.donate(req!!, user)
                 }
                 // Invalidates the view to force a redraw.
                 v.invalidate()

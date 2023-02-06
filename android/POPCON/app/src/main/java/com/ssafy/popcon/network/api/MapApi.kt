@@ -1,8 +1,6 @@
 package com.ssafy.popcon.network.api
 
-import com.ssafy.popcon.dto.StoreRequest
-import com.ssafy.popcon.dto.Store
-import com.ssafy.popcon.dto.StoreByBrandRequest
+import com.ssafy.popcon.dto.*
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -14,4 +12,10 @@ interface MapApi {
     //현재위치에서
     @POST("local/search/byBrand")
     suspend fun getStoreByBrand(@Body storeRequest: StoreByBrandRequest) : List<Store>
+
+    @POST("presents/possible_list")
+    suspend fun getPresents(@Body findDonateRequest: FindDonateRequest) : FindDonateResponse
+
+    @POST("presents/give_present")
+    suspend fun givePresent(@Body request: DonateRequest)
 }

@@ -48,3 +48,8 @@ data class DonateRequest(
     val x: String,
     val y: String
 )
+
+data class FindDonateRequest(
+    val x: String,
+    val y: String
+)

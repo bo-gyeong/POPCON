@@ -29,10 +29,7 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.databinding.ItemBalloonBinding
-import com.ssafy.popcon.dto.DonateRequest
-import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.dto.StoreByBrandRequest
-import com.ssafy.popcon.dto.StoreRequest
+import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.common.DragListener
 import com.ssafy.popcon.ui.common.DragShadowBuilder
 import com.ssafy.popcon.ui.common.MainActivity
@@ -63,6 +60,8 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     lateinit var mainActivity: MainActivity
     private val viewModel: MapViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     var storeMap = HashMap<String, String>()
+    var markers = mutableListOf<MapPOIItem>()
+    var presentMarkers = mutableListOf<MapPOIItem>()
 
     private lateinit var locationManager: LocationManager
     private var getLongitude: Double = 0.0
@@ -115,6 +114,65 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         binding.btnUpdatePosition.setOnClickListener {
             moveMapUserToPosition(binding.mapView)
             startTracking()
+        }
+
+        binding.btnFind.setOnClickListener {
+            moveMapUserToPosition(binding.mapView)
+
+            findPresent()
+        }
+    }
+
+    private fun findPresent() {
+        locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        getUserLocation()
+
+        val request = FindDonateRequest(
+            getLongitude.toString(),
+            getLatitude.toString()
+        )
+
+        //y : 위도 latitude 경 127도, 위 37도
+        viewModel.getPresents(request)
+        viewModel.presents.observe(viewLifecycleOwner) {
+            binding.mapView.removeAllPOIItems()
+
+            for (present in it) {
+                val marker = MapPOIItem()
+                val position = MapPoint.mapPointWithGeoCoord(
+                    present.y.toDouble(),
+                    present.x.toDouble()
+                )
+                marker.itemName = present.barcodeNum
+                marker.mapPoint = position
+
+                marker.markerType = MapPOIItem.MarkerType.CustomImage
+                marker.customImageResourceId = R.drawable.far
+                marker.isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
+
+                presentMarkers.add(marker)
+                binding.mapView.addPOIItem(marker)
+            }
+        }
+
+        viewModel.presentsNear.observe(viewLifecycleOwner) {
+            for (present in it) {
+                val marker = MapPOIItem()
+                val position = MapPoint.mapPointWithGeoCoord(
+                    present.y.toDouble(),
+                    present.x.toDouble()
+                )
+                marker.itemName = present.barcodeNum
+                marker.mapPoint = position
+
+                marker.markerType = MapPOIItem.MarkerType.CustomImage
+                marker.customImageResourceId = R.drawable.near
+                marker.isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
+
+                presentMarkers.add(marker)
+                binding.mapView.addPOIItem(marker)
+            }
         }
     }
 
@@ -206,7 +264,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         binding.mapView.setShowCurrentLocationMarker(false)
     }
 
-    var markers = mutableListOf<MapPOIItem>()
     private fun setStore() {
         locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -271,8 +328,9 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
     //기프티콘 뷰페이저
     private fun setGifticonBanner() {
+        val user = SharedPreferencesUtil(requireContext()).getUser()
         val targetView = binding.ivPresent
-        var gifticonAdapter = MapGifticonAdpater(targetView, viewModel)
+        var gifticonAdapter = MapGifticonAdpater(targetView, viewModel, user)
         gifticonAdapter.setOnLongClickListener(object : MapGifticonAdpater.OnLongClickListener {
             override fun onLongClick(v: View, gifticon: Gifticon) {
                 Log.d(TAG, "onLongClick: $gifticon")
@@ -282,7 +340,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                     arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
                     item
                 )
-                val shadow = DragShadowBuilder(v)
+                val shadow = DragShadowBuilder.fromResource(requireContext(), R.drawable.present)
                 val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
                 donateNumber = gifticon.barcodeNum
 
@@ -291,8 +349,8 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                     location.longitude.toString(),
                     location.latitude.toString()
                 )
-                gifticonAdapter.setOnDragListener(DragListener(targetView, req, viewModel))
-                binding.ivPresent.setOnDragListener(DragListener(targetView, req, viewModel))
+                gifticonAdapter.setOnDragListener(DragListener(targetView, req, viewModel, user))
+                binding.ivPresent.setOnDragListener(DragListener(targetView, req, viewModel, user))
 
                 v.startDrag(dragData, shadow, v, 0)
             }
@@ -364,7 +422,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         MainActivity().setShakeSensor(requireContext(), shakeDetector)
     }
 
-    private fun resizeBitmapFromUrl(url: String): /*Drawable*/Bitmap {
+    private fun resizeBitmapFromUrl(url: String): Bitmap {
         val x: Bitmap
         val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
         connection.connect()
@@ -409,7 +467,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
-        Log.d(TAG, "onMapViewDragEnded: ")
         val user = SharedPreferencesUtil(requireContext()).getUser()
         val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
         if (viewModel.brandName == "전체") {
@@ -441,7 +498,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     }
 
     override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
-
         var intent = Intent(Intent.ACTION_DIAL)
         intent.data = Uri.parse("tel:" + ballBinding.tvPhone.text)
         if (intent.resolveActivity(requireActivity().packageManager) != null) {

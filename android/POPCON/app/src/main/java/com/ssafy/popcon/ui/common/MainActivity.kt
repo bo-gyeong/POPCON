@@ -89,8 +89,6 @@ class MainActivity : AppCompatActivity() {
 
     //navigation bar 설정
     private fun setNavBar() {
-        //this.setStatusBarTransparent() // 투명 상태 바
-
         window.navigationBarColor = Color.WHITE;
 
         val radius = resources.getDimension(R.dimen.radius_small)
@@ -123,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //재선택 방지
         binding.bottomNav.setOnItemReselectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.mapFragment -> {}
