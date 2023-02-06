@@ -46,7 +46,8 @@ import java.net.URL
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener, MapView.POIItemEventListener {
+class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
+    MapView.POIItemEventListener {
     private lateinit var binding: FragmentMapBinding
     private val ACCESS_FINE_LOCATION = 1000     // Request Code
     private lateinit var ballBinding: ItemBalloonBinding

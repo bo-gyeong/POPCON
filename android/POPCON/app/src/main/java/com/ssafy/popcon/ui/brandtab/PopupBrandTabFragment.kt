@@ -65,11 +65,11 @@ class PopupBrandTabFragment : Fragment() {
         val user = SharedPreferencesUtil(requireContext()).getUser()
         val storeRequest = StoreRequest(
             user.email!!,
-            user.social.toString(),
-            //getLongitude.toString(),
-            "128.64995",
-            //getLatitude.toString(),
-            "35.85655"
+            user.social,
+            getLongitude.toString(),
+            getLatitude.toString(),
+            //"128.64995",//스벅 + 투썸
+            //"35.85655"
         )
 
         viewModel.getBrandByLocation(storeRequest, SharedPreferencesUtil(requireContext()).getUser())
