@@ -9,6 +9,5 @@ interface AddDataSource {
     suspend fun chkBrand(brandName: String): ChkValidation
     suspend fun chkBarcode(barcodeNum: String): ChkValidation
     suspend fun addGifticon(addInfo: List<AddInfoNoImg>): List<AddInfoNoImg>
-    fun addImgInfoNonSuspend(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
-    suspend fun addImgInfo(imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
+    suspend fun addImgInfo(imgInfo: Array<AddImgInfo>): List<List<AddImgInfoResult>>
 }

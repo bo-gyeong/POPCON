@@ -70,31 +70,6 @@ data class AddInfo(
         "",
         ""
     )
-
-    constructor(
-        barcodeNum:String,
-        brandName:String,
-        due:String,
-        voucherChk: Int,
-        price: Int,
-        product:String,
-        email: String,
-        social: String
-    ): this (
-        "".toUri(),
-        "".toUri(),
-        "".toUri(),
-        barcodeNum,
-        brandName,
-        product,
-        due,
-        voucherChk,
-        price,
-        0,
-        "",
-        email,
-        social
-    )
 }
 
 data class AddInfoNoImg(
@@ -108,28 +83,7 @@ data class AddInfoNoImg(
     val email: String,
     val social: String,
     val state: Int = 0
-){
-    constructor(
-        barcodeNum:String,
-        brandName:String,
-        productName:String,
-        due:String,
-        isVoucher: Int,
-        email: String,
-        social:String
-    ): this (
-        barcodeNum,
-        brandName,
-        productName,
-        due,
-        isVoucher,
-        -1,
-        "",
-        email,
-        social,
-        0
-    )
-}
+)
 
 data class AddInfoNoImgBoolean(
     var productName: Boolean,

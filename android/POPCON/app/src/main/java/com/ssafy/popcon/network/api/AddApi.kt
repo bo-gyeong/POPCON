@@ -29,8 +29,5 @@ interface AddApi {
     suspend fun addGifticon(@Body addInfo: List<AddInfoNoImg>): List<AddInfoNoImg>
 
     @POST("files/register_gifticon")
-    fun addImgInfoNonSuspend(@Body imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
-
-    @POST("files/register_gifticon")
-    suspend fun addImgInfo(@Body imgInfo: Array<AddImgInfo>): List<AddImgInfoResult>
+    suspend fun addImgInfo(@Body imgInfo: Array<AddImgInfo>): List<List<AddImgInfoResult>>
 }

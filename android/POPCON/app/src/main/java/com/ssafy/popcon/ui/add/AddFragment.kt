@@ -7,7 +7,6 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.graphics.drawable.ColorDrawable
@@ -22,11 +21,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.loader.content.CursorLoader
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,31 +35,24 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentAddBinding
 import com.ssafy.popcon.dto.*
-import com.ssafy.popcon.repository.add.AddRemoteDataSource
-import com.ssafy.popcon.repository.add.AddRepository
-import com.ssafy.popcon.ui.common.Event
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.onSingleClickListener
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
-import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okio.BufferedSink
 import okio.source
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
 
 private const val TAG = "###_AddFragment"
 class AddFragment : Fragment(), onItemClick {
@@ -92,24 +82,6 @@ class AddFragment : Fragment(), onItemClick {
     companion object{
         var chkCnt = 1
         var clickItemPos = 0
-        // 등록하기 클릭 시 디비에 저장할 이미지 정보 리스트 생성
-//        fun makeAddImgInfoList(): Array<AddImgInfo>{
-//            val imgInfo = mutableListOf<AddImgInfo>()
-//            for (i in 0 until originalImgUris.size){
-//                val productImgName = File(getPath(productImgUris[i].imgUri)).name
-//                val barcodeImgName = File(getPath(barcodeImgUris[i].imgUri)).name
-//
-//                imgInfo.add(
-//                    AddImgInfo(
-//                        binding.etBarcode.text.toString(),
-//                        fileNames[i],
-//                        productImgName,
-//                        barcodeImgName
-//                    )
-//                )
-//            }
-//            return imgInfo.toTypedArray()
-//        }
     }
 
     override fun onAttach(context: Context) {
@@ -142,16 +114,6 @@ class AddFragment : Fragment(), onItemClick {
         openGalleryFirst()
 
         binding.cvAddCoupon.setOnClickListener {
-            for (i in 0 until delImgUris.size){
-                delCropImg(delImgUris[i])
-            }
-            delImgUris.clear()
-            multipartFiles.clear()
-            ocrResults.clear()
-            fileNames.clear()
-            gifticonInfoList.clear()
-            gifticonEffectiveness.clear()
-
             makeProgressDialogOnBackPressed()
             openGalleryFirst()
         }
@@ -188,63 +150,19 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.btnRegi.setOnClickListener {
             if (chkClickImgCnt() && chkEffectiveness()){
+                makeProgressDialog()
+                changeProgressDialogState(true)
+                
+                viewModel.addOtherFileToGCP(makeAddImgMultipartList())
+                viewModel.gcpOtherResult.observe(viewLifecycleOwner, EventObserver{
+                    viewModel.addImgInfo(makeAddImgInfoList(it))
+                    for (i in 0 until delImgUris.size){
+                        delCropImg(delImgUris[i])
+                    }
 
-                viewModel.addFileToGCP(makeAddImgMultipartList())
-                val addRepo =
-                AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
-
-                addRepo.addImgInfoNonSuspend(makeAddImgInfoList())
-//                CoroutineScope(Dispatchers.IO).launch {
-//
-//                    viewModel.addImgInfo(makeAddImgInfoList())
-//                }
-
-//                val job1 = CoroutineScope(Dispatchers.IO).launch {
-//                    viewModel.addFileToGCP(makeAddImgMultipartList())
-//                }
-//                val job2 = CoroutineScope(Dispatchers.IO).launch {
-//                    viewModel.addImgInfo(makeAddImgInfoList())
-//                }
-                MyHandler().postDelayed(
-                    Runnable {
-                        for (i in 0 until delImgUris.size){
-                            Log.d(TAG, "onViewCreated:--> ${delImgUris[i]}")
-                            delCropImg(delImgUris[i])
-                        }
-                    }, 2000
-                )
-//                val job3 = CoroutineScope(Dispatchers.IO).launch {
-//                    Log.d(TAG, "onViewCreated: ????")
-//                    for (i in 0 until delImgUris.size){
-//                        Log.d(TAG, "onViewCreated:--> ${delImgUris[i]}")
-//                        delCropImg(delImgUris[i])
-//                    }
-//                }
-
-                runBlocking {
-                    //job1.join()
-                    //job2.join()
-                    //job3.join()
-//                    viewModel.addGifticon(makeAddInfoList())
-//                    mainActivity.changeFragment(HomeFragment())
-                }
-                viewModel.addGifticon(makeAddInfoList())
-                mainActivity.changeFragment(HomeFragment())
-
-
-//                viewModel.addFileToGCP(makeAddImgMultipartList())
-//                viewModel.gcpResult.observe(viewLifecycleOwner, EventObserver{
-//                    viewModel.addImgInfo(makeAddImgInfoList())
-//                })
-//
-//                viewModel.addImgInfoResult.observe(viewLifecycleOwner, EventObserver{
-//                    Log.d(TAG, "onViewCreated: ????")
-//                    for (i in 0 until delImgUris.size){
-//                        Log.d(TAG, "onViewCreated:--> ${delImgUris[i]}")
-//                        delCropImg(delImgUris[i])
-//                    }
-//                })
-
+                    viewModel.addGifticon(makeAddInfoList())
+                    mainActivity.changeFragment(HomeFragment())
+                })
             }
         }
     }
@@ -256,9 +174,7 @@ class AddFragment : Fragment(), onItemClick {
                     val clipData = it.data!!.clipData
 
                     if (clipData != null) {  //첫 add
-                        originalImgUris = ArrayList()
-                        productImgUris = ArrayList()
-                        barcodeImgUris = ArrayList()
+                        cvAddCouponClick()
 
                         for (i in 0 until clipData.itemCount){
                             val originalImgUri = clipData.getItemAt(i).uri
@@ -349,6 +265,23 @@ class AddFragment : Fragment(), onItemClick {
             return ""
         }
         return value
+    }
+
+    // 사진 추가버튼 클릭 시 기존 값 초기화
+    private fun cvAddCouponClick(){
+        originalImgUris.clear()
+        productImgUris.clear()
+        barcodeImgUris.clear()
+        fileNames.clear()
+        ocrResults.clear()
+        delImgUris.clear()
+        multipartFiles.clear()
+        gifticonInfoList.clear()
+        gifticonEffectiveness.clear()
+
+        for (i in 0 until delImgUris.size){
+            delCropImg(delImgUris[i])
+        }
     }
 
     // 로딩화면 띄우기
@@ -486,7 +419,7 @@ class AddFragment : Fragment(), onItemClick {
     // add탭 클릭하자마자 나오는 갤러리
     private fun openGalleryFirst() {
         val intent = Intent(Intent.ACTION_PICK)
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) //Intent.EXTRA_ALLOW_MULTIPLE
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.setDataAndType(Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         result.launch(intent)
 
@@ -539,39 +472,13 @@ class AddFragment : Fragment(), onItemClick {
 
     // 이미지 절대경로 가져오기
     private fun getPath(uri: Uri):String{
-        var cursorString = ""
-
-//        val handler = MyHandler()
-//        handler.post{
-//            val data:Array<String> = arrayOf(Images.Media.DATA)
-//            val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
-//            val cursor = cursorLoader.loadInBackground()!!
-//            val idx = cursor.getColumnIndexOrThrow(Images.Media.DATA)
-//            cursor.moveToFirst()
-//            cursorString = cursor.getString(idx)
-//        }
-
-
         val data:Array<String> = arrayOf(Images.Media.DATA)
         val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
         val cursor = cursorLoader.loadInBackground()!!
         val idx = cursor.getColumnIndexOrThrow(Images.Media.DATA)
         cursor.moveToFirst()
-        cursorString = cursor.getString(idx)
 
-        return cursorString
-    }
-
-    inner class MyHandler: Handler(Looper.getMainLooper()){
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
-
-    inner class MyThread: Thread(){
-        override fun run() {
-            super.run()
-        }
+        return cursor.getString(idx)
     }
 
     // uri -> bitmap
@@ -595,7 +502,13 @@ class AddFragment : Fragment(), onItemClick {
     // 상단 리사이클러뷰 만들기
     private fun makeImgList(){
         addImgAdapter = AddImgAdapter(
-            gifticonInfoList, originalImgUris, productImgUris, barcodeImgUris, fileNames, this
+            gifticonInfoList,
+            originalImgUris,
+            productImgUris,
+            barcodeImgUris,
+            fileNames,
+            gifticonEffectiveness,
+            this
         )
 
         binding.rvCouponList.apply {
@@ -867,16 +780,17 @@ class AddFragment : Fragment(), onItemClick {
     }
 
     // 등록하기 클릭 시 디비에 저장할 이미지 정보 리스트 생성
-    private fun makeAddImgInfoList(): Array<AddImgInfo>{
+    private fun makeAddImgInfoList(gcpResult: List<GCPResult>): Array<AddImgInfo>{
+        var idx = 0
         val imgInfo = mutableListOf<AddImgInfo>()
-        for (i in 0 until originalImgUris.size){
-            val productImgName = File(getPath(productImgUris[i].imgUri)).name
-            val barcodeImgName = File(getPath(barcodeImgUris[i].imgUri)).name
+        for (i in 0 until gcpResult.size step(2)){
+            val productImgName = gcpResult[i].fileName
+            val barcodeImgName = gcpResult[i+1].fileName
 
             imgInfo.add(
                 AddImgInfo(
                     binding.etBarcode.text.toString(),
-                    fileNames[i],
+                    fileNames[idx++],
                     productImgName,
                     barcodeImgName
                 )
@@ -920,9 +834,12 @@ class AddFragment : Fragment(), onItemClick {
         for (gifticon in gifticonEffectiveness){
             if (!gifticon.productName || !gifticon.brandName
                 || !gifticon.barcodeNum || !gifticon.due){
+                Log.d(TAG, "chkAllList111: ${gifticon.productName}\n ${gifticon.brandName}\n" +
+                        "${gifticon.barcodeNum}\n${gifticon.due}\n")
                 return false
             }
             if (gifticon.isVoucher && !gifticon.price){
+                Log.d(TAG, "chkAllList222: ${gifticon.isVoucher}\n ${gifticon.price}\n")
                 return false
             }
         }
