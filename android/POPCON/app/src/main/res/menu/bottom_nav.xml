@@ -7,11 +7,6 @@
         android:icon="@drawable/bottom_home_selector"
         android:title=""/>
     <item
-        android:id="@+id/donateFragment"
-        android:enabled="true"
-        android:icon="@drawable/bottom_donate_selector"
-        android:title=""/>
-    <item
         android:id="@+id/addFragment"
         android:enabled="true"
         android:icon="@drawable/bottom_add"
@@ -19,7 +14,7 @@
     <item
         android:id="@+id/mapFragment"
         android:enabled="true"
-        android:icon="@drawable/bottom_location_selector"
+        android:icon="@drawable/bottom_donate_selector"
         android:title=""/>
     <item
         android:id="@+id/settingsFragment"

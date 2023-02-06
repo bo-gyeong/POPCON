@@ -65,27 +65,26 @@ class PopupBrandTabFragment : Fragment() {
         val user = SharedPreferencesUtil(requireContext()).getUser()
         val storeRequest = StoreRequest(
             user.email!!,
-            user.social.toString(),
-            //getLongitude.toString(),
-            "128.64995",
-            //getLatitude.toString(),
-            "35.85655"
+            user.social,
+            getLongitude.toString(),
+            getLatitude.toString(),
+            //"128.64995",//스벅 + 투썸
+            //"35.85655"
         )
 
-        viewModel.getBrandByLocation(storeRequest, SharedPreferencesUtil(requireContext()).getUser())
+        viewModel.getBrandByLocation(
+            storeRequest,
+            SharedPreferencesUtil(requireContext()).getUser()
+        )
 
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
             override fun onClick(v: View, brandName: String) {
-                Log.d(TAG, "onClick: $brandName")
                 viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
-
-                //GifticonPreviewFragment()
             }
         })
 
         viewModel.brands.observe(viewLifecycleOwner) {
-            Log.d("TAG", "setBrandTab: $it")
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =

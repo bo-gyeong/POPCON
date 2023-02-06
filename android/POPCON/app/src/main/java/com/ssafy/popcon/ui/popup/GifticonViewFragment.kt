@@ -45,10 +45,19 @@ class GifticonViewFragment : Fragment() {
         useBtnListener()
     }
 
-    private fun makeGifticon() : UpdateRequest {
+    private fun makeGifticon(): UpdateRequest {
 
-        return UpdateRequest(gifticonInfo!!.barcodeNum, gifticonInfo!!.brand!!.brandName, gifticonInfo!!.due, gifticonInfo!!.memo,
-            gifticonInfo!!.price ?: -1, gifticonInfo!!.productName, SharedPreferencesUtil(requireContext()).getUser().email!!, SharedPreferencesUtil(requireContext()).getUser().social, gifticonInfo!!.state)
+        return UpdateRequest(
+            gifticonInfo!!.barcodeNum,
+            gifticonInfo!!.brand!!.brandName,
+            gifticonInfo!!.due,
+            gifticonInfo!!.memo,
+            gifticonInfo!!.price ?: -1,
+            gifticonInfo!!.productName,
+            SharedPreferencesUtil(requireContext()).getUser().email!!,
+            SharedPreferencesUtil(requireContext()).getUser().social,
+            gifticonInfo!!.state
+        )
     }
 
     //사용완료 버튼 리스너

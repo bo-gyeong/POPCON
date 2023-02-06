@@ -40,7 +40,7 @@ class TokenAuthenticator: Authenticator {
         }
 
         return response.request.newBuilder()
-            .header("Authorization dddd", "Bearer ${ApplicationClass.sharedPreferencesUtil.accessToken?:""}")
+            .header("Authorization", "Bearer ${ApplicationClass.sharedPreferencesUtil.accessToken?:""}")
             .build()
     }
 }

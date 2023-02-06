@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         checkPermissions()
         //getFCMToken()
-        
+
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
             Log.d(TAG, "onCreate: 로그인됨")
@@ -111,16 +111,24 @@ class MainActivity : AppCompatActivity() {
                     addFragment(AddFragment())
                     true
                 }
-                R.id.mapFragment ->{
+                R.id.mapFragment -> {
                     changeFragment(MapFragment())
                     true
                 }
-                R.id.settingsFragment->{
+                R.id.settingsFragment -> {
                     changeFragment(SettingsFragment())
                     true
                 }
-                //donateFragment 추가하기
                 else -> false
+            }
+        }
+
+        binding.bottomNav.setOnItemReselectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.mapFragment -> {}
+                R.id.addFragment -> {}
+                R.id.settingsFragment -> {}
+                R.id.homeFragment -> {}
             }
         }
     }
@@ -149,7 +157,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     // 위치, 갤러리, 전화 권한
-     fun checkPermissions() {
+    fun checkPermissions() {
         checkPermission = CheckPermission(this)
 
         if (!checkPermission.runtimeCheckPermission(this, *runtimePermissions)) {
