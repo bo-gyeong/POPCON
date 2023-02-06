@@ -5,6 +5,8 @@ import com.example.popconback.gifticon.domain.Present;
 import com.example.popconback.gifticon.dto.GifticonDto;
 import com.example.popconback.gifticon.dto.Present.GetPresent.GetPresentDto;
 import com.example.popconback.gifticon.dto.Present.GetPresent.ResponseGetPresentDto;
+import com.example.popconback.gifticon.dto.Present.GivePresent.GivePresentDto;
+import com.example.popconback.gifticon.dto.Present.GivePresent.ResponseGivePresentDto;
 import com.example.popconback.gifticon.dto.Present.PossiblePresentList.ResponsePossiblePresentListDto;
 import com.example.popconback.gifticon.repository.GifticonRepository;
 import com.example.popconback.gifticon.repository.PresentRepository;
@@ -29,11 +31,39 @@ public class PresentService {
     private final TokenController tokenController;
 
 
+    public ResponseGivePresentDto givePresent(GivePresentDto givePresentDto) {
+        String presentBarcode = givePresentDto.getBarcodeNum();
+        String presentX = givePresentDto.getX();
+        String presentY = givePresentDto.getY();
+
+
+        Optional<Gifticon> optionalGifticon = gifticonRepository.findById(presentBarcode);
+        if(!optionalGifticon.isPresent()){
+            return null;
+        }
+        Gifticon gifticon = optionalGifticon.get();
+        gifticon.setState(3);
+
+        Present present = new Present();
+
+        present.setGifticon(gifticon);
+        present.setX(presentX);
+        present.setY(presentY);
+
+        presentRepository.save(present);
+
+
+        return null;
+
+
+    }
+
+
     public ResponseGetPresentDto getPresent(GetPresentDto getPresentDto, int hash) {
 
         // 기프티콘 상태 바꾸기
         GifticonDto Present_gifticon = new GifticonDto();
-        Optional<Gifticon> optionalGifticon = gifticonRepository.findById(getPresentDto.getBarcode_num());
+        Optional<Gifticon> optionalGifticon = gifticonRepository.findById(getPresentDto.getBarcodeNum());
         if(!optionalGifticon.isPresent()){
             return null;
         }
@@ -44,7 +74,7 @@ public class PresentService {
             String title = "감사인사";
 
             tokenController.sendMessageTo(gifticon.getUser().getToken(), title, getPresentDto.getMessage());
-            System.out.println("감사하비다"+getPresentDto.getMessage());
+            System.out.println("감사합니다"+getPresentDto.getMessage());
         }catch(IOException e){
 
         }
@@ -53,7 +83,7 @@ public class PresentService {
         gifticon.setState(0);
         gifticonRepository.save(gifticon);
         // 선물테이블에서 지우기
-        presentRepository.deleteByGifticon_BarcodeNum(getPresentDto.getBarcode_num());
+        presentRepository.deleteByGifticon_BarcodeNum(getPresentDto.getBarcodeNum());
 
         return null;
     }

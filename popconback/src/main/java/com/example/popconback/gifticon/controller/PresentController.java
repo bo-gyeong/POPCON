@@ -1,4 +1,6 @@
 package com.example.popconback.gifticon.controller;
+import com.example.popconback.gifticon.dto.Present.GivePresent.GivePresentDto;
+import com.example.popconback.gifticon.dto.Present.GivePresent.ResponseGivePresentDto;
 import org.springframework.security.core.Authentication;
 import com.example.popconback.gifticon.dto.Present.GetPresent.GetPresentDto;
 import com.example.popconback.gifticon.dto.Present.GetPresent.ResponseGetPresentDto;
@@ -29,6 +31,13 @@ public class PresentController {
 
 
     private final PresentService presentService;
+
+    @ApiOperation(value = "기부 버리기", notes = "기부 버리기", httpMethod = "POST")
+    @PostMapping("/give_present") //기부 버리기
+    public ResponseEntity<ResponseGivePresentDto> GivePresent (@RequestBody GivePresentDto givePresentDto){
+
+        return ResponseEntity.ok(presentService.givePresent(givePresentDto));
+    }
 
     @ApiOperation(value = "기부 줍기", notes = "기부 줍기", httpMethod = "POST")
     @PostMapping("/get_present") //기부 줍기
