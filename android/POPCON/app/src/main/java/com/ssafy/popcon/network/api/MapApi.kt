@@ -14,8 +14,11 @@ interface MapApi {
     suspend fun getStoreByBrand(@Body storeRequest: StoreByBrandRequest) : List<Store>
 
     @POST("presents/possible_list")
-    suspend fun getPresents(@Body findDonateRequest: FindDonateRequest) : FindDonateResponse
+    suspend fun getPresents(@Body findPresentRequest: FindPresentRequest) : FindDonateResponse
 
     @POST("presents/give_present")
     suspend fun givePresent(@Body request: DonateRequest)
+
+    @POST("presents/get_present")
+    suspend fun getPresent(@Body request : GetPresentRequest)
 }

@@ -89,18 +89,26 @@ class MapViewModel(
         }
     }
 
-    fun getPresents(findDonateRequest: FindDonateRequest) {
+    fun getPresents(findPresentRequest: FindPresentRequest) {
         viewModelScope.launch {
-            val presents = mapRepository.getPresents(findDonateRequest)
+            val presents = mapRepository.getPresents(findPresentRequest)
             _presents.value = presents.allNearPresentList
             _presentsNear.value = presents.gettablePresentList
         }
     }
 
-    fun donate(donateRequest: DonateRequest, user: User) {
+    fun donate(donateRequest: DonateRequest, user: User, x : String, y: String) {
         viewModelScope.launch {
             mapRepository.donate(donateRequest)
-            getPresents(FindDonateRequest(donateRequest.x, donateRequest.y))
+            getPresents(FindPresentRequest(x, y))
+            getGifticons(user, brandName)
+        }
+    }
+
+    fun getPresent(getPresentRequest: GetPresentRequest, user: User) {
+        viewModelScope.launch {
+            mapRepository.getPresent(getPresentRequest)
+            getPresents(FindPresentRequest(getPresentRequest.x, getPresentRequest.y))
             getGifticons(user, brandName)
         }
     }

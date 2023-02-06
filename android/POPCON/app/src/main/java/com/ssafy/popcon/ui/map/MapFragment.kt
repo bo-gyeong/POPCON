@@ -13,13 +13,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
-import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -33,10 +32,7 @@ import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.common.DragListener
 import com.ssafy.popcon.ui.common.DragShadowBuilder
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
-import com.ssafy.popcon.ui.popup.GifticonDialogFragment
-import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
-import com.ssafy.popcon.util.ShakeDetector
+import com.ssafy.popcon.util.MyLocationManager
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.MapViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -56,7 +52,9 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     MapView.POIItemEventListener {
     private lateinit var binding: FragmentMapBinding
     private val ACCESS_FINE_LOCATION = 1000     // Request Code
+    lateinit var lm: LocationManager
     private lateinit var ballBinding: ItemBalloonBinding
+    private var mode = 1
     lateinit var mainActivity: MainActivity
     private val viewModel: MapViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     var storeMap = HashMap<String, String>()
@@ -91,7 +89,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
+        lm = MyLocationManager.getLocationManager(requireContext())
         binding.mapView.setMapViewEventListener(this)
         binding.mapView.setCalloutBalloonAdapter(this)
         binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
@@ -108,17 +106,18 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
         setGifticonBanner()
         setStore()
-        setSensor()
 
         // 위치 업데이트 버튼 클릭시 화면 가운데를 현재 위치 변경
         binding.btnUpdatePosition.setOnClickListener {
+            mode = 1
             moveMapUserToPosition(binding.mapView)
             startTracking()
         }
 
         binding.btnFind.setOnClickListener {
-            moveMapUserToPosition(binding.mapView)
-
+            //moveMapUserToPosition(binding.mapView)
+            mode = 0
+            startTracking()
             findPresent()
         }
     }
@@ -127,14 +126,11 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         getUserLocation()
-
-        val request = FindDonateRequest(
+        //y : 위도 latitude 경 127도, 위 37도
+        viewModel.getPresents(FindPresentRequest(
             getLongitude.toString(),
             getLatitude.toString()
-        )
-
-        //y : 위도 latitude 경 127도, 위 37도
-        viewModel.getPresents(request)
+        ))
         viewModel.presents.observe(viewLifecycleOwner) {
             binding.mapView.removeAllPOIItems()
 
@@ -272,8 +268,10 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         val request = StoreRequest(
             sharedPreferencesUtil.getUser().email!!,
             sharedPreferencesUtil.getUser().social,
-            getLongitude.toString(),
-            getLatitude.toString()
+            /*getLongitude.toString(),
+            getLatitude.toString()*/
+            "128.4166327872964",
+            "36.10747083607294"
         )
 
         //y : 위도 latitude 경 127도, 위 37도
@@ -330,7 +328,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     private fun setGifticonBanner() {
         val user = SharedPreferencesUtil(requireContext()).getUser()
         val targetView = binding.ivPresent
-        var gifticonAdapter = MapGifticonAdpater(targetView, viewModel, user)
+        var gifticonAdapter = MapGifticonAdpater(targetView, viewModel, user, lm)
         gifticonAdapter.setOnLongClickListener(object : MapGifticonAdpater.OnLongClickListener {
             override fun onLongClick(v: View, gifticon: Gifticon) {
                 Log.d(TAG, "onLongClick: $gifticon")
@@ -349,8 +347,8 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                     location.longitude.toString(),
                     location.latitude.toString()
                 )
-                gifticonAdapter.setOnDragListener(DragListener(targetView, req, viewModel, user))
-                binding.ivPresent.setOnDragListener(DragListener(targetView, req, viewModel, user))
+                gifticonAdapter.setOnDragListener(DragListener(targetView, req, viewModel, user, lm))
+                binding.ivPresent.setOnDragListener(DragListener(targetView, req, viewModel, user, lm))
 
                 v.startDrag(dragData, shadow, v, 0)
             }
@@ -392,35 +390,32 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
-            name.text = poiItem?.itemName
-            phone.text = storeMap[poiItem?.itemName]
+            if (storeMap.containsKey(poiItem?.itemName)) {//매장 핀
+                name.text = poiItem?.itemName
+                phone.text = storeMap[poiItem?.itemName]
+            } else {//기부 핀
+                phone.isVisible = false
+                if (poiItem?.customImageResourceId == R.drawable.near) {
+                    name.text = "줍기"
+                } else {
+                    val view : CardView = mCalloutBalloon.findViewById(R.id.ballView)
+                    view.setCardBackgroundColor(Color.parseColor("#FF9797"))
+                    name.text = "더 가까이 이동하세요"
+                }
+            }
 
             return mCalloutBalloon
         }
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
-            stopTracking()
+            if (mode == 1) {
+                stopTracking()
+            }
             return mCalloutBalloon
         }
     }
 
-
-    //화면 켜지면 센서 설정
-    private fun setSensor() {
-        shakeDetector = ShakeDetector()
-        shakeDetector.setOnShakeListener(object : ShakeDetector.OnShakeListener {
-            override fun onShake(count: Int) {
-                if (!isShow) {
-                    activity?.let {
-                        GifticonDialogFragment().show(it.supportFragmentManager, "popup")
-                    }
-                }
-            }
-        })
-
-        MainActivity().setShakeSensor(requireContext(), shakeDetector)
-    }
 
     private fun resizeBitmapFromUrl(url: String): Bitmap {
         val x: Bitmap
@@ -463,30 +458,33 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     }
 
     override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
-        stopTracking()
+        if (mode == 1) {
+            stopTracking()
+        }
     }
-
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
-        val user = SharedPreferencesUtil(requireContext()).getUser()
-        val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
-        if (viewModel.brandName == "전체") {
-            viewModel.getStoreInfo(
-                StoreRequest(
-                    user.email,
-                    user.social,
-                    location.longitude.toString(),
-                    location.latitude.toString()
+        if (mode == 1) {
+            val user = SharedPreferencesUtil(requireContext()).getUser()
+            val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
+            if (viewModel.brandName == "전체") {
+                viewModel.getStoreInfo(
+                    StoreRequest(
+                        user.email,
+                        user.social,
+                        location.longitude.toString(),
+                        location.latitude.toString()
+                    )
                 )
-            )
-        } else {
-            viewModel.getStoreByBrand(
-                StoreByBrandRequest(
-                    viewModel.brandName,
-                    user.email!!,
-                    user.social,
-                    location.longitude.toString(), location.latitude.toString()
+            } else {
+                viewModel.getStoreByBrand(
+                    StoreByBrandRequest(
+                        viewModel.brandName,
+                        user.email!!,
+                        user.social,
+                        location.longitude.toString(), location.latitude.toString()
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -498,10 +496,17 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     }
 
     override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
-        var intent = Intent(Intent.ACTION_DIAL)
-        intent.data = Uri.parse("tel:" + ballBinding.tvPhone.text)
-        if (intent.resolveActivity(requireActivity().packageManager) != null) {
-            startActivity(intent)
+        if (mode == 1) {
+            var intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:" + ballBinding.tvPhone.text)
+            if (intent.resolveActivity(requireActivity().packageManager) != null) {
+                startActivity(intent)
+            }
+        } else {
+            if (p1?.customImageResourceId == R.drawable.near) {
+                getUserLocation()
+                viewModel.getPresent(GetPresentRequest(p1!!.itemName, "", getLongitude.toString(), getLatitude.toString()), SharedPreferencesUtil(requireContext()).getUser())
+            }
         }
     }
 

@@ -49,7 +49,14 @@ data class DonateRequest(
     val y: String
 )
 
-data class FindDonateRequest(
+data class FindPresentRequest(
+    val x: String,
+    val y: String
+)
+
+data class GetPresentRequest(
+    val barcodeNum: String,
+    val message: String,
     val x: String,
     val y: String
 )

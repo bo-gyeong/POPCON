@@ -11,11 +11,15 @@ class MapRepository(private val remoteDataSource: MapRemoteDataSource) {
         return remoteDataSource.getStoreByBrand(storeByBrandRequest)
     }
 
-    suspend fun getPresents(presentRequest: FindDonateRequest): FindDonateResponse {
+    suspend fun getPresents(presentRequest: FindPresentRequest): FindDonateResponse {
         return remoteDataSource.getPresent(presentRequest)
     }
 
     suspend fun donate(donateRequest: DonateRequest) {
         return remoteDataSource.givePresent(donateRequest)
+    }
+
+    suspend fun getPresent(getPresentRequest: GetPresentRequest) {
+        return remoteDataSource.getPresent(getPresentRequest)
     }
 }

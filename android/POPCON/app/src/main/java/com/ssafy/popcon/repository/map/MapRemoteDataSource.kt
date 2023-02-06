@@ -13,8 +13,12 @@ class MapRemoteDataSource(private val apiClient: MapApi) : MapDataSource {
         return apiClient.getStoreByBrand(storeByBrandRequest)
     }
 
-    override suspend fun getPresent(presentRequest: FindDonateRequest): FindDonateResponse {
+    override suspend fun getPresent(presentRequest: FindPresentRequest): FindDonateResponse {
         return apiClient.getPresents(presentRequest)
+    }
+
+    override suspend fun getPresent(getPresentRequest: GetPresentRequest) {
+        return apiClient.getPresent(getPresentRequest)
     }
 
     override suspend fun givePresent(donateRequest: DonateRequest) {
