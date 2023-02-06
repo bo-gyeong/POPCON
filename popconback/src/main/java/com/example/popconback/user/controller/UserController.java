@@ -39,7 +39,7 @@ public class UserController {
             notes = "회원 정보 DB에 저장",
             httpMethod = "POST")
     @PostMapping("/login") // 로그인
-    public ResponseEntity<ResponseToken> login(@RequestBody CreateUserDto createUserDto){
+    public ResponseEntity<ResponsCreateUserDto> login(@RequestBody CreateUserDto createUserDto){
         return ResponseEntity.ok(userservice.login(createUserDto));// 카카오 토큰을 받아와서 사용자 정부 추출
     }
 

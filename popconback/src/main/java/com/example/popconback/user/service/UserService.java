@@ -51,7 +51,7 @@ public class UserService {
     }
 
 
-    public ResponseToken login (CreateUserDto createUserDto){// 카카오 토큰을 가지고 와서 여기서 로그인 시켜야함
+    public ResponsCreateUserDto login (CreateUserDto createUserDto){// 카카오 토큰을 가지고 와서 여기서 로그인 시켜야함
                 // 카카오에 사용자 정보를 요청
                 // 그걸로 DB 탐색
                 // 사용자가 있으면 있는거 보내고 없으면 DB에 회원 등록하고 보내고 (소셜 로그인이라 회원가입과 분리가 안되어 있어서)
@@ -71,24 +71,26 @@ public class UserService {
 
         ResponseToken responseToken = new ResponseToken();
         responseToken.setAcessToken(token);
-        responseToken.setRefreshToekn(Refreshtoken);
+        responseToken.setRefreshToken(Refreshtoken);
 
-            user.setRefreshToken(Refreshtoken);
+        user.setRefreshToken(Refreshtoken);
 
+        ResponsCreateUserDto ruser = new ResponsCreateUserDto();
         Optional<User> optionalUser = userRepository.findById(user.hashCode());
         if(!optionalUser.isPresent()){ //회원가입되는거고
             userRepository.save(user.toEntity());
+            BeanUtils.copyProperties(user,ruser);
         }
         else{//로그인하고 refresh 다시 만들어서 저장해주고
             UserDto joineduser = new UserDto();
             BeanUtils.copyProperties(optionalUser.get(),joineduser);
             joineduser.setRefreshToken(Refreshtoken);
             userRepository.save(joineduser.toEntity());
+            BeanUtils.copyProperties(joineduser,ruser);
         }
+        ruser.setAcessToken(token);
 
-
-
-        return responseToken;
+        return ruser;
     }
 
     public ResponseToken refresh(String refreshtoken){// 리프레시 토큰 오면 보내는거
@@ -107,7 +109,7 @@ public class UserService {
 
 
         responseToken.setAcessToken(token);
-        responseToken.setRefreshToekn(Refreshtoken);
+        responseToken.setRefreshToken(Refreshtoken);
         //user에 refreshtoken 저장하기
         dto.setRefreshToken(Refreshtoken);
         userRepository.save(dto.toEntity());

@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class ResponseToken {
     String acessToken;
-    String refreshToekn;
+    String refreshToken;
 }

@@ -25,6 +25,12 @@ public class ResponsCreateUserDto {
     @ApiModelProperty(name = "manner_temp", value = "매너온도", example = "30")
     private int manner_temp;
 
+    @ApiModelProperty(name = "acessToken", value = "엑세스토큰", example = "")
+    String acessToken;
+    @ApiModelProperty(name = "refreshToken", value = "리프레시토큰", example = "")
+    String refreshToken;
+
+
     @Override
     public int hashCode() {
         return Objects.hash(email,social);
