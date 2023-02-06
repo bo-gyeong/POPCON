@@ -154,7 +154,8 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.RECEIVE_MMS
     )
 
     // 위치, 갤러리, 전화 권한
@@ -181,6 +182,7 @@ class MainActivity : AppCompatActivity() {
                     && grantResults[2] == PackageManager.PERMISSION_GRANTED
                     && grantResults[3] == PackageManager.PERMISSION_GRANTED
                     && grantResults[4] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[5] == PackageManager.PERMISSION_GRANTED
                 ) {
                     //권한 승인
                     permissionGranted = true
