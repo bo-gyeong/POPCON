@@ -93,7 +93,7 @@ public class GifticonService {
     
     public List<ResponseGifticonHistoryDto> historyGifticon (GifticonHistoryDto gifticonHistoryDto, int hash){// 기프티콘 리스트 뽑아오기
 
-        List<Gifticon>list = gifticonRepository.findByUser_HashAndStateGreaterThanEqual(hash,1);
+        List<Gifticon>list = gifticonRepository.findByUser_HashAndStateBetween(hash,1,2);
         List<ResponseGifticonHistoryDto> rlist = new ArrayList<>();
 
         for (Gifticon gifticon:list) {

@@ -19,7 +19,7 @@ public interface GifticonRepository extends JpaRepository<Gifticon, String> {
     List<Gifticon>  findByUser_HashAndDueLessThanEqualAndState(int hash, Date date, int state);
     List<Gifticon> findByDueAndState(Date date, int state);
 
-    List<Gifticon> findByUser_HashAndStateGreaterThanEqual(int hash, int state);
+    List<Gifticon> findByUser_HashAndStateBetween(int hash, int state, int end);
 
     Gifticon findByBarcodeNum(String barcodeNum);
     @Query(value = "SELECT g.brand_name, b.brand_img, COUNT(g.brand_name) as cnt FROM gifticon g JOIN brand b ON g.brand_name = b.brand_name WHERE hash = :hash AND state = 0 GROUP BY g.brand_name ORDER BY cnt desc", nativeQuery = true)
