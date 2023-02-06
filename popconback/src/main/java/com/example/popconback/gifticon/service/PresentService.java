@@ -7,6 +7,7 @@ import com.example.popconback.gifticon.dto.Present.GetPresent.GetPresentDto;
 import com.example.popconback.gifticon.dto.Present.GetPresent.ResponseGetPresentDto;
 import com.example.popconback.gifticon.dto.Present.GivePresent.GivePresentDto;
 import com.example.popconback.gifticon.dto.Present.GivePresent.ResponseGivePresentDto;
+import com.example.popconback.gifticon.dto.Present.PossiblePresentList.ResponsePossiblePresentDto;
 import com.example.popconback.gifticon.dto.Present.PossiblePresentList.ResponsePossiblePresentListDto;
 import com.example.popconback.gifticon.repository.GifticonRepository;
 import com.example.popconback.gifticon.repository.PresentRepository;
@@ -115,9 +116,9 @@ public class PresentService {
 
         List<Present> allPresentList = presentRepository.findAll();
 
-        List<String> allNearPresentList = new ArrayList<>();
+        List<ResponsePossiblePresentDto> allNearPresentList = new ArrayList<>();
 
-        List<String> gettablePresentList = new ArrayList<>();
+        List<ResponsePossiblePresentDto> gettablePresentList = new ArrayList<>();
 
         for (Present present : allPresentList) {
             String barcodeNum = present.getGifticon().getBarcodeNum();
@@ -125,11 +126,21 @@ public class PresentService {
             double xPos = Double.parseDouble(present.getX());
             double yPos = Double.parseDouble(present.getY());
 
+
+
             if (getDistance(nowX, nowY, xPos , yPos)<=2000 && getDistance(nowX, nowY, xPos , yPos)>30) {
-                allNearPresentList.add(barcodeNum);
+                ResponsePossiblePresentDto responsePossiblePresentDto = new ResponsePossiblePresentDto();
+                responsePossiblePresentDto.setBarcodeNum(barcodeNum);
+                responsePossiblePresentDto.setX(present.getX());
+                responsePossiblePresentDto.setY(present.getY());
+                allNearPresentList.add(responsePossiblePresentDto);
             }
             else if (getDistance(nowX, nowY, xPos , yPos)<=30) {
-                gettablePresentList.add(barcodeNum);
+                ResponsePossiblePresentDto responsePossiblePresentDto = new ResponsePossiblePresentDto();
+                responsePossiblePresentDto.setBarcodeNum(barcodeNum);
+                responsePossiblePresentDto.setX(present.getX());
+                responsePossiblePresentDto.setY(present.getY());
+                gettablePresentList.add(responsePossiblePresentDto);
             }
 
         }
