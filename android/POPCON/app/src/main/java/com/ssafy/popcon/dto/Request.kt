@@ -42,3 +42,9 @@ data class UpdateRequest(
 data class DeleteRequest(
     val barcodeNum: String
 )
+
+data class DonateRequest(
+    val barcodeNum: String,
+    val x: String,
+    val y: String
+)

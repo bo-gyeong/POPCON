@@ -60,15 +60,15 @@ class BrandTabFragment : Fragment() {
     private fun setBrandTab() {
         viewModel.getHomeBrand(SharedPreferencesUtil(requireContext()).getUser())
         brandAdapter = BrandAdapter()
-        brandAdapter.setItemClickListener(object: BrandAdapter.OnItemClickListener{
-            override fun onClick(v: View, brandName : String) {
+        brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
+            override fun onClick(v: View, brandName: String) {
                 Log.d("TAG", "onClick: $brandName")
 
                 viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
             }
         })
 
-        viewModel.brandsHome.observe(viewLifecycleOwner){
+        viewModel.brandsHome.observe(viewLifecycleOwner) {
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =
@@ -77,7 +77,7 @@ class BrandTabFragment : Fragment() {
 
             val brands = mutableListOf<Brand>()
             brands.add(Brand("", "전체"))
-            for(b in it){
+            for (b in it) {
                 brands.add(Brand(b.brand_img, b.brand_name))
             }
 

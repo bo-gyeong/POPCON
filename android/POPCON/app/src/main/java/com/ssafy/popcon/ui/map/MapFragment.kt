@@ -1,28 +1,40 @@
 package com.ssafy.popcon.ui.map
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass.Companion.sharedPreferencesUtil
 import com.ssafy.popcon.databinding.FragmentMapBinding
 import com.ssafy.popcon.databinding.ItemBalloonBinding
-import com.ssafy.popcon.dto.Store
+import com.ssafy.popcon.dto.DonateRequest
+import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.StoreByBrandRequest
 import com.ssafy.popcon.dto.StoreRequest
+import com.ssafy.popcon.ui.common.DragListener
+import com.ssafy.popcon.ui.common.DragShadowBuilder
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.MainActivity.Companion.shakeDetector
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
@@ -43,12 +55,14 @@ import java.net.URL
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
+class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
+    MapView.POIItemEventListener {
     private lateinit var binding: FragmentMapBinding
     private val ACCESS_FINE_LOCATION = 1000     // Request Code
     private lateinit var ballBinding: ItemBalloonBinding
     lateinit var mainActivity: MainActivity
     private val viewModel: MapViewModel by activityViewModels { ViewModelFactory(requireContext()) }
+    var storeMap = HashMap<String, String>()
 
     private lateinit var locationManager: LocationManager
     private var getLongitude: Double = 0.0
@@ -81,6 +95,8 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
 
         binding.mapView.setMapViewEventListener(this)
         binding.mapView.setCalloutBalloonAdapter(this)
+        binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
+        binding.mapView.setPOIItemEventListener(this)
 
         if (checkLocationService()) {
             // GPS가 켜져있을 경우
@@ -206,11 +222,11 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
         //y : 위도 latitude 경 127도, 위 37도
         viewModel.getStoreInfo(request)
         viewModel.store.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setStore: $it")
+            storeMap.clear()
             binding.mapView.removeAllPOIItems()
-            binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(it))
 
             for (store in it) {
+                storeMap.put(store.placeName, store.phone)
                 val marker = MapPOIItem()
                 val position = MapPoint.mapPointWithGeoCoord(
                     store.ypos.toDouble(),
@@ -251,12 +267,41 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
         return Bitmap.createScaledBitmap(source, newWidth, newHeight, true)
     }
 
+    lateinit var donateNumber: String
+
     //기프티콘 뷰페이저
     private fun setGifticonBanner() {
+        val targetView = binding.ivPresent
+        var gifticonAdapter = MapGifticonAdpater(targetView, viewModel)
+        gifticonAdapter.setOnLongClickListener(object : MapGifticonAdpater.OnLongClickListener {
+            override fun onLongClick(v: View, gifticon: Gifticon) {
+                Log.d(TAG, "onLongClick: $gifticon")
+                val item = ClipData.Item(v.tag as? CharSequence)
+                val dragData = ClipData(
+                    v.tag as? CharSequence,
+                    arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
+                    item
+                )
+                val shadow = DragShadowBuilder(v)
+                val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
+                donateNumber = gifticon.barcodeNum
+
+                val req = DonateRequest(
+                    gifticon.barcodeNum,
+                    location.longitude.toString(),
+                    location.latitude.toString()
+                )
+                gifticonAdapter.setOnDragListener(DragListener(targetView, req, viewModel))
+                binding.ivPresent.setOnDragListener(DragListener(targetView, req, viewModel))
+
+                v.startDrag(dragData, shadow, v, 0)
+            }
+        })
+
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
 
         with(binding.viewpagerMapGiftcon) {
-            adapter = MapGifticonAdpater().apply {
+            adapter = gifticonAdapter.apply {
                 viewModel.mapGifticon.observe(viewLifecycleOwner) {
                     submitList(it)
                 }
@@ -282,26 +327,26 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
         TODO("Not yet implemented")
     }
 
-    inner class CustomBalloonAdapter(private val stores: List<Store>) :
-        CalloutBalloonAdapter {
+    inner class CustomBalloonAdapter(inflater: LayoutInflater) : CalloutBalloonAdapter {
+        private val mCalloutBalloon: View = inflater.inflate(R.layout.item_balloon, null)
+        val name: TextView = mCalloutBalloon.findViewById(R.id.tv_brandName)
+        val phone: TextView = mCalloutBalloon.findViewById(R.id.tv_phone)
+
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             // 마커 클릭 시 나오는 말풍선
-            val name = poiItem?.itemName
-            for (store in stores) {
-                if (store.placeName == name) {
-                    ballBinding.store = store
-                    break
-                }
-            }
+            name.text = poiItem?.itemName
+            phone.text = storeMap[poiItem?.itemName]
 
-            return ballBinding.root
+            return mCalloutBalloon
         }
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
-            return ballBinding.root
+            stopTracking()
+            return mCalloutBalloon
         }
     }
+
 
     //화면 켜지면 센서 설정
     private fun setSensor() {
@@ -315,6 +360,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
                 }
             }
         })
+
         MainActivity().setShakeSensor(requireContext(), shakeDetector)
     }
 
@@ -340,7 +386,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
 
     override fun onMapViewInitialized(p0: MapView?) {
         Log.d(TAG, "onMapViewInitialized: ")
-        //TODO("Not yet implemented")
     }
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
@@ -361,12 +406,56 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener {
 
     override fun onMapViewDragStarted(p0: MapView?, p1: MapPoint?) {
         stopTracking()
-        Log.d(TAG, "onMapViewDragStarted: ")
     }
 
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
+        Log.d(TAG, "onMapViewDragEnded: ")
+        val user = SharedPreferencesUtil(requireContext()).getUser()
+        val location = binding.mapView.mapCenterPoint.mapPointGeoCoord
+        if (viewModel.brandName == "전체") {
+            viewModel.getStoreInfo(
+                StoreRequest(
+                    user.email,
+                    user.social,
+                    location.longitude.toString(),
+                    location.latitude.toString()
+                )
+            )
+        } else {
+            viewModel.getStoreByBrand(
+                StoreByBrandRequest(
+                    viewModel.brandName,
+                    user.email!!,
+                    user.social,
+                    location.longitude.toString(), location.latitude.toString()
+                )
+            )
+        }
     }
 
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
+    }
+
+    override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
+
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
+
+        var intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:" + ballBinding.tvPhone.text)
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    override fun onCalloutBalloonOfPOIItemTouched(
+        p0: MapView?,
+        p1: MapPOIItem?,
+        p2: MapPOIItem.CalloutBalloonButtonType?
+    ) {
+    }
+
+    override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
     }
 }

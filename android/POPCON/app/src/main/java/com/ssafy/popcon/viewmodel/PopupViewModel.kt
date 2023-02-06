@@ -38,4 +38,11 @@ class PopupViewModel(private val gifticonRepository: GifticonRepository): ViewMo
             _gifticons.value = Event(gifticons)
         }
     }
+
+    fun updateGifticon(gifticon: UpdateRequest, user: User) {
+        viewModelScope.launch {
+            gifticonRepository.updateGifticon(gifticon)
+            getGifticons(user, gifticon.brandName)
+        }
+    }
 }
