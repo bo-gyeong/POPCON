@@ -47,4 +47,7 @@ public class Gifticon {
 
     private int isVoucher;
 
+    @OneToOne(mappedBy = "gifticon")
+    private Present present;
+
 }
