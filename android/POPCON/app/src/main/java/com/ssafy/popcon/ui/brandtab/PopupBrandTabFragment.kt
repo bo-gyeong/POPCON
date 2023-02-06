@@ -77,15 +77,11 @@ class PopupBrandTabFragment : Fragment() {
         brandAdapter = BrandAdapter()
         brandAdapter.setItemClickListener(object : BrandAdapter.OnItemClickListener {
             override fun onClick(v: View, brandName: String) {
-                Log.d(TAG, "onClick: $brandName")
                 viewModel.getGifticons(SharedPreferencesUtil(requireContext()).getUser(), brandName)
-
-                //GifticonPreviewFragment()
             }
         })
 
         viewModel.brands.observe(viewLifecycleOwner) {
-            Log.d("TAG", "setBrandTab: $it")
             binding.rvBrand.apply {
                 adapter = brandAdapter
                 adapter!!.stateRestorationPolicy =
