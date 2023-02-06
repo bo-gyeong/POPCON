@@ -64,4 +64,8 @@ class GifticonPreviewFragment : Fragment() {
             return fragment
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }
