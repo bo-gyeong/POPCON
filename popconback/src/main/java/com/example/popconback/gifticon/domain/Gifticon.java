@@ -1,5 +1,6 @@
 package com.example.popconback.gifticon.domain;
 
+import com.example.popconback.files.domain.InputFile;
 import com.example.popconback.user.domain.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -36,7 +37,7 @@ public class Gifticon {
     private int price;
     @JsonManagedReference
     @OneToMany(mappedBy = "gifticon", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<GifticonFiles> filesList = new ArrayList<>();
+    private List<InputFile> filesList = new ArrayList<>();
 
 
 

@@ -1,10 +1,11 @@
 package com.example.popconback.gifticon.service;
 
 
+import com.example.popconback.files.domain.InputFile;
+import com.example.popconback.files.repository.FileRepository;
 import com.example.popconback.gifticon.domain.Brand;
 import com.example.popconback.gifticon.domain.Favorites;
 import com.example.popconback.gifticon.domain.Gifticon;
-import com.example.popconback.gifticon.domain.GifticonFiles;
 import com.example.popconback.gifticon.dto.Favorites.CreateFavorites.CreateFavoritesDto;
 import com.example.popconback.gifticon.dto.Favorites.CreateFavorites.ResponseCreateFavoritesDto;
 import com.example.popconback.gifticon.dto.Gifticon.CreateGifticon.CreateGifticonDto;
@@ -21,7 +22,6 @@ import com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon.ResponseUpdat
 import com.example.popconback.gifticon.dto.Gifticon.UpdateGifticon.UpdateGifticonDto;
 import com.example.popconback.gifticon.repository.Favoritesrepository;
 import com.example.popconback.gifticon.repository.Brandrepository;
-import com.example.popconback.gifticon.repository.GifticonFilesRepository;
 import com.example.popconback.gifticon.repository.GifticonRepository;
 import com.example.popconback.user.domain.User;
 import com.example.popconback.user.dto.UserDto;
@@ -43,7 +43,9 @@ import static org.springframework.data.domain.Sort.Order.asc;
 @RequiredArgsConstructor
 public class GifticonService {
     private final GifticonRepository gifticonRepository;
-    private final GifticonFilesRepository gifticonFilesRepository;
+
+    private final FileRepository fileRepository;
+
     private final UserRepository userRepository;
     private final Brandrepository brandrepository;
     private final Favoritesrepository favoritesrepository;
@@ -67,8 +69,8 @@ public class GifticonService {
                 BeanUtils.copyProperties(gifticon.getBrand(),brand);
                 rgifticon.setBrand(brand);
 
-                List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
-                for (GifticonFiles gifticonfile: gflist
+                List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+                for (InputFile gifticonfile: gflist
                 ) {
                     if(gifticonfile.getImageType() == 0){// 0:
                         rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
@@ -102,8 +104,8 @@ public class GifticonService {
             BeanUtils.copyProperties(gifticon.getBrand(),brand);
             rgifticon.setBrand(brand);
 
-            List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
-            for (GifticonFiles gifticonfile: gflist
+            List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+            for (InputFile gifticonfile: gflist
             ) {
                 if(gifticonfile.getImageType() == 0){// 0: 바코드
                     rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
@@ -209,8 +211,8 @@ public class GifticonService {
                 BeanUtils.copyProperties(gifticon.getBrand(),rbrand);
                 rgifticon.setBrand(rbrand);
 
-                List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
-                for (GifticonFiles gifticonfile: gflist
+                List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+                for (InputFile gifticonfile: gflist
                 ) {
                     if (gifticonfile.getImageType() == 0) {// 0: 바코드
                         rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
@@ -256,8 +258,8 @@ public class GifticonService {
         responsDto.setBrandName(Tgifticon.getBrand().getBrandName());
 
 
-        List<GifticonFiles>gflist = gifticonFilesRepository.findByGifticon_BarcodeNum(responsDto.getBarcodeNum());//사진들도 따로 복사
-        for (GifticonFiles gifticonfile: gflist
+        List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(responsDto.getBarcodeNum());//사진들도 따로 복사
+        for (InputFile gifticonfile: gflist
         ) {
             if(gifticonfile.getImageType() == 0){// 0: 바코드
                 responsDto.setBarcode_filepath(gifticonfile.getFilePath());

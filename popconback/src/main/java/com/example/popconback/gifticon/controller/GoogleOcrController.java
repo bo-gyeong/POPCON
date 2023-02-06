@@ -3,8 +3,8 @@ package com.example.popconback.gifticon.controller;
 
 import com.example.popconback.gifticon.domain.Brand;
 import com.example.popconback.gifticon.domain.Gifticon;
-import com.example.popconback.gifticon.dto.CheckValidationDto;
-import com.example.popconback.gifticon.dto.GifticonResponse;
+import com.example.popconback.gifticon.dto.OCR.CheckValidationDto;
+import com.example.popconback.gifticon.dto.OCR.GifticonResponse;
 import com.example.popconback.gifticon.repository.Brandrepository;
 import com.example.popconback.gifticon.repository.GifticonRepository;
 import com.example.popconback.gifticon.service.BrandService;
@@ -12,11 +12,6 @@ import com.example.popconback.gifticon.service.GifticonService;
 import com.google.cloud.vision.v1.*;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-
-import com.example.popconback.gifticon.dto.GifticonResponse;
-import com.example.popconback.gifticon.service.S3Service;
-import com.google.cloud.vision.v1.*;
-import io.swagger.annotations.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
