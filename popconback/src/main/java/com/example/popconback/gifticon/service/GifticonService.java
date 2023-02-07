@@ -140,7 +140,10 @@ public class GifticonService {
                 ResponseCreateGifticonDto NoUser = new ResponseCreateGifticonDto();
                 rlist.add(NoUser);
             }
-            Optional<Brand> brand = brandrepository.findById(createGifticonDto.getBrandName());
+
+            String b = createGifticonDto.getBrandName().toUpperCase();
+
+            Optional<Brand> brand = brandrepository.findById(b);
             if (!user.isPresent()) {
                 ResponseCreateGifticonDto NoBrand = new ResponseCreateGifticonDto();
                 rlist.add(NoBrand);
