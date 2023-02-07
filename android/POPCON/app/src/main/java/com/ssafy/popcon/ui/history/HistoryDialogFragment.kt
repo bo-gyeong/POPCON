@@ -103,6 +103,7 @@ class HistoryDialogFragment : DialogFragment() {
                 dialogFragment.show(childFragmentManager, "originalUrl")
             }
 
+            //되돌리기
             binding.btnUse.setOnClickListener {
                 binding.btnUse.isClickable = false
                 val req = UpdateRequest(g.barcodeNum, g.brandName, g.due, g.memo ?: "", g.price ?: -1, g.productName, SharedPreferencesUtil(requireContext()).getUser().email!!, SharedPreferencesUtil(requireContext()).getUser().social, 0)

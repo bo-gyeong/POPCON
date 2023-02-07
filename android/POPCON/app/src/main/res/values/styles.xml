@@ -28,15 +28,18 @@
     </style>
 
     <style name="TextHeadline5.Black02" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/noto_sans_medium</item>
         <item name="android:textColor">@color/popcon_black_02</item>
     </style>
 
     <style name="TextHeadline5.Black02.Bold">
         <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/noto_sans_medium</item>
     </style>
 
     <style name="TextMedium" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@color/popcon_black_01</item>
+        <item name="fontFamily">@font/noto_sans_medium</item>
     </style>
 
     <style name="TextMedium.Bold">
@@ -45,6 +48,11 @@
 
     <style name="TextMedium.Purple">
         <item name="android:textColor">@color/popcon_purple</item>
+        <item name="fontFamily">@font/noto_sans_medium</item>
+    </style>
+
+    <style name="TextMedium.Brown">
+        <item name="android:textColor">@color/popcon_brown</item>
         <item name="fontFamily">@font/noto_sans_medium</item>
     </style>
 
@@ -92,9 +100,16 @@
     <style name="TextSubtitle2.Brown.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="GifticonInfo">
+
+    </style>
+
+    <style name="TextMedium.Brown.20">
+        <item name="android:textSize">20sp</item>
+    </style>
 
     <style name="TextSubtitle2.Grey05">
-        <item name="android:textColor">@color/popcon_grey_05</item>
+        <item name="android:textColor">#969696</item>
     </style>
 
     <style name="TextSubtitle3">
@@ -115,6 +130,7 @@
     </style>
 
     <style name="TextCaption1.White">
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/popcon_white</item>
     </style>
 

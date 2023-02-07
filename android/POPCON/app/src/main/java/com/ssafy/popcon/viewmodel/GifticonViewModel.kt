@@ -44,6 +44,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
 
     fun openGifticonDialog(gifticon: Gifticon) {
         _openGifticonDialogEvent.value = Event(gifticon)
+        getGifticonByBarcodeNum(gifticon.barcodeNum)
     }
 
     //사용자의 기프티콘 목록 불러오기

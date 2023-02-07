@@ -105,12 +105,10 @@ class HomeDialogFragment : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
-        /*binding.gifticon = gifticonFromHome
-        binding.badge = Utils.calDday(gifticonFromHome)*/
-        setButton(gifticonFromHome)
         viewModel.getGifticonByBarcodeNum(gifticonFromHome.barcodeNum)
 
         viewModel.gifticon.observe(viewLifecycleOwner) { g ->
+            Log.d(TAG, "setLayout: ${g.state}")
             val gifticon = Gifticon(
                 g.barcodeNum,
                 g.barcode_filepath ?: "",
@@ -124,10 +122,10 @@ class HomeDialogFragment : DialogFragment() {
                 g.product_filepath ?: "",
                 g.state
             )
+            setButton(gifticon)
 
             binding.gifticon = gifticon
             binding.badge = Utils.calDday(gifticon)
-            setButton(gifticon)
 
             binding.ivProductPreview.setOnClickListener {
                 val args = Bundle()
