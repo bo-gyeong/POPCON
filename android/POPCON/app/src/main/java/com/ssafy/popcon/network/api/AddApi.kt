@@ -17,7 +17,7 @@ interface AddApi {
     suspend fun addFileToGCP(@Part files:Array<MultipartBody.Part>): List<GCPResult>
 
     @POST("gcp/ocr")
-    suspend fun useOCR(@Body fileName:Array<String>): List<OCRResult>
+    suspend fun useOCR(@Body fileName:Array<OCRSend>): List<OCRResult>
 
     @GET("gcp/ocr/check_brand")
     suspend fun chkBrand(@Query("brandName") brandName: String): ChkValidation

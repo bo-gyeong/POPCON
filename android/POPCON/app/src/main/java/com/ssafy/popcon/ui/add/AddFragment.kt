@@ -63,7 +63,7 @@ class AddFragment : Fragment(), onItemClick {
     private var delImgUris = ArrayList<Uri>()
     private var multipartFiles = ArrayList<MultipartBody.Part>()
     private var ocrResults = ArrayList<OCRResult>()
-    private var fileNames = ArrayList<String>()
+    private var ocrSendList = ArrayList<OCRSend>()
     private var originalImgUris = ArrayList<GifticonImg>()
     private var productImgUris = ArrayList<GifticonImg>()
     private var barcodeImgUris = ArrayList<GifticonImg>()
@@ -187,11 +187,18 @@ class AddFragment : Fragment(), onItemClick {
 
                         viewModel.addFileToGCP(multipartFiles.toTypedArray())
                         viewModel.gcpResult.observe(viewLifecycleOwner, EventObserver{
-                            for (gcpResult in it){
-                                fileNames.add(gcpResult.fileName)
+                            for (i in 0 until it.size){
+                                val gcpResult = it[i]
+                                val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
+
+                                ocrSendList.add(
+                                    OCRSend(
+                                        gcpResult.fileName, originalImgBitmap.width, originalImgBitmap.height
+                                    )
+                                )
                             }
 
-                            viewModel.useOcr(fileNames.toTypedArray())
+                            viewModel.useOcr(ocrSendList.toTypedArray())
                             viewModel.ocrResult.observe(viewLifecycleOwner, EventObserver{
                                 for (ocrResult in it){
                                     ocrResults.add(ocrResult)
@@ -272,7 +279,7 @@ class AddFragment : Fragment(), onItemClick {
         originalImgUris.clear()
         productImgUris.clear()
         barcodeImgUris.clear()
-        fileNames.clear()
+        ocrSendList.clear()
         ocrResults.clear()
         delImgUris.clear()
         multipartFiles.clear()
@@ -506,7 +513,7 @@ class AddFragment : Fragment(), onItemClick {
             originalImgUris,
             productImgUris,
             barcodeImgUris,
-            fileNames,
+            ocrSendList,
             gifticonEffectiveness,
             this
         )
@@ -790,7 +797,7 @@ class AddFragment : Fragment(), onItemClick {
             imgInfo.add(
                 AddImgInfo(
                     binding.etBarcode.text.toString(),
-                    fileNames[idx++],
+                    ocrSendList[idx++].fileName,
                     productImgName,
                     barcodeImgName
                 )
