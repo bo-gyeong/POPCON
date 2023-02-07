@@ -30,16 +30,21 @@ public class InputFile {
     @Column(columnDefinition = "TEXT")
     private String filePath;
 
+    private int width;
+    private int height;
+
 
 
 
     @Builder
-    public InputFile(Integer imageType, Gifticon gifticon, String fileName, String filePath) {
+    public InputFile(Integer imageType, Gifticon gifticon, String fileName, String filePath, int width, int height) {
 
         this.imageType = imageType;
         this.gifticon = gifticon;
         this.fileName = fileName;
         this.filePath = filePath;
+        this.width = width;
+        this.height = height;
 
     }
 

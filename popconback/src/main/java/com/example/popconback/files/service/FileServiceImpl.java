@@ -8,7 +8,9 @@ import com.example.popconback.files.exception.GCPFileUploadException;
 import com.example.popconback.files.repository.FileRepository;
 import com.example.popconback.files.util.DataBucketUtil;
 import com.example.popconback.gifticon.domain.Gifticon;
+import com.example.popconback.gifticon.dto.OCR.CheckImageSizeDto;
 import com.example.popconback.gifticon.repository.GifticonRepository;
+import com.example.popconback.gifticon.service.OcrService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,8 @@ public class FileServiceImpl implements FileService{
 
     private final GifticonRepository gifticonRepository;
 
+    private final OcrService ocrService;
+
 
     public List<InputFile> uploadFiles(MultipartFile[] files) {
 
@@ -42,6 +46,10 @@ public class FileServiceImpl implements FileService{
 
 
         Arrays.asList(files).forEach(file -> {
+            CheckImageSizeDto checkImageSizeDto = ocrService.checkImageSize(file);
+            int width = checkImageSizeDto.getWidth();
+            int height = checkImageSizeDto.getHeight();
+
             String originalFileName = file.getOriginalFilename();
             if(originalFileName == null){
                 throw new BadRequestException("Original file name is null");
@@ -53,7 +61,7 @@ public class FileServiceImpl implements FileService{
                 FileDto fileDto = dataBucketUtil.uploadFile(file, originalFileName, contentType);
 
                 if (fileDto != null) {
-                    inputFiles.add(new InputFile(0, null, fileDto.getFileName(), fileDto.getFilePath()));
+                    inputFiles.add(new InputFile(0, null, fileDto.getFileName(), fileDto.getFilePath(),width,height));
                     LOGGER.debug("File uploaded successfully, file name: {} and url: {}",fileDto.getFileName(), fileDto.getFilePath());
 
                 }

@@ -111,6 +111,7 @@ public class PresentService {
 
     public ResponsePossiblePresentListDto findPresentByPosition(String x, String y) {
 
+
         double nowX = Double.parseDouble(x);
         double nowY = Double.parseDouble(y);
 

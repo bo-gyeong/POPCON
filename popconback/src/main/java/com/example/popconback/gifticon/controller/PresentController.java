@@ -1,6 +1,7 @@
 package com.example.popconback.gifticon.controller;
 import com.example.popconback.gifticon.dto.Present.GivePresent.GivePresentDto;
 import com.example.popconback.gifticon.dto.Present.GivePresent.ResponseGivePresentDto;
+import com.example.popconback.gifticon.dto.Present.PossiblePresentList.ResponsePossiblePresentDto;
 import org.springframework.security.core.Authentication;
 import com.example.popconback.gifticon.dto.Present.GetPresent.GetPresentDto;
 import com.example.popconback.gifticon.dto.Present.GetPresent.ResponseGetPresentDto;
@@ -20,6 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Api(value = "PresentController")
 @SwaggerDefinition(tags = {@Tag(name = "PresentContoller", description = "선물 컨트롤러")})
@@ -50,13 +55,29 @@ public class PresentController {
     @ApiOperation(value = "possiblePresentList", notes = "가까운 선물 리스트, 줍기가능한 선물 리스트", httpMethod = "POST")
     @PostMapping("/possible_list")
     public ResponseEntity<ResponsePossiblePresentListDto> possiblePresentList(@RequestBody PossiblePresentListDto possiblePresentListDto) {
+        try {
+            String x = possiblePresentListDto.getX();
+            String y = possiblePresentListDto.getY();
 
-        String x = possiblePresentListDto.getX();
-        String y = possiblePresentListDto.getY();
+            return new ResponseEntity<>(presentService.findPresentByPosition(x,y), HttpStatus.OK);
 
-        return new ResponseEntity<>(presentService.findPresentByPosition(x,y), HttpStatus.OK);
+        }
+        catch (NoSuchElementException | NullPointerException | NumberFormatException e) {
+            System.out.println(e);
+            List<ResponsePossiblePresentDto> blankInnerList1 = new ArrayList<>();
+            List<ResponsePossiblePresentDto> blankInnerList2 = new ArrayList<>();
+
+            ResponsePossiblePresentListDto blankResult = new ResponsePossiblePresentListDto();
+
+            blankResult.setAllNearPresentList(blankInnerList1);
+            blankResult.setGettablePresentList(blankInnerList2);
+
+            return new ResponseEntity<>(blankResult, HttpStatus.OK);
+        }
+
 
     }
+
 
 
 }

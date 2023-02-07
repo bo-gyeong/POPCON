@@ -3,7 +3,9 @@ package com.example.popconback.gifticon.controller;
 
 import com.example.popconback.gifticon.domain.Brand;
 import com.example.popconback.gifticon.domain.Gifticon;
-import com.example.popconback.gifticon.dto.OCR.CheckValidationDto;
+import com.example.popconback.gifticon.dto.OCR.CheckBarcodeValidationDto;
+import com.example.popconback.gifticon.dto.OCR.CheckBrandValidationDto;
+import com.example.popconback.gifticon.dto.OCR.DetectTextDto;
 import com.example.popconback.gifticon.dto.OCR.GifticonResponse;
 import com.example.popconback.gifticon.repository.Brandrepository;
 import com.example.popconback.gifticon.repository.GifticonRepository;
@@ -52,11 +54,11 @@ public class GoogleOcrController {
             defaultValue = "None"
     )
     @GetMapping("/ocr/check_barcode")
-    public ResponseEntity<CheckValidationDto> checkBarcode(@RequestParam(value = "barcodeNum") String barcodeNum) throws Exception {
+    public ResponseEntity<CheckBarcodeValidationDto> checkBarcode(@RequestParam(value = "barcodeNum") String barcodeNum) throws Exception {
 
         if (barcodeNum.length() == 0) {
-            CheckValidationDto checkValidationDto = new CheckValidationDto(-1);
-            return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
+            CheckBarcodeValidationDto checkBarcodeValidationDto = new CheckBarcodeValidationDto(-1);
+            return new ResponseEntity<CheckBarcodeValidationDto>(checkBarcodeValidationDto, HttpStatus.OK);
         }
 
 
@@ -64,12 +66,12 @@ public class GoogleOcrController {
             Optional<Gifticon> byBarcodeNum = Optional.ofNullable(gifticonRepository.findByBarcodeNum(barcodeNum));
 
             if (byBarcodeNum.isPresent()) {
-                CheckValidationDto checkValidationDto = new CheckValidationDto(0);
-                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
+                CheckBarcodeValidationDto checkBarcodeValidationDto = new CheckBarcodeValidationDto(0);
+                return new ResponseEntity<CheckBarcodeValidationDto>(checkBarcodeValidationDto, HttpStatus.OK);
             }
             else {
-                CheckValidationDto checkValidationDto = new CheckValidationDto(1);
-                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
+                CheckBarcodeValidationDto checkBarcodeValidationDto = new CheckBarcodeValidationDto(1);
+                return new ResponseEntity<CheckBarcodeValidationDto>(checkBarcodeValidationDto, HttpStatus.OK);
             }
         }
         catch (NullPointerException e) {
@@ -90,18 +92,18 @@ public class GoogleOcrController {
             defaultValue = "None"
     )
     @GetMapping("/ocr/check_brand")
-    public ResponseEntity<CheckValidationDto> checkBrand(@RequestParam(value = "brandName") String brandName) throws Exception {
+    public ResponseEntity<CheckBrandValidationDto> checkBrand(@RequestParam(value = "brandName") String brandName) throws Exception {
 
-        Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName));
+        Optional<Brand> byBrandName = Optional.ofNullable(brandrepository.findByBrandName(brandName.toUpperCase()));
 
         try {
             if (byBrandName.isEmpty()) {
-                CheckValidationDto checkValidationDto = new CheckValidationDto(0);
-                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
+                CheckBrandValidationDto checkBrandValidationDto = new CheckBrandValidationDto(0,"Wrong Brand");
+                return new ResponseEntity<CheckBrandValidationDto>(checkBrandValidationDto, HttpStatus.OK);
             }
             else {
-                CheckValidationDto checkValidationDto = new CheckValidationDto(1);
-                return new ResponseEntity<CheckValidationDto>(checkValidationDto, HttpStatus.OK);
+                CheckBrandValidationDto checkBrandValidationDto = new CheckBrandValidationDto(1, brandName.toUpperCase());
+                return new ResponseEntity<CheckBrandValidationDto>(checkBrandValidationDto, HttpStatus.OK);
             }
         }
         catch (NullPointerException e) {
@@ -124,7 +126,7 @@ public class GoogleOcrController {
             defaultValue = "None"
     )
     @PostMapping("/ocr")
-    public ResponseEntity<List<GifticonResponse>> detectText(@RequestBody String[] fileNames) throws Exception {
+    public ResponseEntity<List<GifticonResponse>> detectText(@RequestBody DetectTextDto[] detectTextDtoList) throws Exception {
 
         List<GifticonResponse> finalResult = new ArrayList<>();
 
@@ -142,11 +144,25 @@ public class GoogleOcrController {
         // 기프티콘
         String checkGifticon = "";
 
+        int width = 0;
+        int height = 0;
 
 
 
         try {
-            for (String fileName : fileNames) {
+            for (DetectTextDto detectTextDto : detectTextDtoList) {
+
+                String fileName = detectTextDto.getFileName();
+                width = detectTextDto.getWidth();
+                height = detectTextDto.getHeight();
+
+                System.out.println(width);
+                System.out.println(height);
+
+                System.out.println((double)218 / 800 * width);
+                System.out.println((double)1499 / 1661 * height);
+                System.out.println((double)584 / 800 * width);
+                System.out.println((double)1558 / 1661 * height);
 
                 definePublisher = -1;
 
@@ -188,12 +204,14 @@ public class GoogleOcrController {
                         for (EntityAnnotation ress : newRes) {
 
 
-                            if (ress.getBoundingPoly().getVertices(0).getX() > 288 &&
-                                    ress.getBoundingPoly().getVertices(0).getY() > 245 &&
-                                    ress.getBoundingPoly().getVertices(2).getX() < 384 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 272) {
+                            if ((ress.getBoundingPoly().getVertices(0).getX() > (((double)288 / 430) * width)) &&
+                                    (ress.getBoundingPoly().getVertices(0).getY() > (((double)245 / 400) * height)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getX() < (((double)384 / 430) * width)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getY() < (((double)272 / 400) * height))) {
                                 checkGS += ((String) ress.getDescription().replaceAll("\n", "").replaceAll(" ", ""));
                                 //System.out.println(checkGS);
+
+
 
 
                                 String isGS = checkGS.replaceAll("\n", "").replaceAll(" ", "");
@@ -209,11 +227,12 @@ public class GoogleOcrController {
                         }
                         for (EntityAnnotation ress : newRes) {
 
-                            if (ress.getBoundingPoly().getVertices(0).getX() > 218 &&
-                                    ress.getBoundingPoly().getVertices(0).getY() > 1499 &&
-                                    ress.getBoundingPoly().getVertices(2).getX() < 584 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 1558) {
+                            if ((ress.getBoundingPoly().getVertices(0).getX() > (((double)218 / 800) * width)) &&
+                                    (ress.getBoundingPoly().getVertices(0).getY() > (((double)1499 / 1661) * height)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getX() < (((double)584 / 800) * width)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getY() < (((double)1558 / 1661) * height))) {
                                 checkKakao += ress.getDescription();
+
 
 
                                 String isKakao = checkKakao.replaceAll("\n", "").replaceAll(" ", "");
@@ -228,10 +247,10 @@ public class GoogleOcrController {
 
                         for (EntityAnnotation ress : newRes) {
 
-                            if (ress.getBoundingPoly().getVertices(0).getX() > 56 &&
-                                    ress.getBoundingPoly().getVertices(0).getY() > 413 &&
-                                    ress.getBoundingPoly().getVertices(2).getX() < 398 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 444) {
+                            if ((ress.getBoundingPoly().getVertices(0).getX() > (((double)56 / 450) * width)) &&
+                                    (ress.getBoundingPoly().getVertices(0).getY() > (((double)413 / 630) * height)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getX() < (((double)398 / 450) * width)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getY() < (((double)444 / 630) * height))) {
                                 checkGiftishow += ress.getDescription();
 
 
@@ -248,10 +267,10 @@ public class GoogleOcrController {
                         for (EntityAnnotation ress : newRes) {
 
 
-                            if (ress.getBoundingPoly().getVertices(0).getX() > 0 &&
-                                    ress.getBoundingPoly().getVertices(0).getY() > 312 &&
-                                    ress.getBoundingPoly().getVertices(2).getX() < 320 &&
-                                    ress.getBoundingPoly().getVertices(2).getY() < 333) {
+                            if ((ress.getBoundingPoly().getVertices(0).getX() > 0) &&
+                                    (ress.getBoundingPoly().getVertices(0).getY() > (((double)312 / 480) * height)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getX() < (((double)320 / 320) * width)) &&
+                                    (ress.getBoundingPoly().getVertices(2).getY() < (((double)333 / 480) * height))) {
                                 checkGifticon += ress.getDescription();
 
 
@@ -293,7 +312,7 @@ public class GoogleOcrController {
                             break;
                         }
                         if (definePublisher==-1) {
-                            GifticonResponse gifticonResponse = new GifticonResponse(-1,-1,"", "", "", null, null,"",null,-1);
+                            GifticonResponse gifticonResponse = new GifticonResponse(0,-1,"", "", "", null, null,"",null,-1);
 
                             finalGifticonResponse = gifticonResponse;
 
@@ -355,10 +374,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 200 &&
-                                        gsRes.getBoundingPoly().getVertices(0).getY() > 205 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getX() < 430 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getY() < 250){
+                                if ((gsRes.getBoundingPoly().getVertices(0).getX() > (((double)200 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(0).getY() > (((double)205 / 400) * height)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getX() < (((double)430 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getY() < (((double)250 / 400) * height))){
                                     checkGsBrand += gsRes.getDescription().replaceAll("\n","").replaceAll(" ","");
                                     //System.out.println(checkGsBrand);
 
@@ -382,10 +401,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 200 &&
-                                        gsRes.getBoundingPoly().getVertices(0).getY() > 17 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getX() < 430 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getY() < 120){
+                                if ((gsRes.getBoundingPoly().getVertices(0).getX() > (((double)200 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(0).getY() > (((double)17 / 400) * height)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getX() < (((double)430 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getY() < (((double)120 / 400) * height))){
                                     checkGsProduct += gsRes.getDescription().replaceAll("\n","");
                                     //System.out.println(checkGsProduct);
 
@@ -410,10 +429,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 199 &&
-                                        gsRes.getBoundingPoly().getVertices(0).getY() > 143 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getX() < 329 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getY() < 171) {
+                                if ((gsRes.getBoundingPoly().getVertices(0).getX() > (((double)199 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(0).getY() > (((double)143 / 400) * height)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getX() < (((double)329 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getY() < (((double)171 / 400) * height))) {
                                     checkGsDue += gsRes.getDescription().replaceAll("\n", "").replaceAll(" ", "");
                                     //System.out.println(checkGsDue);
                                 }
@@ -427,10 +446,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gsRes.getBoundingPoly().getVertices(0).getX() > 96 &&
-                                        gsRes.getBoundingPoly().getVertices(0).getY() > 354 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getX() < 330 &&
-                                        gsRes.getBoundingPoly().getVertices(2).getY() < 381){
+                                if ((gsRes.getBoundingPoly().getVertices(0).getX() > (((double)96 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(0).getY() > (((double)354 / 400) * height)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getX() < (((double)330 / 430) * width)) &&
+                                        (gsRes.getBoundingPoly().getVertices(2).getY() < (((double)381 / 400) * height))){
                                     checkGsBarcode += gsRes.getDescription().replaceAll("\n","").replaceAll(" ","").replaceAll("-","");
                                     System.out.println(checkGsBarcode);
 
@@ -612,10 +631,10 @@ public class GoogleOcrController {
 
 
 
-                                if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 66 &&
-                                        kakaoRes.getBoundingPoly().getVertices(0).getY() > 742 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getX() < 576 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getY() < 801){
+                                if ((kakaoRes.getBoundingPoly().getVertices(0).getX() > (((double)200 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(0).getY() > (((double)1214 / 1661) * height)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getX() < (((double)720 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getY() < (((double)1293 / 1661) * height))){
                                     checkKakaoBrand += kakaoRes.getDescription().replaceAll("\n","").replaceAll(" ","");
 
                                 }
@@ -643,10 +662,10 @@ public class GoogleOcrController {
 
 
 
-                                if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 40 &&
-                                        kakaoRes.getBoundingPoly().getVertices(0).getY() > 798 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getX() < 590 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getY() < 944){
+                                if ((kakaoRes.getBoundingPoly().getVertices(0).getX() > (((double)40 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(0).getY() > (((double)798 / 1661) * height)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getX() < (((double)590 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getY() < (((double)944 / 1661) * height))){
                                     checkKakadoProduct += kakaoRes.getDescription();
 
                                 }
@@ -667,10 +686,10 @@ public class GoogleOcrController {
 
 
 
-                                if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 420 &&
-                                        kakaoRes.getBoundingPoly().getVertices(0).getY() > 1303 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getX() < 717 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getY() < 1373){
+                                if ((kakaoRes.getBoundingPoly().getVertices(0).getX() > (((double)420 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(0).getY() > (((double)1303 / 1661) * height)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getX() < (((double)717 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getY() < (((double)1373 / 1661) * height))){
                                     checkKakaoDue += kakaoRes.getDescription();
 
                                 }
@@ -686,10 +705,10 @@ public class GoogleOcrController {
                                 // barcodeNum
 
 
-                                if (kakaoRes.getBoundingPoly().getVertices(0).getX() > 135 &&
-                                        kakaoRes.getBoundingPoly().getVertices(0).getY() > 1105 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getX() < 671 &&
-                                        kakaoRes.getBoundingPoly().getVertices(2).getY() < 1188){
+                                if ((kakaoRes.getBoundingPoly().getVertices(0).getX() > (((double)135 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(0).getY() > (((double)1105 / 1661) * height)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getX() < (((double)671 / 800) * width)) &&
+                                        (kakaoRes.getBoundingPoly().getVertices(2).getY() < (((double)1188 / 1661) * height))){
                                     checkKakaoBarcode += kakaoRes.getDescription();
 
                                 }
@@ -871,10 +890,10 @@ public class GoogleOcrController {
                             for (EntityAnnotation giftishowRes : newRes) {
 
 
-                                if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 105 &&
-                                        giftishowRes.getBoundingPoly().getVertices(0).getY() > 579 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getX() < 450 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getY() < 601){
+                                if ((giftishowRes.getBoundingPoly().getVertices(0).getX() > (((double)105 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(0).getY() > (((double)579 / 630) * height)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getX() < (((double)450 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getY() < (((double)601 / 630) * height))){
                                     checkGiftishowBrand += giftishowRes.getDescription();
 
                                 }
@@ -897,10 +916,10 @@ public class GoogleOcrController {
 
 
 
-                                if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 105 &&
-                                        giftishowRes.getBoundingPoly().getVertices(0).getY() > 556 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getX() < 450 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getY() < 580){
+                                if ((giftishowRes.getBoundingPoly().getVertices(0).getX() > (((double)105 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(0).getY() > (((double)556 / 630) * height)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getX() < (((double)450 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getY() < (((double)580 / 630) * height))){
                                     checkGiftishowProduct += giftishowRes.getDescription();
 
                                 }
@@ -922,10 +941,10 @@ public class GoogleOcrController {
 
 
 
-                                if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 127 &&
-                                        giftishowRes.getBoundingPoly().getVertices(0).getY() > 602 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getX() < 450 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getY() < 630){
+                                if ((giftishowRes.getBoundingPoly().getVertices(0).getX() > (((double)127 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(0).getY() > (((double)602 / 630) * height)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getX() < (((double)450 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getY() < (((double)630 / 630) * height))){
                                     checkGiftishowDue += giftishowRes.getDescription();
 
                                 }
@@ -936,10 +955,10 @@ public class GoogleOcrController {
 
 
 
-                                if (giftishowRes.getBoundingPoly().getVertices(0).getX() > 74 &&
-                                        giftishowRes.getBoundingPoly().getVertices(0).getY() > 504 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getX() < 377 &&
-                                        giftishowRes.getBoundingPoly().getVertices(2).getY() < 535){
+                                if ((giftishowRes.getBoundingPoly().getVertices(0).getX() > (((double)74 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(0).getY() > (((double)504 / 630) * height)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getX() < (((double)377 / 450) * width)) &&
+                                        (giftishowRes.getBoundingPoly().getVertices(2).getY() < (((double)535 / 630) * height))){
                                     checkGiftishowBarcode += giftishowRes.getDescription();
 
                                 }
@@ -1121,10 +1140,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 183 &&
-                                        gifticonRes.getBoundingPoly().getVertices(0).getY() > 286 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getX() < 320 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getY() < 314){
+                                if ((gifticonRes.getBoundingPoly().getVertices(0).getX() > (((double)183 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(0).getY() > (((double)286 / 480) * height)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getX() < (((double)320 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getY() < (((double)314 / 480) * height))){
                                     checkGifticonBrand += gifticonRes.getDescription();
 
                                 }
@@ -1148,10 +1167,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 126 &&
-                                        gifticonRes.getBoundingPoly().getVertices(0).getY() > 214 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getX() < 320 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getY() < 254){
+                                if ((gifticonRes.getBoundingPoly().getVertices(0).getX() > (((double)126 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(0).getY() > (((double)214 / 480) * height)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getX() < (((double)320 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getY() < (((double)254 / 480) * height))){
                                     checkGifticonProduct += gifticonRes.getDescription();
 
                                 }
@@ -1172,10 +1191,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 196 &&
-                                        gifticonRes.getBoundingPoly().getVertices(0).getY() > 273 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getX() < 320 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getY() < 288){
+                                if ((gifticonRes.getBoundingPoly().getVertices(0).getX() > (((double)196 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(0).getY() > (((double)273 / 480) * height)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getX() < (((double)320 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getY() < (((double)288 / 480) * height))){
                                     checkGifticonDue += gifticonRes.getDescription();
 
                                 }
@@ -1186,10 +1205,10 @@ public class GoogleOcrController {
 
 
 
-                                if (gifticonRes.getBoundingPoly().getVertices(0).getX() > 89 &&
-                                        gifticonRes.getBoundingPoly().getVertices(0).getY() > 390 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getX() < 233 &&
-                                        gifticonRes.getBoundingPoly().getVertices(2).getY() < 413){
+                                if ((gifticonRes.getBoundingPoly().getVertices(0).getX() > (((double)89 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(0).getY() > (((double)390 / 480) * height)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getX() < (((double)233 / 320) * width)) &&
+                                        (gifticonRes.getBoundingPoly().getVertices(2).getY() < (((double)413 / 480) * height))){
                                     checkGifticonBarcode += gifticonRes.getDescription();
 
                                 }
