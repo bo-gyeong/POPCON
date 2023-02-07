@@ -4,11 +4,14 @@ import android.Manifest
 import android.app.job.JobInfo
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -17,12 +20,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.ui.add.AddFragment
+import com.ssafy.popcon.ui.add.MMSDialog
 import com.ssafy.popcon.ui.add.MMSReceiver
 import com.ssafy.popcon.ui.add.MyService
 import com.ssafy.popcon.ui.home.HomeFragment
@@ -56,6 +61,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var shakeDetector = ShakeDetector()
+        var newMMSImg = false
+        var fromMMSReceiver: Bitmap? = null
         const val channel_id = "popcon_user"
 
         private var instance: MainActivity? = null
@@ -73,9 +80,11 @@ class MainActivity : AppCompatActivity() {
         //SharedPreferencesUtil(this).addUser(User("abc@naver.com", "카카오", 0,1,1,1,1,"string"))
         setNavBar()
         checkPermissions()
-        //getFCMToken()
+
+        getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
+        chkNewMMSImg()
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
@@ -87,7 +96,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun callMMSReceiver(){
+    // MMS BroadcastReceiver 호출
+    private fun callMMSReceiver(){
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 //            startForegroundService(intent)
 //        } else{
@@ -109,6 +119,35 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(MMSReceiver(), intentFilter)
         //, Manifest.permission.BROADCAST_WAP_PUSH, null
+    }
+
+    fun chkNewMMSImg(){
+        supportFragmentManager.beginTransaction()
+            .add(MMSDialog(), "mmsDialog")
+            .commitAllowingStateLoss()
+//        if(fromMMSReceiver != null){
+//            supportFragmentManager.beginTransaction()
+//                .add(MMSDialog(), "mmsDialog")
+//                .commit()
+//            newMMSImg = false
+//        }
+
+//        val encodeByte = Base64.decode("android.graphics.Bitmap@f0a7bb9", Base64.DEFAULT)
+//        fromMMSReceiver = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+//
+//        Log.d(TAG, "chkNewMMSImg: $$$$$$$$$$")
+//        if(fromMMSReceiver != null){
+//            supportFragmentManager.beginTransaction()
+//                .add(MMSDialog(), "mmsDialog")
+//                .commit()
+//            newMMSImg = false
+//        }
+
+//        if (newMMSImg){
+//            val dialog = MMSDialog()
+//            dialog.show(supportFragmentManager, "mmsDialog")
+//            newMMSImg = false
+//        }
     }
 
     fun updateStatusBarColor(color: String?) { // Color must be in hexadecimal fromat
@@ -175,6 +214,14 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frame_layout_main, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    fun addFragmentFromMMS(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frame_layout_main, fragment)
+            .addToBackStack(null)
+            .commitAllowingStateLoss()
     }
 
     private val runtimePermissions = arrayOf(
@@ -275,6 +322,7 @@ class MainActivity : AppCompatActivity() {
             if (task.result != null) {
                 uploadToken(task.result)
                 fcmViewModel.setToken(task.result)
+                SharedPreferencesUtil(this).setFCMToken(task.result)
             }
         }
     }
@@ -282,6 +330,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         checkPermissions()
+        chkNewMMSImg()
     }
 
     override fun onDestroy() {

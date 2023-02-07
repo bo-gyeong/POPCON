@@ -3,6 +3,7 @@ package com.ssafy.popcon.util
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import com.ssafy.popcon.dto.User
 
 class SharedPreferencesUtil(context: Context) {
@@ -80,6 +81,32 @@ class SharedPreferencesUtil(context: Context) {
     fun deleteUser() {
         val editor = preferences.edit()
         editor.clear()
+        editor.apply()
+    }
+
+    // 최근에 저장된 MMS Bitmap
+    fun getLatelyMMSBitmap(): String{
+        val bitmapStr = preferences.getString("lastMMSBitmap", "")
+        return bitmapStr!!
+    }
+
+    // MMS Bitmap update
+    fun setMMSBitmap(bitmap: Bitmap){
+        val editor = preferences.edit()
+        editor.putString("lastMMSBitmap", bitmap.toString())
+        editor.apply()
+    }
+
+    // FCM Token 가져오기
+    fun getFCMToken(): String{
+        val token = preferences.getString("fcmToken", "")
+        return token!!
+    }
+
+    // FCM Token 저장하기
+    fun setFCMToken(token: String){
+        val editor = preferences.edit()
+        editor.putString("fcmToken", token)
         editor.apply()
     }
 }

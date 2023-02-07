@@ -3,16 +3,25 @@ package com.ssafy.popcon.ui.add
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ClipData
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.graphics.ImageFormat.JPEG
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaCodec.MetricsConstants.MIME_TYPE
 import android.net.Uri
 import android.os.*
+import android.os.Environment.DIRECTORY_PICTURES
+import android.provider.ContactsContract.CommonDataKinds.Email.DISPLAY_NAME
+import android.provider.MediaStore
+import android.provider.MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
 import android.provider.MediaStore.Images
+import android.provider.MediaStore.MediaColumns.IS_PENDING
+import android.provider.MediaStore.MediaColumns.RELATIVE_PATH
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
@@ -40,6 +49,7 @@ import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.common.onSingleClickListener
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment.Companion.isShow
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 import kotlinx.coroutines.*
@@ -111,7 +121,13 @@ class AddFragment : Fragment(), onItemClick {
 
         chkCnt = 1
         makeProgressDialog()
-        openGalleryFirst()
+
+        if (MainActivity.fromMMSReceiver != null){
+            openGalleryFirst()
+        } else{
+            firstAdd(null)
+            MainActivity.fromMMSReceiver = null
+        }
 
         binding.cvAddCoupon.setOnClickListener {
             makeProgressDialogOnBackPressed()
@@ -174,52 +190,7 @@ class AddFragment : Fragment(), onItemClick {
                     val clipData = it.data!!.clipData
 
                     if (clipData != null) {  //첫 add
-                        cvAddCouponClick()
-
-                        for (i in 0 until clipData.itemCount){
-                            val originalImgUri = clipData.getItemAt(i).uri
-                            originalImgUris.add(GifticonImg(originalImgUri))
-                            gifticonEffectiveness.add(AddInfoNoImgBoolean())
-
-                            val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
-                            multipartFiles.add(realData!!)
-                        }
-
-                        viewModel.addFileToGCP(multipartFiles.toTypedArray())
-                        viewModel.gcpResult.observe(viewLifecycleOwner, EventObserver{
-                            for (i in 0 until it.size){
-                                val gcpResult = it[i]
-                                val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
-
-                                ocrSendList.add(
-                                    OCRSend(
-                                        gcpResult.fileName, originalImgBitmap.width, originalImgBitmap.height
-                                    )
-                                )
-                            }
-
-                            viewModel.useOcr(ocrSendList.toTypedArray())
-                            viewModel.ocrResult.observe(viewLifecycleOwner, EventObserver{
-                                for (ocrResult in it){
-                                    ocrResults.add(ocrResult)
-                                }
-                                
-                                for (i in 0 until it.size){  //clipData.itemCount
-                                    val cropImgUri = cropXY(i, PRODUCT)
-                                    val cropBarcodeUri = cropXY(i, BARCODE)
-
-                                    productImgUris.add(GifticonImg(cropImgUri))
-                                    barcodeImgUris.add(GifticonImg(cropBarcodeUri))
-                                    delImgUris.add(cropImgUri)
-                                    delImgUris.add(cropBarcodeUri)
-
-                                    addGifticonInfo(i)
-                                }
-
-                                fillContent(0)
-                                makeImgList()
-                            })
-                        })
+                        firstAdd(clipData)
                     } else{  //수동 크롭
                         if (clickCv == PRODUCT){
                             productImgUris[imgNum] = GifticonImg(Crop.getOutput(it.data))
@@ -240,6 +211,65 @@ class AddFragment : Fragment(), onItemClick {
                 }
             }
         }
+
+    private fun firstAdd(clipData: ClipData?){
+        cvAddCouponClick()
+        Log.d(TAG, "firstAdd: ${MainActivity.fromMMSReceiver}")
+
+        if (clipData != null){
+            for (i in 0 until clipData.itemCount){
+                val originalImgUri = clipData.getItemAt(i).uri
+                originalImgUris.add(GifticonImg(originalImgUri))
+                gifticonEffectiveness.add(AddInfoNoImgBoolean())
+
+                val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
+                multipartFiles.add(realData!!)
+            }
+        } else{
+            val originalImgUri = bitmapToUri(MainActivity.fromMMSReceiver!!)
+            originalImgUris.add(GifticonImg(originalImgUri))
+            gifticonEffectiveness.add(AddInfoNoImgBoolean())
+
+            val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
+            multipartFiles.add(realData!!)
+        }
+
+        viewModel.addFileToGCP(multipartFiles.toTypedArray())
+        viewModel.gcpResult.observe(viewLifecycleOwner, EventObserver{
+            for (i in 0 until it.size){
+                val gcpResult = it[i]
+                val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
+
+                ocrSendList.add(
+                    OCRSend(
+                        gcpResult.fileName, originalImgBitmap.width, originalImgBitmap.height
+                    )
+                )
+            }
+
+            viewModel.useOcr(ocrSendList.toTypedArray())
+            viewModel.ocrResult.observe(viewLifecycleOwner, EventObserver{
+                for (ocrResult in it){
+                    ocrResults.add(ocrResult)
+                }
+
+                for (i in 0 until it.size){  //clipData.itemCount
+                    val cropImgUri = cropXY(i, PRODUCT)
+                    val cropBarcodeUri = cropXY(i, BARCODE)
+
+                    productImgUris.add(GifticonImg(cropImgUri))
+                    barcodeImgUris.add(GifticonImg(cropBarcodeUri))
+                    delImgUris.add(cropImgUri)
+                    delImgUris.add(cropBarcodeUri)
+
+                    addGifticonInfo(i)
+                }
+
+                fillContent(0)
+                makeImgList()
+            })
+        })
+    }
 
     // uri to multipart
     @SuppressLint("Range")
@@ -498,6 +528,18 @@ class AddFragment : Fragment(), onItemClick {
         }
 
         return bitmap
+    }
+
+    private fun bitmapToUri(bitmap: Bitmap): Uri{
+        bitmap.compress(
+            Bitmap.CompressFormat.JPEG, 100, ByteArrayOutputStream()
+        )
+
+        val path = Images.Media.insertImage(
+            requireContext().contentResolver, bitmap, "mmsBitmapToUri", null
+        )
+
+        return Uri.parse(path)
     }
 
     // 크롭되면서 새로 생성된 이미지 삭제
