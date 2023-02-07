@@ -17,7 +17,7 @@ class UserRemoteDataSource(private val apiClient: UserApi) : UserDataSource {
         return apiClient.withdraw(user)
     }
 
-    override suspend fun updateUser(user: User, hash: Int): User {
-        return apiClient.updateUser(user, hash)
+    override suspend fun updateUser(user: User): User {
+        return apiClient.updateUser(user)
     }
 }

@@ -28,9 +28,9 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
-    fun updateUser(user: User, hash: Int){
+    fun updateUser(user: User){
         viewModelScope.launch {
-            _user.value = userRepository.updateUser(user, hash)
+            _user.value = userRepository.updateUser(user)
         }
     }
 }

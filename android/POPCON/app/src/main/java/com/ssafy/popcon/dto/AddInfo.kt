@@ -70,31 +70,6 @@ data class AddInfo(
         "",
         ""
     )
-
-    constructor(
-        barcodeNum:String,
-        brandName:String,
-        due:String,
-        voucherChk: Int,
-        price: Int,
-        product:String,
-        email: String,
-        social: String
-    ): this (
-        "".toUri(),
-        "".toUri(),
-        "".toUri(),
-        barcodeNum,
-        brandName,
-        product,
-        due,
-        voucherChk,
-        price,
-        0,
-        "",
-        email,
-        social
-    )
 }
 
 data class AddInfoNoImg(
@@ -108,26 +83,23 @@ data class AddInfoNoImg(
     val email: String,
     val social: String,
     val state: Int = 0
+)
+
+data class AddInfoNoImgBoolean(
+    var productName: Boolean,
+    var brandName: Boolean,
+    var barcodeNum: Boolean,
+    var due: Boolean,
+    var isVoucher: Boolean,
+    var price: Boolean
 ){
-    constructor(
-        barcodeNum:String,
-        brandName:String,
-        productName:String,
-        due:String,
-        isVoucher: Int,
-        email: String,
-        social:String
-    ): this (
-        barcodeNum,
-        brandName,
-        productName,
-        due,
-        isVoucher,
-        0,
-        "",
-        email,
-        social,
-        0
+    constructor(): this(
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
     )
 }
 
@@ -147,6 +119,7 @@ data class OCRResult(
     val productImg: Map<String, String>,
     var productName: String,
     val publisher: String,
+    val price: Int,
     val validation: Int
 )
 
@@ -168,9 +141,10 @@ data class OCRResultCoordinate(
 )
 
 data class AddImgInfo(
-    val files: Array<MultipartBody.Part>,
     val barcodeNum: String,
-    val originalImgName: String
+    val originGcpFileName: String,
+    val productGcpFileName: String,
+    val barcodeGcpFileName: String
 )
 
 data class ChkValidation(

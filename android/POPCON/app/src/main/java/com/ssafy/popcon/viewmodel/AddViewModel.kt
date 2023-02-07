@@ -1,6 +1,5 @@
 package com.ssafy.popcon.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,10 +18,13 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
     val ocrResult: LiveData<Event<List<OCRResult>>> = _ocrResult
 
     private val _brandChk = MutableLiveData<Event<ChkValidation>>()
-    val brandChk = _brandChk
+    val brandChk: LiveData<Event<ChkValidation>> = _brandChk
 
     private val _barcodeChk = MutableLiveData<Event<ChkValidation>>()
-    val barcodeChk = _barcodeChk
+    val barcodeChk: LiveData<Event<ChkValidation>> = _barcodeChk
+
+    private val _gcpOtherResult = MutableLiveData<Event<List<GCPResult>>>()
+    val gcpOtherResult: LiveData<Event<List<GCPResult>>> = _gcpOtherResult
 
     fun addFileToGCP(files: Array<MultipartBody.Part>){
         viewModelScope.launch {
@@ -54,9 +56,15 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
         }
     }
 
-    fun addGifticonImg(imgInfo: Array<AddImgInfo>){
+    fun addOtherFileToGCP(files: Array<MultipartBody.Part>){
         viewModelScope.launch {
-            addRepository.addGifticonImg(imgInfo)
+            _gcpOtherResult.value = Event(addRepository.addFileToGCP(files))
+        }
+    }
+
+    fun addImgInfo(imgInfo: Array<AddImgInfo>){
+        viewModelScope.launch {
+            addRepository.addImgInfo(imgInfo)
         }
     }
 }

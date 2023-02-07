@@ -46,4 +46,7 @@
     <string name="interval">일 마다</string>
     <string name="complete">완료</string>
     <string name="btn_edit">수정완료</string>
+
+    <!--  dialog_progress  -->
+    <string name="progress">Loading..</string>
 </resources>

@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         checkPermissions()
         //getFCMToken()
+        //SharedPreferencesUtil(this).deleteUser()
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {

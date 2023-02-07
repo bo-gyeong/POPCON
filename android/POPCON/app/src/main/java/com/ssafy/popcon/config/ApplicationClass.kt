@@ -3,7 +3,10 @@ package com.ssafy.popcon.config
 import android.Manifest
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.google.gson.GsonBuilder
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.util.AuthInterceptor
@@ -15,6 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+private const val TAG = "ApplicationClass_싸피"
 class ApplicationClass : Application() {
     companion object {
         const val SERVER_URL = BuildConfig.BASE_URL
@@ -64,6 +68,24 @@ class ApplicationClass : Application() {
         }
     }
 
+    private fun kakaoLoginState() {
+        KakaoSdk.init(applicationContext, BuildConfig.KAKAO_API_KEY)
+
+        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+            if (error != null) {
+                // 동의화면에서 동의 누르기 전에 뜸
+                Log.d(TAG, "init_error: ${error}")
+                if (tokenInfo == null) {
+                    // 디비에 값 저장
+                    Log.d(TAG, "kakaoLoginState: ")
+                }
+            } else if (tokenInfo != null) {
+                // 로그인 되어있는 상태
+                Log.d(TAG, "init_tokenInfo: ${tokenInfo}")
+            }
+        }
+    }
+
     fun setNaverModule(context: Context) {
         NaverIdLoginSDK.initialize(
             context,
@@ -81,6 +103,7 @@ class ApplicationClass : Application() {
         //shared preference 초기화
 
         makeRetrofit(SERVER_URL)
+        kakaoLoginState()
         makeRefreshRetrofit(SERVER_URL)
         setNaverModule(applicationContext)
     }
