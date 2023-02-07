@@ -11,6 +11,7 @@ import com.ssafy.popcon.databinding.ItemAddImgBinding
 import com.ssafy.popcon.dto.AddInfo
 import com.ssafy.popcon.dto.AddInfoNoImgBoolean
 import com.ssafy.popcon.dto.GifticonImg
+import com.ssafy.popcon.dto.OCRSend
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
 
@@ -19,7 +20,7 @@ class AddImgAdapter(
     , var originalImgUriList: ArrayList<GifticonImg>
     , var cropXyImgUriList: ArrayList<GifticonImg>
     , var barcodeImgUriList: ArrayList<GifticonImg>
-    , var fileNames: ArrayList<String>
+    , var ocrSendList: ArrayList<OCRSend>
     , var gifticonEffectiveness: ArrayList<AddInfoNoImgBoolean>
     , _onItemClick: onItemClick
 ):
@@ -66,7 +67,7 @@ class AddImgAdapter(
                 originalImgUriList.removeAt(bindingAdapterPosition)
                 cropXyImgUriList.removeAt(bindingAdapterPosition)
                 barcodeImgUriList.removeAt(bindingAdapterPosition)
-                fileNames.removeAt(bindingAdapterPosition)
+                ocrSendList.removeAt(bindingAdapterPosition)
                 gifticonEffectiveness.removeAt(bindingAdapterPosition)
                 notifyItemRemoved(bindingAdapterPosition)
 
