@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="badge"
+            type="com.ssafy.popcon.dto.Badge" />
+
+        <variable
+            name="gifticon"
+            type="com.ssafy.popcon.dto.Gifticon" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:padding="24dp"
+        android:id="@+id/popup_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edge_dialog">
+
+        <ImageView
+            android:id="@+id/iv_product_preview"
+            imageUrl="@{gifticon.product_filepath}"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/product"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_barcode_image"
+            imageUrl="@{gifticon.barcode_filepath}"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginHorizontal="24dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/barcode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_product_preview" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cv_hide"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/popcon_white"
+            app:layout_constraintBottom_toBottomOf="@id/iv_barcode_image"
+            app:layout_constraintEnd_toEndOf="@id/iv_barcode_image"
+            app:layout_constraintStart_toStartOf="@id/iv_barcode_image"
+            app:layout_constraintTop_toTopOf="@id/iv_barcode_image">
+
+            <EditText
+                android:id="@+id/et_message"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:hint="감사인사를 작성해주세요!"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="전송"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/et_message" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/dv"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/popcon_light_grey"
+            app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
+
+        <TextView
+            android:id="@+id/tv_brand"
+            style="@style/TextSubtitle2.Brown.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:text="@{gifticon.brand.brandName}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dv" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/TextSubtitle1.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="@{gifticon.productName}"
+            app:layout_constraintStart_toStartOf="@id/tv_brand"
+            app:layout_constraintTop_toBottomOf="@id/tv_brand" />
+
+        <TextView
+            android:id="@+id/tv_expDate"
+            style="@style/TextSubtitle2"
+            date="@{gifticon.due}"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+        <TextView
+            android:id="@+id/tv_memo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{gifticon.memo}"
+            app:layout_constraintStart_toStartOf="@id/tv_expDate"
+            app:layout_constraintTop_toBottomOf="@id/tv_expDate" />
+
+        <TextView
+            android:id="@+id/tv_date_badge"
+            style="@style/TextCaption1.White"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:layout_marginBottom="7dp"
+            android:background="@{badge.color}"
+            android:paddingStart="7dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="1dp"
+            android:text="@{badge.content}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/popcon_grey_02" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

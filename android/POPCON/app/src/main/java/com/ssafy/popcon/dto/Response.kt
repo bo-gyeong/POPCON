@@ -12,7 +12,9 @@ data class GifticonResponse(
     val productName: String,
     val product_filepath: String?,
     var state : Int
-)
+) {
+    constructor() : this("","","","",0,-1,"", "", "", "", -1)
+}
 
 data class UpdateResponse(
     val barcodeNum : String,

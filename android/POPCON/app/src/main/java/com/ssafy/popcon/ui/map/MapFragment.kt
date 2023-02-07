@@ -32,6 +32,7 @@ import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.common.DragListener
 import com.ssafy.popcon.ui.common.DragShadowBuilder
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.util.MyLocationManager
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.MapViewModel
@@ -75,6 +76,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
+        GifticonDialogFragment.isShow = true
         mainActivity = activity as MainActivity
     }
 
@@ -551,15 +553,10 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
             }
         } else {
             if (p1?.customImageResourceId == R.drawable.near) {
-                getUserLocation()
-                viewModel.getPresent(
-                    GetPresentRequest(
-                        p1!!.itemName,
-                        "",
-                        getLongitude.toString(),
-                        getLatitude.toString()
-                    ), SharedPreferencesUtil(requireContext()).getUser()
-                )
+                viewModel.getGifticonByBarcodeNum(p1.itemName ?: "")
+                PresentDialogFragment().show(childFragmentManager, "present")
+
+                /**/
             }
         }
     }
