@@ -72,14 +72,14 @@ public class GifticonService {
                 List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
                 for (InputFile gifticonfile: gflist
                 ) {
-                    if(gifticonfile.getImageType() == 0){// 0:
+                    if(gifticonfile.getImageType() == 0){// 0: 원본
+                        rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                    }
+                    if(gifticonfile.getImageType() == 1){// 1: 바코드
                         rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
                     }
-                    if(gifticonfile.getImageType() == 1){// 1:
+                    if(gifticonfile.getImageType() == 2){// 2: 상품
                         rgifticon.setProduct_filepath(gifticonfile.getFilePath());
-                    }
-                    if(gifticonfile.getImageType() == 2){// 2: 원본
-                        rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
                     }
                 }
 
@@ -107,14 +107,14 @@ public class GifticonService {
             List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
             for (InputFile gifticonfile: gflist
             ) {
-                if(gifticonfile.getImageType() == 0){// 0: 바코드
+                if(gifticonfile.getImageType() == 0){// 0: 원본
+                    rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                }
+                if(gifticonfile.getImageType() == 1){// 1: 바코드
                     rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
                 }
-                if(gifticonfile.getImageType() == 1){// 1: 상품
+                if(gifticonfile.getImageType() == 2){// 2: 상품
                     rgifticon.setProduct_filepath(gifticonfile.getFilePath());
-                }
-                if(gifticonfile.getImageType() == 2){// 2: 원본
-                    rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
                 }
             }
 
@@ -214,14 +214,14 @@ public class GifticonService {
                 List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
                 for (InputFile gifticonfile: gflist
                 ) {
-                    if (gifticonfile.getImageType() == 0) {// 0: 바코드
+                    if(gifticonfile.getImageType() == 0){// 0: 원본
+                        rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                    }
+                    if(gifticonfile.getImageType() == 1){// 1: 바코드
                         rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
                     }
-                    if (gifticonfile.getImageType() == 1) {// 1: 상품
+                    if(gifticonfile.getImageType() == 2){// 2: 상품
                         rgifticon.setProduct_filepath(gifticonfile.getFilePath());
-                    }
-                    if (gifticonfile.getImageType() == 2) {// 2: 원본
-                        rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
                     }
                 }
                 rlist.add(rgifticon);
@@ -261,14 +261,14 @@ public class GifticonService {
         List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(responsDto.getBarcodeNum());//사진들도 따로 복사
         for (InputFile gifticonfile: gflist
         ) {
-            if(gifticonfile.getImageType() == 0){// 0: 바코드
+            if(gifticonfile.getImageType() == 0){// 0: 원본
+                responsDto.setOrigin_filepath(gifticonfile.getFilePath());
+            }
+            if(gifticonfile.getImageType() == 1){// 1: 바코드
                 responsDto.setBarcode_filepath(gifticonfile.getFilePath());
             }
-            if(gifticonfile.getImageType() == 1){// 1: 상품
-               responsDto.setProduct_filepath(gifticonfile.getFilePath());
-            }
-            if(gifticonfile.getImageType() == 2){// 2: 원본
-                responsDto.setOrigin_filepath(gifticonfile.getFilePath());
+            if(gifticonfile.getImageType() == 2){// 2: 상품
+                responsDto.setProduct_filepath(gifticonfile.getFilePath());
             }
         }
         return responsDto;
