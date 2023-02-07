@@ -5,6 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 src/main/resources/application-API-KEY.properties
+src/main/resources/firebase/firebase_service_key.json
+src/main/resources/coral-sum-368108-cd6003507664.json
+
 
 ### STS ###
 .apt_generated
