@@ -69,7 +69,9 @@ public class DataBucketUtil {
             RandomString id = new RandomString(6, ThreadLocalRandom.current());
             Blob blob = bucket.create(gcpDirectoryName + "/" + fileName + "-" + id.nextString() + checkFileExtension(fileName), fileData, contentType);
 
-            String blobUrl = "https://storage.cloud.google.com/popcon/"  + blob.getName();
+            String blobUrl = "https://storage.googleapis.com/popcon/"  + blob.getName();
+
+
 
             if(blob != null){
                 LOGGER.debug("File successfully uploaded to GCS");

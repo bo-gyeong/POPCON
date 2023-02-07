@@ -46,7 +46,7 @@ public class LocationController {
             notes = "흔들었을때 사용가능한 주변 매장 브랜드",
             httpMethod = "POST")
     @PostMapping({"/shake"})
-    public ResponseEntity<List<ResponseBrandDto>> shakeSearch(@RequestBody LocationShakeDto locationShakeDto) throws NoSuchElementException {
+    public ResponseEntity<List<ResponseBrandDto>> shakeSearch(@RequestBody LocationShakeDto locationShakeDto) {
         try {
             String email = locationShakeDto.getEmail();
             String social = locationShakeDto.getSocial();
@@ -163,9 +163,9 @@ public class LocationController {
             }
 
             return new ResponseEntity<>(brandInfoList,HttpStatus.OK);
-        } catch (NoSuchElementException | NullPointerException e) {
-            System.out.println(e);
-            return new ResponseEntity<>(null,HttpStatus.OK);
+        } catch (NoSuchElementException | NullPointerException | NumberFormatException e) {
+            List<ResponseBrandDto> blankList = new ArrayList<>();
+            return new ResponseEntity<>(blankList,HttpStatus.OK);
         }
 
     }
@@ -175,7 +175,7 @@ public class LocationController {
             notes = "현위치 기반 기프티콘 사용가능 한 모든 매장",
             httpMethod = "POST")
     @PostMapping({"/search"})
-    public ResponseEntity<List<Object>> localSearch(@RequestBody LocationShakeDto locationShakeDto) throws Exception{
+    public ResponseEntity<List<Object>> localSearch(@RequestBody LocationShakeDto locationShakeDto){
         try {
             String email = locationShakeDto.getEmail();
             String social = locationShakeDto.getSocial();
@@ -284,9 +284,10 @@ public class LocationController {
 
             return new ResponseEntity<>(finalResults, HttpStatus.OK);
         }
-        catch (NoSuchElementException | NullPointerException e) {
+        catch (NoSuchElementException | NullPointerException | NumberFormatException e) {
             System.out.println(e);
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            List<Object> blankList = new ArrayList<>();
+            return new ResponseEntity<>(blankList,HttpStatus.OK);
 
         }
 
@@ -297,7 +298,7 @@ public class LocationController {
             notes = "현위치 기반 기프티콘 사용가능 한 지정 브랜드 매장",
             httpMethod = "POST")
     @PostMapping({"/search/byBrand"})
-    public ResponseEntity<List<Object>> searchByBrand(@RequestBody LocationSearchByBrandDto locationSearchByBrandDto) throws Exception {
+    public ResponseEntity<List<Object>> searchByBrand(@RequestBody LocationSearchByBrandDto locationSearchByBrandDto) {
         try {
 
             LocationShakeDto locationShakeDto = new LocationShakeDto();
@@ -334,9 +335,10 @@ public class LocationController {
             }
             return new ResponseEntity<>(nowResults,HttpStatus.OK);
         }
-        catch (NoSuchElementException | NullPointerException e) {
+        catch (NoSuchElementException | NullPointerException | NumberFormatException e) {
             System.out.println(e);
-            return new ResponseEntity<>(null,HttpStatus.OK);
+            List<Object> blankList = new ArrayList<>();
+            return new ResponseEntity<>(blankList,HttpStatus.OK);
         }
         }
 
