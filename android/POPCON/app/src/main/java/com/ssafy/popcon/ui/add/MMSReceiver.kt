@@ -5,12 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import java.io.InputStream
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.text.MessageFormat
 
 private const val TAG = "MMSReceiver_###"
@@ -34,7 +36,7 @@ class MMSReceiver: BroadcastReceiver() {
             while (query.moveToNext()){
                 val mmsId = query.getString(query.getColumnIndex("_id"))
                 val type = query.getString(query.getColumnIndex("ct_t"))
-                val subString = query.getString(query.getColumnIndex("sub")) ?: continue
+                val subString = query.getString(query.getColumnIndex("sub")) ?: continue // 제목
 
                 if ("application/vnd.wap.multipart.related" == type){  //mms
                     val title = String(subString.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
@@ -67,19 +69,31 @@ class MMSReceiver: BroadcastReceiver() {
                 val partId = cPart.getString(cPart.getColumnIndex("_id"))
                 val type = cPart.getString(cPart.getColumnIndex("ct"))
 
-                //"image/jpeg" == type || "image/bmp" == type
-                //                    || "image/gif" == type || "image/jpg" == type
-                //                    || "image/png" == type
                 if (type == "text/plain"
-                    && title == "안녕하세요! SSAFY 사무국입니다 :)"){
+                    && title == "[모바일 상품권] 기프티쇼 선물 도착"){  //"안녕하세요! SSAFY 사무국입니다 :)"
+                    Log.d(TAG, "getMMSData: $title")
+                    getMMSImg(cPart, mmsId)
                     //val bitmap = getMMSImage(partId)
+                    //val body = getMMSBody(cPart)
+                    //Log.d(TAG, "getMMSData: $body")
+                    
+                    
                     val partURI = Uri.parse("content://mms/part/$partId")
-                    Log.d(TAG, "getMMSData: ${partURI}")
 
                 }
             }
         }
         cPart.close()
+    }
+
+    private fun getMMSBody(pCursor: Cursor): String{
+        val partId = pCursor.getString(pCursor.getColumnIndex("_id"))
+        val data = pCursor.getString(pCursor.getColumnIndex("_data"))
+
+        if (data != null){
+            getMessageText(partId)
+        }
+        return pCursor.getString(pCursor.getColumnIndex("text"))
     }
 
     private fun getMMSDataByThreadId(threadId: String){
@@ -105,16 +119,61 @@ class MMSReceiver: BroadcastReceiver() {
         cPart.close()
     }
 
-    private fun getMMSImage(_id: String): Bitmap{
-        val partURI = Uri.parse("content://mms/part/$_id")
-        val inputStream: InputStream
-        val bitmap: Bitmap
+    private fun getMessageText(id: String): String {
+        val partUri = Uri.parse("content://mms/part/$id")
+        val stringBuilder = StringBuilder()
+        val inputStream = contentResolver.openInputStream(partUri)
+
+        if (inputStream != null) {
+            val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
+            val bufferedReader = BufferedReader(inputStreamReader)
+            var temp = bufferedReader.readLine()
+            while (temp != null) {
+                stringBuilder.append(temp)
+                temp = bufferedReader.readLine()
+            }
+            inputStream.close()
+        }
+
+        return stringBuilder.toString()
+    }
+
+    private fun getMMSImg(pCursor: Cursor, mmsId: String){
+        val selectionPart = "mid=$mmsId"
+        val uri = Uri.parse("content://mms/part")
+        val cPart: Cursor = contentResolver.query(
+            uri, null,
+            selectionPart, null, null
+        )!!
+
+
+        if (!cPart.moveToFirst()) return
+
+        while (cPart.moveToNext()){
+            val partId = cPart.getString(pCursor.getColumnIndex("_id"))
+            val type = cPart.getString(pCursor.getColumnIndex("ct"))
+
+            if (
+                "image/jpeg" == type || "image/bmp" == type
+                || "image/gif" == type || "image/jpg" == type
+                || "image/png" == type
+            ){
+                val bitmap = getMMSImage(partId)
+                Log.d(TAG, "Bit: $bitmap")
+            }
+        }
+    }
+
+    private fun getMMSImage(partId: String): Bitmap?{
+        val partURI = Uri.parse("content://mms/part/$partId")
 
         //try catch
-        inputStream = contentResolver.openInputStream(partURI)!!
-        bitmap = BitmapFactory.decodeStream(inputStream)
+        val inputStream = contentResolver.openInputStream(partURI)
+        if(inputStream != null){
+            return BitmapFactory.decodeStream(inputStream)
+        }
 
-        return bitmap
+        return null
     }
 
     private fun getAddressNumber(id: Int): String{
