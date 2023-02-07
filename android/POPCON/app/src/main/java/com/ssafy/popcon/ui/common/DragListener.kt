@@ -9,36 +9,28 @@ import android.view.DragEvent
 import android.view.View
 import android.view.View.OnDragListener
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.ssafy.popcon.dto.DonateRequest
 import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.ui.map.DonateLocation
+import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.MyLocationManager
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.MapViewModel
 
 open class DragListener(
-    private val target: ImageView,
-    private val req: DonateRequest?,
-    private val viewModel: MapViewModel, private val user: User, private val lm : LocationManager) : OnDragListener {
+    private val target: View,
+    private val barNum: String,
+    private val viewModel: MapViewModel, private val user: User, private val lm: LocationManager
+) : OnDragListener {
     override fun onDrag(v: View, e: DragEvent): Boolean {
         when (e.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
-                target.isVisible = true
-
-                if (e.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                    v.invalidate()
-                    true
-                } else {
-                    false
-                }
+                e.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
             }
             DragEvent.ACTION_DRAG_ENTERED -> {
-                // Applies a green tint to the View.
-                if (v == target) {
-                    (v as? ImageView)?.setColorFilter(Color.LTGRAY)
-                    v.invalidate()
-                }
                 true
             }
 
@@ -46,11 +38,6 @@ open class DragListener(
                 // Ignore the event.
                 true
             DragEvent.ACTION_DRAG_EXITED -> {
-                // Resets the color tint to blue.
-                (v as? ImageView)?.clearColorFilter()
-
-                // Invalidates the view to force a redraw in the new tint.
-                v.invalidate()
 
                 // Returns true; the value is ignored.
                 true
@@ -64,12 +51,15 @@ open class DragListener(
 
                 // 이미지 제거
                 if (v == target) {
-                    v.isVisible = false
-                    v.invalidate()
 
-                    Log.d("드랍", "onDrag: $req")
+                    Log.d("", "onDraggablePOIItemMoved: ${DonateLocation.x}, ${DonateLocation.y}")
 
-                    viewModel.donate(req!!, user, MyLocationManager.getLocation(lm)!!.longitude.toString(), MyLocationManager.getLocation(lm)!!.latitude.toString())
+                    viewModel.donate(
+                        DonateRequest(barNum, DonateLocation.x, DonateLocation.y),
+                        user,
+                        MyLocationManager.getLocation(lm)!!.longitude.toString(),
+                        MyLocationManager.getLocation(lm)!!.latitude.toString()
+                    )
                 }
                 // Invalidates the view to force a redraw.
                 v.invalidate()
@@ -79,19 +69,9 @@ open class DragListener(
             }
 
             DragEvent.ACTION_DRAG_ENDED -> {
-                // Turns off any color tinting.
-                (v as? ImageView)?.clearColorFilter()
-
-                // Invalidates the view to force a redraw.
-                v.invalidate()
                 true
             }
             else -> {
-                // An unknown action type was received.
-                Log.e(
-                    "DragDrop Example",
-                    "Unknown action type received by View.OnDragListener."
-                )
                 false
             }
 

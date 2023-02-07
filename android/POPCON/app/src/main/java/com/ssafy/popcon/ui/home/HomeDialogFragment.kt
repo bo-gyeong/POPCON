@@ -113,15 +113,15 @@ class HomeDialogFragment : DialogFragment() {
         viewModel.gifticon.observe(viewLifecycleOwner) { g ->
             val gifticon = Gifticon(
                 g.barcodeNum,
-                g.barcode_filepath?:"",
+                g.barcode_filepath ?: "",
                 Brand("", g.brandName),
                 g.due,
                 g.hash,
                 g.price,
-                g.memo?:"",
-                g.origin_filepath?:"",
+                g.memo ?: "",
+                g.origin_filepath ?: "",
                 g.productName,
-                g.product_filepath?:"",
+                g.product_filepath ?: "",
                 g.state
             )
 
@@ -131,19 +131,12 @@ class HomeDialogFragment : DialogFragment() {
 
             binding.ivProductPreview.setOnClickListener {
                 val args = Bundle()
-                args.putString("originalUrl", gifticon.origin_filepath)
+                args.putString("url", gifticon.origin_filepath)
 
                 val dialogFragment = ImageDialogFragment()
                 dialogFragment.arguments = args
                 dialogFragment.show(childFragmentManager, "originalUrl")
             }
-
-            /*//삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
-            binding.btnDelete.setOnClickListener {
-                viewModel.deleteGifticon(DeleteRequest(gifticon.barcodeNum))
-
-                dialog?.dismiss()
-            }*/
         }
 
 
