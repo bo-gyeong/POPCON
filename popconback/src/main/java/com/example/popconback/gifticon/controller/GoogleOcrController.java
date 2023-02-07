@@ -300,6 +300,7 @@ public class GoogleOcrController {
                     checkVoucher.add("모바일금액권");
                     checkVoucher.add("모바일상품권");
                     checkVoucher.add("기프티카드");
+                    checkVoucher.add("기프트카드");
                     checkVoucher.add("디지털상품권");
                     checkVoucher.add("모바일교환권");
                     checkVoucher.add("원권");
@@ -396,6 +397,10 @@ public class GoogleOcrController {
                                     else {
                                         brandName = preBrandName;
                                     }
+                                }
+
+                                if (brandName.contains("교환권")) {
+                                    brandName = brandName.replaceAll("교환권","").replaceAll(" ","");
                                 }
 
 
@@ -656,9 +661,9 @@ public class GoogleOcrController {
                                     }
                                 }
 
-
-
-
+                                if (brandName.contains("교환권")) {
+                                    brandName = brandName.replaceAll("교환권","").replaceAll(" ","");
+                                }
 
 
 
@@ -913,6 +918,9 @@ public class GoogleOcrController {
                                     }
                                 }
 
+                                if (brandName.contains("교환권")) {
+                                    brandName = brandName.replaceAll("교환권","").replaceAll(" ","");
+                                }
 
 
 
@@ -1162,6 +1170,10 @@ public class GoogleOcrController {
                                         brandName = preBrandName;
                                     }
 
+                                }
+
+                                if (brandName.contains("교환권")) {
+                                    brandName = brandName.replaceAll("교환권","").replaceAll(" ","");
                                 }
 
 
