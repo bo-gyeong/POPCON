@@ -40,6 +40,7 @@ import net.daum.mf.map.api.CalloutBalloonAdapter
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
+import net.daum.mf.map.api.MapView.CurrentLocationEventListener
 import net.daum.mf.map.api.MapView.MapViewEventListener
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -49,7 +50,7 @@ import java.net.URL
 private const val TAG = "MapFragment"
 
 class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
-    MapView.POIItemEventListener {
+    MapView.POIItemEventListener, CurrentLocationEventListener {
     private lateinit var binding: FragmentMapBinding
     private val ACCESS_FINE_LOCATION = 1000     // Request Code
     lateinit var lm: LocationManager
@@ -94,6 +95,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         binding.mapView.setCalloutBalloonAdapter(this)
         binding.mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))
         binding.mapView.setPOIItemEventListener(this)
+        binding.mapView.setCurrentLocationEventListener(this)
 
         if (checkLocationService()) {
             // GPS가 켜져있을 경우
@@ -127,10 +129,12 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         getUserLocation()
         //y : 위도 latitude 경 127도, 위 37도
-        viewModel.getPresents(FindPresentRequest(
-            getLongitude.toString(),
-            getLatitude.toString()
-        ))
+        viewModel.getPresents(
+            FindPresentRequest(
+                getLongitude.toString(),
+                getLatitude.toString()
+            )
+        )
         viewModel.presents.observe(viewLifecycleOwner) {
             binding.mapView.removeAllPOIItems()
 
@@ -257,7 +261,11 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         binding.mapView.currentLocationTrackingMode =
             MapView.CurrentLocationTrackingMode.TrackingModeOff
 
-        binding.mapView.setShowCurrentLocationMarker(false)
+        binding.mapView.setCustomCurrentLocationMarkerImage(
+            R.drawable.popcon_point,
+            MapPOIItem.ImageOffset(10, 10)
+        )
+        //binding.mapView.setShowCurrentLocationMarker(false)
     }
 
     private fun setStore() {
@@ -347,8 +355,24 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                     location.longitude.toString(),
                     location.latitude.toString()
                 )
-                gifticonAdapter.setOnDragListener(DragListener(targetView, req, viewModel, user, lm))
-                binding.ivPresent.setOnDragListener(DragListener(targetView, req, viewModel, user, lm))
+                gifticonAdapter.setOnDragListener(
+                    DragListener(
+                        targetView,
+                        req,
+                        viewModel,
+                        user,
+                        lm
+                    )
+                )
+                binding.ivPresent.setOnDragListener(
+                    DragListener(
+                        targetView,
+                        req,
+                        viewModel,
+                        user,
+                        lm
+                    )
+                )
 
                 v.startDrag(dragData, shadow, v, 0)
             }
@@ -398,7 +422,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                 if (poiItem?.customImageResourceId == R.drawable.near) {
                     name.text = "줍기"
                 } else {
-                    val view : CardView = mCalloutBalloon.findViewById(R.id.ballView)
+                    val view: CardView = mCalloutBalloon.findViewById(R.id.ballView)
                     view.setCardBackgroundColor(Color.parseColor("#FF9797"))
                     name.text = "더 가까이 이동하세요"
                 }
@@ -437,6 +461,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         return resizeBitmapImage(output, 60)!!
     }
 
+    //지도 리스너
     override fun onMapViewInitialized(p0: MapView?) {
         Log.d(TAG, "onMapViewInitialized: ")
     }
@@ -462,6 +487,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
             stopTracking()
         }
     }
+
     override fun onMapViewDragEnded(p0: MapView?, p1: MapPoint?) {
         if (mode == 1) {
             val user = SharedPreferencesUtil(requireContext()).getUser()
@@ -491,6 +517,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     override fun onMapViewMoveFinished(p0: MapView?, p1: MapPoint?) {
     }
 
+    //마커 리스너
     override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
 
     }
@@ -505,7 +532,14 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         } else {
             if (p1?.customImageResourceId == R.drawable.near) {
                 getUserLocation()
-                viewModel.getPresent(GetPresentRequest(p1!!.itemName, "", getLongitude.toString(), getLatitude.toString()), SharedPreferencesUtil(requireContext()).getUser())
+                viewModel.getPresent(
+                    GetPresentRequest(
+                        p1!!.itemName,
+                        "",
+                        getLongitude.toString(),
+                        getLatitude.toString()
+                    ), SharedPreferencesUtil(requireContext()).getUser()
+                )
             }
         }
     }
@@ -518,5 +552,34 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     }
 
     override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
+
+    }
+
+    //트래킹 리스너
+    override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
+
+        Log.d(
+            TAG, "onCurrentLocationUpdate: ${p1!!.mapPointGeoCoord.longitude.toString()} + ${
+                p1!!.mapPointGeoCoord.latitude
+            }"
+        )
+        viewModel.getPresents(
+            FindPresentRequest(
+                p1!!.mapPointGeoCoord.longitude.toString(),
+                p1!!.mapPointGeoCoord.latitude.toString()
+            )
+        )
+    }
+
+    override fun onCurrentLocationDeviceHeadingUpdate(p0: MapView?, p1: Float) {
+
+    }
+
+    override fun onCurrentLocationUpdateFailed(p0: MapView?) {
+
+    }
+
+    override fun onCurrentLocationUpdateCancelled(p0: MapView?) {
+
     }
 }

@@ -22,7 +22,12 @@ import com.ssafy.popcon.viewmodel.MapViewModel
 
 private const val TAG = "GifticonMap_싸피"
 
-class MapGifticonAdpater(val target: ImageView, val viewModel: MapViewModel, val user: User, val lm : LocationManager) :
+class MapGifticonAdpater(
+    val target: ImageView,
+    val viewModel: MapViewModel,
+    val user: User,
+    val lm: LocationManager
+) :
     ListAdapter<Gifticon, MapGifticonAdpater.GifticonMapViewHolder>(BannerDiffCallback()) {
     private lateinit var binding: ItemMapGiftconBinding
 
