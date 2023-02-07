@@ -27,6 +27,9 @@ class MapViewModel(
     private val _brandsMap = MutableLiveData<List<BrandResponse>>()
     val brandsMap: LiveData<List<BrandResponse>> = _brandsMap
 
+    private val _present = MutableLiveData<GifticonResponse>()
+    val present: LiveData<GifticonResponse> = _present
+
     //현재 선택된 탭
     var brandName: String = "전체"
 
@@ -89,7 +92,7 @@ class MapViewModel(
         }
     }
 
-    fun getPresents(findPresentRequest: FindPresentRequest) {
+    fun getAllPresents(findPresentRequest: FindPresentRequest) {
         viewModelScope.launch {
             val presents = mapRepository.getPresents(findPresentRequest)
             _presents.value = presents.allNearPresentList
@@ -97,19 +100,28 @@ class MapViewModel(
         }
     }
 
-    fun donate(donateRequest: DonateRequest, user: User, x : String, y: String) {
+    fun donate(donateRequest: DonateRequest, user: User, x: String, y: String) {
         viewModelScope.launch {
             mapRepository.donate(donateRequest)
-            getPresents(FindPresentRequest(x, y))
+            getAllPresents(FindPresentRequest(x, y))
             getGifticons(user, brandName)
+            getHomeBrand(user)
         }
     }
 
+    //줍기
     fun getPresent(getPresentRequest: GetPresentRequest, user: User) {
         viewModelScope.launch {
             mapRepository.getPresent(getPresentRequest)
-            getPresents(FindPresentRequest(getPresentRequest.x, getPresentRequest.y))
+            getAllPresents(FindPresentRequest(getPresentRequest.x, getPresentRequest.y))
             getGifticons(user, brandName)
+            getHomeBrand(user)
+        }
+    }
+
+    fun getGifticonByBarcodeNum(barcodeNum: String) {
+        viewModelScope.launch {
+            _present.value = gifticonRepository.getGifticonByBarNum(barcodeNum)
         }
     }
 }

@@ -10,22 +10,15 @@
         android:id="@+id/l_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <View
+            android:id="@+id/view_donate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <net.daum.mf.map.api.MapView
             android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <ImageView
-            android:id="@+id/iv_present"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/present"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/mapView"
-            app:layout_constraintEnd_toEndOf="@+id/mapView"
-            app:layout_constraintStart_toStartOf="@+id/mapView"
-            app:layout_constraintTop_toTopOf="@+id/mapView" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/cv_brand_tab"

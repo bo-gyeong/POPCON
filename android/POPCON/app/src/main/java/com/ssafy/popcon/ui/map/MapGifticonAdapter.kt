@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,12 @@ import com.ssafy.popcon.viewmodel.MapViewModel
 
 private const val TAG = "GifticonMap_싸피"
 
-class MapGifticonAdpater(val target: ImageView, val viewModel: MapViewModel, val user: User, val lm : LocationManager) :
+class MapGifticonAdpater(
+    val target: View,
+    val viewModel: MapViewModel,
+    val user: User,
+    val lm: LocationManager
+) :
     ListAdapter<Gifticon, MapGifticonAdpater.GifticonMapViewHolder>(BannerDiffCallback()) {
     private lateinit var binding: ItemMapGiftconBinding
 
@@ -34,7 +40,15 @@ class MapGifticonAdpater(val target: ImageView, val viewModel: MapViewModel, val
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: GifticonMapViewHolder, position: Int) {
         holder.bind(getItem(position))
-        holder.itemView.setOnDragListener(DragListener(target, null, viewModel, user, lm))
+        holder.itemView.setOnDragListener(
+            DragListener(
+                target,
+                getItem(position).barcodeNum,
+                viewModel,
+                user,
+                lm
+            )
+        )
         holder.itemView.setOnLongClickListener { v ->
             longClickListener.onLongClick(v, getItem(position))
             true
