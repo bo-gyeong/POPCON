@@ -30,6 +30,7 @@ public class AuthenticationConfig {
               .authorizeRequests()
               .antMatchers("/api/v1/user/login","/api/v1/user/refresh").permitAll()
               .antMatchers("/swagger-ui/**","/swagger-resources/**","/v3/api-docs").permitAll()
+              .antMatchers("/api/v1/registToken").permitAll()
               .anyRequest().authenticated()
 //              .antMatchers(HttpMethod.POST).authenticated()
 //              .antMatchers(HttpMethod.GET).authenticated()

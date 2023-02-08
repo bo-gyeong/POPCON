@@ -53,21 +53,21 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "createUserK",
-            notes = "회원 정보 DB에 저장(카카오)",
-            httpMethod = "POST")
-    @PostMapping("/login/kakao") // 회원 정보 DB에 저장(카카오)
-    public ResponseEntity<ResponsCreateUserDto> createUserK(@RequestBody CreateUserDto createUserDto){
-        return ResponseEntity.ok(userservice.CreateUser(createUserDto));
-    }
-
-    @ApiOperation(value = "createUserN",
-            notes = "회원 정보 DB에 저장(네이버)",
-            httpMethod = "POST")
-    @PostMapping("/login/naver") // 회원 정보 DB에 저장(네이버)
-    public ResponseEntity<ResponsCreateUserDto> createUserN(@RequestBody CreateUserDto createUserDto){
-        return ResponseEntity.ok(userservice.CreateUser(createUserDto));
-    }
+//    @ApiOperation(value = "createUserK",
+//            notes = "회원 정보 DB에 저장(카카오)",
+//            httpMethod = "POST")
+//    @PostMapping("/login/kakao") // 회원 정보 DB에 저장(카카오)
+//    public ResponseEntity<ResponsCreateUserDto> createUserK(@RequestBody CreateUserDto createUserDto){
+//        return ResponseEntity.ok(userservice.CreateUser(createUserDto));
+//    }
+//
+//    @ApiOperation(value = "createUserN",
+//            notes = "회원 정보 DB에 저장(네이버)",
+//            httpMethod = "POST")
+//    @PostMapping("/login/naver") // 회원 정보 DB에 저장(네이버)
+//    public ResponseEntity<ResponsCreateUserDto> createUserN(@RequestBody CreateUserDto createUserDto){
+//        return ResponseEntity.ok(userservice.CreateUser(createUserDto));
+//    }
 
     @ApiOperation(value = "updateUser",
             notes = "회원 정보 수정",
