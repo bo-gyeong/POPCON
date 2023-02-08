@@ -105,14 +105,16 @@ public class GifticonController {
 
 
 
-    @ApiOperation(value = "기프티콘 정렬", notes = "기프티콘 브랜드별 정렬", httpMethod = "POST") // get 으로 수정
+
+    @ApiOperation(value = "기프티콘 정렬", notes = "기프티콘 브랜드별 정렬", httpMethod = "POST") // post 로 수정
     @PostMapping("/brand") //기프티콘 브랜드별 정렬 // 사용한거 표시 제외하고 보낼지 말지 고민
     public ResponseEntity<List<ResponseListGifticonUserDto>> SortGifticon (@RequestBody ListGifticonUserDto sortGifticonDto, Authentication authentication){
         UserDto us= (UserDto)authentication.getPrincipal();
             return ResponseEntity.ok(gifticonService.sortGifticon(sortGifticonDto,us.hashCode()));
    }
 
-    @ApiOperation(value = "기프티콘 히스토리", notes = "기프티콘 히스토리", httpMethod = "POST") // get 으로 수정
+
+    @ApiOperation(value = "기프티콘 히스토리", notes = "기프티콘 히스토리", httpMethod = "POST") // post 로 수정
     @PostMapping("/history")
     public ResponseEntity<List<ResponseGifticonHistoryDto>> historyGifticon (@RequestBody GifticonHistoryDto gifticonHistoryDto,Authentication authentication){
         UserDto us= (UserDto)authentication.getPrincipal();

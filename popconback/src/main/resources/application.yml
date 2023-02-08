@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mariadb://127.0.0.1:3306/popcon
-#    url: jdbc:mariadb://i8d201.p.ssafy.io:3306/popcon
+    url: jdbc:mariadb://i8d201.p.ssafy.io:3306/popcon
+#    url: jdbc:mariadb://127.0.0.1:3306/popcon
     username: root
     password: ssafy
   jpa:
@@ -15,6 +15,7 @@ spring:
     gcp:
       credentials:
         location: classpath:coral-sum-368108-cd6003507664.json
+#        location: file:/home/ubuntu/test/gcp/coral-sum-368108-cd6003507664.json
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -48,8 +49,8 @@ gcp:
   bucket:
     id: popcon
   dir:
-
     name: images
+
 jwt :
   secret : "token.server.secret.key"
 app :
