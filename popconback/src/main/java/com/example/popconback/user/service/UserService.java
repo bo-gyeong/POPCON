@@ -8,7 +8,7 @@ import com.example.popconback.user.dto.Token.ResponseToken;
 import com.example.popconback.user.dto.UpdateUser.ResponseUpdateUserDto;
 import com.example.popconback.user.dto.UpdateUser.UpdateUserDto;
 import com.example.popconback.user.dto.UserDto;
-import com.example.popconback.user.kakao.Outh2;
+
 import com.example.popconback.user.repository.UserRepository;
 import com.example.popconback.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;

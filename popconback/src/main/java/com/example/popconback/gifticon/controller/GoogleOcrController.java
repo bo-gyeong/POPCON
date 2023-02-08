@@ -415,7 +415,23 @@ public class GoogleOcrController {
 
                                 }
 
-                                productName = checkGsProduct.replaceAll("\n","");
+                                String preProductName = checkGsProduct.replaceAll("\n","");
+
+                                try {
+                                    if (productName.contains("]")) {
+                                        int chr_idx = productName.indexOf("]");
+                                        String tempStr = productName.substring(0,chr_idx+1);
+                                        productName = preProductName.replace(tempStr,"");
+
+                                    }
+                                    else {
+                                        productName = preProductName;
+                                    }
+                                }
+                                catch (IndexOutOfBoundsException e) {
+                                    System.out.println(e);
+                                }
+
                                 System.out.println(productName);
 
 
