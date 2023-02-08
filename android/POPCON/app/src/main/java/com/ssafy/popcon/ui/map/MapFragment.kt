@@ -487,7 +487,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
     //지도 리스너
     override fun onMapViewInitialized(p0: MapView?) {
-        Log.d(TAG, "onMapViewInitialized: ")
+
     }
 
     override fun onMapViewCenterPointMoved(p0: MapView?, p1: MapPoint?) {
@@ -555,8 +555,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
             if (p1?.customImageResourceId == R.drawable.near) {
                 viewModel.getGifticonByBarcodeNum(p1.itemName ?: "")
                 PresentDialogFragment().show(childFragmentManager, "present")
-
-                /**/
             }
         }
     }
@@ -576,12 +574,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
     //트래킹 리스너
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-        Log.d(
-            TAG, "onCurrentLocationUpdate: ${p1!!.mapPointGeoCoord.longitude.toString()} + ${
-                p1!!.mapPointGeoCoord.latitude
-            }"
-        )
-
         viewModel.getAllPresents(
             FindPresentRequest(
                 p1!!.mapPointGeoCoord.longitude.toString(),

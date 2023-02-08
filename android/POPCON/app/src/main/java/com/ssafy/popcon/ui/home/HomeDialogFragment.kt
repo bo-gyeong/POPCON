@@ -92,8 +92,6 @@ class HomeDialogFragment : DialogFragment() {
 
         //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
         binding.btnDelete.setOnClickListener {
-
-            Log.d(TAG, "onViewCreated: ${gifticonFromHome.barcodeNum}")
             viewModel.deleteGifticon(
                 DeleteRequest(gifticonFromHome.barcodeNum),
                 SharedPreferencesUtil(requireContext()).getUser()
@@ -105,7 +103,6 @@ class HomeDialogFragment : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
-        Log.d(TAG, "setLayout: ${gifticonFromHome.barcodeNum}")
         setButton(gifticonFromHome)
 
         binding.gifticon = gifticonFromHome
@@ -166,5 +163,11 @@ class HomeDialogFragment : DialogFragment() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        GifticonDialogFragment.isShow = false
     }
 }

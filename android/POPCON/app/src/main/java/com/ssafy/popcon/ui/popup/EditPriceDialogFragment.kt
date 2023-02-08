@@ -53,14 +53,6 @@ class EditPriceDialogFragment : DialogFragment() {
 
     //가격버튼
     private fun priceBtnCilckListener() {
-        binding.btn100.setOnClickListener {
-            var price = "0"
-            if (binding.etPrice.text.toString() != "") {
-                price = binding.etPrice.text.toString()
-            }
-            val temp: Int = price.toInt()
-            binding.etPrice.setText((temp + 100).toString())
-        }
 
         binding.btn500.setOnClickListener {
             var price = "0"

@@ -36,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/account"
-                    style="@style/TextSubtitle1.Bold"
+                    style="@style/Bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/iv_title_account"/>
@@ -67,7 +67,7 @@
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:visibility="gone"
-                style="@style/TextSubtitle1.Bold"/>
+                style="@style/Bold"/>
 
         </LinearLayout>
 
@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/noti"
-                    style="@style/TextSubtitle1.Bold"
+                    style="@style/Bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"/>
@@ -241,7 +241,7 @@
             android:paddingBottom="16dp"
             android:background="@drawable/change_color_press_white"
             android:text="@string/logout"
-            style="@style/TextSubtitle1.Bold"
+            style="@style/Bold"
             app:layout_constraintTop_toBottomOf="@+id/l_noti"/>
 
         <TextView
