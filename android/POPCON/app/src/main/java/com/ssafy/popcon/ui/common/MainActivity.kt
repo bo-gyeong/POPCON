@@ -11,6 +11,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -20,12 +21,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.transaction
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
+import com.ssafy.popcon.repository.fcm.FCMRepository
 import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.add.MMSDialog
 import com.ssafy.popcon.ui.add.MMSReceiver
@@ -35,8 +39,10 @@ import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.CheckPermission
+import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -52,6 +58,7 @@ class MainActivity : AppCompatActivity() {
     private var mmsReceiver = MMSReceiver()
 
     private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
+    private val addViewModel: AddViewModel by viewModels { ViewModelFactory(this) }
 
     val PERMISSION_REQUEST_CODE = 8
 
@@ -81,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         checkPermissions()
 
-        getFCMToken()
+        //getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
@@ -121,33 +128,12 @@ class MainActivity : AppCompatActivity() {
         //, Manifest.permission.BROADCAST_WAP_PUSH, null
     }
 
-    fun chkNewMMSImg(){
-        supportFragmentManager.beginTransaction()
-            .add(MMSDialog(), "mmsDialog")
-            .commitAllowingStateLoss()
-//        if(fromMMSReceiver != null){
-//            supportFragmentManager.beginTransaction()
-//                .add(MMSDialog(), "mmsDialog")
-//                .commit()
-//            newMMSImg = false
-//        }
-
-//        val encodeByte = Base64.decode("android.graphics.Bitmap@f0a7bb9", Base64.DEFAULT)
-//        fromMMSReceiver = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
-//
-//        Log.d(TAG, "chkNewMMSImg: $$$$$$$$$$")
-//        if(fromMMSReceiver != null){
-//            supportFragmentManager.beginTransaction()
-//                .add(MMSDialog(), "mmsDialog")
-//                .commit()
-//            newMMSImg = false
-//        }
-
-//        if (newMMSImg){
-//            val dialog = MMSDialog()
-//            dialog.show(supportFragmentManager, "mmsDialog")
-//            newMMSImg = false
-//        }
+    private fun chkNewMMSImg(){
+        if (fromMMSReceiver != null){
+            supportFragmentManager.beginTransaction()
+                .add(MMSDialog(addViewModel), "mmsDialog")
+                .commitAllowingStateLoss()
+        }
     }
 
     fun updateStatusBarColor(color: String?) { // Color must be in hexadecimal fromat
@@ -216,12 +202,18 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        chkNewMMSImg()
+        Log.d(TAG, "onResume: ")
+    }
+
     fun addFragmentFromMMS(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frame_layout_main, fragment)
             .addToBackStack(null)
-            .commitAllowingStateLoss()
+            .commit()
     }
 
     private val runtimePermissions = arrayOf(
@@ -308,7 +300,8 @@ class MainActivity : AppCompatActivity() {
 
     // 알림 관련 메시지 전송
     fun sendMessageTo(token: String, title: String, body: String) {
-        fcmViewModel.sendMessageTo(token, title, body)
+        FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService)).sendMessageTo(token, title, body)
+        //fcmViewModel.sendMessageTo(token, title, body)
         //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
     }
 
@@ -330,7 +323,6 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         checkPermissions()
-        chkNewMMSImg()
     }
 
     override fun onDestroy() {

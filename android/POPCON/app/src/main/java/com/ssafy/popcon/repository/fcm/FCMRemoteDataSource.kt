@@ -16,7 +16,7 @@ class FCMRemoteDataSource(private val apiClient:FCMApi): FCMDataSource {
         return apiClient.broadCast(title, body)
     }
 
-    override suspend fun sendMessageTo(token: String, title: String, body: String) {
+    override fun sendMessageTo(token: String, title: String, body: String) {
         return apiClient.sendMessageTo(token, title, body)
     }
 }

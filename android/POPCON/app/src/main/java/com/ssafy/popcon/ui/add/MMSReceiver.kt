@@ -35,7 +35,8 @@ class MMSReceiver: BroadcastReceiver() {
     override fun onReceive(_context: Context?, _intent: Intent?) {
         context = _context!!
         contentResolver = context.contentResolver
-        mainActivity = MainActivity.getInstance()!!
+        //mainActivity = MainActivity.getInstance()!!
+        mainActivity = MainActivity()
         Toast.makeText(context, "whtttttttttttt", Toast.LENGTH_SHORT).show()
         chkMMS()
     }
