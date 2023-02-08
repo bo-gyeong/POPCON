@@ -75,6 +75,7 @@ class HistoryDialogFragment : DialogFragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewModel.getGifticonByBarcodeNum(history)
         viewModel.gifticon.observe(viewLifecycleOwner){ g->
             val gifticon = Gifticon(
