@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
     fun updateStatusBarColor(color: String?) { // Color must be in hexadecimal fromat
         val window: Window = window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.setStatusBarColor(Color.parseColor(color))
+        window.statusBarColor = Color.parseColor(color)
     }
 
     //navigation bar 설정

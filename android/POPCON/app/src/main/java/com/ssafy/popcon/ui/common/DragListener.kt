@@ -51,9 +51,6 @@ open class DragListener(
 
                 // 이미지 제거
                 if (v == target) {
-
-                    Log.d("", "onDraggablePOIItemMoved: ${DonateLocation.x}, ${DonateLocation.y}")
-
                     viewModel.donate(
                         DonateRequest(barNum, DonateLocation.x, DonateLocation.y),
                         user,

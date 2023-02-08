@@ -91,7 +91,6 @@ class HomeFragment : Fragment(){
             Log.d(TAG, "openGifticonDialog: $it")
             val args = Bundle()
             args.putSerializable("gifticon", it)
-
             val dialogFragment = HomeDialogFragment()
             dialogFragment.arguments = args
             dialogFragment.show(childFragmentManager, "popup")
