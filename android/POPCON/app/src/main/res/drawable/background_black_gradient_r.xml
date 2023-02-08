@@ -7,7 +7,7 @@
         android:endColor="#80000000"
         android:type="linear" />
 
-    <corners
+    <!--<corners
         android:topLeftRadius="12dp"
-        android:topRightRadius="12dp"/>
+        android:topRightRadius="12dp"/>-->
 </shape>

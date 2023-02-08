@@ -80,10 +80,12 @@ class GifticonViewFragment : Fragment() {
             binding.btnUse.isVisible = true
             binding.btnPrice.isVisible = false
             binding.tvLeft.isVisible = false
+            binding.tvLeftTitle.isVisible = false
         } else {
             binding.btnUse.isVisible = false
             binding.btnPrice.isVisible = true
             binding.tvLeft.isVisible = true
+            binding.tvLeftTitle.isVisible = true
         }
 
         binding.btnPrice.setOnClickListener {
