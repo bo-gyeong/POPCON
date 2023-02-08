@@ -8,7 +8,7 @@ class AddRepository(private val remoteDataSource: AddRemoteDataSource) {
         return remoteDataSource.addFileToGCP(files)
     }
 
-    suspend fun useOcr(fileName: Array<String>): List<OCRResult>{
+    suspend fun useOcr(fileName: Array<OCRSend>): List<OCRResult>{
         return remoteDataSource.useOcr(fileName)
     }
 

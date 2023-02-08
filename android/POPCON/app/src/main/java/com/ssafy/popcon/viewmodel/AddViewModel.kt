@@ -32,7 +32,7 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
         }
     }
 
-    fun useOcr(fileName: Array<String>){
+    fun useOcr(fileName: Array<OCRSend>){
         viewModelScope.launch {
             _ocrResult.value = Event(addRepository.useOcr(fileName))
         }

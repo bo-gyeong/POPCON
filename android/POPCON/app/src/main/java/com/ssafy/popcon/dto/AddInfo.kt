@@ -107,7 +107,15 @@ data class GCPResult(
     val fileName: String,
     val filePath: String,
     val id: Long,
-    val imageType: Int
+    val imageType: Int,
+    val width: Int,
+    val height: Int
+)
+
+data class OCRSend(
+    val fileName: String,
+    val width: Int,
+    val height: Int
 )
 
 data class OCRResult(

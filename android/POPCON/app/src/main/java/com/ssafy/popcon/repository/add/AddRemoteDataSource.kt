@@ -9,7 +9,7 @@ class AddRemoteDataSource(private val apiClient:AddApi): AddDataSource {
         return apiClient.addFileToGCP(files)
     }
 
-    override suspend fun useOcr(fileName: Array<String>): List<OCRResult> {
+    override suspend fun useOcr(fileName: Array<OCRSend>): List<OCRResult> {
         return apiClient.useOCR(fileName)
     }
 
