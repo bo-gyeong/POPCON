@@ -15,7 +15,6 @@ class MMSReceiver: BroadcastReceiver() {
     override fun onReceive(_context: Context?, _intent: Intent?) {
         contentResolver = _context!!.contentResolver
         mmsData = MMSData(_context.contentResolver, _context, false)
-        Toast.makeText(_context, "whtttttttttttt", Toast.LENGTH_SHORT).show()
         mmsData.chkMMS()
     }
 }

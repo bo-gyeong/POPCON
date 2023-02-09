@@ -20,7 +20,6 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.text.MessageFormat
 
-private const val TAG = "ChkMMS"
 @SuppressLint("Range")
 class MMSData(
     private val resolver: ContentResolver,
@@ -38,7 +37,7 @@ class MMSData(
 
     // SMS MMS 구분
     fun chkMMS(): MutableList<String>{
-        val projection = arrayOf("*") //   "_id", "ct_t" "*" -> 모든 대화목록
+        val projection = arrayOf("*") //   "*" -> 모든 대화목록, "_id", "ct_t"... -> 원하는 값만 추출
         val uri = Uri.parse("content://mms-sms/conversations/")
         val query = resolver.query(uri, projection, null, null, null)!!
 
@@ -58,7 +57,7 @@ class MMSData(
 
                     if(!init){
                         CoroutineScope(Dispatchers.Main).launch {
-                            getMMSData(mmsId, title, date)
+                            getMMSData(mmsId, date)
                         }
                     }
                 }
@@ -70,7 +69,7 @@ class MMSData(
     }
 
     // MMS 타입 1차로 알아내기 (mms 전체 조회)
-    private fun getMMSData(mmsId: String, title: String, date: Long){
+    private fun getMMSData(mmsId: String, date: Long){
         val selectionPart = "mid=$mmsId"
         val uri = Uri.parse("content://mms/part")
         val cursor = resolver.query(
@@ -85,7 +84,6 @@ class MMSData(
                 val type = cursor.getString(cursor.getColumnIndex("ct"))
 
                 if (type == "text/plain"){
-                    //Log.d(TAG, "getMMSData: $title")
                     val body = getMMSBody(cursor)
                     if (
                         body.contains("싸피")
@@ -94,11 +92,7 @@ class MMSData(
                         || body.contains("쿠폰번호")
                         || body.contains("쿠폰 번호")
                     ){
-                        //Log.d(TAG, "getMMSData: $title")
                         chkBeforeBitmap(cursor, mmsId, mmsRepo, date.toString())
-
-                        //Log.d(TAG, "###Bit: $bitmap")
-                        //Log.d(TAG, "getMMSData: ${body}")
                     }
                 }
             }
@@ -132,39 +126,11 @@ class MMSData(
         }
     }
 
-//    private suspend fun chkBeforeBitmap(
-//        cursor: Cursor, mmsId: String, mmsRepo: MMSRepository, date: String
-//    ): Boolean = withContext(Dispatchers.IO){
-//        val bitmap = getMMSImg(cursor, mmsId)
-//        var returnVal = false
-//
-//        if (bitmap != null){
-//            val phoneNumber = getAddressNumber(mmsId)
-//            val beforeDate = mmsRepo.selectDate(phoneNumber)
-//
-//            if (beforeDate == null){
-//                mmsRepo.addMMSItem(
-//                    MMSItem(phoneNumber, date)
-//                )
-//                compareSpBitmap(bitmap, date)
-//                returnVal = true
-//            } else if (beforeDate != date){
-//                mmsRepo.updateDate(phoneNumber, date)
-//                compareSpBitmap(bitmap, date)
-//                returnVal = true
-//            }
-//        }
-//
-//        returnVal
-//    }
-
     // 가장 최근에 읽어들인 date 확인 후 update 및 푸시 알림
     private fun compareSpBitmap(bitmap: Bitmap, date: String){
         val spUtil = SharedPreferencesUtil(context)
 
         val beforeDate = spUtil.getLatelyMMSDate()
-//        val encodeByte = Base64.decode(beforeBitmapStr, Base64.DEFAULT)
-//        val beforeBitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
         if (beforeDate != date){
             MainActivity.fromMMSReceiver = bitmap
             spUtil.setMMSDate(date)
@@ -180,30 +146,6 @@ class MMSData(
                 fcmCall = true
             }
         }
-    }
-
-    // 채팅방 고유 ID로 문자 내역 뽑아오기
-    private fun getMMSDataByThreadId(threadId: String){
-        val selectionPart = "thread_id=$threadId"
-
-        /* https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=horajjan&logNo=110188907638 */
-        val uri = Uri.parse("content://mms")  // inbox/
-        val cPart = resolver.query(
-            uri, null, selectionPart, null, null
-        )!!
-
-        for (i in 0 until cPart.count){
-            Log.d(TAG, "getMMSDataByThreadId: ${cPart.columnNames[i]}")
-        }
-
-        if (cPart.moveToFirst()){
-            while (cPart.moveToNext()){
-                val partId = cPart.getString(cPart.getColumnIndex("_id"))
-                val type = cPart.getString(cPart.getColumnIndex("ct"))
-
-            }
-        }
-        cPart.close()
     }
 
     // MMS 내용 알아오기
