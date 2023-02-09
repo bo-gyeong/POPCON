@@ -66,6 +66,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
 
         binding.lMms.visibility = View.VISIBLE
         binding.btnCancel.setOnClickListener {
+            MainActivity.fromMMSReceiver = null
             dismiss()
         }
 

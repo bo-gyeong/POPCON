@@ -15,7 +15,7 @@ class FCMRepository(private val remoteDataSource:FCMRemoteDataSource) {
         return remoteDataSource.broadCast(title, body)
     }
 
-    fun sendMessageTo(token: String, title: String, body: String) {
+    suspend fun sendMessageTo(token: String, title: String, body: String){
         return remoteDataSource.sendMessageTo(token, title, body)
     }
 }

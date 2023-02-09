@@ -18,5 +18,5 @@ interface FCMApi {
     @POST("broadcast")
     suspend fun broadCast(@Query("title") title: String, @Query("body") body: String): Int
     @POST("sendMessageTo")
-    fun sendMessageTo(@Query("token")token:String, @Query("title")title:String, @Query("body")body:String)
+    suspend fun sendMessageTo(@Query("token")token:String, @Query("title")title:String, @Query("body")body:String)
 }

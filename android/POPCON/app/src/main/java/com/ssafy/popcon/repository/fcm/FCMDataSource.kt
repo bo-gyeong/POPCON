@@ -7,5 +7,5 @@ interface FCMDataSource {
 
     suspend fun uploadToken(token: String): String
     suspend fun broadCast(title: String, body: String): Int
-    fun sendMessageTo(token: String, title: String, body: String)
+    suspend fun sendMessageTo(token: String, title: String, body: String)
 }

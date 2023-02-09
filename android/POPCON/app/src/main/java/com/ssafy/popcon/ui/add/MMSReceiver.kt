@@ -16,11 +16,18 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.google.android.gms.tasks.Task
 import com.ssafy.popcon.R
+import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
+import com.ssafy.popcon.repository.fcm.FCMRepository
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.text.MessageFormat
@@ -35,15 +42,13 @@ class MMSReceiver: BroadcastReceiver() {
     override fun onReceive(_context: Context?, _intent: Intent?) {
         context = _context!!
         contentResolver = context.contentResolver
-        //mainActivity = MainActivity.getInstance()!!
-        mainActivity = MainActivity()
+        mainActivity = MainActivity.getInstance()!!
         Toast.makeText(context, "whtttttttttttt", Toast.LENGTH_SHORT).show()
         chkMMS()
     }
 
     // SMS MMS 구분
     private fun chkMMS(){
-        val contentResolver: ContentResolver = contentResolver
         val projection = arrayOf("*") //   "_id", "ct_t" "*" -> 모든 대화목록
         val uri = Uri.parse("content://mms-sms/conversations/")
         val query = contentResolver.query(uri, projection, null, null, null)!!
@@ -57,7 +62,7 @@ class MMSReceiver: BroadcastReceiver() {
                 if ("application/vnd.wap.multipart.related" == type){  //mms
                     val title = String(subString.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
                     val threadId = query.getString(query.getColumnIndex("thread_id"))
-                    getMMSData(mmsId, title, threadId)
+                    getMMSData(mmsId, title)
                 }
             }
         }
@@ -65,33 +70,42 @@ class MMSReceiver: BroadcastReceiver() {
     }
 
     // MMS 타입 1차로 알아내기
-    private fun getMMSData(mmsId: String, title: String, threadId: String){
+    private fun getMMSData(mmsId: String, title: String){
         val selectionPart = "mid=$mmsId"
         val uri = Uri.parse("content://mms/part")
-        val cPart =contentResolver.query(
+        val cursor =contentResolver.query(
             uri, null, selectionPart, null, null
         )!!
         //Log.d(TAG, "getMMSData: $title")
 
-        if (cPart.moveToFirst()){
-            while (cPart.moveToNext()){
-                val type = cPart.getString(cPart.getColumnIndex("ct"))
+        if (cursor.moveToFirst()){
+            while (cursor.moveToNext()){
+                val type = cursor.getString(cursor.getColumnIndex("ct"))
 
-                if (type == "text/plain"
-                    && title == "[SSAFY] 싸피데이 이벤트 당첨 안내"){
-                    Log.d(TAG, "getMMSData: $title")
-                    val bitmap = getMMSImg(cPart, mmsId)
-                    Log.d(TAG, "Bit: $bitmap")
-                    if (bitmap != null){
-                        compareBitmap(bitmap)
+                if (type == "text/plain"){
+                    //Log.d(TAG, "getMMSData: $title")
+                    val body = getMMSBody(cursor)
+                    if (
+                        body.contains("싸피")
+                        || body.contains("SSAFY")
+                        || body.contains("기프티콘")
+                        || body.contains("쿠폰번호")
+                        || body.contains("쿠폰 번호")
+                    ){
+                        val bitmap = getMMSImg(cursor, mmsId)
+                        Log.d(TAG, "getMMSData: $title")
+                        Log.d(TAG, "getMMSData: ${getAddressNumber(mmsId)}")
+                        //Log.d(TAG, "###Bit: $bitmap")
+                        //Log.d(TAG, "getMMSData: ${body}")
+
+                        if (bitmap != null){
+                            compareBitmap(bitmap)
+                        }
                     }
-
-                    //val body = getMMSBody(cPart)
-                    //Log.d(TAG, "getMMSData: $body")
                 }
             }
         }
-        cPart.close()
+        cursor.close()
     }
 
     // 가장 최근에 읽어들인 MMS Bitmap 확인 후 update 및 푸시 알림
@@ -105,11 +119,13 @@ class MMSReceiver: BroadcastReceiver() {
             MainActivity.fromMMSReceiver = bitmap
             spUtil.setMMSBitmap(bitmap)
 
-//            mainActivity.sendMessageTo(
-//                spUtil.getFCMToken(),
-//                "새로운 기프티콘이 있습니다",
-//                "앱을 실행해주세요"
-//            )
+            CoroutineScope(Dispatchers.IO).launch {
+                mainActivity.sendMessageTo(
+                    spUtil.getFCMToken(),
+                    "새로운 기프티콘이 있습니다",
+                    "앱을 실행해주세요"
+                )
+            }
             MainActivity.newMMSImg = true
         }
     }
@@ -158,10 +174,10 @@ class MMSReceiver: BroadcastReceiver() {
         if (inputStream != null) {
             val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
             val bufferedReader = BufferedReader(inputStreamReader)
-            var temp = bufferedReader.readLine()
-            while (temp != null) {
-                stringBuilder.append(temp)
-                temp = bufferedReader.readLine()
+            var brRead = bufferedReader.readLine()
+            while (brRead != null) {
+                stringBuilder.append(brRead)
+                brRead = bufferedReader.readLine()
             }
             inputStream.close()
         }
@@ -170,19 +186,18 @@ class MMSReceiver: BroadcastReceiver() {
     }
 
     // MMS 타입 2차로 알아내기, 이미지 -> Bitmap
-    private fun getMMSImg(pCursor: Cursor, mmsId: String): Bitmap?{
+    private fun getMMSImg(mmsCursor: Cursor, mmsId: String): Bitmap?{
         val selectionPart = "mid=$mmsId"
-        val uri = Uri.parse("content://mms/part")
-        val cPart: Cursor = contentResolver.query(
-            uri, null,
-            selectionPart, null, null
+        val partUri = Uri.parse("content://mms/part")
+        val cursor = contentResolver.query(
+            partUri, null, selectionPart, null, null
         )!!
 
-        if (!cPart.moveToFirst()) return null
+        if (!cursor.moveToFirst()) return null
 
-        while (cPart.moveToNext()){
-            val partId = cPart.getString(pCursor.getColumnIndex("_id"))
-            val type = cPart.getString(pCursor.getColumnIndex("ct"))
+        while (cursor.moveToNext()){
+            val partId = cursor.getString(mmsCursor.getColumnIndex("_id"))
+            val type = cursor.getString(mmsCursor.getColumnIndex("ct"))
 
             if (
                 "image/jpeg" == type || "image/bmp" == type
@@ -197,40 +212,39 @@ class MMSReceiver: BroadcastReceiver() {
                 }
             }
         }
-        cPart.close()
+        cursor.close()
 
         return null
     }
 
     // MMS 보낸 전화번호 알아오기
-    private fun getAddressNumber(id: Int): String{
-        val selectionAdd = "msg_id=$id"
-        val uriStr = MessageFormat.format("content://mms/{0}/addr", id)
-        val uriAddress = Uri.parse(uriStr)
+    private fun getAddressNumber(mmsId: String): String{
+        val selectionAdd = "msg_id=$mmsId"
+        val uriStr = MessageFormat.format("content://mms/{0}/addr", mmsId)
+        val mmsUri = Uri.parse(uriStr)
 
-        val cAdd = contentResolver.query(
-            uriAddress, null, selectionAdd, null, null
+        val cursor = contentResolver.query(
+            mmsUri, null, selectionAdd, null, null
         )!!
 
-        var name = ""
-        if (cAdd.moveToFirst()){
-            while (cAdd.moveToFirst()){
-                val number = cAdd.getString(cAdd.getColumnIndex("address"))
-                if (number != null){
+        var number = ""
+        if (cursor.moveToFirst()){
+            while (cursor.moveToFirst()){
+                val address = cursor.getString(cursor.getColumnIndex("address"))
+                if (address != null){
                     try {
-                        number.replace("-", "").toLong()
-                        name = number
+                        number = address.replace("-", "")
+                        break
                     } catch (e: NumberFormatException){
-                        if (name == null){
-                            name = number
+                        if (number == ""){
+                            number = address
                         }
                     }
                 }
             }
         }
-        if (cAdd != null){
-            cAdd.close()
-        }
-        return name
+        cursor.close()
+
+        return number
     }
 }

@@ -2,6 +2,7 @@ package com.ssafy.popcon.ui.common
 
 import android.Manifest
 import android.app.job.JobInfo
+import android.app.job.JobScheduler
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,12 +13,14 @@ import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -30,10 +33,7 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
 import com.ssafy.popcon.repository.fcm.FCMRepository
-import com.ssafy.popcon.ui.add.AddFragment
-import com.ssafy.popcon.ui.add.MMSDialog
-import com.ssafy.popcon.ui.add.MMSReceiver
-import com.ssafy.popcon.ui.add.MyService
+import com.ssafy.popcon.ui.add.*
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.map.MapFragment
@@ -45,6 +45,7 @@ import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import java.util.concurrent.TimeUnit
 
 
 private const val TAG = "MainActivity_싸피"
@@ -55,7 +56,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accelerometer: Sensor
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
-    private var mmsReceiver = MMSReceiver()
 
     private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
     private val addViewModel: AddViewModel by viewModels { ViewModelFactory(this) }
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         checkPermissions()
 
-        //getFCMToken()
+        getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
@@ -103,29 +103,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // MMS BroadcastReceiver 호출
+    // MMS BroadcastReceiver 호출위한 JobScheduler
     private fun callMMSReceiver(){
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            startForegroundService(intent)
-//        } else{
-//            startService(intent)
-//        }
-//
-//        JobInfo.Builder(1, ComponentName(this, MyService::class.java)).run {
-//            setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-//            //jobScheduler?.schedule(build())
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForegroundService(intent)
+        } else{
+            startService(intent)
+        }
 
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(
-            "android.provider.Telephony.WAP_PUSH_RECEIVED"
+        val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val job = JobInfo.Builder(
+            0,
+            ComponentName(this, MMSJobService::class.java)
         )
-        intentFilter.addDataType(
-            "application/vnd.wap.mms-message"
-        )
-
-        registerReceiver(MMSReceiver(), intentFilter)
-        //, Manifest.permission.BROADCAST_WAP_PUSH, null
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            .setPersisted(true)
+//            .addTriggerContentUri(
+//            JobInfo.TriggerContentUri(
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS
+//            )
+//        )
+            .build()
+        jobScheduler.schedule(job)
     }
 
     private fun chkNewMMSImg(){
@@ -206,14 +206,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         chkNewMMSImg()
         Log.d(TAG, "onResume: ")
-    }
-
-    fun addFragmentFromMMS(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.frame_layout_main, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     private val runtimePermissions = arrayOf(
@@ -299,7 +291,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 알림 관련 메시지 전송
-    fun sendMessageTo(token: String, title: String, body: String) {
+    suspend fun sendMessageTo(token: String, title: String, body: String) {
         FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService)).sendMessageTo(token, title, body)
         //fcmViewModel.sendMessageTo(token, title, body)
         //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
@@ -323,10 +315,5 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         checkPermissions()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(mmsReceiver)
     }
 }
