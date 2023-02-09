@@ -84,16 +84,16 @@ class SharedPreferencesUtil(context: Context) {
         editor.apply()
     }
 
-    // 최근에 저장된 MMS Bitmap
-    fun getLatelyMMSBitmap(): String{
-        val bitmapStr = preferences.getString("lastMMSBitmap", "")
-        return bitmapStr!!
+    // 최근에 저장된 MMS date
+    fun getLatelyMMSDate(): String{
+        val dateStr = preferences.getString("lastMMSDate", "")
+        return dateStr!!
     }
 
-    // MMS Bitmap update
-    fun setMMSBitmap(bitmap: Bitmap){
+    // MMS date update
+    fun setMMSDate(date: String){
         val editor = preferences.edit()
-        editor.putString("lastMMSBitmap", bitmap.toString())
+        editor.putString("lastMMSDate", date)
         editor.apply()
     }
 

@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui.add
+package com.ssafy.popcon.mms
 
 import android.app.job.JobParameters
 import android.app.job.JobService
@@ -7,7 +7,7 @@ import android.util.Log
 import com.ssafy.popcon.ui.common.MainActivity
 import kotlinx.coroutines.*
 
-private const val TAG = "MyService_###"
+private const val TAG = "MyService"
 class MMSJobService : JobService() {
     private var mmsReceiver = MMSReceiver()
     private lateinit var params: JobParameters

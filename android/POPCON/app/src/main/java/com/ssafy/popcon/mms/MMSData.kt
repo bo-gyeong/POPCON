@@ -1,82 +1,84 @@
-package com.ssafy.popcon.ui.add
+package com.ssafy.popcon.mms
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.BroadcastReceiver
+import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Base64
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.google.android.gms.tasks.Task
-import com.ssafy.popcon.R
-import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
-import com.ssafy.popcon.repository.fcm.FCMRepository
+import com.ssafy.popcon.config.ApplicationClass
+import com.ssafy.popcon.dto.MMSItem
+import com.ssafy.popcon.repository.mms.MMSLocalDataSource
+import com.ssafy.popcon.repository.mms.MMSRepository
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.viewmodel.FCMViewModel
-import com.ssafy.popcon.viewmodel.ViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.text.MessageFormat
 
-private const val TAG = "MMSReceiver_###"
+private const val TAG = "ChkMMS"
 @SuppressLint("Range")
-class MMSReceiver: BroadcastReceiver() {
-    lateinit var context: Context
-    lateinit var contentResolver: ContentResolver
-    lateinit var mainActivity: MainActivity
+class MMSData(
+    private val resolver: ContentResolver,
+    private val context: Context,
+    private val init: Boolean
+    ): Application() {
+    private var mainActivity = MainActivity.getInstance()!!
+    private var fcmCall = false
+    var dateList = mutableListOf<String>()
 
-    override fun onReceive(_context: Context?, _intent: Intent?) {
-        context = _context!!
-        contentResolver = context.contentResolver
+    override fun onCreate() {
+        super.onCreate()
         mainActivity = MainActivity.getInstance()!!
-        Toast.makeText(context, "whtttttttttttt", Toast.LENGTH_SHORT).show()
-        chkMMS()
     }
 
     // SMS MMS 구분
-    private fun chkMMS(){
+    fun chkMMS(): MutableList<String>{
         val projection = arrayOf("*") //   "_id", "ct_t" "*" -> 모든 대화목록
         val uri = Uri.parse("content://mms-sms/conversations/")
-        val query = contentResolver.query(uri, projection, null, null, null)!!
+        val query = resolver.query(uri, projection, null, null, null)!!
 
+        val mmsIdList = mutableListOf<String>()
         if (query.moveToFirst()){
             while (query.moveToNext()){
                 val mmsId = query.getString(query.getColumnIndex("_id"))
                 val type = query.getString(query.getColumnIndex("ct_t"))  // 텍스트인지 이미지인지
+                val date = query.getLong(query.getColumnIndex("normalized_date"))
                 val subString = query.getString(query.getColumnIndex("sub")) ?: continue // 제목
 
                 if ("application/vnd.wap.multipart.related" == type){  //mms
                     val title = String(subString.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
                     val threadId = query.getString(query.getColumnIndex("thread_id"))
-                    getMMSData(mmsId, title)
+                    mmsIdList.add(mmsId)
+                    dateList.add(date.toString())
+
+                    if(!init){
+                        CoroutineScope(Dispatchers.Main).launch {
+                            getMMSData(mmsId, title, date)
+                        }
+                    }
                 }
             }
         }
         query.close()
+
+        return mmsIdList
     }
 
-    // MMS 타입 1차로 알아내기
-    private fun getMMSData(mmsId: String, title: String){
+    // MMS 타입 1차로 알아내기 (mms 전체 조회)
+    private fun getMMSData(mmsId: String, title: String, date: Long){
         val selectionPart = "mid=$mmsId"
         val uri = Uri.parse("content://mms/part")
-        val cursor =contentResolver.query(
+        val cursor = resolver.query(
             uri, null, selectionPart, null, null
         )!!
-        //Log.d(TAG, "getMMSData: $title")
+
+        val mmsDao = ApplicationClass().provideDatabase(context).mmsDao()
+        val mmsRepo = MMSRepository(MMSLocalDataSource(mmsDao))
 
         if (cursor.moveToFirst()){
             while (cursor.moveToNext()){
@@ -92,15 +94,11 @@ class MMSReceiver: BroadcastReceiver() {
                         || body.contains("쿠폰번호")
                         || body.contains("쿠폰 번호")
                     ){
-                        val bitmap = getMMSImg(cursor, mmsId)
-                        Log.d(TAG, "getMMSData: $title")
-                        Log.d(TAG, "getMMSData: ${getAddressNumber(mmsId)}")
+                        //Log.d(TAG, "getMMSData: $title")
+                        chkBeforeBitmap(cursor, mmsId, mmsRepo, date.toString())
+
                         //Log.d(TAG, "###Bit: $bitmap")
                         //Log.d(TAG, "getMMSData: ${body}")
-
-                        if (bitmap != null){
-                            compareBitmap(bitmap)
-                        }
                     }
                 }
             }
@@ -108,25 +106,79 @@ class MMSReceiver: BroadcastReceiver() {
         cursor.close()
     }
 
-    // 가장 최근에 읽어들인 MMS Bitmap 확인 후 update 및 푸시 알림
-    private fun compareBitmap(bitmap: Bitmap){
+    // room에 저장된 각 bitmap 조회
+    // 새로운 번호에서 온 문자라면 insert
+    // 기존 번호에서 갱신된 문자라면 update
+    private fun chkBeforeBitmap(
+        cursor: Cursor, mmsId: String, mmsRepo: MMSRepository, date: String
+    ){
+        val bitmap = getMMSImg(cursor, mmsId)
+
+        if (bitmap != null){
+            CoroutineScope(Dispatchers.IO).launch {
+                val phoneNumber = getAddressNumber(mmsId)
+                val beforeDate = mmsRepo.selectDate(phoneNumber)
+
+                if (beforeDate == null){
+                    mmsRepo.addMMSItem(
+                        MMSItem(phoneNumber, date)
+                    )
+                    compareSpBitmap(bitmap, date)
+                } else if (beforeDate != date){
+                    mmsRepo.updateDate(phoneNumber, date)
+                    compareSpBitmap(bitmap, date)
+                }
+            }
+        }
+    }
+
+//    private suspend fun chkBeforeBitmap(
+//        cursor: Cursor, mmsId: String, mmsRepo: MMSRepository, date: String
+//    ): Boolean = withContext(Dispatchers.IO){
+//        val bitmap = getMMSImg(cursor, mmsId)
+//        var returnVal = false
+//
+//        if (bitmap != null){
+//            val phoneNumber = getAddressNumber(mmsId)
+//            val beforeDate = mmsRepo.selectDate(phoneNumber)
+//
+//            if (beforeDate == null){
+//                mmsRepo.addMMSItem(
+//                    MMSItem(phoneNumber, date)
+//                )
+//                compareSpBitmap(bitmap, date)
+//                returnVal = true
+//            } else if (beforeDate != date){
+//                mmsRepo.updateDate(phoneNumber, date)
+//                compareSpBitmap(bitmap, date)
+//                returnVal = true
+//            }
+//        }
+//
+//        returnVal
+//    }
+
+    // 가장 최근에 읽어들인 date 확인 후 update 및 푸시 알림
+    private fun compareSpBitmap(bitmap: Bitmap, date: String){
         val spUtil = SharedPreferencesUtil(context)
 
-        val beforeBitmapStr = spUtil.getLatelyMMSBitmap()
-        val encodeByte = Base64.decode(beforeBitmapStr, Base64.DEFAULT)
-        val beforeBitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
-        if (beforeBitmap != bitmap){
+        val beforeDate = spUtil.getLatelyMMSDate()
+//        val encodeByte = Base64.decode(beforeBitmapStr, Base64.DEFAULT)
+//        val beforeBitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+        if (beforeDate != date){
             MainActivity.fromMMSReceiver = bitmap
-            spUtil.setMMSBitmap(bitmap)
+            spUtil.setMMSDate(date)
 
-            CoroutineScope(Dispatchers.IO).launch {
-                mainActivity.sendMessageTo(
-                    spUtil.getFCMToken(),
-                    "새로운 기프티콘이 있습니다",
-                    "앱을 실행해주세요"
-                )
+            if (!init && !fcmCall){
+                CoroutineScope(Dispatchers.IO).launch {
+                    mainActivity.sendMessageTo(
+                        spUtil.getFCMToken(),
+                        "새로운 기프티콘이 있습니다",
+                        "앱을 실행해주세요"
+                    )
+                }
+                fcmCall = true
             }
-            MainActivity.newMMSImg = true
         }
     }
 
@@ -136,7 +188,7 @@ class MMSReceiver: BroadcastReceiver() {
 
         /* https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=horajjan&logNo=110188907638 */
         val uri = Uri.parse("content://mms")  // inbox/
-        val cPart =contentResolver.query(
+        val cPart = resolver.query(
             uri, null, selectionPart, null, null
         )!!
 
@@ -155,7 +207,7 @@ class MMSReceiver: BroadcastReceiver() {
     }
 
     // MMS 내용 알아오기
-    private fun getMMSBody(pCursor: Cursor): String{
+    fun getMMSBody(pCursor: Cursor): String{
         val partId = pCursor.getString(pCursor.getColumnIndex("_id"))
         val data = pCursor.getString(pCursor.getColumnIndex("_data"))
 
@@ -169,7 +221,7 @@ class MMSReceiver: BroadcastReceiver() {
     private fun getMessageText(id: String): String {
         val partUri = Uri.parse("content://mms/part/$id")
         val stringBuilder = StringBuilder()
-        val inputStream = contentResolver.openInputStream(partUri)
+        val inputStream = resolver.openInputStream(partUri)
 
         if (inputStream != null) {
             val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
@@ -186,10 +238,10 @@ class MMSReceiver: BroadcastReceiver() {
     }
 
     // MMS 타입 2차로 알아내기, 이미지 -> Bitmap
-    private fun getMMSImg(mmsCursor: Cursor, mmsId: String): Bitmap?{
+    fun getMMSImg(mmsCursor: Cursor, mmsId: String): Bitmap?{
         val selectionPart = "mid=$mmsId"
         val partUri = Uri.parse("content://mms/part")
-        val cursor = contentResolver.query(
+        val cursor = resolver.query(
             partUri, null, selectionPart, null, null
         )!!
 
@@ -206,7 +258,7 @@ class MMSReceiver: BroadcastReceiver() {
             ){
                 val partURI = Uri.parse("content://mms/part/$partId")
 
-                val inputStream = contentResolver.openInputStream(partURI)
+                val inputStream = resolver.openInputStream(partURI)
                 if(inputStream != null){
                     return BitmapFactory.decodeStream(inputStream)
                 }
@@ -218,12 +270,12 @@ class MMSReceiver: BroadcastReceiver() {
     }
 
     // MMS 보낸 전화번호 알아오기
-    private fun getAddressNumber(mmsId: String): String{
+    fun getAddressNumber(mmsId: String): String{
         val selectionAdd = "msg_id=$mmsId"
         val uriStr = MessageFormat.format("content://mms/{0}/addr", mmsId)
         val mmsUri = Uri.parse(uriStr)
 
-        val cursor = contentResolver.query(
+        val cursor = resolver.query(
             mmsUri, null, selectionAdd, null, null
         )!!
 

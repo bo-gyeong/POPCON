@@ -67,7 +67,7 @@
         </service>
 
         <service
-            android:name=".ui.add.MMSJobService"
+            android:name=".mms.MMSJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
 

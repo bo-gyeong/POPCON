@@ -6,31 +6,26 @@ import android.app.job.JobScheduler
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.transaction
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.mms.MMSDialog
+import com.ssafy.popcon.mms.MMSJobService
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
 import com.ssafy.popcon.repository.fcm.FCMRepository
 import com.ssafy.popcon.ui.add.*
@@ -45,11 +40,8 @@ import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
-import java.util.concurrent.TimeUnit
-
 
 private const val TAG = "MainActivity_싸피"
-
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sensorManager: SensorManager
@@ -68,7 +60,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var shakeDetector = ShakeDetector()
-        var newMMSImg = false
         var fromMMSReceiver: Bitmap? = null
         const val channel_id = "popcon_user"
 
@@ -88,10 +79,11 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         checkPermissions()
 
-        getFCMToken()
+        //getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
+
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {

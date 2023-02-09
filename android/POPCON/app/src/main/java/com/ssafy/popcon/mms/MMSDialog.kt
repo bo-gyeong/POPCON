@@ -1,4 +1,4 @@
-package com.ssafy.popcon.ui.add
+package com.ssafy.popcon.mms
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
