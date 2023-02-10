@@ -11,11 +11,13 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.gallery.GalleryJobService
 import com.ssafy.popcon.mms.MMSDialog
 import com.ssafy.popcon.mms.MMSJobService
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
@@ -69,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
+        callGalleryReceiver()
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
@@ -92,6 +97,31 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: 로그인 필요")
             changeFragment(LoginFragment())
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun callGalleryReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForegroundService(intent)
+        } else{
+            startService(intent)
+        }
+
+        val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val job = JobInfo.Builder(
+            1,
+            ComponentName(this, GalleryJobService::class.java)
+        )
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            .addTriggerContentUri(
+                JobInfo.TriggerContentUri(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS
+                )
+            )
+            .build()
+
+        jobScheduler.schedule(job)
     }
 
     // MMS BroadcastReceiver 호출위한 JobScheduler
@@ -109,13 +139,8 @@ class MainActivity : AppCompatActivity() {
         )
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
             .setPersisted(true)
-//            .addTriggerContentUri(
-//            JobInfo.TriggerContentUri(
-//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS
-//            )
-//        )
             .build()
+
         jobScheduler.schedule(job)
     }
 
