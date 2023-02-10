@@ -193,15 +193,9 @@ class GifticonDialogFragment : DialogFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         isShow = false
-        Log.d(TAG, "onDestroy: ")
-
-        /*for(gifticon : Gifticon in useList){
-
-          viewModel.updateGifticon(gifticon)
-        }*/
     }
 }
 

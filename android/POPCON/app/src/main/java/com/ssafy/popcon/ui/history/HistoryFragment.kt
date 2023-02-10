@@ -59,7 +59,6 @@ class HistoryFragment : Fragment() {
         viewModel.getHistory(UserDeleteRequest(user.email!!, user.social))
 
         historyAdapter = HistoryAdapter(HistoryAdapter.HistoryListener { history ->
-            Log.d("TAG", "setHistoryAdapter: $history")
             val args = Bundle()
             args.putString("history", history.barcodeNum)
 
@@ -80,7 +79,6 @@ class HistoryFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d(TAG, "onDestroyView: ")
         GifticonDialogFragment.isShow = false
     }
 }

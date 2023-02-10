@@ -48,8 +48,6 @@ class HomeDialogFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-
-        Log.d(TAG, "onResume: ")
         //팝업창 크기 설정
         val windowManager =
             requireContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -64,6 +62,7 @@ class HomeDialogFragment : DialogFragment() {
         val deviceWidth = size.x
         params?.width = (deviceWidth * 0.9).toInt()
         dialog?.window?.attributes = params as WindowManager.LayoutParams
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -79,6 +78,7 @@ class HomeDialogFragment : DialogFragment() {
 
         val mArgs = arguments
         gifticonFromHome = mArgs!!.getSerializable("gifticon") as Gifticon
+        viewModel.getGifticonByBarcodeNum(gifticonFromHome.barcodeNum)
 
         binding.badge = Badge("", "#000000")
         return binding.root
@@ -92,8 +92,6 @@ class HomeDialogFragment : DialogFragment() {
 
         //삭제버튼 누르면 삭제요청 하고 다이얼로그 닫기
         binding.btnDelete.setOnClickListener {
-
-            Log.d(TAG, "onViewCreated: ${gifticonFromHome.barcodeNum}")
             viewModel.deleteGifticon(
                 DeleteRequest(gifticonFromHome.barcodeNum),
                 SharedPreferencesUtil(requireContext()).getUser()
@@ -105,44 +103,14 @@ class HomeDialogFragment : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setLayout() {
-        /*binding.gifticon = gifticonFromHome
-        binding.badge = Utils.calDday(gifticonFromHome)*/
         setButton(gifticonFromHome)
-        viewModel.getGifticonByBarcodeNum(gifticonFromHome.barcodeNum)
 
-        viewModel.gifticon.observe(viewLifecycleOwner) { g ->
-            val gifticon = Gifticon(
-                g.barcodeNum,
-                g.barcode_filepath ?: "",
-                Brand("", g.brandName),
-                g.due,
-                g.hash,
-                g.price,
-                g.memo ?: "",
-                g.origin_filepath ?: "",
-                g.productName,
-                g.product_filepath ?: "",
-                g.state
-            )
-
-            binding.gifticon = gifticon
-            binding.badge = Utils.calDday(gifticon)
-            setButton(gifticon)
-
-            binding.ivProductPreview.setOnClickListener {
-                val args = Bundle()
-                args.putString("url", gifticon.origin_filepath)
-
-                val dialogFragment = ImageDialogFragment()
-                dialogFragment.arguments = args
-                dialogFragment.show(childFragmentManager, "originalUrl")
-            }
-        }
-
+        binding.gifticon = gifticonFromHome
+        binding.badge = Utils.calDday(gifticonFromHome)
 
         binding.ivProductPreview.setOnClickListener {
             val args = Bundle()
-            args.putString("originalUrl", gifticonFromHome.origin_filepath)
+            args.putString("url", gifticonFromHome.origin_filepath)
 
             val dialogFragment = ImageDialogFragment()
             dialogFragment.arguments = args
@@ -195,5 +163,11 @@ class HomeDialogFragment : DialogFragment() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        GifticonDialogFragment.isShow = false
     }
 }

@@ -20,9 +20,6 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _gifticons = MutableLiveData<List<Gifticon>>()
     val gifticons: LiveData<List<Gifticon>> = _gifticons
 
-    private val _gifticonByBrand = MutableLiveData<List<Gifticon>>() //popup 화면에서 사용
-    val gifticonByBrand: LiveData<List<Gifticon>> = _gifticonByBrand
-
     private val _history = MutableLiveData<List<Gifticon>>()
     val history: LiveData<List<Gifticon>> = _history
 
@@ -35,6 +32,9 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
     private val _openGifticonDialogEvent = MutableLiveData<Event<Gifticon>>()
     val openGifticonDialogEvent = _openGifticonDialogEvent
 
+    /*private val _historyItem = MutableLiveData<GifticonResponse>()
+    val historyItem: LiveData<GifticonResponse> = _historyItem*/
+
     fun getGifticonByBarcodeNum(barcodeNum: String) {
         viewModelScope.launch {
             val gifticon = gifticonRepository.getGifticonByBarNum(barcodeNum)
@@ -44,6 +44,7 @@ class GifticonViewModel(private val gifticonRepository: GifticonRepository) : Vi
 
     fun openGifticonDialog(gifticon: Gifticon) {
         _openGifticonDialogEvent.value = Event(gifticon)
+        getGifticonByBarcodeNum(gifticon.barcodeNum)
     }
 
     //사용자의 기프티콘 목록 불러오기

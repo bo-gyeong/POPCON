@@ -21,7 +21,7 @@
         android:id="@+id/btn_kakao_login"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:background="@drawable/kakao_login_large_wide"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@id/btn_naver_login"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/btn_naver_login"
-        style="@style/TextSubtitle1.White"
+        style="@style/Regular.White"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
