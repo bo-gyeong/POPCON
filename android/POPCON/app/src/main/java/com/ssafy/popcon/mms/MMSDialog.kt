@@ -3,7 +3,6 @@ package com.ssafy.popcon.mms
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.ClipData
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.graphics.Bitmap
@@ -11,18 +10,14 @@ import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat
 import androidx.fragment.app.DialogFragment
 import androidx.loader.content.CursorLoader
 import com.google.gson.Gson
@@ -33,7 +28,6 @@ import com.ssafy.popcon.databinding.DialogMmsBinding
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.viewmodel.AddViewModel
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -108,6 +102,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
     private fun firstAdd(){
         for (i in 0 until originalImgUris.size){
             val originalImgUri = originalImgUris[i].imgUri
+            delImgUris.add(originalImgUri)
 
             val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
             multipartFiles.add(realData!!)

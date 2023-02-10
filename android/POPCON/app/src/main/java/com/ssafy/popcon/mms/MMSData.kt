@@ -25,7 +25,7 @@ class MMSData(
     private val resolver: ContentResolver,
     private val context: Context,
     private val init: Boolean
-    ): Application() {
+): Application() {
     private var mainActivity = MainActivity.getInstance()!!
     private var fcmCall = false
     var dateList = mutableListOf<String>()
@@ -132,10 +132,10 @@ class MMSData(
 
         val beforeDate = spUtil.getLatelyMMSDate()
         if (beforeDate != date){
-            MainActivity.fromMMSReceiver = bitmap
-            spUtil.setMMSDate(date)
-
             if (!init && !fcmCall){
+                MainActivity.fromMMSReceiver = bitmap
+                spUtil.setMMSDate(date)
+
                 CoroutineScope(Dispatchers.IO).launch {
                     mainActivity.sendMessageTo(
                         spUtil.getFCMToken(),

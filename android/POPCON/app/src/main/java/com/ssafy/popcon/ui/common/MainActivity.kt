@@ -84,7 +84,6 @@ class MainActivity : AppCompatActivity() {
         callMMSReceiver()
         chkNewMMSImg()
 
-
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
             Log.d(TAG, "onCreate: 로그인됨")
