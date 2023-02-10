@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
@@ -26,9 +27,14 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.DialogMmsBinding
 import com.ssafy.popcon.dto.*
+import com.ssafy.popcon.ui.common.Event
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.viewmodel.AddViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -46,10 +52,17 @@ private const val TAG = "MMSDialog_###"
 class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
     private lateinit var binding: DialogMmsBinding
     private lateinit var mainActivity: MainActivity
+    private lateinit var mContext: Context
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogMmsBinding.inflate(layoutInflater)
         mainActivity = MainActivity.getInstance()!!
+        mContext = requireContext()
 
         val builder = AlertDialog.Builder(context, R.style.WrapContentDialog)
         builder.setView(binding.root)
@@ -65,9 +78,12 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         }
 
         binding.btnGoToAdd.setOnClickListener {
-            /** 갤러리에서 불러올 경우 수정 **/
+            initData()
+            /** 갤러리에서 불러올 경우 수정
+             * viewModel event 직전 데이터 갱신까지 2번 호출되는 문제 **/
             for (i in 0 until 1){
                 val uri = bitmapToUri(MainActivity.fromMMSReceiver!!)
+                //Log.d(TAG, "onCreateDialog**: ${uri}")
                 originalImgUris.add(GifticonImg(uri))
                 gifticonEffectiveness.add(AddInfoNoImgBoolean())
             }
@@ -99,6 +115,18 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
     val PRODUCT = "Product"
     val BARCODE = "Barcode"
 
+    private fun initData(){
+        originalImgUris.clear()
+        productImgUris.clear()
+        barcodeImgUris.clear()
+        ocrSendList.clear()
+        ocrResults.clear()
+        delImgUris.clear()
+        multipartFiles.clear()
+        gifticonInfoList.clear()
+        gifticonEffectiveness.clear()
+    }
+
     private fun firstAdd(){
         for (i in 0 until originalImgUris.size){
             val originalImgUri = originalImgUris[i].imgUri
@@ -110,6 +138,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
 
         viewModel.addFileToGCP(multipartFiles.toTypedArray())
         viewModel.gcpResult.observeForever(EventObserver{
+            ocrSendList.clear()
             for (i in 0 until it.size){
                 val gcpResult = it[i]
                 val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
@@ -125,25 +154,30 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
             viewModel.ocrResult.observeForever(EventObserver{
                 for (ocrResult in it){
                     ocrResults.add(ocrResult)
-                }
 
-                for (i in 0 until it.size){
-                    val cropImgUri = cropXY(i, PRODUCT)
-                    val cropBarcodeUri = cropXY(i, BARCODE)
+                    if (ocrResult.barcodeNum != ""){
+                        for (i in 0 until it.size){
+                            val cropImgUri = cropXY(i, PRODUCT)
+                            val cropBarcodeUri = cropXY(i, BARCODE)
 
-                    productImgUris.add(GifticonImg(cropImgUri))
-                    barcodeImgUris.add(GifticonImg(cropBarcodeUri))
-                    delImgUris.add(cropImgUri)
-                    delImgUris.add(cropBarcodeUri)
+                            productImgUris.add(GifticonImg(cropImgUri))
+                            barcodeImgUris.add(GifticonImg(cropBarcodeUri))
+                            delImgUris.add(cropImgUri)
+                            delImgUris.add(cropBarcodeUri)
 
-                    addGifticonInfo(i)
+                            addGifticonInfo(i)
 
-                    imgNum = i
-                    productChk()
-                    brandChk()
-                    dateFormat()
-                    changeChkState(i)
-                    setPrice()
+                            imgNum = i
+                            productChk()
+                            brandChk()
+                            dateFormat()
+                            changeChkState(i)
+                            setPrice()
+                        }
+                    }
+                    else{
+                        notifyFail()
+                    }
                 }
             })
         })
@@ -314,9 +348,9 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
     private fun uriToBitmap(uri: Uri): Bitmap {
         lateinit var bitmap: Bitmap
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, uri))
+            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(mContext.contentResolver, uri))
         } else{
-            bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+            bitmap = MediaStore.Images.Media.getBitmap(mContext.contentResolver, uri)
         }
 
         return bitmap
@@ -360,12 +394,15 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         if (gifticonInfoList[imgNum].brandName != ""){
             brand = gifticonInfoList[imgNum].brandName
         }
+
         if (brand != ""){
             viewModel.chkBrand(brand)
             viewModel.brandChk.observeForever(EventObserver{
                 if (it.result != 0){
                     gifticonEffectiveness[imgNum].brandName = true
                     brandBarcodeNum()
+                } else{
+                    add()
                 }
             })
         }
@@ -500,6 +537,18 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         return addInfo
     }
 
+    // 인식에 실패할 경우
+    private fun notifyFail(){
+        Log.d(TAG, "notifyFail: ")
+        for (i in 0 until delImgUris.size){
+            delCropImg(delImgUris[i])
+        }
+
+        Toast.makeText(context, "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
+        changeProgressDialogState(false)
+        dismiss()
+    }
+
     // 기프티콘 정보담긴 리스트 내용 검사
     private fun chkAllList(): Boolean{
         var idx = 0
@@ -520,6 +569,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         return true
     }
 
+    // 최종 등록
     private fun add(){
         if (chkAllList()){
             viewModel.addGifticon(makeAddInfoList())
@@ -541,9 +591,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
             })
         } else{
             /** 갤러리에서 클릭할때 추후 생각 **/
-            Toast.makeText(context, "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
-            changeProgressDialogState(false)
-            dismiss()
+            notifyFail()
         }
     }
 }

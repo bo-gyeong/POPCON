@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         //SharedPreferencesUtil(this).addUser(User("abc@naver.com", "카카오", 0,1,1,1,1,"string"))
         setNavBar()
-        checkPermissions()
+        //checkPermissions()
 
         //getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
