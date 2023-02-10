@@ -54,12 +54,15 @@ public class PresentController {
 
     @ApiOperation(value = "possiblePresentList", notes = "가까운 선물 리스트, 줍기가능한 선물 리스트", httpMethod = "POST")
     @PostMapping("/possible_list")
-    public ResponseEntity<ResponsePossiblePresentListDto> possiblePresentList(@RequestBody PossiblePresentListDto possiblePresentListDto) {
+    public ResponseEntity<ResponsePossiblePresentListDto> possiblePresentList(@RequestBody PossiblePresentListDto possiblePresentListDto, Authentication authentication) {
         try {
             String x = possiblePresentListDto.getX();
             String y = possiblePresentListDto.getY();
+            UserDto us= (UserDto)authentication.getPrincipal();
 
-            return new ResponseEntity<>(presentService.findPresentByPosition(x,y), HttpStatus.OK);
+            int mannerTemp = us.getManner_temp();
+
+            return new ResponseEntity<>(presentService.findPresentByPosition(x,y,mannerTemp), HttpStatus.OK);
 
         }
         catch (NoSuchElementException | NullPointerException | NumberFormatException e) {

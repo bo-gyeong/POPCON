@@ -32,6 +32,8 @@ public class PresentService {
     private final TokenController tokenController;
 
 
+
+
     public ResponseGivePresentDto givePresent(GivePresentDto givePresentDto) {
         String presentBarcode = givePresentDto.getBarcodeNum();
         String presentX = givePresentDto.getX();
@@ -109,7 +111,25 @@ public class PresentService {
     }
 
 
-    public ResponsePossiblePresentListDto findPresentByPosition(String x, String y) {
+    public ResponsePossiblePresentListDto findPresentByPosition(String x, String y, int mannerTemp) {
+        // 매너온도별 줍기가능 구간
+        //0, 1, 3,6,9,12개 (주워야 확장!)
+        //0, 20/ 100 150 300 400
+        //30, 50, 150, 300, 600, 1000
+
+        int possibleDist = 30;
+
+        if (mannerTemp >= 1 && mannerTemp < 3) {
+            possibleDist = 50;
+        } else if (mannerTemp >= 3 && mannerTemp < 6) {
+            possibleDist = 150;
+        } else if (mannerTemp >= 6 && mannerTemp < 9) {
+            possibleDist = 300;
+        } else if (mannerTemp >= 9 && mannerTemp < 12) {
+            possibleDist = 600;
+        } else if (mannerTemp >= 12) {
+            possibleDist = 1000;
+        }
 
 
         double nowX = Double.parseDouble(x);
@@ -129,14 +149,14 @@ public class PresentService {
 
 
 
-            if (getDistance(nowX, nowY, xPos , yPos)<=2000 && getDistance(nowX, nowY, xPos , yPos)>30) {
+            if (getDistance(nowX, nowY, xPos , yPos)<=2000 && getDistance(nowX, nowY, xPos , yPos)>possibleDist) {
                 ResponsePossiblePresentDto responsePossiblePresentDto = new ResponsePossiblePresentDto();
                 responsePossiblePresentDto.setBarcodeNum(barcodeNum);
                 responsePossiblePresentDto.setX(present.getX());
                 responsePossiblePresentDto.setY(present.getY());
                 allNearPresentList.add(responsePossiblePresentDto);
             }
-            else if (getDistance(nowX, nowY, xPos , yPos)<=30) {
+            else if (getDistance(nowX, nowY, xPos , yPos)<=possibleDist) {
                 ResponsePossiblePresentDto responsePossiblePresentDto = new ResponsePossiblePresentDto();
                 responsePossiblePresentDto.setBarcodeNum(barcodeNum);
                 responsePossiblePresentDto.setX(present.getX());
