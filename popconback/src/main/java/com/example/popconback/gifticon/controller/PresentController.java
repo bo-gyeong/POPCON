@@ -60,9 +60,9 @@ public class PresentController {
             String y = possiblePresentListDto.getY();
             UserDto us= (UserDto)authentication.getPrincipal();
 
-            int mannerTemp = us.getManner_temp();
+            int hash = us.hashCode();
 
-            return new ResponseEntity<>(presentService.findPresentByPosition(x,y,mannerTemp), HttpStatus.OK);
+            return new ResponseEntity<>(presentService.findPresentByPosition(x,y,hash), HttpStatus.OK);
 
         }
         catch (NoSuchElementException | NullPointerException | NumberFormatException e) {
@@ -74,6 +74,8 @@ public class PresentController {
 
             blankResult.setAllNearPresentList(blankInnerList1);
             blankResult.setGettablePresentList(blankInnerList2);
+
+
 
             return new ResponseEntity<>(blankResult, HttpStatus.OK);
         }

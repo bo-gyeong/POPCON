@@ -134,11 +134,18 @@ public class PresentService {
     }
 
 
-    public ResponsePossiblePresentListDto findPresentByPosition(String x, String y, int mannerTemp) {
+    public ResponsePossiblePresentListDto findPresentByPosition(String x, String y, int hash) {
         // 매너온도별 줍기가능 구간
         //0, 1, 3,6,9,12개 (주워야 확장!)
         //0, 20/ 100 150 300 400
         //30, 50, 150, 300, 600, 1000
+
+        Optional<User> nowUser = userRepository.findById(hash);
+
+        User user = nowUser.get();
+        int mannerTemp = user.getManner_temp();
+
+        System.out.println("매너온도 : "+mannerTemp);
 
         int possibleDist = 30;
 
@@ -193,6 +200,8 @@ public class PresentService {
 
         responsePossiblePresentDto.setAllNearPresentList(allNearPresentList);
         responsePossiblePresentDto.setGettablePresentList(gettablePresentList);
+
+        System.out.println(possibleDist+"미터까지 주울 수 있다!");
 
 
         return responsePossiblePresentDto;
