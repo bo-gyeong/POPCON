@@ -12,8 +12,11 @@ import com.example.popconback.gifticon.dto.Present.PossiblePresentList.ResponseP
 import com.example.popconback.gifticon.repository.GifticonRepository;
 import com.example.popconback.gifticon.repository.PresentRepository;
 import com.example.popconback.push.controller.TokenController;
+import com.example.popconback.user.domain.User;
+import com.example.popconback.user.dto.UserDto;
 import com.example.popconback.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -72,12 +75,29 @@ public class PresentService {
         }
         Gifticon gifticon = optionalGifticon.get();
 
+        User donationUser = gifticon.getUser();
+        int updatedTemp = donationUser.getManner_temp()+1;
+        UserDto tuser = new UserDto();
+        BeanUtils.copyProperties(donationUser,tuser);
+        tuser.setManner_temp(updatedTemp);
+        userRepository.save(tuser.toEntity());// 온도 올려주고
+
+
         // 문자보내기
         try {
             String title = "기프티콘 선물이 전달되었어요. 감사인사를 확인해보세요!";
 
             tokenController.sendMessageTo(gifticon.getUser().getToken(), title, getPresentDto.getMessage());
             System.out.println("감사합니다"+getPresentDto.getMessage());
+
+            if(updatedTemp%3 == 0){
+                int level = (updatedTemp/3+1);
+                tokenController.sendMessageTo(gifticon.getUser().getToken(), "level"+level+"달성을 축하드립니다.", getPresentDto.getMessage());
+            }
+            if(updatedTemp == 1){
+                int level = 1;
+                tokenController.sendMessageTo(gifticon.getUser().getToken(), "level"+level+"달성을 축하드립니다.", getPresentDto.getMessage());
+            }
         }catch(IOException e){
 
         }
@@ -88,7 +108,10 @@ public class PresentService {
         // 선물테이블에서 지우기
         presentRepository.deleteByGifticon_BarcodeNum(getPresentDto.getBarcodeNum());
 
-        return null;
+        ResponseGetPresentDto responseGetPresentDto = new ResponseGetPresentDto();
+        responseGetPresentDto.setBarcodeNum(gifticon.getBarcodeNum());
+
+        return responseGetPresentDto;
     }
 
 
