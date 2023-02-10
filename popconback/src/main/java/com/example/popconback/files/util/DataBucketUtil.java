@@ -71,8 +71,6 @@ public class DataBucketUtil {
 
             String blobUrl = "https://storage.googleapis.com/popcon/"  + blob.getName();
 
-
-
             if(blob != null){
                 LOGGER.debug("File successfully uploaded to GCS");
                 return new FileDto(null,null, blob.getName(), blobUrl);
