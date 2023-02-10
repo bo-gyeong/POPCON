@@ -54,6 +54,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
     private val mmsViewModel: MMSViewModel by viewModels { ViewModelFactory(requireContext()) }
+    lateinit var sp: SharedPreferencesUtil
     lateinit var tokens: TokenResponse
 
     private var userUUID: String = ""
@@ -69,6 +70,7 @@ class LoginFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = activity as MainActivity
+        sp = SharedPreferencesUtil(requireContext())
     }
 
     @SuppressLint("ResourceAsColor")
@@ -116,11 +118,11 @@ class LoginFragment : Fragment() {
     private fun chkRoute(){
         if (!fromSettingsFragment){
             //자동로그인
-            if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
+            if (sp.getUser().email != "") {
                 mainActivity.changeFragment(HomeFragment())
             }
         } else{
-            SharedPreferencesUtil(requireContext()).deleteUser()
+            sp.deleteUser()
             fromSettingsFragment = false
         }
     }
@@ -158,7 +160,8 @@ class LoginFragment : Fragment() {
                                 val email = meUser?.kakaoAccount?.email.toString()
 
                                 user = User("abc@naver.com", "카카오")
-                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                sp.addUser(user)
+                                sp.setGalleryDate(System.currentTimeMillis())
 
                                 val authRepo =
                                     AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
@@ -182,11 +185,12 @@ class LoginFragment : Fragment() {
 
 
                                 //user = User(email, "카카오")
-                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                //sp.addUser(user)
+                                //sp.setGalleryDate(System.currentTimeMillis())
 
                                 viewModel.signInKakao(user)
                                 viewModel.user.observe(viewLifecycleOwner) {
-                                    RoomInitLogin(mmsViewModel).initRoom()
+                                    RoomInitLogin(requireContext(), mmsViewModel).initRoom()
                                     mainActivity.changeFragment(HomeFragment())
                                 }
                             }
@@ -212,7 +216,8 @@ class LoginFragment : Fragment() {
                             val email = result.profile?.email.toString()
                             //user = User(email, "네이버")
                             user = User("abc@naver.com", "카카오")
-                            SharedPreferencesUtil(requireContext()).addUser(user)
+                            sp.addUser(user)
+                            sp.setGalleryDate(System.currentTimeMillis())
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
                             val authRepo =
                                 AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
@@ -231,7 +236,7 @@ class LoginFragment : Fragment() {
                                     "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
                                 )
                             }
-                            RoomInitLogin(mmsViewModel).initRoom()
+                            RoomInitLogin(requireContext(), mmsViewModel).initRoom()
                             mainActivity.changeFragment(HomeFragment())
                         }
 
@@ -265,7 +270,8 @@ class LoginFragment : Fragment() {
             userUUID = UUID.randomUUID().toString()
         // 서버에게 생성한 UUID 전송할 레트로핏 코드
         Log.d(TAG, "nonMemberLogin: $userUUID")
-        SharedPreferencesUtil(requireContext()).addUser(User(userUUID, "비회원"))
+        sp.addUser(User(userUUID, "비회원"))
+        sp.setGalleryDate(System.currentTimeMillis())
 
         mainActivity.changeFragment(HomeFragment())
     }

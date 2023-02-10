@@ -12,7 +12,7 @@ interface UserApi {
     suspend fun signInNaver(@Body user: User): User
 
     //네이버 로그인
-    @POST("user/login/kakao")
+    @POST("user/login")  ///kakao
     suspend fun signInKakao(@Body user: User): User
 
     @HTTP(method = "DELETE", path = "user/withdrawal", hasBody = true)

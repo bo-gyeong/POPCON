@@ -3,7 +3,9 @@ package com.ssafy.popcon.gallery
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.content.IntentFilter
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.ssafy.popcon.ui.common.MainActivity
 import kotlinx.coroutines.*
 
@@ -18,9 +20,12 @@ class GalleryJobService: JobService() {
         mainActivity = MainActivity.getInstance()!!
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onStartJob(_params: JobParameters?): Boolean {
         params = _params!!
-        AddGalleryGifticon(contentResolver).getImgList()
+        val addGalleryGifticon = AddGalleryGifticon(mainActivity, applicationContext, contentResolver)
+        addGalleryGifticon.getImgList()
+
         //doBackgroundWork()
         return true
     }

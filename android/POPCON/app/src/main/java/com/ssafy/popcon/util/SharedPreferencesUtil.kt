@@ -97,6 +97,19 @@ class SharedPreferencesUtil(context: Context) {
         editor.apply()
     }
 
+    // Last gallery update date
+    fun getLatelyGalleryDate(): Long{
+        val date = preferences.getLong("lastGalleryDate", -1)
+        return date
+    }
+
+    // Gallery update date
+    fun setGalleryDate(date: Long){
+        val editor = preferences.edit()
+        editor.putLong("lastGalleryDate", date)
+        editor.apply()
+    }
+
     // FCM Token 가져오기
     fun getFCMToken(): String{
         val token = preferences.getString("fcmToken", "")
