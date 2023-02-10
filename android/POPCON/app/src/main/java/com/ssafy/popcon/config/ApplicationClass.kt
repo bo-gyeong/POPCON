@@ -4,11 +4,15 @@ import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.ssafy.popcon.BuildConfig
+import com.ssafy.popcon.database.AppDatabase
+import com.ssafy.popcon.repository.mms.MMSLocalDataSource
+import com.ssafy.popcon.repository.mms.MMSRepository
 import com.ssafy.popcon.util.AuthInterceptor
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.util.TokenAuthenticator
@@ -65,6 +69,30 @@ class ApplicationClass : Application() {
                 .build()
 
             return refreshRetrofit
+        }
+    }
+
+    private var database: AppDatabase? = null
+    fun provideDatabase(applicaContext: Context): AppDatabase {
+        return database ?: kotlin.run {
+            Room.databaseBuilder(
+                applicaContext,
+                AppDatabase::class.java,
+                "popcon-local"
+            ).fallbackToDestructiveMigration()
+                .build().also {
+                database = it
+            }
+        }
+    }
+
+    private var mmsRepository: MMSRepository? = null
+    fun provideMMSRepository(context: Context): MMSRepository {
+        return mmsRepository ?: kotlin.run {
+            val dao = provideDatabase(context.applicationContext).mmsDao()
+            MMSRepository(MMSLocalDataSource(dao)).also {
+                mmsRepository = it
+            }
         }
     }
 

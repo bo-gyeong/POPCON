@@ -49,4 +49,8 @@
 
     <!--  dialog_progress  -->
     <string name="progress">Loading..</string>
+
+    <!--  dialog_mms  -->
+    <string name="ask_add">새로운 기프티콘을 등록하시겠습니까?</string>
+    <string name="go_to_add">등록</string>
 </resources>
