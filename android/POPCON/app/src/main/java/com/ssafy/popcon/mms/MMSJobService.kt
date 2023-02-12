@@ -11,12 +11,6 @@ private const val TAG = "MyService"
 class MMSJobService : JobService() {
     private var mmsReceiver = MMSReceiver()
     private lateinit var params: JobParameters
-    //private lateinit var mainActivity: MainActivity
-
-    override fun onCreate() {
-        super.onCreate()
-        //mainActivity = MainActivity.getInstance()!!
-    }
 
     override fun onStartJob(p0: JobParameters?): Boolean {
         params = p0!!
