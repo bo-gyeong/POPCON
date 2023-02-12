@@ -20,7 +20,7 @@ data class AddInfo(
     var due:String,
     var isVoucher: Int,
     var price:Int,
-    val state:Int,
+    var state:Int,
     var memo:String,
     val email: String,
     val social: String
