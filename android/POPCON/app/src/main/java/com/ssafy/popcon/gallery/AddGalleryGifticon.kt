@@ -105,8 +105,9 @@ class AddGalleryGifticon(
         val dateTAKEN = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_TAKEN)
         //val columnDisplayName = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
 
-        var newImg = false
         val galleryInfo = sp.getLatelyGalleryInfo()
+        var spImgCnt = galleryInfo.imgCnt
+        var newImg = false
         while (cursor.moveToNext()){
             val absolutePath = cursor.getString(columnIdx)
             val date = cursor.getLong(dateTAKEN)
@@ -128,11 +129,12 @@ class AddGalleryGifticon(
 //                if (date <= galleryDate){  //date <= galleryDate
 //                    break
 //                }
-                val spDate = galleryInfo.date
-                val spImgCnt = galleryInfo.imgCnt
+//                val spDate = galleryInfo.date
+
 //                if (spImgCnt >= cursor.count){
 //                    break
 //                }
+                Log.d(TAG, "getImgList: ${spImgCnt}   ${cursor.count}")
 
                 newImg = true
                 if (cursor.isFirst){
@@ -141,28 +143,46 @@ class AddGalleryGifticon(
                     addImg()
                     break
                 }
-                //newImgUri.add(imgUri)
-                //Log.d(TAG, "getImgList: ${dateStr}  $imgUri")
+//                spImgCnt++
+//                newImgUri.add(imgUri)
             }
         }
+        cursor.close()
 
 //        if(newImg){
 //            sp.setGalleryInfo(
 //                Gallery(
 //                    System.currentTimeMillis(),
-//                    cursor.count
+//                    cursorCnt
 //                )
 //            )
 //            addImg()
 //        }
+
+        /** 같은 이미지 여러장 들어갔을 때 서버 처리?
+        sp.setGalleryInfo(
+            Gallery(
+                System.currentTimeMillis(),
+                7500
+            )
+        )
         cursor.close()
+        addImg()**/
     }
 
     private fun addImg(){
         initData()
         for (i in 0 until newImgUri.size){
+            if (!getFileSize(newImgUri[i])){
+                continue
+            }
             originalImgUris.add(GifticonImg(newImgUri[i]))
             gifticonEffectiveness.add(AddInfoNoImgBoolean())
+        }
+
+        if(originalImgUris.size < 1){
+            Toast.makeText(requireContext(), "잘못된 이미지 입니다", Toast.LENGTH_SHORT).show()
+            return
         }
         firstAdd()
 
@@ -226,7 +246,12 @@ class AddGalleryGifticon(
                 }
 
                 val ocrResponse = repo.useOcr(ocrSendList.toTypedArray())
+                if (ocrResponse.isEmpty()){
+                    notifyFail()
+                    return@launch
+                }
                 launch {
+                    var i = 0
                     for (ocrResult in ocrResponse){
                         ocrResults.add(ocrResult)
 
@@ -257,6 +282,21 @@ class AddGalleryGifticon(
                 }.join()
             }.join()
         }
+    }
+
+    // get img size
+    private fun getFileSize(imgUri: Uri): Boolean{
+        val path = getPath(imgUri)
+        if (path == ""){
+            return false
+        }
+
+        val file = File(path)
+        val fileSize = Integer.parseInt((file.length()).toString())
+        if(fileSize > 1040000){
+            return false
+        }
+        return true
     }
 
     // uri to multipart
@@ -411,13 +451,18 @@ class AddGalleryGifticon(
 
     // 이미지 절대경로 가져오기
     private fun getPath(uri: Uri):String{
-        val data:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        val cursorLoader = CursorLoader(mContext, uri, data, null, null, null)
-        val cursor = cursorLoader.loadInBackground()!!
-        val idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
+        try {
+            val data:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+            val cursorLoader = CursorLoader(mContext, uri, data, null, null, null)
+            val cursor = cursorLoader.loadInBackground()!!
+            val idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
 
-        return cursor.getString(idx)
+            return cursor.getString(idx)
+        } catch (e:java.lang.Exception){
+            Log.e(TAG, "getPath: cursor Null", )
+        }
+        return ""
     }
 
     // uri -> bitmap
@@ -450,7 +495,13 @@ class AddGalleryGifticon(
     fun delCropImg(delImgUri: Uri){
         Handler(Looper.getMainLooper()).post {
             kotlin.run {
-                val file = File(getPath(delImgUri))
+                val path = getPath(delImgUri)
+                if (path == ""){
+                    changeProgressDialogState(false)
+                    return@run
+                }
+
+                val file = File(path)
                 file.delete()
             }
         }

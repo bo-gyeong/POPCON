@@ -11,7 +11,6 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -20,7 +19,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -28,7 +26,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.gallery.AddGalleryGifticon
-import com.ssafy.popcon.gallery.GalleryJobService
 import com.ssafy.popcon.mms.MMSDialog
 import com.ssafy.popcon.mms.MMSJobService
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
@@ -89,7 +86,6 @@ class MainActivity : AppCompatActivity() {
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
-        callGalleryReceiver()
         // 스플레시 스크린 고려
 
         //자동로그인
@@ -103,32 +99,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Gallery BroadcastReceiver 호출 위한 JobScheduler
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun callGalleryReceiver(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            startForegroundService(intent)
-        } else{
-            startService(intent)
-        }
-
-        val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        val job = JobInfo.Builder(
-            1,
-            ComponentName(this, GalleryJobService::class.java)
-        )
-            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-            .addTriggerContentUri(
-                JobInfo.TriggerContentUri(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS
-                )
-            )
-            .build()
-
-        jobScheduler.schedule(job)
-    }
-
+    // 앱 실행 시 gallery에서 이미지 불러오기
     @RequiresApi(Build.VERSION_CODES.Q)
     fun makeGalleryDialogFragment(
         appliContext: Context,
