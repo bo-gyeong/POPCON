@@ -20,12 +20,14 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.gallery.AddGalleryGifticon
 import com.ssafy.popcon.gallery.GalleryJobService
 import com.ssafy.popcon.mms.MMSDialog
 import com.ssafy.popcon.mms.MMSJobService
@@ -72,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -88,17 +90,20 @@ class MainActivity : AppCompatActivity() {
         callMMSReceiver()
         chkNewMMSImg()
         callGalleryReceiver()
+        // 스플레시 스크린 고려
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
             Log.d(TAG, "onCreate: 로그인됨")
             changeFragment(HomeFragment())
+            makeGalleryDialogFragment(applicationContext, contentResolver)
         } else {
             Log.d(TAG, "onCreate: 로그인 필요")
             changeFragment(LoginFragment())
         }
     }
 
+    // Gallery BroadcastReceiver 호출 위한 JobScheduler
     @RequiresApi(Build.VERSION_CODES.N)
     private fun callGalleryReceiver(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -124,7 +129,21 @@ class MainActivity : AppCompatActivity() {
         jobScheduler.schedule(job)
     }
 
-    // MMS BroadcastReceiver 호출위한 JobScheduler
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun makeGalleryDialogFragment(
+        appliContext: Context,
+        cResolver: ContentResolver
+    ){
+        val addGalleryGifticon = AddGalleryGifticon(
+            this, appliContext, cResolver, false
+        )
+
+        getInstance()!!.supportFragmentManager.beginTransaction()
+            .add(addGalleryGifticon, "galleryDialog")
+            .commitAllowingStateLoss()
+    }
+
+    // MMS BroadcastReceiver 호출 위한 JobScheduler
     private fun callMMSReceiver(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             startForegroundService(intent)
@@ -221,7 +240,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         chkNewMMSImg()
-        Log.d(TAG, "onResume: ")
     }
 
     private val runtimePermissions = arrayOf(

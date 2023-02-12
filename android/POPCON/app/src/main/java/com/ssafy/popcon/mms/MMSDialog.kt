@@ -30,6 +30,7 @@ import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.common.Event
 import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.viewmodel.AddViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -584,7 +585,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
                 }
 
                 viewModel.addImgInfoResult.observeForever(EventObserver{
-                    /*** fragment home 갱신  ***/
+                    mainActivity.changeFragment(HomeFragment())
                     changeProgressDialogState(false)
                     dismiss()
                 })

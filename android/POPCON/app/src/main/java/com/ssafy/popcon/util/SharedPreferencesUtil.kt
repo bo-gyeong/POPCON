@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import com.ssafy.popcon.dto.Gallery
 import com.ssafy.popcon.dto.User
 
 class SharedPreferencesUtil(context: Context) {
@@ -98,15 +99,17 @@ class SharedPreferencesUtil(context: Context) {
     }
 
     // Last gallery update date
-    fun getLatelyGalleryDate(): Long{
+    fun getLatelyGalleryInfo(): Gallery {
         val date = preferences.getLong("lastGalleryDate", -1)
-        return date
+        val imgCnt = preferences.getInt("lastGalleryImgCnt", 0)
+        return Gallery(date, imgCnt)
     }
 
     // Gallery update date
-    fun setGalleryDate(date: Long){
+    fun setGalleryInfo(imgInfo: Gallery){
         val editor = preferences.edit()
-        editor.putLong("lastGalleryDate", date)
+        editor.putLong("lastGalleryDate", imgInfo.date)
+        editor.putInt("lastGalleryImgCnt", imgInfo.imgCnt)
         editor.apply()
     }
 
