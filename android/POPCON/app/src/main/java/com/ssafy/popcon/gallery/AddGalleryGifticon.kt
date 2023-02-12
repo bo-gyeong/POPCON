@@ -64,8 +64,7 @@ private const val TAG = "AddGalleryGifticon"
 class AddGalleryGifticon(
     private val mainActivity: MainActivity,
     private val mContext: Context,
-    private val _contentResolver: ContentResolver,
-    private val jobScheduler: Boolean
+    private val _contentResolver: ContentResolver
 ): Fragment() {
     private val sp = SharedPreferencesUtil(mContext)
     private val newImgUri = mutableListOf<Uri>()
@@ -186,10 +185,8 @@ class AddGalleryGifticon(
         }
         firstAdd()
 
-        if (!jobScheduler){
-            makeProgressDialog()
-            changeProgressDialogState(true)
-        }
+        makeProgressDialog()
+        changeProgressDialogState(true)
     }
 
     private var delImgUris = ArrayList<Uri>()
@@ -203,6 +200,7 @@ class AddGalleryGifticon(
     private var gifticonEffectiveness = ArrayList<AddInfoNoImgBoolean>()
     private lateinit var loadingDialog: AlertDialog.Builder
     private lateinit var dialogCreate: AlertDialog
+    private val repo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
 
@@ -221,7 +219,6 @@ class AddGalleryGifticon(
         gifticonEffectiveness.clear()
     }
 
-    private val repo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
     private fun firstAdd(){
         for (i in 0 until originalImgUris.size){
             val originalImgUri = originalImgUris[i].imgUri
@@ -251,7 +248,6 @@ class AddGalleryGifticon(
                     return@launch
                 }
                 launch {
-                    var i = 0
                     for (ocrResult in ocrResponse){
                         ocrResults.add(ocrResult)
 
@@ -460,7 +456,7 @@ class AddGalleryGifticon(
 
             return cursor.getString(idx)
         } catch (e:java.lang.Exception){
-            Log.e(TAG, "getPath: cursor Null", )
+            Log.e(TAG, "getPath: cursor Null")
         }
         return ""
     }
@@ -475,20 +471,6 @@ class AddGalleryGifticon(
         }
 
         return bitmap
-    }
-
-    /** 코드 다시 찾기 **/
-    // bitmap -> uri
-    private fun bitmapToUri(bitmap: Bitmap): Uri {
-        bitmap.compress(
-            Bitmap.CompressFormat.JPEG, 100, ByteArrayOutputStream()
-        )
-
-        val path = MediaStore.Images.Media.insertImage(
-            mContext.contentResolver, bitmap, "mmsBitmapToUri", null
-        )
-
-        return Uri.parse(path)
     }
 
     // 크롭되면서 새로 생성된 이미지 삭제
@@ -536,7 +518,7 @@ class AddGalleryGifticon(
                     } else{
                         add()
                     }
-                }
+                }.join()
             }
         }
     }
@@ -683,7 +665,6 @@ class AddGalleryGifticon(
                 Toast.makeText(requireContext(), "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
             }
         }
-
         changeProgressDialogState(false)
     }
 
@@ -725,10 +706,8 @@ class AddGalleryGifticon(
                     }
 
                     launch {
-                        if(!jobScheduler){
-                            mainActivity.changeFragment(HomeFragment())
-                            changeProgressDialogState(false)
-                        }
+                        mainActivity.changeFragment(HomeFragment())
+                        changeProgressDialogState(false)
                     }.join()
                 }.join()
             }

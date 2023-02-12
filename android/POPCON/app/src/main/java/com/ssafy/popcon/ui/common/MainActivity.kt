@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         cResolver: ContentResolver
     ){
         val addGalleryGifticon = AddGalleryGifticon(
-            this, appliContext, cResolver, false
+            this, appliContext, cResolver
         )
 
         getInstance()!!.supportFragmentManager.beginTransaction()

@@ -13,6 +13,8 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
@@ -27,15 +29,14 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.DialogMmsBinding
 import com.ssafy.popcon.dto.*
-import com.ssafy.popcon.ui.common.Event
-import com.ssafy.popcon.ui.common.EventObserver
+import com.ssafy.popcon.repository.add.AddRemoteDataSource
+import com.ssafy.popcon.repository.add.AddRepository
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -50,7 +51,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 private const val TAG = "MMSDialog_###"
-class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
+class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
     private lateinit var binding: DialogMmsBinding
     private lateinit var mainActivity: MainActivity
     private lateinit var mContext: Context
@@ -80,8 +81,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
 
         binding.btnGoToAdd.setOnClickListener {
             initData()
-            /** 갤러리에서 불러올 경우 수정
-             * viewModel event 직전 데이터 갱신까지 2번 호출되는 문제 **/
+
             for (i in 0 until 1){
                 val uri = bitmapToUri(MainActivity.fromMMSReceiver!!)
                 //Log.d(TAG, "onCreateDialog**: ${uri}")
@@ -110,6 +110,7 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
     private var gifticonEffectiveness = ArrayList<AddInfoNoImgBoolean>()
     private lateinit var loadingDialog: AlertDialog.Builder
     private lateinit var dialogCreate: AlertDialog
+    private val repo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
 
@@ -137,51 +138,53 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
             multipartFiles.add(realData!!)
         }
 
-        viewModel.addFileToGCP(multipartFiles.toTypedArray())
-        viewModel.gcpResult.observeForever(EventObserver{
-            ocrSendList.clear()
-            for (i in 0 until it.size){
-                val gcpResult = it[i]
-                val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
+        CoroutineScope(Dispatchers.IO).launch {
+            val gcpResponse = repo.addFileToGCP(multipartFiles.toTypedArray())
+            launch {
+                ocrSendList.clear()
+                for (i in 0 until gcpResponse.size){
+                    val gcpResult = gcpResponse[i]
+                    val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
 
-                ocrSendList.add(
-                    OCRSend(
-                        gcpResult.fileName, originalImgBitmap.width, originalImgBitmap.height
+                    ocrSendList.add(
+                        OCRSend(
+                            gcpResult.fileName, originalImgBitmap.width, originalImgBitmap.height
+                        )
                     )
-                )
-            }
+                }
 
-            viewModel.useOcr(ocrSendList.toTypedArray())
-            viewModel.ocrResult.observeForever(EventObserver{
-                for (ocrResult in it){
-                    ocrResults.add(ocrResult)
+                val ocrResponse = repo.useOcr(ocrSendList.toTypedArray())
+                launch {
+                    for (ocrResult in ocrResponse){
+                        ocrResults.add(ocrResult)
 
-                    if (ocrResult.barcodeNum != ""){
-                        for (i in 0 until it.size){
-                            val cropImgUri = cropXY(i, PRODUCT)
-                            val cropBarcodeUri = cropXY(i, BARCODE)
+                        if (ocrResult.barcodeNum != ""){
+                            for (i in 0 until ocrResponse.size){
+                                val cropImgUri = cropXY(i, PRODUCT)
+                                val cropBarcodeUri = cropXY(i, BARCODE)
 
-                            productImgUris.add(GifticonImg(cropImgUri))
-                            barcodeImgUris.add(GifticonImg(cropBarcodeUri))
-                            delImgUris.add(cropImgUri)
-                            delImgUris.add(cropBarcodeUri)
+                                productImgUris.add(GifticonImg(cropImgUri))
+                                barcodeImgUris.add(GifticonImg(cropBarcodeUri))
+                                delImgUris.add(cropImgUri)
+                                delImgUris.add(cropBarcodeUri)
 
-                            addGifticonInfo(i)
+                                addGifticonInfo(i)
 
-                            imgNum = i
-                            productChk()
-                            brandChk()
-                            dateFormat()
-                            changeChkState(i)
-                            setPrice()
+                                imgNum = i
+                                productChk()
+                                brandChk()
+                                dateFormat()
+                                changeChkState(i)
+                                setPrice()
+                            }
+                        }
+                        else{
+                            notifyFail()
                         }
                     }
-                    else{
-                        notifyFail()
-                    }
-                }
-            })
-        })
+                }.join()
+            }.join()
+        }
     }
 
     // uri to multipart
@@ -336,13 +339,18 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
 
     // 이미지 절대경로 가져오기
     private fun getPath(uri: Uri):String{
-        val data:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
-        val cursor = cursorLoader.loadInBackground()!!
-        val idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
+        try {
+            val data:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+            val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
+            val cursor = cursorLoader.loadInBackground()!!
+            val idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
 
-        return cursor.getString(idx)
+            return cursor.getString(idx)
+        } catch (e : java.lang.Exception){
+            Log.e(TAG, "getPath: cursor Null")
+        }
+        return ""
     }
 
     // uri -> bitmap
@@ -373,8 +381,18 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
 
     // 크롭되면서 새로 생성된 이미지 삭제
     fun delCropImg(delImgUri: Uri){
-        val file = File(getPath(delImgUri))
-        file.delete()
+        Handler(Looper.getMainLooper()).post {
+            kotlin.run {
+                val path = getPath(delImgUri)
+                if (path == ""){
+                    changeProgressDialogState(false)
+                    return@run
+                }
+
+                val file = File(path)
+                file.delete()
+            }
+        }
     }
 
     // 상품명 리스트에 저장
@@ -397,15 +415,17 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         }
 
         if (brand != ""){
-            viewModel.chkBrand(brand)
-            viewModel.brandChk.observeForever(EventObserver{
-                if (it.result != 0){
-                    gifticonEffectiveness[imgNum].brandName = true
-                    brandBarcodeNum()
-                } else{
-                    add()
-                }
-            })
+            CoroutineScope(Dispatchers.IO).launch {
+                val brandResponse = repo.chkBrand(brand)
+                launch {
+                    if (brandResponse.result != 0){
+                        gifticonEffectiveness[imgNum].brandName = true
+                        brandBarcodeNum()
+                    } else{
+                        add()
+                    }
+                }.join()
+            }
         }
     }
 
@@ -417,13 +437,13 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         }
 
         if (barcode != ""){
-            viewModel.chkBarcode(barcode)
-            viewModel.barcodeChk.observeForever(EventObserver{
-                if (it.result == 1){
+            CoroutineScope(Dispatchers.IO).launch {
+                val barcodeResponse = repo.chkBarcode(barcode)
+                if (barcodeResponse.result == 1){
                     gifticonEffectiveness[imgNum].barcodeNum = true
                 }
                 add()
-            })
+            }
         }
     }
 
@@ -545,7 +565,11 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
             delCropImg(delImgUris[i])
         }
 
-        Toast.makeText(context, "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
+        Handler(Looper.getMainLooper()).post {
+            kotlin.run {
+                Toast.makeText(context, "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
         changeProgressDialogState(false)
         dismiss()
     }
@@ -573,25 +597,26 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
     // 최종 등록
     private fun add(){
         if (chkAllList()){
-            viewModel.addGifticon(makeAddInfoList())
-            viewModel.addGifticonResult.observeForever(EventObserver{
-                viewModel.addOtherFileToGCP(makeAddImgMultipartList())
-            })
+            CoroutineScope(Dispatchers.IO).launch {
+                repo.addGifticon(makeAddInfoList())
+                var gcpResult = listOf<GCPResult>()
+                launch {
+                    gcpResult = repo.addFileToGCP(makeAddImgMultipartList())
+                }.join()
 
-            viewModel.gcpOtherResult.observeForever(EventObserver{
-                viewModel.addImgInfo(makeAddImgInfoList(it))
-                for (i in 0 until delImgUris.size){
-                    delCropImg(delImgUris[i])
-                }
+                launch {
+                    repo.addImgInfo(makeAddImgInfoList(gcpResult))
+                    for (i in 0 until delImgUris.size){
+                        delCropImg(delImgUris[i])
+                    }
 
-                viewModel.addImgInfoResult.observeForever(EventObserver{
-                    mainActivity.changeFragment(HomeFragment())
-                    changeProgressDialogState(false)
-                    dismiss()
-                })
-            })
+                    launch {
+                        changeProgressDialogState(false)
+                        dismiss()
+                    }.join()
+                }.join()
+            }
         } else{
-            /** 갤러리에서 클릭할때 추후 생각 **/
             notifyFail()
         }
     }
