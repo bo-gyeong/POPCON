@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPro
         Wearable.getCapabilityClient(this)
             .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
 
-        actionBar?.hide()
+        supportActionBar!!.hide()
     }
 
     override fun onPause() {
