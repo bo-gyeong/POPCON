@@ -177,67 +177,80 @@ class LoginFragment : Fragment() {
                 // 앱 이용 동의 화면 출력
                 UserApiClient.instance.loginWithKakaoTalk(mainActivity) { token, error ->
                     if (error != null) {
-                        Log.e(TAG, "kakaoLogin: ${error}")
                         // 사용자가 취소했을 경우
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             return@loginWithKakaoTalk
                         } else {
-                            // 카카오 계정으로 로그인
-                            UserApiClient.instance.loginWithKakaoAccount(
-                                mainActivity,
-                                callback = kakaoCallback
-                            )
+                            loginWithKakaoAccount()
                         }
                     } else if (token != null) {
                         // 로그인 성공
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                            UserApiClient.instance.me { meUser, error ->
-                                val email = meUser?.kakaoAccount?.email.toString()
-
-                                user = User("abccc@naver.com", "카카오", fcmToken)
-                                sp.addUser(user)
-                                sp.setGalleryInfo(
-                                    Gallery(System.currentTimeMillis(), 0)
-                                )
-
-                                val authRepo =
-                                    AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
-
-                                val job = CoroutineScope(Dispatchers.IO).launch {
-                                    userResponse = authRepo.signIn(user)
-                                }
-                                runBlocking {
-                                    job.join()
-                                    ApplicationClass.sharedPreferencesUtil.accessToken =
-                                        userResponse.acessToken
-                                    ApplicationClass.sharedPreferencesUtil.refreshToken =
-                                        userResponse.refreshToekn
-                                    Log.d(
-                                        TAG,
-                                        "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
-                                    )
-                                    successLogin(userResponse)
-                                }
-
-
-
-
-                                //user = User(email, "카카오")
-                                //sp.addUser(user)
-                                //sp.setGalleryDate(System.currentTimeMillis())
-
-//                                viewModel.signInKakao(user)
-//                                viewModel.user.observe(viewLifecycleOwner) {
-//                                    successLogin(it)
-//                                }
-                            }
+                            successKakaoLogin()
                         }
                     }
                 }
             } else {
-                // 카카오 계정으로 로그인
-                UserApiClient.instance.loginWithKakaoAccount(mainActivity, callback = kakaoCallback)
+                loginWithKakaoAccount()
             }
+        }
+    }
+
+    // 카카오 계정 웹 로그인
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun loginWithKakaoAccount(){
+        UserApiClient.instance.loginWithKakaoAccount(mainActivity){ token, error ->
+            if (error != null) {
+                Log.e(TAG, "kakaoLogin_error: ${error}")
+            } else if (token != null) {
+                // 로그인
+                successKakaoLogin()
+            }
+        }
+    }
+
+    // 카카오 로그인 성공
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun successKakaoLogin(){
+        UserApiClient.instance.me { meUser, error ->
+            val email = meUser?.kakaoAccount?.email.toString()
+
+            user = User("abccc@naver.com", "카카오", fcmToken)
+            sp.addUser(user)
+            sp.setGalleryInfo(
+                Gallery(System.currentTimeMillis(), 0)
+            )
+
+            val authRepo =
+                AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
+
+            val job = CoroutineScope(Dispatchers.IO).launch {
+                userResponse = authRepo.signIn(user)
+            }
+            runBlocking {
+                job.join()
+                ApplicationClass.sharedPreferencesUtil.accessToken =
+                    userResponse.acessToken
+                ApplicationClass.sharedPreferencesUtil.refreshToken =
+                    userResponse.refreshToekn
+                Log.d(
+                    TAG,
+                    "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
+                )
+                successLogin(userResponse)
+            }
+
+
+
+
+            //user = User(email, "카카오")
+            //sp.addUser(user)
+            //sp.setGalleryDate(System.currentTimeMillis())
+
+//           viewModel.signInKakao(user)
+//           viewModel.user.observe(viewLifecycleOwner) {
+//                 successLogin(it)
+//            }
         }
     }
 
