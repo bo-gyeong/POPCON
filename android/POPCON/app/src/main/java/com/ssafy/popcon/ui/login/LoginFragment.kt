@@ -62,7 +62,7 @@ class LoginFragment : Fragment() {
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     lateinit var mainActivity: MainActivity
 
-    companion object{
+    companion object {
         var fromSettingsFragment = false
     }
 
@@ -79,14 +79,18 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        Glide.with(requireContext()).load(R.raw.pop).into(object : DrawableImageViewTarget(binding.popconGif){
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                if (resource is GifDrawable) {
-                    (resource as GifDrawable).setLoopCount(1)
+        Glide.with(requireContext()).load(R.raw.pop)
+            .into(object : DrawableImageViewTarget(binding.popconGif) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    if (resource is GifDrawable) {
+                        (resource as GifDrawable).setLoopCount(1)
+                    }
+                    super.onResourceReady(resource, transition)
                 }
-                super.onResourceReady(resource, transition)
-            }
-        })
+            })
         mainActivity.updateStatusBarColor("#F7B733")
         return binding.root
     }
@@ -113,13 +117,13 @@ class LoginFragment : Fragment() {
     }
 
     // 앱을 처음 실행한 것인지, 로그아웃 또는 회원탈퇴를 한 직후인지 확인
-    private fun chkRoute(){
-        if (!fromSettingsFragment){
+    private fun chkRoute() {
+        if (!fromSettingsFragment) {
             //자동로그인
             if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
                 mainActivity.changeFragment(HomeFragment())
             }
-        } else{
+        } else {
             SharedPreferencesUtil(requireContext()).deleteUser()
             fromSettingsFragment = false
         }
@@ -177,8 +181,6 @@ class LoginFragment : Fragment() {
                                         "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
                                     )
                                 }
-
-
 
 
                                 //user = User(email, "카카오")
@@ -257,17 +259,6 @@ class LoginFragment : Fragment() {
 
             NaverIdLoginSDK.authenticate(requireContext(), oAuthLoginCallback)
         }
-    }
-
-    // 비회원 로그인 : UUID 생성 후 리텅
-    private fun nonMemberLogin() {
-        if (userUUID == "")
-            userUUID = UUID.randomUUID().toString()
-        // 서버에게 생성한 UUID 전송할 레트로핏 코드
-        Log.d(TAG, "nonMemberLogin: $userUUID")
-        SharedPreferencesUtil(requireContext()).addUser(User(userUUID, "비회원"))
-
-        mainActivity.changeFragment(HomeFragment())
     }
 
     override fun onDestroy() {
