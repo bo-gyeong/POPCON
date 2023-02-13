@@ -1,6 +1,5 @@
 package com.example.popconback.user.controller;
 
-
 import com.example.popconback.user.dto.CreateUser.CreateUserDto;
 import com.example.popconback.user.dto.CreateUser.ResponsCreateUserDto;
 import com.example.popconback.user.dto.DeleteUser.DeleteUserDto;
@@ -18,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +33,7 @@ public class UserController {
 
     private final UserService userservice;
 
+    private boolean refreshFlag = true;
 
 
     @ApiOperation(value = "login",
@@ -48,8 +49,17 @@ public class UserController {
             httpMethod = "GET")
     @GetMapping("/refresh") // 리프레시하기
     public ResponseEntity<ResponseToken> refresh(HttpServletRequest request){// 필터에서 안걸러지면 유효기간 남아있는거임
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
-        return ResponseEntity.ok(userservice.refresh(token));
+        if (refreshFlag){
+            refreshFlag = false;
+            String token = request.getHeader(HttpHeaders.AUTHORIZATION).split(" ")[1];
+            return ResponseEntity.ok(userservice.refresh(token));
+        }else{
+            return ResponseEntity.ok().build();
+        }
+    }
+    @Scheduled(cron = "30 * * * * ?")
+    public void Flag_reset () {
+        refreshFlag = false;
     }
 
 
