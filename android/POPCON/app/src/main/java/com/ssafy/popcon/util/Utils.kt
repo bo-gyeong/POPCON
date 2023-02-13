@@ -43,11 +43,11 @@ object Utils {
         //0:사용가능, 1:사용완료, 2:기간만료
         return when (gifticon.state) {
             1 -> {
-                Badge("사용완료", "#d2d2d2")
+                Badge("사용완료", "#5f5f69")
 
             }
             2 -> {
-                Badge("기간만료", "#d2d2d2")
+                Badge("기간만료", "#5f5f69")
             }
             else -> {
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd")
@@ -60,13 +60,15 @@ object Utils {
                 val dDay = (dueTime!! - nowTime!!) / (24 * 60 * 60 * 1000)
 
                 return if (dDay.toInt() == 0) {
-                    Badge("오늘까지", "#FFFF0000")
+                    Badge("오늘까지", "#FC4A1A")
+                } else if (dDay.toInt() < 0) {
+                    Badge("기간만료", "#5f5f69")
                 } else {
                     var color = "#8ED2CD"
                     if (dDay <= 3) {
-                        color = "#CF6655"
+                        color = "#FF9796"
                     } else if (dDay <= 7) {
-                        color = "#FF9797"
+                        color = "#F7B733"
                     }
 
                     Badge("D-$dDay", color)

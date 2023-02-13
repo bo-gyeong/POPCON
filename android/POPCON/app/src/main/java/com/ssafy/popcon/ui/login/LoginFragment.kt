@@ -79,7 +79,7 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        Glide.with(requireContext()).load(R.raw.pop).into(object : DrawableImageViewTarget(binding.popconGif){
+        Glide.with(requireContext()).load(R.raw.pop_1200).into(object : DrawableImageViewTarget(binding.popconGif){
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 if (resource is GifDrawable) {
                     (resource as GifDrawable).setLoopCount(1)
