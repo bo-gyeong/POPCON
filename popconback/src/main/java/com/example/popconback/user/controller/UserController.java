@@ -57,9 +57,9 @@ public class UserController {
             return ResponseEntity.ok().build();
         }
     }
-    @Scheduled(cron = "30 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * *")
     public void Flag_reset () {
-        refreshFlag = false;
+        refreshFlag = true;
     }
 
 
