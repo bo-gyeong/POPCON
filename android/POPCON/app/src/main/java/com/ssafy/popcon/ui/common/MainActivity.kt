@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         //checkPermissions()
 
-        //getFCMToken()
+        getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()

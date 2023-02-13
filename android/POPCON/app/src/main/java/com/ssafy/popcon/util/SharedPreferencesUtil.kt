@@ -35,6 +35,7 @@ class SharedPreferencesUtil(context: Context) {
         editor.putInt("noti_first", user.nday)
         editor.putInt("noti_interval", user.term)
         editor.putInt("noti_time", user.timezone)
+        editor.putInt("manner_temp", user.manner_temp)
         editor.apply()
     }
 
@@ -43,10 +44,11 @@ class SharedPreferencesUtil(context: Context) {
         val id = preferences.getString("id", "")
         return if (id != "") {
             val type = preferences.getString("type", "비회원")
+            val token = getFCMToken()
 
-            User(id!!, type!!)
+            User(id!!, type!!, token)
         } else {
-            User("", "비회원")
+            User("", "비회원", "")
         }
     }
 
@@ -59,6 +61,7 @@ class SharedPreferencesUtil(context: Context) {
             editor.putInt("noti_first", user.nday)
             editor.putInt("noti_interval", user.term)
             editor.putInt("noti_time", user.timezone)
+            editor.putInt("manner_temp", user.manner_temp)
             editor.apply()
         }
     }
@@ -72,9 +75,11 @@ class SharedPreferencesUtil(context: Context) {
             val notiFirst = preferences.getInt("noti_first", 1)
             val notiInterval = preferences.getInt("noti_interval", 1)
             val notiTime = preferences.getInt("noti_time", 1)
-            User(id!!, type!!, alarm, notiFirst, notiInterval, notiTime)
+            val mannerTemp = preferences.getInt("manner_temp", 1)
+            val token = getFCMToken()
+            User(id!!, type!!, notiFirst, alarm, mannerTemp, notiInterval, notiTime, token)
         } else {
-            User("", "비회원")
+            User("", "비회원", "")
         }
     }
 

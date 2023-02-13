@@ -20,6 +20,7 @@ import com.ssafy.popcon.util.SharedPreferencesUtil
 class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
     private lateinit var binding:DialogSettingsNotiBinding
     private lateinit var user: User
+    private lateinit var fcmToken: String
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogSettingsNotiBinding.inflate(layoutInflater)
@@ -29,6 +30,7 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
         builder.setView(binding.root)
 
         user = SharedPreferencesUtil(requireParentFragment().requireContext()).getUser()
+        fcmToken = SharedPreferencesUtil(requireParentFragment().requireContext()).getFCMToken()
         userInit()
         showDlgContent(notiListPosition)
 
@@ -59,8 +61,10 @@ class NotiDialogFragment(private val notiListPosition: Int): DialogFragment() {
             user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
+            shardPreference.getInt("manner_temp", 1),
             shardPreference.getInt("noti_interval", 1),
-            shardPreference.getInt("noti_time", 1)
+            shardPreference.getInt("noti_time", 1),
+            fcmToken
         )
     }
 
