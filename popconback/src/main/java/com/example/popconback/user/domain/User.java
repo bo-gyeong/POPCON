@@ -32,7 +32,7 @@ public class User {
     private int manner_temp;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Gifticon> gifticonList;
 
     @JsonBackReference

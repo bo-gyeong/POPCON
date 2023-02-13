@@ -62,33 +62,33 @@ public class UserService {
 
         UserDto user = new UserDto();
         BeanUtils.copyProperties(createUserDto,user);
-        user.setHash(user.hashCode());
+        user.setHash(user.hashCode());// hash 값생성
 
 
-        String token = JwtUtil.creatJwt(createUserDto.getEmail(),createUserDto.getSocial(), secretkey,expiredMs );
+        String token = JwtUtil.creatJwt(createUserDto.getEmail(),createUserDto.getSocial(), secretkey,expiredMs );//토큰생성
         String Refreshtoken = JwtUtil.creatRefashToken (expiredMsRe,secretkey);
 
         ResponseToken responseToken = new ResponseToken();
         responseToken.setAcessToken(token);
-        responseToken.setRefreshToken(Refreshtoken);
+        responseToken.setRefreshToken(Refreshtoken);// 응답할 토큰들 저장
 
-        user.setRefreshToken(Refreshtoken);
+        user.setRefreshToken(Refreshtoken);// Refresh 토큰은 db에 저장
 
         ResponsCreateUserDto ruser = new ResponsCreateUserDto();
         Optional<User> optionalUser = userRepository.findById(user.hashCode());
-        if(!optionalUser.isPresent()){ //회원가입되는거고
+        if(!optionalUser.isPresent()){ //회원가입되는거고 // 초기값은 저기서 설정해서 보내주고
             userRepository.save(user.toEntity());
             BeanUtils.copyProperties(user,ruser);
         }
         else{//로그인하고 refresh 다시 만들어서 저장해주고
             UserDto joineduser = new UserDto();
-            BeanUtils.copyProperties(optionalUser.get(),joineduser);
-            joineduser.setRefreshToken(Refreshtoken);
-            userRepository.save(joineduser.toEntity());
-            BeanUtils.copyProperties(joineduser,ruser);
+            BeanUtils.copyProperties(optionalUser.get(),joineduser);//이미 db에 있는 값들 복사해주고
+            joineduser.setRefreshToken(Refreshtoken);//재로그인 했을때 refresh 토큰 새로 저장
+            joineduser.setToken(user.getToken());//fcm 토큰 새로 저장해주고
+            userRepository.save(joineduser.toEntity());//db 업데이트해주고
+            BeanUtils.copyProperties(joineduser,ruser);// 응답값 복사해주고
         }
-        ruser.setAcessToken(token);
-
+        ruser.setAcessToken(token);//엑세스 토큰 응답값에 넣어주고
         return ruser;
     }
 
@@ -104,8 +104,6 @@ public class UserService {
 
         String token = JwtUtil.creatJwt(user.getEmail(),user.getSocial(), secretkey,expiredMs );
         String Refreshtoken = JwtUtil.creatRefashToken (expiredMsRe,secretkey);
-
-
 
         responseToken.setAcessToken(token);
         responseToken.setRefreshToken(Refreshtoken);
