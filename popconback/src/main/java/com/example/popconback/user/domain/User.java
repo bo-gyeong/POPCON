@@ -31,8 +31,8 @@ public class User {
     private int timezone;
     private int manner_temp;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference//, orphanRemoval = true
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Gifticon> gifticonList;
 
     @JsonBackReference
