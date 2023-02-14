@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
@@ -111,6 +112,7 @@ class LoginFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getFCMToken()
         init()
         chkRoute()
 
@@ -122,7 +124,6 @@ class LoginFragment : Fragment() {
 
     private fun init() {
         mainActivity = activity as MainActivity
-        fcmToken = fcmViewModel.token
     }
 
     // 앱을 처음 실행한 것인지, 로그아웃 또는 회원탈퇴를 한 직후인지 확인
@@ -140,6 +141,8 @@ class LoginFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun successLogin(userResponse: UserResponse){
+        fcmToken = fcmViewModel.token
+
         val newUser = User(
             userResponse.email,
             userResponse.social,
@@ -157,6 +160,8 @@ class LoginFragment : Fragment() {
         sp.setGalleryInfo(
             Gallery(System.currentTimeMillis(), 0)
         )
+
+        viewModel.updateUser(newUser)
         mainActivity.makeGalleryDialogFragment(requireContext(), mainActivity.contentResolver)
         mainActivity.changeFragment(HomeFragment())
     }
@@ -326,6 +331,26 @@ class LoginFragment : Fragment() {
         val user = User(userUUID, "비회원", fcmToken)
         sp.addUser(user)
         //successLogin(user)
+    }
+
+    // 토큰 보내기
+    fun uploadToken(token: String) {
+        fcmViewModel.uploadToken(token)
+    }
+
+    // 토큰 생성
+    private fun getFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@addOnCompleteListener
+            }
+            Log.d(TAG, "token 정보: ${task.result ?: "task.result is null"}")
+            if (task.result != null) {
+                uploadToken(task.result)
+                fcmViewModel.setToken(task.result)
+                sp.setFCMToken(task.result)
+            }
+        }
     }
 
     override fun onDestroy() {

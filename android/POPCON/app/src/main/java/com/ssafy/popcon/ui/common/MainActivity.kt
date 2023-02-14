@@ -82,7 +82,6 @@ class MainActivity : AppCompatActivity() {
         setNavBar()
         //checkPermissions()
 
-        getFCMToken()
         SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
@@ -290,33 +289,13 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    // 토큰 보내기
-    fun uploadToken(token: String) {
-        fcmViewModel.uploadToken(token)
-    }
-
     // 알림 관련 메시지 전송
     suspend fun sendMessageTo(token: String, title: String, body: String) {
         FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService)).sendMessageTo(token, title, body)
         //fcmViewModel.sendMessageTo(token, title, body)
         //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
     }
-
-    // 토큰 생성
-    private fun getFCMToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@addOnCompleteListener
-            }
-            Log.d(TAG, "token 정보: ${task.result ?: "task.result is null"}")
-            if (task.result != null) {
-                uploadToken(task.result)
-                fcmViewModel.setToken(task.result)
-                SharedPreferencesUtil(this).setFCMToken(task.result)
-            }
-        }
-    }
-
+    
     override fun onRestart() {
         super.onRestart()
         checkPermissions()
