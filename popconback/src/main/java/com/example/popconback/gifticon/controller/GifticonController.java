@@ -151,7 +151,7 @@ public class GifticonController {
         return ResponseEntity.ok(gifticonService.brandListOrderByGifticonCountEachUser(email,social));
     }
 
-    @Scheduled(cron = "0 30 11 * * ?")
+    @Scheduled(cron = "0 59 23 * * ?")
     @ApiOperation(value = "기프티콘 상태 업데이트", notes = "기프티콘 유호기간 체크 후 상태 변경 / 서버용 API", httpMethod = "GET")
     @GetMapping("/check")// 유효기간 지난거 상태 변경
     public void Check_Overdate () {
