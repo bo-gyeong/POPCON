@@ -1,10 +1,11 @@
 package com.ssafy.popcon.database
 
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.ssafy.popcon.dto.MMSItem
-import org.jetbrains.annotations.NotNull
+import androidx.room.*
 
 @Dao
 interface MMSItemDao {

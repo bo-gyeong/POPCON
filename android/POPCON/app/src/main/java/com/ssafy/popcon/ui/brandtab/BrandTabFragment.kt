@@ -9,22 +9,13 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.Brand
-import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.ui.history.HistoryFragment
-import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.util.Utils
 import com.ssafy.popcon.viewmodel.GifticonViewModel
-import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
-import okhttp3.internal.notify
-import kotlin.streams.toList
 
 //홈화면 브랜드탭
 class BrandTabFragment : Fragment() {
