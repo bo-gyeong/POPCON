@@ -65,7 +65,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val TAG = "###_AddFragment"
+private const val TAG = "AddFragment"
 class AddFragment : Fragment(), onItemClick {
     private lateinit var binding: FragmentAddBinding
     private lateinit var mainActivity: MainActivity
@@ -80,8 +80,7 @@ class AddFragment : Fragment(), onItemClick {
     private var barcodeImgUris = ArrayList<GifticonImg>()
     private var gifticonInfoList = ArrayList<AddInfo>()
     private var gifticonEffectiveness = ArrayList<AddInfoNoImgBoolean>()
-    private lateinit var dialog: AlertDialog.Builder
-    private lateinit var dialogCreate: AlertDialog
+    private var loadingDialog = ProgressDialog(false)
     private lateinit var addImgAdapter: AddImgAdapter
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
@@ -121,7 +120,6 @@ class AddFragment : Fragment(), onItemClick {
         super.onViewCreated(view, savedInstanceState)
 
         chkCnt = 1
-        makeProgressDialog()
         initGifticonInfoList()
         openGalleryFirst()
 
@@ -163,7 +161,6 @@ class AddFragment : Fragment(), onItemClick {
 
         binding.btnRegi.setOnClickListener {
             if (chkClickImgCnt() && chkEffectiveness()){
-                makeProgressDialog()
                 changeProgressDialogState(true)
 
                 viewModel.addGifticon(makeAddInfoList())
@@ -340,27 +337,17 @@ class AddFragment : Fragment(), onItemClick {
         }
     }
 
-    // 로딩화면 띄우기
-    private fun makeProgressDialog(){
-        dialog = AlertDialog.Builder(requireContext())
-        dialog.setView(R.layout.dialog_progress).setCancelable(false)
-        dialogCreate = dialog.create()
-    }
-
     // 사진추가 버튼 클릭 시 뒤로가기
     private fun makeProgressDialogOnBackPressed(){
-        dialog = AlertDialog.Builder(requireContext())
-        dialog.setView(R.layout.dialog_progress).setCancelable(true)
-        dialogCreate = dialog.create()
+        loadingDialog = ProgressDialog(true)
     }
 
-    // 상태에 따라 다이얼로그 만들기/없애기
+    // 상태에 따라 로딩화면 만들기/없애기
     private fun changeProgressDialogState(state: Boolean){
         if (state){
-            dialogCreate.window!!.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
-            dialogCreate.show()
+            loadingDialog.show(mainActivity.supportFragmentManager, null)
         } else{
-            dialogCreate.dismiss()
+            loadingDialog.dismiss()
         }
     }
 

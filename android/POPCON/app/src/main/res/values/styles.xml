@@ -63,6 +63,11 @@
         <item name="windowMinWidthMinor">0%</item>
     </style>
 
+    <!--  Transparent Dialog  -->
+    <style name="TransparentDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
     <!--  EditText  -->
     <style name="AddEditText" parent="Widget.Material3.TextInputEditText.FilledBox">
         <item name="boxStrokeColor">@color/popcon_orange</item>

@@ -31,9 +31,10 @@ import com.ssafy.popcon.databinding.DialogMmsBinding
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.add.AddRemoteDataSource
 import com.ssafy.popcon.repository.add.AddRepository
+import com.ssafy.popcon.ui.add.ProgressDialog
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.RetrofitUtil
-import com.ssafy.popcon.viewmodel.AddViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,10 +51,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val TAG = "MMSDialog_###"
-class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
+private const val TAG = "MMSDialog"
+class MMSDialog(
+    private val mainActivity: MainActivity
+): DialogFragment() {
     private lateinit var binding: DialogMmsBinding
-    private lateinit var mainActivity: MainActivity
     private lateinit var mContext: Context
 
     override fun onAttach(context: Context) {
@@ -63,7 +65,6 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogMmsBinding.inflate(layoutInflater)
-        mainActivity = MainActivity.getInstance()!!
         mContext = requireContext()
 
         val builder = AlertDialog.Builder(context, R.style.WrapContentDialog)
@@ -91,7 +92,6 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
             firstAdd()
 
             binding.lMms.visibility = View.GONE
-            makeProgressDialog()
             changeProgressDialogState(true)
             MainActivity.fromMMSReceiver = null
         }
@@ -108,8 +108,7 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
     private var barcodeImgUris = ArrayList<GifticonImg>()
     private var gifticonInfoList = ArrayList<AddInfo>()
     private var gifticonEffectiveness = ArrayList<AddInfoNoImgBoolean>()
-    private lateinit var loadingDialog: AlertDialog.Builder
-    private lateinit var dialogCreate: AlertDialog
+    private val loadingDialog = ProgressDialog(false)
     private val repo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
@@ -220,20 +219,12 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
         return value
     }
 
-    // 로딩화면 띄우기
-    private fun makeProgressDialog(){
-        loadingDialog = AlertDialog.Builder(requireContext())
-        loadingDialog.setView(R.layout.dialog_progress).setCancelable(false)
-        dialogCreate = loadingDialog.create()
-    }
-
-    // 상태에 따라 다이얼로그 만들기/없애기
+    // 상태에 따라 로딩화면 만들기/없애기
     private fun changeProgressDialogState(state: Boolean){
         if (state){
-            dialogCreate.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialogCreate.show()
+            loadingDialog.show(mainActivity.supportFragmentManager, null)
         } else{
-            dialogCreate.dismiss()
+            loadingDialog.dismiss()
         }
     }
 
@@ -611,6 +602,7 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
                     }
 
                     launch {
+                        mainActivity.changeFragment(HomeFragment())
                         changeProgressDialogState(false)
                         dismiss()
                     }.join()

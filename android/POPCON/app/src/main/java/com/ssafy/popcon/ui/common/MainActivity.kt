@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         //checkPermissions()
 
         getFCMToken()
-        //SharedPreferencesUtil(this).deleteUser()
+        SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
         // 스플레시 스크린 고려
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
     private fun chkNewMMSImg(){
         if (fromMMSReceiver != null){
             supportFragmentManager.beginTransaction()
-                .add(MMSDialog(addViewModel), "mmsDialog")
+                .add(MMSDialog(this), "mmsDialog")
                 .commitAllowingStateLoss()
         }
     }
