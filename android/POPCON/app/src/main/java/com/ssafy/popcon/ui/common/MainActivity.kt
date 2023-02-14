@@ -15,7 +15,6 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,18 +22,16 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.wearable.*
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
-import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.gallery.AddGalleryGifticon
+import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.mms.MMSDialog
 import com.ssafy.popcon.mms.MMSJobService
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
 import com.ssafy.popcon.repository.fcm.FCMRepository
 import com.ssafy.popcon.ui.add.*
-import com.ssafy.popcon.mms.MMSReceiver
-import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.map.MapFragment
@@ -43,9 +40,6 @@ import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.viewmodel.AddViewModel
-import com.ssafy.popcon.viewmodel.FCMViewModel
-import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 private const val USER_KEY = "com.ssafy.popcon.key.user"
 
@@ -56,10 +50,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accelerometer: Sensor
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
-    private var mmsReceiver = MMSReceiver()
-
-    private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
-    private val addViewModel: AddViewModel by viewModels { ViewModelFactory(this) }
 
     val PERMISSION_REQUEST_CODE = 8
 
@@ -86,13 +76,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 //        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
 
+        SharedPreferencesUtil(this).deleteUser()
         setNavBar()
-
         checkPermissions()
-        getFCMToken()
-        //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
+
         // 스플레시 스크린 고려
 
         //자동로그인
@@ -107,6 +96,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 앱 실행 시 gallery에서 이미지 불러오기
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun makeGalleryDialogFragment(
+        appliContext: Context,
+        cResolver: ContentResolver
+    ){
+        val addGalleryGifticon = AddGalleryGifticon(
+            this, appliContext, cResolver
+        )
+
+        getInstance()!!.supportFragmentManager.beginTransaction()
+            .add(addGalleryGifticon, "galleryDialog")
+            .commitAllowingStateLoss()
+    }
+
+    // data send to watch
     private fun sendUserData() {
         val payload: ByteArray =
             (SharedPreferencesUtil(this@MainActivity).getUser().email!! + " " + SharedPreferencesUtil(
@@ -127,22 +132,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 앱 실행 시 gallery에서 이미지 불러오기
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun makeGalleryDialogFragment(
-        appliContext: Context,
-        cResolver: ContentResolver
-    ){
-        val addGalleryGifticon = AddGalleryGifticon(
-            this, appliContext, cResolver
-        )
-
-        getInstance()!!.supportFragmentManager.beginTransaction()
-            .add(addGalleryGifticon, "galleryDialog")
-            .commitAllowingStateLoss()
-    }
-
-    // MMS BroadcastReceiver 호출 위한 JobScheduler
+    // MMS BroadcastReceiver 호출위한 JobScheduler
     private fun callMMSReceiver(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             startForegroundService(intent)
@@ -165,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     private fun chkNewMMSImg(){
         if (fromMMSReceiver != null){
             supportFragmentManager.beginTransaction()
-                .add(MMSDialog(addViewModel), "mmsDialog")
+                .add(MMSDialog(this), "mmsDialog")
                 .commitAllowingStateLoss()
         }
     }
@@ -318,33 +308,12 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    // 토큰 보내기
-    fun uploadToken(token: String) {
-        fcmViewModel.uploadToken(token)
-    }
-
     // 알림 관련 메시지 전송
     suspend fun sendMessageTo(token: String, title: String, body: String) {
         FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService)).sendMessageTo(token, title, body)
-        //fcmViewModel.sendMessageTo(token, title, body)
         //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
     }
-
-    // 토큰 생성
-    private fun getFCMToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@addOnCompleteListener
-            }
-            Log.d(TAG, "token 정보: ${task.result ?: "task.result is null"}")
-            if (task.result != null) {
-                uploadToken(task.result)
-                fcmViewModel.setToken(task.result)
-                SharedPreferencesUtil(this).setFCMToken(task.result)
-            }
-        }
-    }
-
+    
     override fun onRestart() {
         super.onRestart()
         // checkPermissions()

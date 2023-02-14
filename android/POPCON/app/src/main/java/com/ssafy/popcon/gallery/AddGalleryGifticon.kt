@@ -1,14 +1,9 @@
 package com.ssafy.popcon.gallery
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Application
-import android.app.Dialog
 import android.content.*
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.ImageDecoder
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -23,42 +18,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.loader.content.CursorLoader
 import com.google.gson.Gson
 import com.google.gson.JsonParser
-import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.DialogProgressBinding
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.add.AddRemoteDataSource
 import com.ssafy.popcon.repository.add.AddRepository
 import com.ssafy.popcon.ui.add.ProgressDialog
-import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.viewmodel.AddViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.source
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.log
 
 private const val TAG = "AddGalleryGifticon"
 class AddGalleryGifticon(
@@ -185,7 +172,6 @@ class AddGalleryGifticon(
         }
         firstAdd()
 
-        makeProgressDialog()
         changeProgressDialogState(true)
     }
 
@@ -198,8 +184,7 @@ class AddGalleryGifticon(
     private var barcodeImgUris = ArrayList<GifticonImg>()
     private var gifticonInfoList = ArrayList<AddInfo>()
     private var gifticonEffectiveness = ArrayList<AddInfoNoImgBoolean>()
-    private lateinit var loadingDialog: AlertDialog.Builder
-    private lateinit var dialogCreate: AlertDialog
+    private val loadingDialog = ProgressDialog(false)
     private val repo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
@@ -328,20 +313,12 @@ class AddGalleryGifticon(
         return value
     }
 
-    // 로딩화면 띄우기
-    private fun makeProgressDialog(){
-        loadingDialog = AlertDialog.Builder(requireContext())
-        loadingDialog.setView(R.layout.dialog_progress).setCancelable(false)
-        dialogCreate = loadingDialog.create()
-    }
-
-    // 상태에 따라 다이얼로그 만들기/없애기
+    // 상태에 따라 로딩화면 만들기/없애기
     private fun changeProgressDialogState(state: Boolean){
         if (state){
-            dialogCreate.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialogCreate.show()
+            loadingDialog.show(mainActivity.supportFragmentManager, null)
         } else{
-            dialogCreate.dismiss()
+            loadingDialog.dismiss()
         }
     }
 
