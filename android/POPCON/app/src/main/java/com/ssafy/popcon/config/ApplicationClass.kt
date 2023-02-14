@@ -32,8 +32,8 @@ class ApplicationClass : Application() {
 
         fun makeRetrofit(url: String): Retrofit {
             val okHttpClient = OkHttpClient.Builder()
-                .readTimeout(5000, TimeUnit.MILLISECONDS)
-                .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                .readTimeout(10000, TimeUnit.MILLISECONDS)
+                .connectTimeout(10000, TimeUnit.MILLISECONDS)
                 // 로그캣에 okhttp.OkHttpClient로 검색하면 http 통신 내용을 보여줍니다.
                 .authenticator(TokenAuthenticator())
                 .addInterceptor(AuthInterceptor())
@@ -125,6 +125,6 @@ class ApplicationClass : Application() {
         makeRetrofit(SERVER_URL)
         kakaoLoginState()
         makeRefreshRetrofit(SERVER_URL)
-        setNaverModule(applicationContext)
+        //setNaverModule(applicationContext)
     }
 }

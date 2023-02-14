@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.wearable.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.ssafy.popcon.R
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accelerometer: Sensor
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
+    lateinit var bottomNav: BottomNavigationView
 
     val PERMISSION_REQUEST_CODE = 8
 
@@ -77,9 +79,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        bottomNav = binding.bottomNav
 //        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
 
-        SharedPreferencesUtil(this).deleteUser()
+        //SharedPreferencesUtil(this).deleteUser()
         setNavBar()
         checkPermissions()
         callMMSReceiver()
