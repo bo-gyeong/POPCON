@@ -73,13 +73,14 @@ class ApplicationClass : Application() {
     }
 
     private var database: AppDatabase? = null
-    private fun provideDatabase(applicaContext: Context): AppDatabase {
+    fun provideDatabase(applicaContext: Context): AppDatabase {
         return database ?: kotlin.run {
             Room.databaseBuilder(
                 applicaContext,
                 AppDatabase::class.java,
                 "popcon-local"
-            ).build().also {
+            ).fallbackToDestructiveMigration()
+                .build().also {
                 database = it
             }
         }

@@ -2,8 +2,10 @@ package com.ssafy.popcon.ui.common
 
 import android.Manifest
 import android.app.job.JobInfo
+import android.app.job.JobScheduler
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorManager
@@ -27,22 +29,27 @@ import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.add.AddFragment
-import com.ssafy.popcon.ui.add.MMSReceiver
-import com.ssafy.popcon.ui.add.MyService
+import com.ssafy.popcon.mms.MMSDialog
+import com.ssafy.popcon.mms.MMSJobService
+import com.ssafy.popcon.mms.MMSReceiver
+import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
+import com.ssafy.popcon.repository.fcm.FCMRepository
+import com.ssafy.popcon.ui.add.*
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.ui.settings.SettingsFragment
 import com.ssafy.popcon.util.CheckPermission
+import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 import java.util.Objects
 
 private const val USER_KEY = "com.ssafy.popcon.key.user"
 private const val TAG = "MainActivity_싸피"
-
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sensorManager: SensorManager
@@ -51,9 +58,9 @@ class MainActivity : AppCompatActivity() {
     private var permissionGranted = false
     private var mmsReceiver = MMSReceiver()
     private lateinit var dataClient: DataClient
-    private var count = 0
 
     private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
+    private val addViewModel: AddViewModel by viewModels { ViewModelFactory(this) }
 
     val PERMISSION_REQUEST_CODE = 8
 
@@ -63,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var shakeDetector = ShakeDetector()
+        var fromMMSReceiver: Bitmap? = null
         const val channel_id = "popcon_user"
 
         private var instance: MainActivity? = null
@@ -78,10 +86,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setNavBar()
-        //checkPermissions()
-        //getFCMToken()
+        checkPermissions()
+        getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
+        chkNewMMSImg()
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
@@ -114,29 +123,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // MMS BroadcastReceiver 호출위한 JobScheduler
+    private fun callMMSReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForegroundService(intent)
+        } else{
+            startService(intent)
+        }
 
-    fun callMMSReceiver() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            startForegroundService(intent)
-//        } else{
-//            startService(intent)
-//        }
-//
-//        JobInfo.Builder(1, ComponentName(this, MyService::class.java)).run {
-//            setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-//            //jobScheduler?.schedule(build())
-//        }
-
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(
-            "android.provider.Telephony.WAP_PUSH_RECEIVED"
+        val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val job = JobInfo.Builder(
+            0,
+            ComponentName(this, MMSJobService::class.java)
         )
-        intentFilter.addDataType(
-            "application/vnd.wap.mms-message"
-        )
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            .setPersisted(true)
+//            .addTriggerContentUri(
+//            JobInfo.TriggerContentUri(
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS
+//            )
+//        )
+            .build()
+        jobScheduler.schedule(job)
+    }
 
-        registerReceiver(MMSReceiver(), intentFilter)
-        //, Manifest.permission.BROADCAST_WAP_PUSH, null
+    private fun chkNewMMSImg(){
+        if (fromMMSReceiver != null){
+            supportFragmentManager.beginTransaction()
+                .add(MMSDialog(addViewModel), "mmsDialog")
+                .commitAllowingStateLoss()
+        }
     }
 
     fun updateStatusBarColor(color: String?) { // Color must be in hexadecimal fromat
@@ -203,6 +220,12 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frame_layout_main, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        chkNewMMSImg()
+        Log.d(TAG, "onResume: ")
     }
 
     private val runtimePermissions = arrayOf(
@@ -288,8 +311,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     // 알림 관련 메시지 전송
-    fun sendMessageTo(token: String, title: String, body: String) {
-        fcmViewModel.sendMessageTo(token, title, body)
+    suspend fun sendMessageTo(token: String, title: String, body: String) {
+        FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService)).sendMessageTo(token, title, body)
+        //fcmViewModel.sendMessageTo(token, title, body)
         //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
     }
 
@@ -303,6 +327,7 @@ class MainActivity : AppCompatActivity() {
             if (task.result != null) {
                 uploadToken(task.result)
                 fcmViewModel.setToken(task.result)
+                SharedPreferencesUtil(this).setFCMToken(task.result)
             }
         }
     }
@@ -310,10 +335,5 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         // checkPermissions()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(mmsReceiver)
     }
 }

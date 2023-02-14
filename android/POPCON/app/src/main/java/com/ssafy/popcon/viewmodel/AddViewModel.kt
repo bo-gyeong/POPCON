@@ -23,8 +23,14 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
     private val _barcodeChk = MutableLiveData<Event<ChkValidation>>()
     val barcodeChk: LiveData<Event<ChkValidation>> = _barcodeChk
 
+    private val _addGifticonResult = MutableLiveData<Event<List<AddInfoNoImg>>>()
+    val addGifticonResult: LiveData<Event<List<AddInfoNoImg>>> = _addGifticonResult
+
     private val _gcpOtherResult = MutableLiveData<Event<List<GCPResult>>>()
     val gcpOtherResult: LiveData<Event<List<GCPResult>>> = _gcpOtherResult
+
+    private val _addImgInfoResult = MutableLiveData<Event<List<List<AddImgInfoResult>>>>()
+    val addImgInfoResult: LiveData<Event<List<List<AddImgInfoResult>>>> = _addImgInfoResult
 
     fun addFileToGCP(files: Array<MultipartBody.Part>){
         viewModelScope.launch {
@@ -52,7 +58,7 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
 
     fun addGifticon(addInfo: List<AddInfoNoImg>){
         viewModelScope.launch {
-            addRepository.addGifticon(addInfo)
+            _addGifticonResult.value = Event(addRepository.addGifticon(addInfo))
         }
     }
 
@@ -64,7 +70,7 @@ class AddViewModel(private val addRepository: AddRepository): ViewModel() {
 
     fun addImgInfo(imgInfo: Array<AddImgInfo>){
         viewModelScope.launch {
-            addRepository.addImgInfo(imgInfo)
+            _addImgInfoResult.value = Event(addRepository.addImgInfo(imgInfo))
         }
     }
 }

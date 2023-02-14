@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.util.Log
+import android.graphics.Bitmap
 import com.ssafy.popcon.dto.User
 
 class SharedPreferencesUtil(context: Context) {
@@ -82,6 +83,32 @@ class SharedPreferencesUtil(context: Context) {
     fun deleteUser() {
         val editor = preferences.edit()
         editor.clear()
+        editor.apply()
+    }
+
+    // 최근에 저장된 MMS date
+    fun getLatelyMMSDate(): String{
+        val dateStr = preferences.getString("lastMMSDate", "")
+        return dateStr!!
+    }
+
+    // MMS date update
+    fun setMMSDate(date: String){
+        val editor = preferences.edit()
+        editor.putString("lastMMSDate", date)
+        editor.apply()
+    }
+
+    // FCM Token 가져오기
+    fun getFCMToken(): String{
+        val token = preferences.getString("fcmToken", "")
+        return token!!
+    }
+
+    // FCM Token 저장하기
+    fun setFCMToken(token: String){
+        val editor = preferences.edit()
+        editor.putString("fcmToken", token)
         editor.apply()
     }
 }

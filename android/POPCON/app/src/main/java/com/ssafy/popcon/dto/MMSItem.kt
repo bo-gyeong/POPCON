@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
     tableName = "mms_item"
 )
 data class MMSItem(
-    @PrimaryKey @ColumnInfo(name = "test")
-    val test : String
+    @PrimaryKey @ColumnInfo(name = "phoneNumber")
+    val phoneNumber : String,
+    @ColumnInfo(name = "beforeDate")
+    val beforeDate : String
 )

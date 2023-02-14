@@ -31,12 +31,14 @@ import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentLoginBinding
 import com.ssafy.popcon.dto.TokenResponse
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.mms.RoomInitLogin
 import com.ssafy.popcon.repository.auth.AuthRemoteDataSource
 import com.ssafy.popcon.repository.auth.AuthRepository
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.viewmodel.MMSViewModel
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -51,6 +53,7 @@ private const val TAG = "LoginFragment_싸피"
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val mmsViewModel: MMSViewModel by viewModels { ViewModelFactory(requireContext()) }
     lateinit var tokens: TokenResponse
 
     private var userUUID: String = ""
@@ -185,6 +188,7 @@ class LoginFragment : Fragment() {
 
                                 viewModel.signInKakao(user)
                                 viewModel.user.observe(viewLifecycleOwner) {
+                                    RoomInitLogin(mmsViewModel).initRoom()
                                     mainActivity.changeFragment(HomeFragment())
                                 }
                             }
@@ -229,6 +233,7 @@ class LoginFragment : Fragment() {
                                     "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
                                 )
                             }
+                            RoomInitLogin(mmsViewModel).initRoom()
                             mainActivity.changeFragment(HomeFragment())
                         }
 
