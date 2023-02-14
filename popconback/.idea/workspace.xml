@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5305770b-0011-48f1-89ab-eba3ab21690d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/java/com/ssafy/popcon/fcm/FirebaseMessagingService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/java/com/ssafy/popcon/fcm/FirebaseMessagingService.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

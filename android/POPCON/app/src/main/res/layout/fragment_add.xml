@@ -202,11 +202,12 @@
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btn_original_see"
+                            style="@style/Bold.Brown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/original_see"
                             android:textSize="16sp"
-                            android:background="@drawable/shape_round_grey"
+                            android:background="@drawable/shape_round_white_shadow"
                             app:layout_constraintTop_toBottomOf="@+id/l_coupon_img"
                             app:layout_constraintLeft_toLeftOf="parent"/>
 
