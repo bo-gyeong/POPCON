@@ -1,14 +1,21 @@
 package com.ssafy.popcon.ui.login
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.wear.ambient.AmbientModeSupport
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.gif.GifDrawable
+import com.bumptech.glide.request.target.DrawableImageViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.wearable.*
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -20,6 +27,7 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
+import com.ssafy.popcon.R
 import com.ssafy.popcon.config.WearApplicationClass
 import com.ssafy.popcon.databinding.ActivityLoginBinding
 import com.ssafy.popcon.dto.TokenResponse
@@ -53,6 +61,12 @@ class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPro
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
+
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        //floatLogo()
+        return super.onCreateView(name, context, attrs)
+    }
+
     override fun onResume() {
         super.onResume()
         Wearable.getDataClient(this).addListener(this)
@@ -61,6 +75,7 @@ class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPro
             .addListener(this, Uri.parse("wear://"), CapabilityClient.FILTER_REACHABLE)
 
         supportActionBar!!.hide()
+        //SharedPreferencesUtil(this@LoginActivity).deleteUser()
     }
 
     override fun onPause() {
@@ -104,7 +119,7 @@ class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPro
             val intent = Intent(this, DonateActivity::class.java)
             startActivity(intent)
 
-            finish()
+            //finish()
 
         } catch (e: Exception) {
             Log.d(TAG_MESSAGE_RECEIVED, "Handled in onMessageReceived")
@@ -114,5 +129,21 @@ class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPro
 
     override fun onCapabilityChanged(p0: CapabilityInfo) {
 
+    }
+
+    private fun floatLogo(){
+        Glide.with(applicationContext).load(R.raw.pop)
+            .into(object : DrawableImageViewTarget(binding.ivLogo) {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    if (resource is GifDrawable) {
+                        (resource as GifDrawable).setLoopCount(1)
+                        binding.tvLoginInfo.visibility = View.VISIBLE
+                    }
+                    super.onResourceReady(resource, transition)
+                }
+            })
     }
 }

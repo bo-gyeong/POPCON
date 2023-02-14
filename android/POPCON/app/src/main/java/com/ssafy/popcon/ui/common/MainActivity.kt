@@ -102,11 +102,32 @@ class MainActivity : AppCompatActivity() {
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
             Log.d(TAG, "onCreate: 로그인됨")
+            sendUserData()
             changeFragment(HomeFragment())
             makeGalleryDialogFragment(applicationContext, contentResolver)
         } else {
             Log.d(TAG, "onCreate: 로그인 필요")
             changeFragment(LoginFragment())
+        }
+    }
+
+    private fun sendUserData() {
+        val payload: ByteArray =
+            (SharedPreferencesUtil(this@MainActivity).getUser().email!! + " " + SharedPreferencesUtil(
+                this@MainActivity
+            ).getUser().social!! + " " + ApplicationClass.sharedPreferencesUtil.accessToken).toByteArray()
+
+        val sendMessageTask =
+            Wearable.getMessageClient(this)
+                .sendMessage("nodeId", "/user", payload)
+
+        sendMessageTask.addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.d("send1", "Message sent successfully")
+
+            } else {
+                Log.d("send1", "Message failed.")
+            }
         }
     }
 
