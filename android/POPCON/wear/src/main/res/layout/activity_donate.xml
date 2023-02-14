@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/tv_donate"
-        android:text="기부해주세요"
+        android:text="여기에 기부!"
         android:visibility="invisible"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"

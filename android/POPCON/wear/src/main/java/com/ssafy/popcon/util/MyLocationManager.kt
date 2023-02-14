@@ -10,7 +10,7 @@ object MyLocationManager {
 
     @SuppressLint("MissingPermission")
     fun getLocation(lm : LocationManager): Location? {
-        return lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        return lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
     }
     fun getLocationManager(context: Context): LocationManager {
         return context.getSystemService(LOCATION_SERVICE) as LocationManager

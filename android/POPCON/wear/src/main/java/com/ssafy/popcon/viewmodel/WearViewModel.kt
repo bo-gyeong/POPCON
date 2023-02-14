@@ -19,15 +19,6 @@ class WearViewModel(private val wearRepository: WearRepository) : ViewModel() {
     private val _gifticons = MutableLiveData<List<Gifticon>>()
     val gifticons: LiveData<List<Gifticon>> = _gifticons
 
-
-    fun signInKakao(user: User) {
-        viewModelScope.launch {
-            Log.d("TAG", "signInKakao: $user")
-            val user = wearRepository.signInKakao(user)
-            _user.value = user
-        }
-    }
-
     //사용자의 기프티콘 목록 불러오기
     fun getGifticonByUser(user: User) {
         Log.d(TAG, "getGifticonByUser: $user")

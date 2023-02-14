@@ -20,8 +20,7 @@ private const val TAG = "GifticonMap_싸피"
 class MapGifticonAdpater(
     val target : View,
     val viewModel: WearViewModel,
-    val user: User,
-    val lm: LocationManager
+    val user: User
 ) :
     ListAdapter<Gifticon, MapGifticonAdpater.GifticonMapViewHolder>(BannerDiffCallback()) {
     private lateinit var binding: ItemMapGiftconBinding
@@ -39,8 +38,7 @@ class MapGifticonAdpater(
             WearDragListener(target,
                 getItem(position).barcodeNum,
                 viewModel,
-                user,
-                lm
+                user
             )
         )
         holder.itemView.setOnLongClickListener { v ->
