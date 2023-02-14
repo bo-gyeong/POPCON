@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/edge_dialog"
-        android:padding="8dp">
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/tv_noBrand"
