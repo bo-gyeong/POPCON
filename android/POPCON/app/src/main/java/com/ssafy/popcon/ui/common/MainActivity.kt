@@ -46,9 +46,7 @@ import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
-import java.util.Objects
 
-private const val USER_KEY = "com.ssafy.popcon.key.user"
 private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -57,7 +55,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
     private var mmsReceiver = MMSReceiver()
-    private lateinit var dataClient: DataClient
 
     private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
     private val addViewModel: AddViewModel by viewModels { ViewModelFactory(this) }

@@ -1,6 +1,5 @@
 package com.ssafy.popcon.config
 
-import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.util.Log
@@ -30,11 +29,6 @@ class ApplicationClass : Application() {
         lateinit var sharedPreferencesUtil: SharedPreferencesUtil
         lateinit var retrofit: Retrofit
         lateinit var refreshRetrofit: Retrofit
-
-        // 모든 퍼미션 관련 배열
-        val requiredPermissions = arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-        )
 
         fun makeRetrofit(url: String): Retrofit {
             val okHttpClient = OkHttpClient.Builder()
@@ -114,7 +108,7 @@ class ApplicationClass : Application() {
         }
     }
 
-    fun setNaverModule(context: Context) {
+    private fun setNaverModule(context: Context) {
         NaverIdLoginSDK.initialize(
             context,
             BuildConfig.naverClientID,
@@ -127,8 +121,6 @@ class ApplicationClass : Application() {
         sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
 
         super.onCreate()
-
-        //shared preference 초기화
 
         makeRetrofit(SERVER_URL)
         kakaoLoginState()

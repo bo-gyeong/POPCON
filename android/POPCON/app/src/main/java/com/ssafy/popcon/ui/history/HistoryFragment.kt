@@ -1,5 +1,7 @@
 package com.ssafy.popcon.ui.history
 
+import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentHistoryBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
@@ -33,13 +36,15 @@ class HistoryFragment : Fragment() {
         GifticonDialogFragment.isShow = true
     }
 
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
-
+        binding.btnHistory.backgroundTintList =
+            requireContext().resources.getColorStateList(R.color.history_btn)
         return binding.root
     }
 

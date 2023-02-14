@@ -11,7 +11,7 @@ import com.ssafy.popcon.repository.gifticon.GifticonRepository
 import com.ssafy.popcon.ui.common.Event
 import kotlinx.coroutines.launch
 
-class PopupViewModel(private val gifticonRepository: GifticonRepository): ViewModel() {
+class PopupViewModel(private val gifticonRepository: GifticonRepository) : ViewModel() {
     val TAG = "POPUPVIEWMODEL"
 
     private val _brands = MutableLiveData<List<Brand>>()
@@ -25,15 +25,23 @@ class PopupViewModel(private val gifticonRepository: GifticonRepository): ViewMo
         viewModelScope.launch {
             val brands = gifticonRepository.getBrandsByLocation(request)
             _brands.value = brands
-
-            getGifticons(user, brands[0].brandName)
+            if (brands.size != 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          getGifticons(user, brands[0].brandName)
+            }
         }
     }
 
     //상단 탭 클릭 시 브랜드 별 기프티콘 받음
     fun getGifticons(user: User, brandName: String) {
         viewModelScope.launch {
-            val gifticons = gifticonRepository.getGifticonByBrand(GifticonByBrandRequest(user.email!!, user.social.toString(), -1, brandName))
+            val gifticons = gifticonRepository.getGifticonByBrand(
+                GifticonByBrandRequest(
+                    user.email!!,
+                    user.social.toString(),
+                    -1,
+                    brandName
+                )
+            )
             Log.d(TAG, "getGifticons: $gifticons")
             _gifticons.value = Event(gifticons)
         }

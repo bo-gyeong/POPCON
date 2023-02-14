@@ -49,7 +49,7 @@ class HomeFragment : Fragment(){
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
+        isShow = false
         mainActivity = activity as MainActivity
     }
 

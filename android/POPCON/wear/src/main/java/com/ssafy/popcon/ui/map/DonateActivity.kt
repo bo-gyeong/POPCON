@@ -19,7 +19,6 @@ import com.ssafy.popcon.databinding.ActivityDonateBinding
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.ui.common.WearDragListener
 import com.ssafy.popcon.ui.common.DragShadowBuilder
-import com.ssafy.popcon.util.MyLocationManager
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.WearViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactoryWear
@@ -43,8 +42,6 @@ class DonateActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        //checkLocationService()
 
         binding = ActivityDonateBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -70,13 +67,6 @@ class DonateActivity : AppCompatActivity() {
             }
         }
     }
-/*
-    lateinit var lm: LocationManager
-    private fun checkLocationService(): Boolean {
-        lm = MyLocationManager.getLocationManager(this)
-        Log.d(TAG, "checkLocationService: $lm")
-        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    }*/
 
     lateinit var donateNumber: String
 
@@ -93,7 +83,7 @@ class DonateActivity : AppCompatActivity() {
             override fun onLongClick(v: View, gifticon: Gifticon) {
                 donateNumber = gifticon.barcodeNum
                 fusedLocationClient.lastLocation
-                    .addOnSuccessListener { location : Location? ->
+                    .addOnSuccessListener { location: Location? ->
                         // Got last known location. In some rare situations this can be null.
 
                         DonateLocation.x = location?.longitude.toString()
