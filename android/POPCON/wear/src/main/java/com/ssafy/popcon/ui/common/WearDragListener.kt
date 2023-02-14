@@ -7,11 +7,9 @@ import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.view.View.OnDragListener
-import androidx.core.view.isVisible
 import com.ssafy.popcon.dto.DonateRequest
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.map.DonateLocation
-import com.ssafy.popcon.util.MyLocationManager
 import com.ssafy.popcon.viewmodel.WearViewModel
 
 open class WearDragListener(

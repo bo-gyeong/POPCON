@@ -26,9 +26,8 @@ class HistoryDialogFragment : DialogFragment() {
     private lateinit var history: String
     private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
-
-    override fun onStart() {
-        super.onStart()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         GifticonDialogFragment.isShow = true
     }
 
