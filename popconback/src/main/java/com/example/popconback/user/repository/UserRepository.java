@@ -9,6 +9,4 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
 //    User findOne(UserId id);
     User findByRefreshToken(String token);
-
-
 }
