@@ -1,11 +1,10 @@
-package com.ssafy.popcon.mms
+package com.ssafy.popcon.gallery
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.Application
 import android.app.Dialog
-import android.content.ContentResolver
-import android.content.ContentValues
-import android.content.Context
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
@@ -17,26 +16,35 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.text.TextUtils
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.view.Window
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.loader.content.CursorLoader
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
-import com.ssafy.popcon.databinding.DialogMmsBinding
+import com.ssafy.popcon.databinding.DialogProgressBinding
 import com.ssafy.popcon.dto.*
 import com.ssafy.popcon.repository.add.AddRemoteDataSource
 import com.ssafy.popcon.repository.add.AddRepository
+import com.ssafy.popcon.ui.add.ProgressDialog
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
+import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.RetrofitUtil
+import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -46,57 +54,139 @@ import okio.source
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.log
 
-private const val TAG = "MMSDialog_###"
-class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
-    private lateinit var binding: DialogMmsBinding
-    private lateinit var mainActivity: MainActivity
-    private lateinit var mContext: Context
+private const val TAG = "AddGalleryGifticon"
+class AddGalleryGifticon(
+    private val mainActivity: MainActivity,
+    private val mContext: Context,
+    private val _contentResolver: ContentResolver
+): Fragment() {
+    private val sp = SharedPreferencesUtil(mContext)
+    private val newImgUri = mutableListOf<Uri>()
+    private lateinit var binding: DialogProgressBinding
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mContext = context
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = DialogProgressBinding.inflate(layoutInflater, container, false)
+
+        return binding.root
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogMmsBinding.inflate(layoutInflater)
-        mainActivity = MainActivity.getInstance()!!
-        mContext = requireContext()
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        getImgList()
+    }
 
-        val builder = AlertDialog.Builder(context, R.style.WrapContentDialog)
-        builder.setView(binding.root)
+    // 갤러리에 저장된 이미지 목록 받아오기
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun getImgList(){
+        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(
+            MediaStore.Images.ImageColumns._ID,
+            MediaStore.MediaColumns.DATA,
+            MediaStore.MediaColumns.DATE_TAKEN
+        )
 
-        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-        isCancelable = false
+        val cursor = _contentResolver.query(
+            uri, projection, null, null, MediaStore.MediaColumns._ID + " desc"
+        )!!
+        val columnId = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID)
+        val columnIdx = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+        val dateTAKEN = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_TAKEN)
+        //val columnDisplayName = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
 
-        binding.lMms.visibility = View.VISIBLE
-        binding.btnCancel.setOnClickListener {
-            MainActivity.fromMMSReceiver = null
-            dismiss()
-        }
+        val galleryInfo = sp.getLatelyGalleryInfo()
+        var spImgCnt = galleryInfo.imgCnt
+        var newImg = false
+        while (cursor.moveToNext()){
+            val absolutePath = cursor.getString(columnIdx)
+            val date = cursor.getLong(dateTAKEN)
+            val imgUri = ContentUris.withAppendedId(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cursor.getLong(columnId)
+            )
 
-        binding.btnGoToAdd.setOnClickListener {
-            initData()
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = date
+            val dateStr = android.text.format.DateFormat.format("yyyy/MM/dd kk:mm:ss", calendar).toString()
+            //val fileName = cursor.getString(columnDisplayName)
 
-            for (i in 0 until 1){
-                val uri = bitmapToUri(MainActivity.fromMMSReceiver!!)
-                //Log.d(TAG, "onCreateDialog**: ${uri}")
-                originalImgUris.add(GifticonImg(uri))
-                gifticonEffectiveness.add(AddInfoNoImgBoolean())
+            if (!TextUtils.isEmpty(absolutePath)){
+                // taken이 sp에 저장된 날짜보다 작거나 같다면 break
+                // sp에 저장된 날짜의 시작은 로그인 날짜
+                calendar.timeInMillis = galleryInfo.date
+                val galleryDateStr = android.text.format.DateFormat.format("yyyy/MM/dd kk:mm:ss", calendar).toString()
+                //Log.d(TAG, "getImgList: ${dateStr}==${date}   ${galleryDateStr}")
+//                if (date <= galleryDate){  //date <= galleryDate
+//                    break
+//                }
+//                val spDate = galleryInfo.date
+
+//                if (spImgCnt >= cursor.count){
+//                    break
+//                }
+                Log.d(TAG, "getImgList: ${spImgCnt}   ${cursor.count}")
+
+                newImg = true
+                if (cursor.isFirst){
+                     //date 제대로 안나오면 sp에 저장하는 의미 X
+                    newImgUri.add(imgUri)
+                    addImg()
+                    break
+                }
+//                spImgCnt++
+//                newImgUri.add(imgUri)
             }
-            firstAdd()
+        }
+        cursor.close()
 
-            binding.lMms.visibility = View.GONE
-            makeProgressDialog()
-            changeProgressDialogState(true)
-            MainActivity.fromMMSReceiver = null
+//        if(newImg){
+//            sp.setGalleryInfo(
+//                Gallery(
+//                    System.currentTimeMillis(),
+//                    cursorCnt
+//                )
+//            )
+//            addImg()
+//        }
+
+        /** 같은 이미지 여러장 들어갔을 때 서버 처리?
+        sp.setGalleryInfo(
+            Gallery(
+                System.currentTimeMillis(),
+                7500
+            )
+        )
+        cursor.close()
+        addImg()**/
+    }
+
+    private fun addImg(){
+        initData()
+        for (i in 0 until newImgUri.size){
+            if (!getFileSize(newImgUri[i])){
+                continue
+            }
+            originalImgUris.add(GifticonImg(newImgUri[i]))
+            gifticonEffectiveness.add(AddInfoNoImgBoolean())
         }
 
-        return builder.create()
+        if(originalImgUris.size < 1){
+            Toast.makeText(requireContext(), "잘못된 이미지 입니다", Toast.LENGTH_SHORT).show()
+            return
+        }
+        firstAdd()
+
+        makeProgressDialog()
+        changeProgressDialogState(true)
     }
 
     private var delImgUris = ArrayList<Uri>()
@@ -134,14 +224,13 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
             val originalImgUri = originalImgUris[i].imgUri
             delImgUris.add(originalImgUri)
 
-            val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
+            val realData = originalImgUri.asMultipart("file", mContext.contentResolver)
             multipartFiles.add(realData!!)
         }
 
         CoroutineScope(Dispatchers.IO).launch {
             val gcpResponse = repo.addFileToGCP(multipartFiles.toTypedArray())
             launch {
-                ocrSendList.clear()
                 for (i in 0 until gcpResponse.size){
                     val gcpResult = gcpResponse[i]
                     val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
@@ -154,6 +243,10 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
                 }
 
                 val ocrResponse = repo.useOcr(ocrSendList.toTypedArray())
+                if (ocrResponse.isEmpty()){
+                    notifyFail()
+                    return@launch
+                }
                 launch {
                     for (ocrResult in ocrResponse){
                         ocrResults.add(ocrResult)
@@ -185,6 +278,21 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
                 }.join()
             }.join()
         }
+    }
+
+    // get img size
+    private fun getFileSize(imgUri: Uri): Boolean{
+        val path = getPath(imgUri)
+        if (path == ""){
+            return false
+        }
+
+        val file = File(path)
+        val fileSize = Integer.parseInt((file.length()).toString())
+        if(fileSize > 1040000){
+            return false
+        }
+        return true
     }
 
     // uri to multipart
@@ -317,9 +425,9 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
             values.put(MediaStore.Images.Media.IS_PENDING, 1)
         }
 
-        val uri = requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        val uri = mContext.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         if (uri != null) {
-            val descriptor = requireContext().contentResolver.openFileDescriptor(uri, "w")
+            val descriptor = mContext.contentResolver.openFileDescriptor(uri, "w")
 
             if (descriptor != null) {
                 val fos = FileOutputStream(descriptor.fileDescriptor)
@@ -330,7 +438,7 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     values.clear()
                     values.put(MediaStore.Images.Media.IS_PENDING, 0)
-                    requireContext().contentResolver.update(uri, values, null, null)
+                    mContext.contentResolver.update(uri, values, null, null)
                 }
             }
         }
@@ -341,13 +449,13 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
     private fun getPath(uri: Uri):String{
         try {
             val data:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-            val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
+            val cursorLoader = CursorLoader(mContext, uri, data, null, null, null)
             val cursor = cursorLoader.loadInBackground()!!
             val idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
             cursor.moveToFirst()
 
             return cursor.getString(idx)
-        } catch (e : java.lang.Exception){
+        } catch (e:java.lang.Exception){
             Log.e(TAG, "getPath: cursor Null")
         }
         return ""
@@ -363,20 +471,6 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
         }
 
         return bitmap
-    }
-
-    /** 코드 다시 찾기 **/
-    // bitmap -> uri
-    private fun bitmapToUri(bitmap: Bitmap): Uri {
-        bitmap.compress(
-            Bitmap.CompressFormat.JPEG, 100, ByteArrayOutputStream()
-        )
-
-        val path = MediaStore.Images.Media.insertImage(
-            requireContext().contentResolver, bitmap, "mmsBitmapToUri", null
-        )
-
-        return Uri.parse(path)
     }
 
     // 크롭되면서 새로 생성된 이미지 삭제
@@ -439,10 +533,12 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
         if (barcode != ""){
             CoroutineScope(Dispatchers.IO).launch {
                 val barcodeResponse = repo.chkBarcode(barcode)
-                if (barcodeResponse.result == 1){
-                    gifticonEffectiveness[imgNum].barcodeNum = true
-                }
-                add()
+                launch {
+                    if (barcodeResponse.result == 1){
+                        gifticonEffectiveness[imgNum].barcodeNum = true
+                    }
+                    add()
+                }.join()
             }
         }
     }
@@ -506,8 +602,8 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
     private fun makeAddImgMultipartList(): Array<MultipartBody.Part>{
         val multipartImg = mutableListOf<MultipartBody.Part>()
         for (i in 0 until originalImgUris.size){
-            val productData = productImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
-            val barcodeData = barcodeImgUris[i].imgUri.asMultipart("file", requireContext().contentResolver)!!
+            val productData = productImgUris[i].imgUri.asMultipart("file", mContext.contentResolver)!!
+            val barcodeData = barcodeImgUris[i].imgUri.asMultipart("file", mContext.contentResolver)!!
 
             multipartImg.add(productData)
             multipartImg.add(barcodeData)
@@ -560,18 +656,16 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
 
     // 인식에 실패할 경우
     private fun notifyFail(){
-        Log.d(TAG, "notifyFail: ")
         for (i in 0 until delImgUris.size){
             delCropImg(delImgUris[i])
         }
 
         Handler(Looper.getMainLooper()).post {
             kotlin.run {
-                Toast.makeText(context, "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
             }
         }
         changeProgressDialogState(false)
-        dismiss()
     }
 
     // 기프티콘 정보담긴 리스트 내용 검사
@@ -581,7 +675,8 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
             if (!gifticon.productName || !gifticon.brandName
                 || !gifticon.barcodeNum || !gifticon.due){
                 Log.d(TAG, "chkAllList: ${idx}")
-                Log.d(TAG, "chkAllList111: ${gifticon.productName}\n ${gifticon.brandName}\n" +
+                Log.d(
+                    TAG, "chkAllList111: ${gifticon.productName}\n ${gifticon.brandName}\n" +
                         "${gifticon.barcodeNum}\n${gifticon.due}\n")
                 return false
             }
@@ -611,8 +706,8 @@ class MMSDialog(private val viewMode: AddViewModel): DialogFragment() {
                     }
 
                     launch {
+                        mainActivity.changeFragment(HomeFragment())
                         changeProgressDialogState(false)
-                        dismiss()
                     }.join()
                 }.join()
             }

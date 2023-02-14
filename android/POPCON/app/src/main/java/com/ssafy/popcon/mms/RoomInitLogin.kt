@@ -2,23 +2,25 @@ package com.ssafy.popcon.mms
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import com.ssafy.popcon.dto.MMSItem
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.viewmodel.MMSViewModel
 
 @SuppressLint("Range")
-class RoomInitLogin(private val mmsViewModel: MMSViewModel) {
-    private var mainActivity = MainActivity.getInstance()!!
+class RoomInitLogin(
+    private val mContext: Context,
+    private val mmsViewModel: MMSViewModel
+    ) {
     private lateinit var resolver: ContentResolver
     private lateinit var mmsData: MMSData
 
     fun initRoom(){
-        mainActivity = MainActivity.getInstance()!!
-        resolver = mainActivity.contentResolver
+        resolver = mContext.contentResolver
         mmsData = MMSData(
             resolver,
-            mainActivity.applicationContext,
+            mContext.applicationContext,
             true
         )
 
