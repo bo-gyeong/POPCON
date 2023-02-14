@@ -19,12 +19,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp"
+            android:background="@drawable/shape_round_white_bold">
 
             <TextView
                 android:id="@+id/tv_brandName"
@@ -35,6 +40,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="스타벅스 구미 인동점" />
 
@@ -42,13 +48,14 @@
                 android:id="@+id/tv_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawablePadding="10dp"
                 android:drawableTint="@color/popcon_orange"
                 android:text="@{storePhone}"
-                android:textColor="#2196F3"
+                android:textColor="@color/popcon_black_01"
                 android:textSize="14sp"
+                android:gravity="center"
                 app:drawableLeftCompat="@drawable/ic_baseline_phone_24"
                 app:layout_constraintStart_toStartOf="@id/tv_brandName"
+                app:layout_constraintEnd_toEndOf="@id/tv_brandName"
                 app:layout_constraintTop_toBottomOf="@id/tv_brandName"
                 tools:text="0303030" />
 

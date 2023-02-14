@@ -22,13 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/edge_dialog"
-        android:padding="8dp">
+        android:padding="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cv_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +74,7 @@
                         android:id="@+id/iv_barcode_image"
                         imageUrl="@{gifticon.barcode_filepath}"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="50dp"
                         android:layout_marginHorizontal="24dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/barcode"
@@ -88,16 +87,17 @@
                         style="@style/Bold.Grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="4dp"
                         android:text="바코드 번호"
-                        android:textSize="13sp"
+                        android:textSize="13dp"
                         app:layout_constraintStart_toStartOf="@id/tv_barcode_img_title"
                         app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="4dp"
                         android:text="@{gifticon.barcodeNum}"
                         app:layout_constraintStart_toStartOf="@id/tv_barcode_title"
                         app:layout_constraintTop_toBottomOf="@id/tv_barcode_title" />
@@ -162,9 +162,9 @@
                         style="@style/Bold.Grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="26dp"
                         android:text="메모"
-                        android:textSize="13sp"
+                        android:textSize="13dp"
                         app:layout_constraintStart_toStartOf="@id/tv_barcode_img_title"
                         app:layout_constraintTop_toBottomOf="@id/tv_barcode_title" />
 
@@ -173,10 +173,12 @@
                         style="@style/Medium.Grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginStart="10dp"
                         android:text="@{gifticon.memo}"
                         android:textSize="13sp"
-                        app:layout_constraintStart_toStartOf="@id/tv_expDate"
-                        app:layout_constraintTop_toBottomOf="@id/tv_expDate" />
+                        app:layout_constraintStart_toStartOf="@id/tv_memo_title"
+                        app:layout_constraintTop_toBottomOf="@id/tv_memo_title" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

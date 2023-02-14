@@ -5,32 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5305770b-0011-48f1-89ab-eba3ab21690d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/popcon_launcher-playstore.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-anydpi-v26/popcon_launcher.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-anydpi-v26/popcon_launcher_round.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-hdpi/popcon_launcher.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-hdpi/popcon_launcher_foreground.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-hdpi/popcon_launcher_round.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-mdpi/popcon_launcher.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-mdpi/popcon_launcher_foreground.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-mdpi/popcon_launcher_round.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xhdpi/popcon_launcher.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xhdpi/popcon_launcher_foreground.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xhdpi/popcon_launcher_round.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xxhdpi/popcon_launcher.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xxhdpi/popcon_launcher_foreground.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xxhdpi/popcon_launcher_round.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xxxhdpi/popcon_launcher.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xxxhdpi/popcon_launcher_foreground.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/mipmap-xxxhdpi/popcon_launcher_round.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/values/popcon_launcher_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/java/com/ssafy/popcon/ui/login/LoginFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/java/com/ssafy/popcon/ui/login/LoginFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/java/com/ssafy/popcon/util/Utils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/java/com/ssafy/popcon/util/Utils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/drawable/sign_naver.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/drawable/sign_naver.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/layout/fragment_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/layout/fragment_login.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/layout/dialog_home_gifticon.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../android/POPCON/app/src/main/res/layout/dialog_home_gifticon.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

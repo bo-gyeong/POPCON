@@ -20,6 +20,7 @@ import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.kakao.util.maps.helper.Utility
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
@@ -79,6 +80,7 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
+//        Log.d("com.ssafy.popcon.ui.common.TAG", "keyhash : ${Utility.getKeyHash(requireContext())}")
         Glide.with(requireContext()).load(R.raw.pop_1200).into(object : DrawableImageViewTarget(binding.popconGif){
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 if (resource is GifDrawable) {

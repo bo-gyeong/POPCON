@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
+import com.kakao.util.maps.helper.Utility
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityMainBinding
 import com.ssafy.popcon.mms.MMSDialog
@@ -74,13 +75,14 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
 
         //SharedPreferencesUtil(this).addUser(User("abc@naver.com", "카카오", 0,1,1,1,1,"string"))
         setNavBar()
         checkPermissions()
 
         //getFCMToken()
-        //SharedPreferencesUtil(this).deleteUser()
+//        SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
 
