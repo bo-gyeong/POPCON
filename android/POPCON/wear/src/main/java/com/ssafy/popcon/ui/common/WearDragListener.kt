@@ -1,16 +1,20 @@
 package com.ssafy.popcon.ui.common
 
+import android.content.ClipData
 import android.content.ClipDescription
 import android.location.LocationManager
+import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.view.View.OnDragListener
+import androidx.core.view.isVisible
 import com.ssafy.popcon.dto.DonateRequest
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.util.MyLocationManager
 import com.ssafy.popcon.viewmodel.WearViewModel
 
-open class DragListener(
+open class WearDragListener(
+    private val targetView: View,
     private val barNum: String,
     private val viewModel: WearViewModel, private val user: User, private val lm: LocationManager
 ) : OnDragListener {
@@ -18,8 +22,11 @@ open class DragListener(
         when (e.action) {
             DragEvent.ACTION_DRAG_STARTED -> {
                 e.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                targetView.visibility = View.VISIBLE
+                v.invalidate()
             }
             DragEvent.ACTION_DRAG_ENTERED -> {
+
                 true
             }
 
@@ -32,11 +39,16 @@ open class DragListener(
                 true
             }
             DragEvent.ACTION_DROP -> {
-                viewModel.donate(
-                    DonateRequest(barNum, MyLocationManager.getLocation(lm)!!.longitude.toString(),MyLocationManager.getLocation(lm)!!.latitude.toString()),
-                    user
-                )
-
+                targetView.visibility = View.INVISIBLE
+                if (v == targetView) {
+                    viewModel.donate(
+                        DonateRequest(
+                            barNum, MyLocationManager.getLocation(lm)!!.longitude.toString(),
+                            MyLocationManager.getLocation(lm)!!.latitude.toString()
+                        ),
+                        user
+                    )
+                }
                 // Invalidates the view to force a redraw.
                 v.invalidate()
 
@@ -50,7 +62,6 @@ open class DragListener(
             else -> {
                 false
             }
-
         }
 
         return true

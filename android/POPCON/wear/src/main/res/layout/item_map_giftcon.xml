@@ -59,7 +59,7 @@
             style="@style/Regular.Grey"
             date="@{gifticon.due}"
             android:layout_width="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="70dp"
             android:layout_height="wrap_content"
             app:boxedEdges="right|all"
             android:maxLines="1"

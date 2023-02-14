@@ -33,11 +33,6 @@ class HistoryFragment : Fragment() {
         GifticonDialogFragment.isShow = true
     }
 
-    override fun onResume() {
-        super.onResume()
-        mainActivity.hideBottomNav(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,6 +61,7 @@ class HistoryFragment : Fragment() {
             dialogFragment.arguments = args
             dialogFragment.show(childFragmentManager, "popup")
         })
+
         viewModel.history.observe(viewLifecycleOwner){
             historyAdapter.submitList(it)
         }
