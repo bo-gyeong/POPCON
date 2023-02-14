@@ -1,14 +1,15 @@
 package com.ssafy.popcon.ui.login
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -16,7 +17,6 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
@@ -26,10 +26,10 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
-import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentLoginBinding
+import com.ssafy.popcon.dto.Gallery
 import com.ssafy.popcon.dto.TokenResponse
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.mms.RoomInitLogin
@@ -55,6 +55,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
     private val mmsViewModel: MMSViewModel by viewModels { ViewModelFactory(requireContext()) }
+    lateinit var sp: SharedPreferencesUtil
     lateinit var tokens: TokenResponse
 
     private var userUUID: String = ""
@@ -70,6 +71,7 @@ class LoginFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = activity as MainActivity
+        sp = SharedPreferencesUtil(requireContext())
     }
 
     @SuppressLint("ResourceAsColor")
@@ -102,6 +104,7 @@ class LoginFragment : Fragment() {
         mainActivity.hideBottomNav(true)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
@@ -121,15 +124,26 @@ class LoginFragment : Fragment() {
     private fun chkRoute() {
         if (!fromSettingsFragment) {
             //자동로그인
-            if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
+            if (sp.getUser().email != "") {
                 mainActivity.changeFragment(HomeFragment())
             }
-        } else {
-            SharedPreferencesUtil(requireContext()).deleteUser()
+        } else{
+            sp.deleteUser()
             fromSettingsFragment = false
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun successLogin(){
+        RoomInitLogin(requireContext(), mmsViewModel).initRoom()
+        sp.setGalleryInfo(
+            Gallery(System.currentTimeMillis(), 0)
+        )
+        mainActivity.makeGalleryDialogFragment(requireContext(), mainActivity.contentResolver)
+        mainActivity.changeFragment(HomeFragment())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun kakaoLogin() {
         binding.btnKakaoLogin.setOnClickListener {
             kakaoCallback = { tokenInfo, error ->
@@ -163,7 +177,10 @@ class LoginFragment : Fragment() {
                                 val email = meUser?.kakaoAccount?.email.toString()
 
                                 user = User("abc@naver.com", "카카오")
-                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                sp.addUser(user)
+                                sp.setGalleryInfo(
+                                    Gallery(System.currentTimeMillis(), 0)
+                                )
 
                                 val authRepo =
                                     AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
@@ -185,12 +202,12 @@ class LoginFragment : Fragment() {
 
 
                                 //user = User(email, "카카오")
-                                SharedPreferencesUtil(requireContext()).addUser(user)
+                                //sp.addUser(user)
+                                //sp.setGalleryDate(System.currentTimeMillis())
 
                                 viewModel.signInKakao(user)
                                 viewModel.user.observe(viewLifecycleOwner) {
-                                    RoomInitLogin(mmsViewModel).initRoom()
-                                    mainActivity.changeFragment(HomeFragment())
+                                    successLogin()
                                 }
                             }
                         }
@@ -211,11 +228,19 @@ class LoginFragment : Fragment() {
                     // 네이버 로그인 API 호출 성공 시 유저 정보를 가져온다
                     NidOAuthLogin().callProfileApi(object :
                         NidProfileCallback<NidProfileResponse> {
+                        @RequiresApi(Build.VERSION_CODES.Q)
                         override fun onSuccess(result: NidProfileResponse) {
                             val email = result.profile?.email.toString()
+
+
                             user = User(email, "네이버")
                             //user = User("abc@naver.com", "카카오")
+                            //sp.addUser(user)
+                            sp.setGalleryInfo(
+                                Gallery(System.currentTimeMillis(), 0)
+                            )
                             ApplicationClass.sharedPreferencesUtil.addUser(user)
+
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
                             val authRepo =
                                 AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
@@ -234,8 +259,7 @@ class LoginFragment : Fragment() {
                                     "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
                                 )
                             }
-                            RoomInitLogin(mmsViewModel).initRoom()
-                            mainActivity.changeFragment(HomeFragment())
+                            successLogin()
                         }
 
                         override fun onError(errorCode: Int, message: String) {
@@ -260,6 +284,17 @@ class LoginFragment : Fragment() {
 
             NaverIdLoginSDK.authenticate(requireContext(), oAuthLoginCallback)
         }
+    }
+
+    // 비회원 로그인 : UUID 생성 후 리텅
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun nonMemberLogin() {
+        if (userUUID == "")
+            userUUID = UUID.randomUUID().toString()
+        // 서버에게 생성한 UUID 전송할 레트로핏 코드
+        Log.d(TAG, "nonMemberLogin: $userUUID")
+        sp.addUser(User(userUUID, "비회원"))
+        successLogin()
     }
 
     override fun onDestroy() {

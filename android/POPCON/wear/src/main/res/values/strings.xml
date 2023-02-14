@@ -49,4 +49,7 @@
 
     <!--  dialog_progress  -->
     <string name="progress">Loading..</string>
+
+    <!--  watch_activity_login  -->
+    <string name="login_info">앱을 실행해 주세요</string>
 </resources>

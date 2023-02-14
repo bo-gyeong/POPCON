@@ -60,6 +60,7 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.source
 import java.io.*
+import java.nio.file.Files
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -224,11 +225,21 @@ class AddFragment : Fragment(), onItemClick {
 
         for (i in 0 until clipData.itemCount){
             val originalImgUri = clipData.getItemAt(i).uri
+            if (!getFileSize(originalImgUri)){
+                continue
+            }
             originalImgUris.add(GifticonImg(originalImgUri))
             gifticonEffectiveness.add(AddInfoNoImgBoolean())
 
             val realData = originalImgUri.asMultipart("file", requireContext().contentResolver)
             multipartFiles.add(realData!!)
+        }
+
+        if(multipartFiles.size < 1){
+            onDestroyView()
+            Toast.makeText(requireContext(), "잘못된 이미지 입니다", Toast.LENGTH_SHORT).show()
+            mainActivity.changeFragment(HomeFragment())
+            return
         }
 
         viewModel.addFileToGCP(multipartFiles.toTypedArray())
@@ -266,6 +277,17 @@ class AddFragment : Fragment(), onItemClick {
                 makeImgList()
             })
         })
+    }
+
+    // get img size
+    private fun getFileSize(imgUri: Uri): Boolean{
+        val file = File(getPath(imgUri))
+        val fileSize = Integer.parseInt((file.length()).toString())
+
+        if(fileSize > 1040000){
+            return false
+        }
+        return true
     }
 
     // uri to multipart
