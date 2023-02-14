@@ -28,9 +28,10 @@ import java.nio.charset.StandardCharsets
 
 private const val TAG = "LoginFragment_싸피"
 
-class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider ,DataClient.OnDataChangedListener,
+class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
+    DataClient.OnDataChangedListener,
     MessageClient.OnMessageReceivedListener,
-    CapabilityClient.OnCapabilityChangedListener{
+    CapabilityClient.OnCapabilityChangedListener {
     private lateinit var binding: ActivityLoginBinding
 
     var user = User("", "")
@@ -56,10 +57,12 @@ class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPro
     override fun onPause() {
         super.onPause()
         Wearable.getDataClient(this).removeListener(this)
+        Wearable.getMessageClient(this).removeListener(this)
+        Wearable.getCapabilityClient(this).removeListener(this)
     }
 
     override fun onDataChanged(p0: DataEventBuffer) {
-        Log.d(TAG, "onDataChangeddddd: ")
+        Log.d(TAG, "onDataChanged: ")
     }
 
     override fun getAmbientCallback(): AmbientModeSupport.AmbientCallback {
@@ -84,7 +87,6 @@ class LoginActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackPro
                         + s1
             )
             val tokens = s1.split(" ")
-            SharedPreferencesUtil(this@LoginActivity).addUser(User(s1, "카카오"))
 
             Log.d(TAG, "onMessageReceived: ${tokens[2]}")
             WearApplicationClass.sharedPreferencesUtil.accessToken =

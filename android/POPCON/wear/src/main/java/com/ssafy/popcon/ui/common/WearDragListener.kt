@@ -7,16 +7,15 @@ import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.view.View.OnDragListener
-import androidx.core.view.isVisible
 import com.ssafy.popcon.dto.DonateRequest
 import com.ssafy.popcon.dto.User
-import com.ssafy.popcon.util.MyLocationManager
+import com.ssafy.popcon.ui.map.DonateLocation
 import com.ssafy.popcon.viewmodel.WearViewModel
 
 open class WearDragListener(
     private val targetView: View,
     private val barNum: String,
-    private val viewModel: WearViewModel, private val user: User, private val lm: LocationManager
+    private val viewModel: WearViewModel, private val user: User
 ) : OnDragListener {
     override fun onDrag(v: View, e: DragEvent): Boolean {
         when (e.action) {
@@ -41,10 +40,11 @@ open class WearDragListener(
             DragEvent.ACTION_DROP -> {
                 targetView.visibility = View.INVISIBLE
                 if (v == targetView) {
+                    Log.d("TAG", "onDrag: ${DonateLocation.x} ${DonateLocation.y}")
                     viewModel.donate(
                         DonateRequest(
-                            barNum, MyLocationManager.getLocation(lm)!!.longitude.toString(),
-                            MyLocationManager.getLocation(lm)!!.latitude.toString()
+                            barNum, DonateLocation.x,
+                            DonateLocation.y
                         ),
                         user
                     )

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.databinding.FragmentBrandTabBinding
 import com.ssafy.popcon.dto.StoreRequest
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.ui.popup.GifticonPreviewFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory

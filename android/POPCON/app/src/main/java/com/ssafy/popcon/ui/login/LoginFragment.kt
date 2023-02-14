@@ -1,6 +1,5 @@
 package com.ssafy.popcon.ui.login
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -18,7 +17,6 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
@@ -27,7 +25,6 @@ import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
-import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentLoginBinding
@@ -233,12 +230,16 @@ class LoginFragment : Fragment() {
                         @RequiresApi(Build.VERSION_CODES.Q)
                         override fun onSuccess(result: NidProfileResponse) {
                             val email = result.profile?.email.toString()
-                            //user = User(email, "네이버")
-                            user = User("abc@naver.com", "카카오")
-                            sp.addUser(user)
+
+
+                            user = User(email, "네이버")
+                            //user = User("abc@naver.com", "카카오")
+                            //sp.addUser(user)
                             sp.setGalleryInfo(
                                 Gallery(System.currentTimeMillis(), 0)
                             )
+                            ApplicationClass.sharedPreferencesUtil.addUser(user)
+
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
                             val authRepo =
                                 AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))

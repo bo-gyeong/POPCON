@@ -3,10 +3,8 @@ package com.ssafy.popcon.ui.common
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.View
 
@@ -26,18 +24,6 @@ class DragShadowBuilder() : View.DragShadowBuilder() {
 
             builder.shadow?.let {
                 it.setBounds(0, 0, it.minimumWidth, it.minimumWidth)
-            }
-
-            return builder
-        }
-
-        fun fromBitmap(ctx: Context, bm: Bitmap): View.DragShadowBuilder {
-
-            val builder = DragShadowBuilder()
-            builder.shadow = BitmapDrawable(ctx.resources, bm)
-
-            builder.shadow?.let {
-                it.setBounds(0, 0, it.minimumWidth / 2, it.minimumHeight / 2)
             }
 
             return builder

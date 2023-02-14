@@ -14,6 +14,6 @@ class AuthInterceptor : Interceptor {
             ).build()
         Log.d("TAG", "auth intercept: ${ApplicationClass.sharedPreferencesUtil.accessToken}")
 
-        return chain.proceed(req)
+         return chain.proceed(req)
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.util.Log
-import android.graphics.Bitmap
 import com.ssafy.popcon.dto.Gallery
 import com.ssafy.popcon.dto.User
 

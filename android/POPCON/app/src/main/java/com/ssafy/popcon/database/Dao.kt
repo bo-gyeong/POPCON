@@ -1,6 +1,4 @@
 package com.ssafy.popcon.database
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
 import androidx.room.*
 import com.ssafy.popcon.dto.MMSItem
 import androidx.room.Dao
