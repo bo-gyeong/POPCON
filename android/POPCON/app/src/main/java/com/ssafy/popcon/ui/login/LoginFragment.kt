@@ -212,9 +212,9 @@ class LoginFragment : Fragment() {
                         NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(result: NidProfileResponse) {
                             val email = result.profile?.email.toString()
-                            //user = User(email, "네이버")
-                            user = User("abc@naver.com", "카카오")
-                            SharedPreferencesUtil(requireContext()).addUser(user)
+                            user = User(email, "네이버")
+                            //user = User("abc@naver.com", "카카오")
+                            ApplicationClass.sharedPreferencesUtil.addUser(user)
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
                             val authRepo =
                                 AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
