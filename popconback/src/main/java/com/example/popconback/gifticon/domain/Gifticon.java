@@ -47,7 +47,7 @@ public class Gifticon {
 
     private int isVoucher;
 
-    @OneToOne(mappedBy = "gifticon", cascade = CascadeType.ALL)// 여기가 문제 였음
+    @OneToOne(mappedBy = "gifticon", cascade = CascadeType.REMOVE)// 여기가 문제 였음
     private Present present;
 
 }

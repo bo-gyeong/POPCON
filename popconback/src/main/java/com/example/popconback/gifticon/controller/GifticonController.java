@@ -73,6 +73,14 @@ public class GifticonController {
         return ResponseEntity.ok(gifticonService.gifticonList(us.getEmail(), us.getSocial()));
     }
 
+    @ApiOperation(value = "기프티콘 조회 지도에서", notes = "유저의 기프티콘 정보 조회", httpMethod = "GET")
+    @GetMapping("map/{email}/{social}") //유저의 기프티콘 정보 DB에서 보내주기 // 이것도 만료되거나 사용한거 다보낼까?
+    public ResponseEntity<List<ResponseListGifticonUserDto>> gifticonListForMap(@PathVariable String email, @PathVariable String social,Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+
+        return ResponseEntity.ok(gifticonService.gifticonListForMap(us.getEmail(), us.getSocial()));
+    }
+
     @ApiOperation(value = "기프티콘 저장", notes = "기프티콘 정보 저장", httpMethod = "POST")
     @PostMapping("") //기프티콘 정보 저장
     public ResponseEntity<List<ResponseCreateGifticonDto>> CreateGifticon (@RequestBody CreateGifticonDto[] createGifticonDtos, Authentication authentication){

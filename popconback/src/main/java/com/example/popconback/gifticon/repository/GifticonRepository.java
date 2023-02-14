@@ -16,8 +16,8 @@ import java.util.Map;
 public interface GifticonRepository extends JpaRepository<Gifticon, String> {
     List<Gifticon> findByUser_HashAndState(int hash, int state, Sort sort);
     List<Gifticon> findByUser_HashAndBrand_BrandNameAndState(int hash, String brand_name,int state, Sort sort);
-    List<Gifticon>  findByUser_HashAndDueLessThanEqualAndState(int hash, Date date, int state);
-    List<Gifticon> findByDueAndState(Date date, int state);
+    List<Gifticon>  findByUser_HashAndDueLessThanAndState(int hash, Date date, int state);
+    List<Gifticon> findByDueLessThanEqualAndState(Date date, int state);
 
     List<Gifticon> findByUser_HashAndStateBetween(int hash, int state, int end);
 

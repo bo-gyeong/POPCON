@@ -96,7 +96,7 @@ public class TokenController {
             for (GifticonDto gifticon : list) {
                 Date date = java.sql.Date.valueOf(LocalDate.now().plusDays(Dday));//오늘 날짜에 알람설정 일 수를 더하고
                 Date Ddate = gifticon.getDue();// 사용 기간을 구하고
-                long diffsec = (date.getTime() - Ddate.getTime())/1000;// 둘의 차이를 뺀다
+                long diffsec = (date.getTime() - Ddate.getTime())/1000+(60*60*9l);// 둘의 차이를 뺀다
                 long diffday = diffsec/(24*60*60);// 얼만큼 지나갔는지 확인하기 위해서 일 수를 구하고
                 if(diffday%user.getTerm() == 0){// 해당 일수를 알람 주기로 나눠서 나머지가 0이면 해당되는 날에 알림을 보낸다.
                     service.sendMessageTo(Token, "유효기간 임박한 기프   티콘 있어요", "빨리쓰세요");
