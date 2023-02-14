@@ -1,37 +1,37 @@
 package com.ssafy.popcon.ui.login
 
-import android.R.attr
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.kakao.util.maps.helper.Utility
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
-import com.ssafy.popcon.BuildConfig
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.FragmentLoginBinding
-import com.ssafy.popcon.dto.TokenResponse
+import com.ssafy.popcon.dto.Gallery
 import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.dto.UserResponse
 import com.ssafy.popcon.mms.RoomInitLogin
 import com.ssafy.popcon.repository.auth.AuthRemoteDataSource
 import com.ssafy.popcon.repository.auth.AuthRepository
@@ -39,6 +39,7 @@ import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
 import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.MMSViewModel
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
@@ -54,11 +55,14 @@ private const val TAG = "LoginFragment_싸피"
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val viewModel: UserViewModel by viewModels { ViewModelFactory(requireContext()) }
+    private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(requireContext()) }
     private val mmsViewModel: MMSViewModel by viewModels { ViewModelFactory(requireContext()) }
-    lateinit var tokens: TokenResponse
+    lateinit var sp: SharedPreferencesUtil
+    lateinit var userResponse: UserResponse
 
     private var userUUID: String = ""
-    var user = User("", "")
+    var fcmToken = ""
+    var user = User("", "", "")
 
     lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
     lateinit var mainActivity: MainActivity
@@ -70,6 +74,7 @@ class LoginFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = activity as MainActivity
+        sp = SharedPreferencesUtil(requireContext())
     }
 
     @SuppressLint("ResourceAsColor")
@@ -102,8 +107,10 @@ class LoginFragment : Fragment() {
         mainActivity.hideBottomNav(true)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getFCMToken()
         init()
         chkRoute()
 
@@ -121,15 +128,43 @@ class LoginFragment : Fragment() {
     private fun chkRoute() {
         if (!fromSettingsFragment) {
             //자동로그인
-            if (SharedPreferencesUtil(requireContext()).getUser().email != "") {
+            if (sp.getUser().email != "") {
                 mainActivity.changeFragment(HomeFragment())
             }
-        } else {
-            SharedPreferencesUtil(requireContext()).deleteUser()
+        } else{
+            sp.deleteUser()
             fromSettingsFragment = false
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun successLogin(userResponse: UserResponse){
+        fcmToken = fcmViewModel.token
+
+        val newUser = User(
+            userResponse.email,
+            userResponse.social,
+            userResponse.nday,
+            userResponse.alarm,
+            userResponse.manner_temp,
+            userResponse.term,
+            userResponse.timezone,
+            fcmToken
+        )
+
+        RoomInitLogin(requireContext(), mmsViewModel).initRoom()
+        sp.updateUser(newUser)
+        sp.setFCMToken(fcmToken)
+        sp.setGalleryInfo(
+            Gallery(System.currentTimeMillis(), 0)
+        )
+
+        viewModel.updateUser(newUser)
+        mainActivity.makeGalleryDialogFragment(requireContext(), mainActivity.contentResolver)
+        mainActivity.changeFragment(HomeFragment())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun kakaoLogin() {
         binding.btnKakaoLogin.setOnClickListener {
             kakaoCallback = { tokenInfo, error ->
@@ -145,61 +180,74 @@ class LoginFragment : Fragment() {
                 // 앱 이용 동의 화면 출력
                 UserApiClient.instance.loginWithKakaoTalk(mainActivity) { token, error ->
                     if (error != null) {
-                        Log.e(TAG, "kakaoLogin: ${error}")
                         // 사용자가 취소했을 경우
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             return@loginWithKakaoTalk
                         } else {
-                            // 카카오 계정으로 로그인
-                            UserApiClient.instance.loginWithKakaoAccount(
-                                mainActivity,
-                                callback = kakaoCallback
-                            )
+                            loginWithKakaoAccount()
                         }
                     } else if (token != null) {
                         // 로그인 성공
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
-                            UserApiClient.instance.me { meUser, error ->
-                                val email = meUser?.kakaoAccount?.email.toString()
-
-                                user = User("abc@naver.com", "카카오")
-                                SharedPreferencesUtil(requireContext()).addUser(user)
-
-                                val authRepo =
-                                    AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
-
-                                val job = CoroutineScope(Dispatchers.IO).launch {
-                                    tokens = authRepo.signIn(user)
-                                }
-                                runBlocking {
-                                    job.join()
-                                    ApplicationClass.sharedPreferencesUtil.accessToken =
-                                        tokens.acessToken
-                                    ApplicationClass.sharedPreferencesUtil.refreshToken =
-                                        tokens.refreshToekn
-                                    Log.d(
-                                        TAG,
-                                        "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
-                                    )
-                                }
-
-
-                                //user = User(email, "카카오")
-                                SharedPreferencesUtil(requireContext()).addUser(user)
-
-                                viewModel.signInKakao(user)
-                                viewModel.user.observe(viewLifecycleOwner) {
-                                    RoomInitLogin(mmsViewModel).initRoom()
-                                    mainActivity.changeFragment(HomeFragment())
-                                }
-                            }
+                            successKakaoLogin()
                         }
                     }
                 }
             } else {
-                // 카카오 계정으로 로그인
-                UserApiClient.instance.loginWithKakaoAccount(mainActivity, callback = kakaoCallback)
+                loginWithKakaoAccount()
             }
+        }
+    }
+
+    // 카카오 계정 웹 로그인
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun loginWithKakaoAccount(){
+        UserApiClient.instance.loginWithKakaoAccount(mainActivity){ token, error ->
+            if (error != null) {
+                Log.e(TAG, "kakaoLogin_error: ${error}")
+            } else if (token != null) {
+                // 로그인
+                successKakaoLogin()
+            }
+        }
+    }
+
+    // 카카오 로그인 성공
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun successKakaoLogin(){
+        UserApiClient.instance.me { meUser, error ->
+            val email = meUser?.kakaoAccount?.email.toString()
+
+            user = User(email, "카카오", fcmToken)
+            sp.addUser(user)
+            sp.setGalleryInfo(
+                Gallery(System.currentTimeMillis(), 0)
+            )
+
+            val authRepo =
+                AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
+
+            val job = CoroutineScope(Dispatchers.IO).launch {
+                userResponse = authRepo.signIn(user)
+            }
+            runBlocking {
+                job.join()
+                ApplicationClass.sharedPreferencesUtil.accessToken =
+                    userResponse.acessToken
+                ApplicationClass.sharedPreferencesUtil.refreshToken =
+                    userResponse.refreshToekn
+                Log.d(
+                    TAG,
+                    "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
+                )
+                successLogin(userResponse)
+            }
+
+
+//           viewModel.signInKakao(user)
+//           viewModel.user.observe(viewLifecycleOwner) {
+//                 successLogin(it)
+//            }
         }
     }
 
@@ -211,31 +259,36 @@ class LoginFragment : Fragment() {
                     // 네이버 로그인 API 호출 성공 시 유저 정보를 가져온다
                     NidOAuthLogin().callProfileApi(object :
                         NidProfileCallback<NidProfileResponse> {
+                        @RequiresApi(Build.VERSION_CODES.Q)
                         override fun onSuccess(result: NidProfileResponse) {
                             val email = result.profile?.email.toString()
-                            user = User(email, "네이버")
+
+                            user = User(email, "네이버", fcmToken)
                             //user = User("abc@naver.com", "카카오")
-                            ApplicationClass.sharedPreferencesUtil.addUser(user)
+                            sp.addUser(user)
+                            sp.setGalleryInfo(
+                                Gallery(System.currentTimeMillis(), 0)
+                            )
+
                             Log.e("TAG", "네이버 로그인한 유저 정보 - 이메일 : $email")
                             val authRepo =
                                 AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
 
                             val job = CoroutineScope(Dispatchers.IO).launch {
-                                tokens = authRepo.signIn(user)
+                                userResponse = authRepo.signIn(user)
                             }
                             runBlocking {
                                 job.join()
                                 ApplicationClass.sharedPreferencesUtil.accessToken =
-                                    tokens.acessToken
+                                    userResponse.acessToken
                                 ApplicationClass.sharedPreferencesUtil.refreshToken =
-                                    tokens.refreshToekn
+                                    userResponse.refreshToekn
                                 Log.d(
                                     TAG,
                                     "onSuccess: ${ApplicationClass.sharedPreferencesUtil.accessToken}"
                                 )
+                                successLogin(userResponse)
                             }
-                            RoomInitLogin(mmsViewModel).initRoom()
-                            mainActivity.changeFragment(HomeFragment())
                         }
 
                         override fun onError(errorCode: Int, message: String) {
@@ -259,6 +312,38 @@ class LoginFragment : Fragment() {
             }
 
             NaverIdLoginSDK.authenticate(requireContext(), oAuthLoginCallback)
+        }
+    }
+
+    // 비회원 로그인 : UUID 생성 후 리텅
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun nonMemberLogin() {
+        if (userUUID == "")
+            userUUID = UUID.randomUUID().toString()
+        // 서버에게 생성한 UUID 전송할 레트로핏 코드
+        Log.d(TAG, "nonMemberLogin: $userUUID")
+        val user = User(userUUID, "비회원", fcmToken)
+        sp.addUser(user)
+        //successLogin(user)
+    }
+
+    // 토큰 보내기
+    fun uploadToken(token: String) {
+        fcmViewModel.uploadToken(token)
+    }
+
+    // 토큰 생성
+    private fun getFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@addOnCompleteListener
+            }
+            Log.d(TAG, "token 정보: ${task.result ?: "task.result is null"}")
+            if (task.result != null) {
+                uploadToken(task.result)
+                fcmViewModel.setToken(task.result)
+                sp.setFCMToken(task.result)
+            }
         }
     }
 
