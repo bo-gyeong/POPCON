@@ -482,7 +482,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(x, rect, rect, paint)
 
-        return resizeBitmapImage(output, 60)!!
+        return resizeBitmapImage(output, 80)!!
     }
 
     //지도 리스너
