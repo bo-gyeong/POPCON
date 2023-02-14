@@ -19,13 +19,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.wearable.*
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.firebase.messaging.FirebaseMessaging
+import com.kakao.sdk.common.util.Utility
 import com.ssafy.popcon.R
+import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.ActivityMainBinding
+import com.ssafy.popcon.dto.User
+import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.mms.MMSDialog
 import com.ssafy.popcon.mms.MMSJobService
+import com.ssafy.popcon.mms.MMSReceiver
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
 import com.ssafy.popcon.repository.fcm.FCMRepository
 import com.ssafy.popcon.ui.add.*
@@ -40,7 +46,9 @@ import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.AddViewModel
 import com.ssafy.popcon.viewmodel.FCMViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
+import java.util.Objects
 
+private const val USER_KEY = "com.ssafy.popcon.key.user"
 private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -48,6 +56,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var accelerometer: Sensor
     private lateinit var checkPermission: CheckPermission
     private var permissionGranted = false
+    private var mmsReceiver = MMSReceiver()
+    private lateinit var dataClient: DataClient
 
     private val fcmViewModel: FCMViewModel by viewModels { ViewModelFactory(this) }
     private val addViewModel: AddViewModel by viewModels { ViewModelFactory(this) }
@@ -75,11 +85,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //SharedPreferencesUtil(this).addUser(User("abc@naver.com", "카카오", 0,1,1,1,1,"string"))
         setNavBar()
         checkPermissions()
-
-        //getFCMToken()
+        getFCMToken()
         //SharedPreferencesUtil(this).deleteUser()
         callMMSReceiver()
         chkNewMMSImg()
@@ -87,10 +95,31 @@ class MainActivity : AppCompatActivity() {
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
             Log.d(TAG, "onCreate: 로그인됨")
+            sendUserData()
             changeFragment(HomeFragment())
         } else {
             Log.d(TAG, "onCreate: 로그인 필요")
             changeFragment(LoginFragment())
+        }
+    }
+
+    private fun sendUserData() {
+        val payload: ByteArray =
+            (SharedPreferencesUtil(this@MainActivity).getUser().email!! + " " + SharedPreferencesUtil(
+                this@MainActivity
+            ).getUser().social!! + " " + ApplicationClass.sharedPreferencesUtil.accessToken).toByteArray()
+
+        val sendMessageTask =
+            Wearable.getMessageClient(this)
+                .sendMessage("nodeId", "/user", payload)
+
+        sendMessageTask.addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.d("send1", "Message sent successfully")
+
+            } else {
+                Log.d("send1", "Message failed.")
+            }
         }
     }
 
@@ -305,6 +334,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        checkPermissions()
+        // checkPermissions()
     }
 }

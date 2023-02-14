@@ -3,6 +3,7 @@ package com.ssafy.popcon.util
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.util.Log
 import android.graphics.Bitmap
 import com.ssafy.popcon.dto.User
 
@@ -40,8 +41,9 @@ class SharedPreferencesUtil(context: Context) {
     //로그인 유저 받기
     fun getUser(): User {
         val id = preferences.getString("id", "")
+        Log.d("TAG", "getUser: $id")
         return if (id != "") {
-            val type = preferences.getString("type", "비회원")
+            val type = preferences.getString("type", "")
 
             User(id!!, type!!)
         } else {

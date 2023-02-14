@@ -25,17 +25,12 @@ class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
     private lateinit var mainActivity: MainActivity
     lateinit var historyAdapter: HistoryAdapter
-    private val viewModel: GifticonViewModel by activityViewModels{ ViewModelFactory(requireContext()) }
+    private val viewModel: GifticonViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     override fun onStart() {
         super.onStart()
         mainActivity = activity as MainActivity
         GifticonDialogFragment.isShow = true
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mainActivity.hideBottomNav(true)
     }
 
     override fun onCreateView(
@@ -66,7 +61,8 @@ class HistoryFragment : Fragment() {
             dialogFragment.arguments = args
             dialogFragment.show(childFragmentManager, "popup")
         })
-        viewModel.history.observe(viewLifecycleOwner){
+
+        viewModel.history.observe(viewLifecycleOwner) {
             historyAdapter.submitList(it)
         }
 
