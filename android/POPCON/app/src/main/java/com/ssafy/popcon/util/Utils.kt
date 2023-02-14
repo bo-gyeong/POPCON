@@ -60,7 +60,7 @@ object Utils {
                 val dDay = (dueTime!! - nowTime!!) / (24 * 60 * 60 * 1000)
 
                 return if (dDay.toInt() == 0) {
-                    Badge("오늘까지", "#FC4A1A")
+                    Badge("오늘까지", "#FF5755")
                 } else if (dDay.toInt() < 0) {
                     Badge("기간만료", "#5f5f69")
                 } else {

@@ -40,7 +40,7 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vp_gifticon"
             android:layout_width="match_parent"
-            android:layout_height="560dp"
+            android:layout_height="468dp"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

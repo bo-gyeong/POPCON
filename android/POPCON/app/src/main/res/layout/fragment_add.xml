@@ -12,8 +12,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -205,6 +206,7 @@
                             style="@style/Bold.Brown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="24dp"
                             android:text="@string/original_see"
                             android:textSize="16sp"
                             android:background="@drawable/shape_round_white_shadow"
@@ -224,7 +226,7 @@
                             android:id="@+id/til_product_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="-24dp"
+                            android:layout_marginTop="-30dp"
                             android:layout_marginBottom="-14dp"
                             android:layout_marginStart="-14dp"
                             android:layout_marginEnd="-14dp"
@@ -433,8 +435,10 @@
             android:id="@+id/btn_regi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="2dp"
             android:text="@string/regi"
             android:textStyle="bold"
             android:textSize="16sp"

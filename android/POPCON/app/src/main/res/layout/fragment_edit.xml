@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="12dp"
+        android:layout_margin="20dp"
         android:fitsSystemWindows="true"
         android:paddingBottom="?attr/actionBarSize">
 
@@ -140,9 +140,11 @@
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btn_original_see"
+                            style="@style/Bold.Brown"
+                            android:layout_marginHorizontal="24dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/shape_round_grey"
+                            android:background="@drawable/shape_round_white_shadow"
                             android:text="@string/original_see"
                             android:textSize="16sp"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -336,12 +338,15 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_edit"
-            android:layout_width="250dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/shape_round_orange"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="50dp"
+            android:elevation="2dp"
+            android:background="@drawable/btn_round_orange"
             android:text="@string/btn_edit"
             android:textSize="16sp"
+            style="@style/Regular.White"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

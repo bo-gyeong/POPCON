@@ -39,10 +39,10 @@
             android:layout_marginBottom="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/my_location_fill0_wght400_grad0_opsz48"
-            app:backgroundTint="@color/popcon_orange"
+            app:backgroundTint="@color/popcon_white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_brand_tab"
-            app:tint="@color/popcon_white"
+            app:tint="@color/popcon_black"
             tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -56,7 +56,7 @@
             app:backgroundTint="@color/popcon_orange"
             app:layout_constraintStart_toStartOf="@id/btn_update_position"
             app:layout_constraintTop_toBottomOf="@id/btn_update_position"
-            app:tint="@color/popcon_white"
+            app:tint="@color/popcon_brown"
             tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
         <androidx.viewpager2.widget.ViewPager2
