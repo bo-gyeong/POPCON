@@ -1013,7 +1013,8 @@ class AddFragment : Fragment(), onItemClick {
         super.onDestroyView()
         changeProgressDialogState(false)
 
-        mainActivity.bottomNav.menu.findItem(R.id.homeFragment).isChecked = true
+        mainActivity.bottomNav.menu
+            .findItem(R.id.homeFragment).isChecked = true
     }
 
     override fun onDestroy() {
