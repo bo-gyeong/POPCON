@@ -73,7 +73,7 @@
                         android:id="@+id/iv_barcode_image"
                         imageUrl="@{gifticon.barcode_filepath}"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="50dp"
                         android:layout_marginHorizontal="24dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/barcode"
@@ -88,7 +88,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="바코드 번호"
-                        android:textSize="13sp"
+                        android:textSize="13dp"
                         app:layout_constraintStart_toStartOf="@id/tv_barcode_img_title"
                         app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
 
@@ -166,7 +166,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="메모"
-                        android:textSize="13sp"
+                        android:textSize="13dp"
                         app:layout_constraintStart_toStartOf="@id/tv_barcode_img_title"
                         app:layout_constraintTop_toBottomOf="@id/tv_barcode_num" />
 
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="남은 금액"
-                        android:textSize="13sp"
+                        android:textSize="13dp"
                         app:layout_constraintStart_toStartOf="@id/tv_barcode_img_title"
                         app:layout_constraintTop_toBottomOf="@id/tv_memo" />
 
