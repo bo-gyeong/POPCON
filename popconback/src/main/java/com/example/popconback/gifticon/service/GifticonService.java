@@ -425,7 +425,7 @@ public class GifticonService {
     }
 
     public void check_overdate(){
-        Date date =java.sql.Date.valueOf(LocalDate.now());
+        Date date =java.sql.Date.valueOf(LocalDate.now().plusDays(1));
         List <Gifticon> list = gifticonRepository.findByDueLessThanEqualAndState(date,0);
         for (Gifticon gifticon: list) {
             gifticon.setState(2);
