@@ -39,7 +39,7 @@ import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 private const val TAG = "HomeFragment"
 
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var shakeDetector: ShakeDetector
     lateinit var gifticonAdapter: GiftconAdapter
@@ -97,26 +97,23 @@ class HomeFragment : Fragment(){
         })
     }
 
-    
+
     //홈 기프티콘 어댑터 설정
     private fun setGifticonAdapter() {
         gifticonAdapter = GiftconAdapter(viewModel)
         viewModel.getGifticonByUser(SharedPreferencesUtil(requireContext()).getUser())
         viewModel.gifticons.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                binding.tvNoGifticon.isVisible = true
-            } else {
-                binding.tvNoGifticon.isVisible = false
-                binding.rvGifticon.apply {
-                    adapter = gifticonAdapter
-                    layoutManager = GridLayoutManager(context, 2)
-                    adapter!!.stateRestorationPolicy =
-                        RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
-                }
+            binding.tvNoGifticon.isVisible = it.isEmpty()
 
-                gifticonAdapter.apply {
-                    submitList(it)
-                }
+            binding.rvGifticon.apply {
+                adapter = gifticonAdapter
+                layoutManager = GridLayoutManager(context, 2)
+                adapter!!.stateRestorationPolicy =
+                    RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+            }
+
+            gifticonAdapter.apply {
+                submitList(it)
             }
         }
     }
