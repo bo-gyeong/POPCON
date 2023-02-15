@@ -130,6 +130,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_coupon_img"
+                                        style="@style/Regular"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
@@ -186,6 +187,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_barcode_img"
+                                        style="@style/Regular"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
@@ -208,7 +210,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="24dp"
                             android:text="@string/original_see"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:background="@drawable/shape_round_white_shadow"
                             app:layout_constraintTop_toBottomOf="@+id/l_coupon_img"
                             app:layout_constraintLeft_toLeftOf="parent"/>
@@ -234,12 +236,14 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_product_name"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/product_name"
                                 android:inputType="text"
                                 android:maxLength="80"
                                 android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{addInfo.productName}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -256,12 +260,14 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_product_brand"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/product_brand"
                                 android:inputType="text"
                                 android:maxLength="80"
                                 android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{addInfo.brandName}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -278,12 +284,14 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_barcode"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/barcode"
                                 android:inputType="number"
                                 android:maxLength="30"
                                 android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{addInfo.barcodeNum}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -300,12 +308,14 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_date"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/date"
                                 android:inputType="number"
                                 android:maxLength="10"
                                 android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{addInfo.due.toString()}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -329,11 +339,12 @@
                                 app:layout_constraintTop_toTopOf="parent">
 
                                 <TextView
+                                    style="@style/Regular"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/price"
                                     android:textColor="@color/popcon_grey_01"
-                                    android:textSize="16sp" />
+                                    android:textSize="12sp" />
 
                                 <CheckBox
                                     android:id="@+id/cb_price"
@@ -372,17 +383,21 @@
 
                                     <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/et_price"
+                                        style="@style/Regular"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
+                                        android:gravity="end"
                                         android:inputType="number"
                                         android:maxLength="8"
                                         android:paddingTop="30dp"
+                                        android:textSize="12sp"
                                         android:text="@{addInfo.price==0? `` : String.valueOf(addInfo.price)}" />
 
                                 </com.google.android.material.textfield.TextInputLayout>
 
                                 <TextView
                                     android:id="@+id/tv_won"
+                                    style="@style/Regular"
                                     android:layout_width="0dp"
                                     android:layout_height="fill_parent"
                                     android:layout_marginStart="16dp"
@@ -390,7 +405,7 @@
                                     android:layout_marginEnd="-10dp"
                                     android:text="@string/won"
                                     android:textColor="@color/popcon_grey_03"
-                                    android:textSize="18sp"
+                                    android:textSize="14sp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintHorizontal_weight="0.2"
                                     app:layout_constraintLeft_toRightOf="@+id/til_price"
@@ -414,11 +429,14 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_write_memo"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:paddingTop="30dp"
                                 android:gravity="top"
                                 android:hint="@string/memo"
                                 android:maxLength="100"
+                                android:textSize="12sp"
                                 android:text="@{addInfo.memo}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -433,6 +451,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_regi"
+            style="@style/Bold.Brown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -440,8 +459,7 @@
             android:layout_marginBottom="10dp"
             android:elevation="2dp"
             android:text="@string/regi"
-            android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:background="@drawable/btn_round_orange"
             android:stateListAnimator="@null"
             app:layout_constraintBottom_toBottomOf="parent"

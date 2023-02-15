@@ -11,6 +11,12 @@ interface GifticonApi {
         @Path("social") social: String
     ): List<Gifticon>
 
+    @GET("gifticons/{email}/{social}/map")
+    suspend fun getGifticonMapByUser(
+        @Path("email") email: String,
+        @Path("social") social: String
+    ): List<Gifticon>
+
     //바코드 번호로 기프티콘
     @GET("gifticons/{barcodeNum}")
     suspend fun getGifticonByBarNum(

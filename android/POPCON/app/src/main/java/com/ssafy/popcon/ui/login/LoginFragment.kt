@@ -85,7 +85,7 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
-        Glide.with(requireContext()).load(R.raw.pop)
+        Glide.with(requireContext()).load(R.raw.pop_1200)
             .into(object : DrawableImageViewTarget(binding.popconGif) {
                 override fun onResourceReady(
                     resource: Drawable,

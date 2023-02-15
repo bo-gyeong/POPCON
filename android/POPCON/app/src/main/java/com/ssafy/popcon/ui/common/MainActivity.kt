@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav = binding.bottomNav
 //        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
 
-        //SharedPreferencesUtil(this).deleteUser()
+        SharedPreferencesUtil(this).deleteUser()
         setNavBar()
         checkPermissions()
         callMMSReceiver()
