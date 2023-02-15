@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.ssafy.popcon.R
 import com.ssafy.popcon.ui.common.MainActivity
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,7 +49,7 @@ class FirebaseMessagingService: FirebaseMessagingService() {
         }
         val mainPendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_IMMUTABLE)
         val builder = NotificationCompat.Builder(this, MainActivity.channel_id)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.ic_popcon_round)
             .setContentTitle(msgTitle)
             .setContentText(msgContent)
             .setAutoCancel(true)

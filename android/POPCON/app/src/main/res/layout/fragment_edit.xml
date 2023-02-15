@@ -11,9 +11,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:fitsSystemWindows="true">
+        android:layout_margin="20dp"
+        android:fitsSystemWindows="true"
+        android:paddingBottom="?attr/actionBarSize">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/l_regi"
@@ -140,9 +140,11 @@
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btn_original_see"
+                            style="@style/Bold.Brown"
+                            android:layout_marginHorizontal="24dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/shape_round_grey"
+                            android:background="@drawable/shape_round_white_shadow"
                             android:text="@string/original_see"
                             android:textSize="16sp"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -375,9 +377,13 @@
             android:id="@+id/btn_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="50dp"
+            android:elevation="2dp"
+            android:background="@drawable/btn_round_orange"
             android:text="@string/btn_edit"
+            android:textSize="16sp"
+            style="@style/Regular.White"
             android:textStyle="bold"
             android:textSize="16sp"
             android:background="@drawable/btn_round_orange"
