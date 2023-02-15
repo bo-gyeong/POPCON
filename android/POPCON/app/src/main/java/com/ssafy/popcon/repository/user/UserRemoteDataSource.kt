@@ -20,4 +20,8 @@ class UserRemoteDataSource(private val apiClient: UserApi) : UserDataSource {
     override suspend fun updateUser(user: User): User {
         return apiClient.updateUser(user)
     }
+
+    override suspend fun getUserLv(): Int {
+        return apiClient.getUserLv()
+    }
 }
