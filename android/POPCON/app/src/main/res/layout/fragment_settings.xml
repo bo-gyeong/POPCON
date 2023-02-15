@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/popcon_grey_08"
+        android:background="@color/popcon_grey_09"
         android:paddingBottom="?attr/actionBarSize">
 
         <LinearLayout

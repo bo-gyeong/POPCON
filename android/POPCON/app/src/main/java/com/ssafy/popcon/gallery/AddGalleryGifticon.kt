@@ -639,7 +639,7 @@ class AddGalleryGifticon(
 
         Handler(Looper.getMainLooper()).post {
             kotlin.run {
-                Toast.makeText(requireContext(), "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "인식에 실패하였습니다.\n직접 등록해주세요.", Toast.LENGTH_SHORT).show()
             }
         }
         changeProgressDialogState(false)
