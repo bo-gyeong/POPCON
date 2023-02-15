@@ -126,8 +126,9 @@ public class UserService {
         userdto.setHash(user.getHash());// 바뀌면 안되는 값들 미리 넣어주기
         userdto.setEmail(user.getEmail());
         userdto.setSocial(user.getSocial());
+        userdto.setManner_temp(user.getManner_temp());
         userdto.setRefreshToken(user.getRefreshToken());// 이건 사용자가 임의로 바꾸면 안되지
-        BeanUtils.copyProperties(updateUserDto, userdto,"hash","email","social");//바뀌면 안되는 값들은 고정
+        BeanUtils.copyProperties(updateUserDto, userdto,"hash","email","social","manner_temp");//바뀌면 안되는 값들은 고정
 
         ResponseUpdateUserDto responsDto = new ResponseUpdateUserDto();
         BeanUtils.copyProperties(userRepository.save(userdto.toEntity()),responsDto);
