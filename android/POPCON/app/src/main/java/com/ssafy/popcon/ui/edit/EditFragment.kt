@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "EditFragment"
+
 class EditFragment : Fragment() {
     private lateinit var binding: FragmentEditBinding
     private lateinit var mainActivity: MainActivity
@@ -82,7 +83,7 @@ class EditFragment : Fragment() {
     private fun setLayout(view: View) {
         //수정 누르면 업데이트
         binding.btnEdit.setOnClickListener {
-            if(chkEffectiveness()){
+            if (chkEffectiveness()) {
                 Log.d("TAG", "setLayout: ${binding.gifticon}")
                 mainActivity.changeFragment(HomeFragment())
 
@@ -138,7 +139,11 @@ class EditFragment : Fragment() {
         gifticon.due = binding.etDate.text.toString()
         gifticon.memo = binding.etWriteMemo.text.toString()
         //gifticon.isVoucher = gifticonInfo.isVoucher
-        gifticon.price = binding.etPrice.text.toString().toInt()
+        if (binding.etPrice.text.toString() == "" || !binding.cbPrice.isChecked) {
+            gifticon.price = -1
+        } else {
+            gifticon.price = binding.etPrice.text.toString().toInt()
+        }
         gifticon.state = Utils.calState(gifticon)
 
         return UpdateRequest(
@@ -166,16 +171,16 @@ class EditFragment : Fragment() {
     }
 
     // 상품명 리스트에 저장
-    private fun productChk(){
+    private fun productChk() {
         var changeProduct = false
 
-        binding.etProductName.addTextChangedListener (object : TextWatcher{
+        binding.etProductName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val pLength = p0.toString().length
-                if(pLength < 1){
+                if (pLength < 1) {
                     binding.tilProductName.error = "상품명을 입력해주세요"
                     gifticonEffectiveness.productName = false
-                } else{
+                } else {
                     binding.tilProductName.error = null
                     binding.tilProductName.isErrorEnabled = false
 
@@ -192,15 +197,15 @@ class EditFragment : Fragment() {
             }
         })
 
-        if (!changeProduct){
+        if (!changeProduct) {
             var product = ""
-            if (gifticonInfo.productName != ""){
+            if (gifticonInfo.productName != "") {
                 product = gifticonInfo.productName
             }
 
-            if (product != ""){
+            if (product != "") {
                 gifticonEffectiveness.productName = true
-            } else{
+            } else {
                 binding.tilProductName.error = "상품명을 입력해주세요"
             }
             changeProduct = false
@@ -209,42 +214,54 @@ class EditFragment : Fragment() {
 
     // 유효기간 검사
     val dateArr = arrayOf(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    private fun dateFormat(){
+    private fun dateFormat() {
         var changDate = false
 
-        binding.etDate.addTextChangedListener (object : TextWatcher{
+        binding.etDate.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val dateLength = binding.etDate.text!!.length
                 val nowText = p0.toString()
 
-                when (dateLength){
+                when (dateLength) {
                     10 -> {
                         val newYear = nowText.substring(0, 4).toInt()
                         val newMonth = nowText.substring(5, 7).toInt()
                         val newDay = nowText.substring(8).toInt()
 
-                        val nowYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(System.currentTimeMillis()).toInt()
-                        val nowDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())
-                        val nowDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(nowDateFormat)
+                        val nowYear = SimpleDateFormat(
+                            "yyyy",
+                            Locale.getDefault()
+                        ).format(System.currentTimeMillis()).toInt()
+                        val nowDateFormat = SimpleDateFormat(
+                            "yyyy-MM-dd",
+                            Locale.getDefault()
+                        ).format(System.currentTimeMillis())
+                        val nowDate =
+                            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(nowDateFormat)
                         var newDate = Date()
                         try {
-                            newDate =  SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(p0.toString())!!
-                        } catch (e: java.lang.Exception){
-                            newDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(nowDateFormat)!!
+                            newDate = SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault()
+                            ).parse(p0.toString())!!
+                        } catch (e: java.lang.Exception) {
+                            newDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(
+                                nowDateFormat
+                            )!!
                         }
 
                         val calDate = newDate.compareTo(nowDate)
                         gifticonEffectiveness.due = false
 
-                        if (newYear > 2100 || newYear.toString().length < 4){
+                        if (newYear > 2100 || newYear.toString().length < 4) {
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
-                        } else if(newMonth < 1 || newMonth > 12){
+                        } else if (newMonth < 1 || newMonth > 12) {
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
-                        } else if(newDay > dateArr[newMonth-1] || newDay == 0){
+                        } else if (newDay > dateArr[newMonth - 1] || newDay == 0) {
                             binding.tilDate.error = "정확한 날짜를 입력해주세요"
-                        } else if (calDate < 0){
+                        } else if (calDate < 0) {
                             binding.tilDate.error = "이미 지난 날짜입니다"
-                        } else{
+                        } else {
                             binding.tilDate.error = null
                             binding.tilDate.isErrorEnabled = false
                             gifticonEffectiveness.due = true
@@ -257,7 +274,7 @@ class EditFragment : Fragment() {
                     }
                 }
 
-                if (dateLength < 10){
+                if (dateLength < 10) {
                     binding.tilDate.error = "정확한 날짜를 입력해주세요"
                     gifticonEffectiveness.due = false
                 }
@@ -271,7 +288,7 @@ class EditFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //p0: 현재 입력된 문자열, p1: 새로 추가될 문자열 위치, p2: 삭제된 기존 문자열 수, p3: 새로 추가될 문자열 수
                 val dateLength = binding.etDate.text!!.length
-                if(dateLength==4 && p1!=4 || dateLength==7 && p1!=7){
+                if (dateLength == 4 && p1 != 4 || dateLength == 7 && p1 != 7) {
                     val add = binding.etDate.text.toString() + "-"
                     binding.etDate.setText(add)
                     binding.etDate.setSelection(add.length)
@@ -279,15 +296,15 @@ class EditFragment : Fragment() {
             }
         })
 
-        if (!changDate){
+        if (!changDate) {
             var date = ""
-            if (gifticonInfo.due != ""){
+            if (gifticonInfo.due != "") {
                 date = gifticonInfo.due
             }
 
-            if (date != ""){
+            if (date != "") {
                 gifticonEffectiveness.due = true
-            } else{
+            } else {
                 binding.tilDate.error = "정확한 날짜를 입력해주세요"
             }
             changDate = false
@@ -295,15 +312,15 @@ class EditFragment : Fragment() {
     }
 
     // 체크박스 클릭 시 상태변화
-    private fun clickChkState(){
+    private fun clickChkState() {
         val chkState = binding.cbPrice.isChecked
-        if (!chkState){
+        if (!chkState) {
             gifticonInfo.isVoucher = 0
             gifticonInfo.price = -1
             binding.cbPrice.isChecked = false
             binding.lPrice.visibility = View.GONE
             gifticonEffectiveness.isVoucher = false
-        } else{
+        } else {
             gifticonInfo.isVoucher = 1
             binding.cbPrice.isChecked = true
             binding.lPrice.visibility = View.VISIBLE
@@ -312,13 +329,13 @@ class EditFragment : Fragment() {
     }
 
     // 체크박스 상태에 따른 변화
-    private fun changeChkState(){
+    private fun changeChkState() {
         val voucherChk = gifticonInfo.isVoucher
-        if (voucherChk != 1){
+        if (voucherChk != 1) {
             binding.cbPrice.isChecked = false
             binding.lPrice.visibility = View.GONE
             gifticonEffectiveness.isVoucher = false
-        } else{
+        } else {
             binding.cbPrice.isChecked = true
             binding.lPrice.visibility = View.VISIBLE
             gifticonEffectiveness.isVoucher = true
@@ -326,20 +343,20 @@ class EditFragment : Fragment() {
     }
 
     // price를 리스트에 저장
-    private fun setPrice(){
+    private fun setPrice() {
         var changePrice = false
 
-        binding.etPrice.addTextChangedListener (object : TextWatcher{
+        binding.etPrice.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val pLength = p0.toString().length
-                if(pLength > 2){  //100원대부터
+                if (pLength > 2) {  //100원대부터
                     binding.tilPrice.error = null
                     binding.tilPrice.isErrorEnabled = false
 
                     gifticonEffectiveness.price = true
                     gifticonInfo.price = binding.etPrice.text.toString().toInt()
-                } else{
-                    binding.tilPrice.error =  "금액을 입력해주세요"
+                } else {
+                    binding.tilPrice.error = "금액을 입력해주세요"
 
                     gifticonEffectiveness.price = false
                     gifticonInfo.price = -1
@@ -354,15 +371,15 @@ class EditFragment : Fragment() {
             }
         })
 
-        if (!changePrice){
+        if (!changePrice) {
             var price = ""
-            if (gifticonInfo.price != -1){
+            if (gifticonInfo.price != -1) {
                 price = gifticonInfo.price.toString()
             }
 
-            if (price != "" && price.length > 2){
+            if (price != "" && price.length > 2) {
                 gifticonEffectiveness.price = true
-            } else{
+            } else {
                 binding.tilPrice.error = "금액을 입력해주세요"
             }
             changePrice = false
@@ -370,8 +387,8 @@ class EditFragment : Fragment() {
     }
 
     // memo를 리스트에 저장
-    private fun setMemo(){
-        binding.etWriteMemo.addTextChangedListener (object : TextWatcher{
+    private fun setMemo() {
+        binding.etWriteMemo.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 gifticonInfo.memo = binding.etWriteMemo.text.toString()
             }
@@ -385,16 +402,17 @@ class EditFragment : Fragment() {
     }
 
     // 기프티콘 정보담긴 리스트 내용 검사
-    private fun chkAllList(): Boolean{
+    private fun chkAllList(): Boolean {
         val gifticon = gifticonEffectiveness
 
-        if (!gifticon.productName || !gifticon.due){
+        if (!gifticon.productName || !gifticon.due) {
             Log.d(
                 TAG, "chkAllList111: ${gifticon.productName}\n " +
-                        "${gifticon.due}\n")
+                        "${gifticon.due}\n"
+            )
             return false
         }
-        if (gifticon.isVoucher && !gifticon.price){
+        if (gifticon.isVoucher && !gifticon.price) {
             Log.d(TAG, "chkAllList222: ${gifticon.isVoucher}\n ${gifticon.price}\n")
             return false
         }

@@ -17,8 +17,6 @@ fun applyPriceFormat(view: TextView, price: Int) {
 //날짜에 까지 넣기
 @BindingAdapter("date")
 fun applyDateFormat(view: TextView, date: String?) {
-    Log.d("TAG", "applyDateFormat: $date")
-
     if (date.isNullOrEmpty()) {
         view.isVisible = false
     } else {
