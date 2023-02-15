@@ -46,8 +46,8 @@
                     <ImageView
                         android:id="@+id/iv_product_preview"
                         imageUrl="@{gifticon.product_filepath}"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/product"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -139,6 +139,7 @@
                         android:layout_height="wrap_content"
                         android:text="유효기간"
                         android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_expDate"
                         app:layout_constraintStart_toStartOf="@id/tv_brand"
                         app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
@@ -150,6 +151,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_product_preview"
                         app:layout_constraintStart_toStartOf="@id/tv_brand"
                         app:layout_constraintTop_toBottomOf="@id/tv_due_title"
                         tools:text="2923-33-33 까지" />

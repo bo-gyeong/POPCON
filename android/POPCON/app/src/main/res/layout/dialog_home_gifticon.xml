@@ -50,8 +50,8 @@
                     <ImageView
                         android:id="@+id/iv_product_preview"
                         imageUrl="@{gifticon.product_filepath}"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/product"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -94,6 +94,7 @@
                         app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
 
                     <TextView
+                        android:id="@+id/tv_bar_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
@@ -127,12 +128,12 @@
                         android:id="@+id/tv_name"
                         style="@style/Regular"
                         android:layout_width="0dp"
-                        app:layout_constraintEnd_toEndOf="parent"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="@{gifticon.productName}"
                         android:textSize="15sp"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/tv_brand"
                         app:layout_constraintTop_toBottomOf="@id/tv_brand" />
 
@@ -164,11 +165,11 @@
                         style="@style/Bold.Grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="26dp"
+                        android:layout_marginTop="10dp"
                         android:text="메모"
                         android:textSize="13dp"
                         app:layout_constraintStart_toStartOf="@id/tv_barcode_img_title"
-                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_title" />
+                        app:layout_constraintTop_toBottomOf="@id/tv_bar_num" />
 
                     <TextView
                         android:id="@+id/tv_memo"

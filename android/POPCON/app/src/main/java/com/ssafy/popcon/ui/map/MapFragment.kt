@@ -220,7 +220,8 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
         mapView.setMapCenterPointAndZoomLevel(
             MapPoint.mapPointWithGeoCoord(
-            MyLocationManager.getLocation(lm)!!.latitude, MyLocationManager.getLocation(lm)!!.longitude,
+                MyLocationManager.getLocation(lm)!!.latitude,
+                MyLocationManager.getLocation(lm)!!.longitude,
             ), 3, true
         )
     }
@@ -440,7 +441,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                 phone.text = storeMap[poiItem?.itemName]
             } else {//기부 핀
                 phone.isVisible = false
-                if (poiItem?.customImageResourceId == R.drawable.far) {
+                if (poiItem?.customImageResourceId == R.drawable.near) {
                     name.text = "줍기"
                 } else if (poiItem?.customImageResourceId == R.drawable.far) {
                     val view: CardView = mCalloutBalloon.findViewById(R.id.ballView)
@@ -572,8 +573,11 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
     //트래킹 리스너
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
-        Log.d(TAG, "onCurrentLocationUpdate: ${p1!!.mapPointGeoCoord.longitude.toString()},${
-            p1!!.mapPointGeoCoord.latitude.toString()}")
+        Log.d(
+            TAG, "onCurrentLocationUpdate: ${p1!!.mapPointGeoCoord.longitude.toString()},${
+                p1!!.mapPointGeoCoord.latitude.toString()
+            }"
+        )
         viewModel.getAllPresents(
             FindPresentRequest(
                 p1!!.mapPointGeoCoord.longitude.toString(),
