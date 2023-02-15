@@ -122,7 +122,6 @@ class MapViewModel(
     fun getGifticonByBarcodeNum(barcodeNum: String) {
         viewModelScope.launch {
             _present.value = gifticonRepository.getGifticonByBarNum(barcodeNum)
-            Log.d("ㅇㅅㅇ", "getGifticonByBarcodeNum: ${_present.value}")
         }
     }
 }

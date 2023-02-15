@@ -574,6 +574,8 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
     //트래킹 리스너
     override fun onCurrentLocationUpdate(p0: MapView?, p1: MapPoint?, p2: Float) {
+        Log.d(TAG, "onCurrentLocationUpdate: ${p1!!.mapPointGeoCoord.longitude.toString()},${
+            p1!!.mapPointGeoCoord.latitude.toString()}")
         viewModel.getAllPresents(
             FindPresentRequest(
                 p1!!.mapPointGeoCoord.longitude.toString(),

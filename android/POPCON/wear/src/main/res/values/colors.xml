@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="transparent">#00000000</color>
+    <color name="popcon_orange">#F7B733</color>
+    <color name="popcon_yellow">#FCEA5D</color>
+    <color name="popcon_light_yellow">#f9cb6b</color>
+    <color name="popcon_transparent_light_yellow">#d6f9cb6b</color>
+    <color name="popcon_black">#FF000000</color>
+    <color name="popcon_white">#FFFFFFFF</color>
+    <color name="popcon_light_grey">#d3d3d3</color>
+    <color name="popcon_due_red">#CF6655</color>
+    <color name="popcon_red">#FFFF0000</color>
+    <color name="popcon_purple">#7d22ff</color>
+    <color name="popcon_pink_01">#66e062ff</color>
+    <color name="popcon_pink_02">#11e062ff</color>
+    <color name="popcon_due_blue">#8ED2CD</color>
+    <color name="popcon_due_pink">#FF9797</color>
+    <color name="popcon_gradient_purple">#6b19ff</color>
+    <color name="popcon_gradient_pink">#fd62ff</color>
+    <color name="popcon_black_01">#000000</color>
+    <color name="popcon_black_01_a08">#14000000</color>
+    <color name="popcon_black_02">#111111</color>
+    <color name="popcon_black_03">#0C0D0D</color>
+    <color name="popcon_transparent_black_03">#770C0D0D</color>
+    <color name="popcon_grey_01">#5f5f69</color>
+    <color name="popcon_grey_02">#52514d</color>
+    <color name="popcon_grey_03">#555555</color>
+    <color name="popcon_grey_04">#888888</color>
+    <color name="popcon_grey_05">#939393</color>
+    <color name="popcon_grey_06">#d1d1d1</color>
+    <color name="popcon_grey_07">#d6d6d6</color>
+    <color name="popcon_grey_08">#e9e9e9</color>
+    <color name="popcon_grey_09">#eeeff1</color>
+    <color name="popcon_transparent_grey_07">#d2d2d2CC</color>
+    <color name="popcon_bluegrey">#f2f4f6</color>
+    <color name="popcon_white_a90">#E6FFFFFF</color>
+    <color name="popcon_brown">#604309</color>
+    <color name="popcon_btn_grey">#d2d2d2</color>
+
+    <!--  material  -->
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/popcon_grey_08</color>
+</resources>
