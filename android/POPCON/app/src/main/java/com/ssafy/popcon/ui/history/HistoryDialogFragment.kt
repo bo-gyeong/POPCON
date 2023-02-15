@@ -64,10 +64,6 @@ class HistoryDialogFragment : DialogFragment() {
         history = mArgs!!.getString("history").toString()
         binding.badge = Badge("", "#000000")
 
-        binding.btnUse.textOn = "사용완료"
-        binding.btnUse.textOff = "되돌리기"
-        binding.btnUse.isChecked = false
-
         return binding.root
     }
 

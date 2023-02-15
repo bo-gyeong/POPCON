@@ -61,6 +61,7 @@ class MapGifticonAdpater(
         fun bind(gifticon: Gifticon) {
             binding.gifticon = gifticon
             binding.badge = Utils.calDday(gifticon)
+            binding.ivProductPreviewMap.clipToOutline = true
             binding.executePendingBindings()
         }
     }

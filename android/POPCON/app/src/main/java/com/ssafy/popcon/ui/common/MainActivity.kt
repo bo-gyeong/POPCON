@@ -23,6 +23,7 @@ import com.google.android.gms.wearable.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.kakao.sdk.common.util.Utility
 import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.ActivityMainBinding
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         bottomNav = binding.bottomNav
-//        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
+        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
 
         //SharedPreferencesUtil(this).deleteUser()
         setNavBar()

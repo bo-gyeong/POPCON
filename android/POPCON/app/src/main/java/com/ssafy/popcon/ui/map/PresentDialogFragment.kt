@@ -12,8 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.snackbar.Snackbar
-import com.ssafy.popcon.databinding.PresentDialogBinding
+import com.ssafy.popcon.databinding.DialogPresentBinding
 import com.ssafy.popcon.dto.Badge
 import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.GetPresentRequest
@@ -26,7 +25,7 @@ import com.ssafy.popcon.viewmodel.MapViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class PresentDialogFragment : DialogFragment() {
-    private lateinit var binding: PresentDialogBinding
+    private lateinit var binding: DialogPresentBinding
     private val viewModel: MapViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     val TAG = "PRESENT DIALOG"
@@ -55,7 +54,7 @@ class PresentDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = PresentDialogBinding.inflate(inflater, container, false)
+        binding = DialogPresentBinding.inflate(inflater, container, false)
 
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)

@@ -19,7 +19,7 @@
         android:layout_height="30dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/btn_history"
+        android:background="@drawable/btn_history_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -104,6 +104,9 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
             // GPS가 켜져있을 경우
             mainActivity.checkPermissions()
             startTracking()
+
+            DonateLocation.x = binding.mapView.mapCenterPoint.mapPointGeoCoord.longitude.toString()
+            DonateLocation.y = binding.mapView.mapCenterPoint.mapPointGeoCoord.latitude.toString()
         } else {
             // GPS가 꺼져있을 경우
             Toast.makeText(requireContext(), "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
@@ -122,9 +125,6 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
         donateLocMarker.customImageResourceId = R.drawable.donate_marker
         donateLocMarker.isCustomImageAutoscale = false // 커스텀 마커 이미지 크기 자동 조정
         donateLocMarker.isDraggable = true
-
-        DonateLocation.x = binding.mapView.mapCenterPoint.mapPointGeoCoord.longitude.toString()
-        DonateLocation.y = binding.mapView.mapCenterPoint.mapPointGeoCoord.latitude.toString()
 
         setGifticonBanner()
         setStore()
@@ -218,11 +218,11 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
     private fun moveMapUserToPosition(mapView: MapView) {
         getUserLocation()
+        lm = MyLocationManager.getLocationManager(requireContext())
 
         mapView.setMapCenterPointAndZoomLevel(
             MapPoint.mapPointWithGeoCoord(
-                getLatitude,
-                getLongitude
+            MyLocationManager.getLocation(lm)!!.latitude, MyLocationManager.getLocation(lm)!!.longitude,
             ), 3, true
         )
     }
