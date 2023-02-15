@@ -89,11 +89,9 @@ class AddGalleryGifticon(
         val columnId = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID)
         val columnIdx = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
         val dateTAKEN = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_TAKEN)
-        //val columnDisplayName = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
 
         val galleryInfo = sp.getLatelyGalleryInfo()
         var spImgCnt = galleryInfo.imgCnt
-        var newImg = false
         while (cursor.moveToNext()){
             val absolutePath = cursor.getString(columnIdx)
             val date = cursor.getLong(dateTAKEN)
@@ -103,57 +101,19 @@ class AddGalleryGifticon(
 
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = date
-            val dateStr = android.text.format.DateFormat.format("yyyy/MM/dd kk:mm:ss", calendar).toString()
-            //val fileName = cursor.getString(columnDisplayName)
 
             if (!TextUtils.isEmpty(absolutePath)){
-                // taken이 sp에 저장된 날짜보다 작거나 같다면 break
-                // sp에 저장된 날짜의 시작은 로그인 날짜
                 calendar.timeInMillis = galleryInfo.date
-                val galleryDateStr = android.text.format.DateFormat.format("yyyy/MM/dd kk:mm:ss", calendar).toString()
-                //Log.d(TAG, "getImgList: ${dateStr}==${date}   ${galleryDateStr}")
-//                if (date <= galleryDate){  //date <= galleryDate
-//                    break
-//                }
-//                val spDate = galleryInfo.date
-
-//                if (spImgCnt >= cursor.count){
-//                    break
-//                }
                 Log.d(TAG, "getImgList: ${spImgCnt}   ${cursor.count}")
 
-                newImg = true
                 if (cursor.isFirst){
-                     //date 제대로 안나오면 sp에 저장하는 의미 X
                     newImgUri.add(imgUri)
                     addImg()
                     break
                 }
-//                spImgCnt++
-//                newImgUri.add(imgUri)
             }
         }
         cursor.close()
-
-//        if(newImg){
-//            sp.setGalleryInfo(
-//                Gallery(
-//                    System.currentTimeMillis(),
-//                    cursorCnt
-//                )
-//            )
-//            addImg()
-//        }
-
-        /** 같은 이미지 여러장 들어갔을 때 서버 처리?
-        sp.setGalleryInfo(
-            Gallery(
-                System.currentTimeMillis(),
-                7500
-            )
-        )
-        cursor.close()
-        addImg()**/
     }
 
     private fun addImg(){

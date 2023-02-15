@@ -79,13 +79,11 @@ class MainActivity : AppCompatActivity() {
         bottomNav = binding.bottomNav
 //        Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
 
-        SharedPreferencesUtil(this).deleteUser()
+        //SharedPreferencesUtil(this).deleteUser()
         setNavBar()
         checkPermissions()
         callMMSReceiver()
         chkNewMMSImg()
-
-        // 스플레시 스크린 고려
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
