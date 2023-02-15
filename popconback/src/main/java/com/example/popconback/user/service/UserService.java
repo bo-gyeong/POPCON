@@ -13,6 +13,8 @@ import com.example.popconback.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -149,5 +151,33 @@ public class UserService {
 
         return responlist;
     }
+
+
+     public int getLevel(int hash) {
+        int tmp = userRepository.findById(hash).get().getManner_temp();
+
+        int lv = 0;
+
+        if(tmp==0) {
+            lv = 0;
+        }
+        else if(tmp>=1&&tmp<3) {
+            lv = 1;
+        }
+        else if(tmp>=3&&tmp<6) {
+            lv = 2;
+        }
+        else if(tmp>=6&&tmp<9) {
+            lv = 3;
+        }
+        else if(tmp>=9&&tmp<12) {
+            lv = 4;
+        }
+        else if(tmp>=12) {
+            lv = 5;
+        }
+
+        return lv;
+     }
 
 }

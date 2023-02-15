@@ -97,8 +97,11 @@ public class UserController {
         userservice.deleteUser(us.hashCode());
         return ResponseEntity.ok().build();
     }
-
-
+    @GetMapping("/getlevel")
+    public ResponseEntity<Integer> getUserlv(Authentication authentication){
+        UserDto us= (UserDto)authentication.getPrincipal();
+        return ResponseEntity.ok(userservice.getLevel(us.hashCode()));
+    }
 
     //@GET("/notification") 푸시 알림 정보
 
