@@ -27,6 +27,7 @@ import com.example.popconback.user.domain.User;
 import com.example.popconback.user.dto.UserDto;
 import com.example.popconback.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.security.AccessControlException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static java.time.LocalTime.now;
@@ -60,6 +62,47 @@ public class GifticonService {
 
         for (int i = 0; i < 3; i++){
             if(i == 1){continue;}
+            List<Gifticon>list = gifticonRepository.findByUser_HashAndState(hash,i, Sort.by(asc("due")));
+            for (Gifticon gifticon:list) {
+                ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
+                BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
+
+                BrandForRLGUDto brand = new BrandForRLGUDto();// 브랜드는 따로 복사
+                BeanUtils.copyProperties(gifticon.getBrand(),brand);
+                rgifticon.setBrand(brand);
+
+                List<InputFile>gflist = fileRepository.findByGifticon_BarcodeNum(gifticon.getBarcodeNum());//사진들도 따로 복사
+                for (InputFile gifticonfile: gflist
+                ) {
+                    if(gifticonfile.getImageType() == 0){// 0: 원본
+                        rgifticon.setOrigin_filepath(gifticonfile.getFilePath());
+                    }
+                    if(gifticonfile.getImageType() == 1){// 1: 바코드
+                        rgifticon.setBarcode_filepath(gifticonfile.getFilePath());
+                    }
+                    if(gifticonfile.getImageType() == 2){// 2: 상품
+                        rgifticon.setProduct_filepath(gifticonfile.getFilePath());
+                    }
+                }
+
+                rlist.add(rgifticon);
+            }
+
+        }
+        return rlist;
+    }
+
+    public List<ResponseListGifticonUserDto> gifticonListForMap (String email, String social){// 기프티콘 리스트 뽑아오기
+        UserDto user = new UserDto();
+        user.setEmail(email);
+        user.setSocial(social);
+        int hash = user.hashCode();
+
+        List<ResponseListGifticonUserDto> rlist = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++){
+            if(i == 1){continue;}
+            if(i == 2){continue;}
             List<Gifticon>list = gifticonRepository.findByUser_HashAndState(hash,i, Sort.by(asc("due")));
             for (Gifticon gifticon:list) {
                 ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
@@ -342,9 +385,9 @@ public class GifticonService {
 
 
     public List<GifticonDto> getPushGifticon (int hash, int Dday){// 사용한 기프티콘이나 기간지난거는 스테이트로 구분 하면 되는
-        Date date = java.sql.Date.valueOf(LocalDate.now().plusDays(Dday));
+        Date date = java.sql.Date.valueOf(LocalDate.now().plusDays((Dday+1)));
         List<GifticonDto> rlist = new ArrayList<>();
-        List <Gifticon> list = gifticonRepository.findByUser_HashAndDueLessThanEqualAndState(hash, date,0);
+        List <Gifticon> list = gifticonRepository.findByUser_HashAndDueLessThanAndState(hash, date,0);
         for (Gifticon gifticon:list
              ) {
             GifticonDto responDto = new GifticonDto();
@@ -382,8 +425,8 @@ public class GifticonService {
     }
 
     public void check_overdate(){
-        Date date =java.sql.Date.valueOf(LocalDate.now());
-        List <Gifticon> list = gifticonRepository.findByDueAndState(date,0);
+        Date date =java.sql.Date.valueOf(LocalDate.now().plusDays(1));
+        List <Gifticon> list = gifticonRepository.findByDueLessThanEqualAndState(date,0);
         for (Gifticon gifticon: list) {
             gifticon.setState(2);
             gifticonRepository.save(gifticon);
