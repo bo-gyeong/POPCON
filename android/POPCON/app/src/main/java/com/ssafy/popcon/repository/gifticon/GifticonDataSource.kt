@@ -4,6 +4,7 @@ import com.ssafy.popcon.dto.*
 
 interface GifticonDataSource {
     suspend fun getGifticonByUser(email: String, social : String): List<Gifticon>
+    suspend fun getGifticonMapByUser(email: String, social : String): List<Gifticon>
     suspend fun getGifticonByBarNum(barcodeNum: String) : GifticonResponse
     suspend fun getGifticonByBrand(gifticonByBrandRequest: GifticonByBrandRequest): List<Gifticon>
     suspend fun getHistory(req: UserDeleteRequest): List<Gifticon>

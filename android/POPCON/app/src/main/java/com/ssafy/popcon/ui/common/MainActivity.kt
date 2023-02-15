@@ -86,8 +86,6 @@ class MainActivity : AppCompatActivity() {
         callMMSReceiver()
         chkNewMMSImg()
 
-        // 스플레시 스크린 고려
-
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
             Log.d(TAG, "onCreate: 로그인됨")
