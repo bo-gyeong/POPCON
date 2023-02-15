@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
@@ -12,6 +13,8 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
@@ -26,9 +29,15 @@ import com.ssafy.popcon.R
 import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.databinding.DialogMmsBinding
 import com.ssafy.popcon.dto.*
-import com.ssafy.popcon.ui.common.EventObserver
+import com.ssafy.popcon.repository.add.AddRemoteDataSource
+import com.ssafy.popcon.repository.add.AddRepository
+import com.ssafy.popcon.ui.add.ProgressDialog
 import com.ssafy.popcon.ui.common.MainActivity
-import com.ssafy.popcon.viewmodel.AddViewModel
+import com.ssafy.popcon.ui.home.HomeFragment
+import com.ssafy.popcon.util.RetrofitUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -42,14 +51,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val TAG = "MMSDialog_###"
-class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
+private const val TAG = "MMSDialog"
+class MMSDialog(
+    private val mainActivity: MainActivity
+): DialogFragment() {
     private lateinit var binding: DialogMmsBinding
-    private lateinit var mainActivity: MainActivity
+    private lateinit var mContext: Context
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogMmsBinding.inflate(layoutInflater)
-        mainActivity = MainActivity.getInstance()!!
+        mContext = requireContext()
 
         val builder = AlertDialog.Builder(context, R.style.WrapContentDialog)
         builder.setView(binding.root)
@@ -65,16 +81,17 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         }
 
         binding.btnGoToAdd.setOnClickListener {
-            /** 갤러리에서 불러올 경우 수정 **/
+            initData()
+
             for (i in 0 until 1){
                 val uri = bitmapToUri(MainActivity.fromMMSReceiver!!)
+                //Log.d(TAG, "onCreateDialog**: ${uri}")
                 originalImgUris.add(GifticonImg(uri))
                 gifticonEffectiveness.add(AddInfoNoImgBoolean())
             }
             firstAdd()
 
             binding.lMms.visibility = View.GONE
-            makeProgressDialog()
             changeProgressDialogState(true)
             MainActivity.fromMMSReceiver = null
         }
@@ -91,13 +108,25 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
     private var barcodeImgUris = ArrayList<GifticonImg>()
     private var gifticonInfoList = ArrayList<AddInfo>()
     private var gifticonEffectiveness = ArrayList<AddInfoNoImgBoolean>()
-    private lateinit var loadingDialog: AlertDialog.Builder
-    private lateinit var dialogCreate: AlertDialog
+    private val loadingDialog = ProgressDialog(false)
+    private val repo = AddRepository(AddRemoteDataSource(RetrofitUtil.addService))
     val user = ApplicationClass.sharedPreferencesUtil.getUser()
     var imgNum = 0
 
     val PRODUCT = "Product"
     val BARCODE = "Barcode"
+
+    private fun initData(){
+        originalImgUris.clear()
+        productImgUris.clear()
+        barcodeImgUris.clear()
+        ocrSendList.clear()
+        ocrResults.clear()
+        delImgUris.clear()
+        multipartFiles.clear()
+        gifticonInfoList.clear()
+        gifticonEffectiveness.clear()
+    }
 
     private fun firstAdd(){
         for (i in 0 until originalImgUris.size){
@@ -108,45 +137,53 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
             multipartFiles.add(realData!!)
         }
 
-        viewModel.addFileToGCP(multipartFiles.toTypedArray())
-        viewModel.gcpResult.observeForever(EventObserver{
-            for (i in 0 until it.size){
-                val gcpResult = it[i]
-                val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
+        CoroutineScope(Dispatchers.IO).launch {
+            val gcpResponse = repo.addFileToGCP(multipartFiles.toTypedArray())
+            launch {
+                ocrSendList.clear()
+                for (i in 0 until gcpResponse.size){
+                    val gcpResult = gcpResponse[i]
+                    val originalImgBitmap = uriToBitmap(originalImgUris[i].imgUri)
 
-                ocrSendList.add(
-                    OCRSend(
-                        gcpResult.fileName, originalImgBitmap.width, originalImgBitmap.height
+                    ocrSendList.add(
+                        OCRSend(
+                            gcpResult.fileName, originalImgBitmap.width, originalImgBitmap.height
+                        )
                     )
-                )
-            }
-
-            viewModel.useOcr(ocrSendList.toTypedArray())
-            viewModel.ocrResult.observeForever(EventObserver{
-                for (ocrResult in it){
-                    ocrResults.add(ocrResult)
                 }
 
-                for (i in 0 until it.size){
-                    val cropImgUri = cropXY(i, PRODUCT)
-                    val cropBarcodeUri = cropXY(i, BARCODE)
+                val ocrResponse = repo.useOcr(ocrSendList.toTypedArray())
+                launch {
+                    for (ocrResult in ocrResponse){
+                        ocrResults.add(ocrResult)
 
-                    productImgUris.add(GifticonImg(cropImgUri))
-                    barcodeImgUris.add(GifticonImg(cropBarcodeUri))
-                    delImgUris.add(cropImgUri)
-                    delImgUris.add(cropBarcodeUri)
+                        if (ocrResult.barcodeNum != ""){
+                            for (i in 0 until ocrResponse.size){
+                                val cropImgUri = cropXY(i, PRODUCT)
+                                val cropBarcodeUri = cropXY(i, BARCODE)
 
-                    addGifticonInfo(i)
+                                productImgUris.add(GifticonImg(cropImgUri))
+                                barcodeImgUris.add(GifticonImg(cropBarcodeUri))
+                                delImgUris.add(cropImgUri)
+                                delImgUris.add(cropBarcodeUri)
 
-                    imgNum = i
-                    productChk()
-                    brandChk()
-                    dateFormat()
-                    changeChkState(i)
-                    setPrice()
-                }
-            })
-        })
+                                addGifticonInfo(i)
+
+                                imgNum = i
+                                productChk()
+                                brandChk()
+                                dateFormat()
+                                changeChkState(i)
+                                setPrice()
+                            }
+                        }
+                        else{
+                            notifyFail()
+                        }
+                    }
+                }.join()
+            }.join()
+        }
     }
 
     // uri to multipart
@@ -182,20 +219,12 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         return value
     }
 
-    // 로딩화면 띄우기
-    private fun makeProgressDialog(){
-        loadingDialog = AlertDialog.Builder(requireContext())
-        loadingDialog.setView(R.layout.dialog_progress).setCancelable(false)
-        dialogCreate = loadingDialog.create()
-    }
-
-    // 상태에 따라 다이얼로그 만들기/없애기
+    // 상태에 따라 로딩화면 만들기/없애기
     private fun changeProgressDialogState(state: Boolean){
         if (state){
-            dialogCreate.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialogCreate.show()
+            loadingDialog.show(mainActivity.supportFragmentManager, null)
         } else{
-            dialogCreate.dismiss()
+            loadingDialog.dismiss()
         }
     }
 
@@ -301,22 +330,27 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
 
     // 이미지 절대경로 가져오기
     private fun getPath(uri: Uri):String{
-        val data:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
-        val cursor = cursorLoader.loadInBackground()!!
-        val idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor.moveToFirst()
+        try {
+            val data:Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+            val cursorLoader = CursorLoader(requireContext(), uri, data, null, null, null)
+            val cursor = cursorLoader.loadInBackground()!!
+            val idx = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
 
-        return cursor.getString(idx)
+            return cursor.getString(idx)
+        } catch (e : java.lang.Exception){
+            Log.e(TAG, "getPath: cursor Null")
+        }
+        return ""
     }
 
     // uri -> bitmap
     private fun uriToBitmap(uri: Uri): Bitmap {
         lateinit var bitmap: Bitmap
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, uri))
+            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(mContext.contentResolver, uri))
         } else{
-            bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+            bitmap = MediaStore.Images.Media.getBitmap(mContext.contentResolver, uri)
         }
 
         return bitmap
@@ -338,8 +372,18 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
 
     // 크롭되면서 새로 생성된 이미지 삭제
     fun delCropImg(delImgUri: Uri){
-        val file = File(getPath(delImgUri))
-        file.delete()
+        Handler(Looper.getMainLooper()).post {
+            kotlin.run {
+                val path = getPath(delImgUri)
+                if (path == ""){
+                    changeProgressDialogState(false)
+                    return@run
+                }
+
+                val file = File(path)
+                file.delete()
+            }
+        }
     }
 
     // 상품명 리스트에 저장
@@ -360,14 +404,19 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         if (gifticonInfoList[imgNum].brandName != ""){
             brand = gifticonInfoList[imgNum].brandName
         }
+
         if (brand != ""){
-            viewModel.chkBrand(brand)
-            viewModel.brandChk.observeForever(EventObserver{
-                if (it.result != 0){
-                    gifticonEffectiveness[imgNum].brandName = true
-                    brandBarcodeNum()
-                }
-            })
+            CoroutineScope(Dispatchers.IO).launch {
+                val brandResponse = repo.chkBrand(brand)
+                launch {
+                    if (brandResponse.result != 0){
+                        gifticonEffectiveness[imgNum].brandName = true
+                        brandBarcodeNum()
+                    } else{
+                        add()
+                    }
+                }.join()
+            }
         }
     }
 
@@ -379,13 +428,13 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         }
 
         if (barcode != ""){
-            viewModel.chkBarcode(barcode)
-            viewModel.barcodeChk.observeForever(EventObserver{
-                if (it.result == 1){
+            CoroutineScope(Dispatchers.IO).launch {
+                val barcodeResponse = repo.chkBarcode(barcode)
+                if (barcodeResponse.result == 1){
                     gifticonEffectiveness[imgNum].barcodeNum = true
                 }
                 add()
-            })
+            }
         }
     }
 
@@ -500,6 +549,22 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         return addInfo
     }
 
+    // 인식에 실패할 경우
+    private fun notifyFail(){
+        Log.d(TAG, "notifyFail: ")
+        for (i in 0 until delImgUris.size){
+            delCropImg(delImgUris[i])
+        }
+
+        Handler(Looper.getMainLooper()).post {
+            kotlin.run {
+                Toast.makeText(context, "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
+        changeProgressDialogState(false)
+        dismiss()
+    }
+
     // 기프티콘 정보담긴 리스트 내용 검사
     private fun chkAllList(): Boolean{
         var idx = 0
@@ -520,30 +585,31 @@ class MMSDialog(private val viewModel: AddViewModel): DialogFragment() {
         return true
     }
 
+    // 최종 등록
     private fun add(){
         if (chkAllList()){
-            viewModel.addGifticon(makeAddInfoList())
-            viewModel.addGifticonResult.observeForever(EventObserver{
-                viewModel.addOtherFileToGCP(makeAddImgMultipartList())
-            })
+            CoroutineScope(Dispatchers.IO).launch {
+                repo.addGifticon(makeAddInfoList())
+                var gcpResult = listOf<GCPResult>()
+                launch {
+                    gcpResult = repo.addFileToGCP(makeAddImgMultipartList())
+                }.join()
 
-            viewModel.gcpOtherResult.observeForever(EventObserver{
-                viewModel.addImgInfo(makeAddImgInfoList(it))
-                for (i in 0 until delImgUris.size){
-                    delCropImg(delImgUris[i])
-                }
+                launch {
+                    repo.addImgInfo(makeAddImgInfoList(gcpResult))
+                    for (i in 0 until delImgUris.size){
+                        delCropImg(delImgUris[i])
+                    }
 
-                viewModel.addImgInfoResult.observeForever(EventObserver{
-                    /*** fragment home 갱신  ***/
-                    changeProgressDialogState(false)
-                    dismiss()
-                })
-            })
+                    launch {
+                        mainActivity.changeFragment(HomeFragment())
+                        changeProgressDialogState(false)
+                        dismiss()
+                    }.join()
+                }.join()
+            }
         } else{
-            /** 갤러리에서 클릭할때 추후 생각 **/
-            Toast.makeText(context, "인식에 실패하였습니다. 직접 등록해주세요.", Toast.LENGTH_SHORT).show()
-            changeProgressDialogState(false)
-            dismiss()
+            notifyFail()
         }
     }
 }

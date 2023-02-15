@@ -40,3 +40,17 @@ data class FindDonateResponse(
     val allNearPresentList : List<Present>,
     val gettablePresentList : List<Present>
 )
+
+data class UserResponse(
+    val email: String?,
+    val social: String,
+    val nday: Int = 1,
+    val alarm: Int = 1,
+    val secret: String?,
+    val manner_temp: Int = 1,
+    val term: Int = 1,
+    val timezone: Int = 1,
+    var token: String,
+    val acessToken : String,
+    val refreshToekn : String
+)

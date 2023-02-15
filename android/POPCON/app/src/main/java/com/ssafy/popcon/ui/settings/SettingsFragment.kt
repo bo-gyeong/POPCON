@@ -37,11 +37,13 @@ class SettingsFragment : Fragment() {
 
     private lateinit var mainActivity: MainActivity
     private lateinit var user: User
+    private lateinit var fcmToken: String
     private lateinit var shardPreference:SharedPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         user = SharedPreferencesUtil(requireContext()).getUser()
+        fcmToken = SharedPreferencesUtil(requireContext()).getFCMToken()
         shardPreference = SharedPreferencesUtil(requireContext()).preferences
         mainActivity = context as MainActivity
     }
@@ -62,8 +64,10 @@ class SettingsFragment : Fragment() {
             user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
+            shardPreference.getInt("manner_temp", 1),
             shardPreference.getInt("noti_interval", 1),
-            shardPreference.getInt("noti_time", 1)
+            shardPreference.getInt("noti_time", 1),
+            fcmToken
         )
         binding.user = user
 

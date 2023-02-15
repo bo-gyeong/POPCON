@@ -2,22 +2,14 @@ package com.ssafy.popcon.ui.common
 
 import android.content.ClipData
 import android.content.ClipDescription
-import android.graphics.Color
 import android.location.LocationManager
-import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.view.View.OnDragListener
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import com.ssafy.popcon.dto.DonateRequest
-import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.ui.map.DonateLocation
-import com.ssafy.popcon.ui.map.MapFragment
 import com.ssafy.popcon.util.MyLocationManager
-import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.MapViewModel
 
 open class DragListener(
