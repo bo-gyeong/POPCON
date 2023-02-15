@@ -156,19 +156,19 @@ public class GoogleOcrController {
                 width = detectTextDto.getWidth();
                 height = detectTextDto.getHeight();
 
-                System.out.println(width);
-                System.out.println(height);
+                //System.out.println(width);
+                //System.out.println(height);
 
-                System.out.println((double)218 / 800 * width);
-                System.out.println((double)1499 / 1661 * height);
-                System.out.println((double)584 / 800 * width);
-                System.out.println((double)1558 / 1661 * height);
+                //System.out.println((double)218 / 800 * width);
+                //System.out.println((double)1499 / 1661 * height);
+                //System.out.println((double)584 / 800 * width);
+                //System.out.println((double)1558 / 1661 * height);
 
                 definePublisher = -1;
 
                 GifticonResponse finalGifticonResponse = null;
 
-                System.out.println(fileName);
+                //System.out.println(fileName);
 
                 String filePath = "gs://popcon/"+fileName;
 
@@ -215,11 +215,11 @@ public class GoogleOcrController {
 
 
                                 String isGS = checkGS.replaceAll("\n", "").replaceAll(" ", "");
-                                System.out.println(isGS);
+                                //System.out.println(isGS);
                                 if (isGS.contains("GS&쿠폰")) {
                                     definePublisher = 0;
 
-                                    System.out.println(definePublisher);
+                                    //System.out.println(definePublisher);
                                     break;
                                 }
                             }
@@ -236,7 +236,7 @@ public class GoogleOcrController {
 
 
                                 String isKakao = checkKakao.replaceAll("\n", "").replaceAll(" ", "");
-                                System.out.print(isKakao);
+                                //System.out.print(isKakao);
                                 if (isKakao.contains("kakaotalk")) {
                                     definePublisher = 1;
                                     break;
@@ -255,7 +255,7 @@ public class GoogleOcrController {
 
 
                                 String isGiftishow = checkGiftishow.replaceAll("\n", "").replaceAll(" ", "");
-                                System.out.print(isGiftishow);
+                                //System.out.print(isGiftishow);
                                 if (isGiftishow.contains("기프티쇼") || isGiftishow.contains("giftishow")) {
                                     definePublisher = 2;
                                     break;
@@ -275,7 +275,7 @@ public class GoogleOcrController {
 
 
                                 String isGifticon = checkGifticon.replaceAll("\n", "").replaceAll(" ", "");
-                                System.out.print(isGifticon);
+                                //System.out.print(isGifticon);
                                 if (isGifticon.contains("gifticon")) {
                                     definePublisher = 3;
                                     break;
@@ -292,7 +292,8 @@ public class GoogleOcrController {
 
 
 
-                        System.out.println(definePublisher);}
+                        //System.out.println(definePublisher);
+                    }
 
                     List<String> checkVoucher = new ArrayList<>();
                     checkVoucher.add("금액권");
@@ -321,7 +322,7 @@ public class GoogleOcrController {
 
 
 
-                            System.out.println(gifticonResponse);
+                            //System.out.println(gifticonResponse);
                             break;
 
                         }
@@ -385,7 +386,7 @@ public class GoogleOcrController {
                                 }
 
                                 String preBrandName = checkGsBrand.replaceAll("\n","").replaceAll(" ","");
-                                System.out.println(preBrandName);
+                                //System.out.println(preBrandName);
 
 
 
@@ -432,7 +433,7 @@ public class GoogleOcrController {
                                     System.out.println(e);
                                 }
 
-                                System.out.println(productName);
+                                //System.out.println(productName);
 
 
                                 // isVoucher
@@ -461,7 +462,7 @@ public class GoogleOcrController {
 
 
                                 preDue = checkGsDue.replaceAll("\n","").replaceAll(" ","");
-                                System.out.println(preDue);
+                                //System.out.println(preDue);
 
 
 
@@ -472,12 +473,12 @@ public class GoogleOcrController {
                                         (gsRes.getBoundingPoly().getVertices(2).getX() < (((double)330 / 430) * width)) &&
                                         (gsRes.getBoundingPoly().getVertices(2).getY() < (((double)381 / 400) * height))){
                                     checkGsBarcode += gsRes.getDescription().replaceAll("\n","").replaceAll(" ","").replaceAll("-","");
-                                    System.out.println(checkGsBarcode);
+                                    //System.out.println(checkGsBarcode);
 
                                 }
 
                                 barcodeNum = checkGsBarcode.replaceAll("\n","").replaceAll(" ","").replaceAll("-","");
-                                System.out.println(barcodeNum);
+                                //System.out.println(barcodeNum);
 
 
 
@@ -522,7 +523,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -533,7 +534,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -548,7 +549,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*1000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -661,7 +662,7 @@ public class GoogleOcrController {
                                 }
 
                                 preBrandName = checkKakaoBrand.replace("\n","").replace(" ","");
-                                System.out.println(preBrandName);
+                                //System.out.println(preBrandName);
 
 
 
@@ -669,7 +670,7 @@ public class GoogleOcrController {
 
                                     if (preBrandName.contains(chk)) {
                                         brandName = preBrandName.replace(chk, "").replace(" ", "");
-                                        System.out.println(brandName);
+                                        //System.out.println(brandName);
                                         break;
                                     }
                                     else {
@@ -692,7 +693,7 @@ public class GoogleOcrController {
                                 }
 
                                 productName = checkKakadoProduct.replace("\n","");
-                                System.out.println(productName);
+                                //System.out.println(productName);
 
 
 
@@ -716,7 +717,7 @@ public class GoogleOcrController {
                                 }
 
                                 preDue = checkKakaoDue.replace("\n","").replace(" ","");
-                                System.out.println(preDue);
+                                //System.out.println(preDue);
 
 
 
@@ -735,7 +736,7 @@ public class GoogleOcrController {
                                 }
 
                                 barcodeNum = checkKakaoBarcode.replace("\n","").replace(" ","");
-                                System.out.println(barcodeNum);
+                                //System.out.println(barcodeNum);
 
 
 
@@ -782,7 +783,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -793,7 +794,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -808,7 +809,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*1000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -920,7 +921,7 @@ public class GoogleOcrController {
                                 }
 
                                 String preBrandName = checkGiftishowBrand.replace("\n","").replace(" ","");
-                                System.out.print(preBrandName);
+                                //System.out.print(preBrandName);
 
 
 
@@ -949,7 +950,7 @@ public class GoogleOcrController {
                                 }
 
                                 productName = checkGiftishowProduct.replace("\n","");
-                                System.out.print(productName);
+                                //System.out.print(productName);
 
 
 
@@ -974,7 +975,7 @@ public class GoogleOcrController {
                                 }
 
                                 preDue = checkGiftishowDue.replace("\n","").replace(" ","");
-                                System.out.print(preDue);
+                                //System.out.print(preDue);
 
 
 
@@ -988,7 +989,7 @@ public class GoogleOcrController {
                                 }
 
                                 barcodeNum = checkGiftishowBarcode.replace("\n","").replace(" ","");
-                                System.out.print(barcodeNum);
+                                //System.out.print(barcodeNum);
 
 
 
@@ -1034,7 +1035,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -1045,7 +1046,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -1060,7 +1061,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*1000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -1173,7 +1174,7 @@ public class GoogleOcrController {
                                 }
 
                                 String preBrandName = checkGifticonBrand.replace("\n","").replace(" ","");
-                                System.out.println(preBrandName);
+                                //System.out.println(preBrandName);
 
 
 
@@ -1204,7 +1205,7 @@ public class GoogleOcrController {
                                 }
 
                                 productName = checkGifticonProduct.replace("\n","");
-                                System.out.print(productName);
+                                //System.out.print(productName);
 
 
 
@@ -1228,7 +1229,7 @@ public class GoogleOcrController {
                                 }
 
                                 preDue = checkGifticonDue.replace("\n","").replace(" ","");
-                                System.out.print(preDue);
+                                //System.out.print(preDue);
 
 
 
@@ -1242,7 +1243,7 @@ public class GoogleOcrController {
                                 }
 
                                 barcodeNum = checkGifticonBarcode.replace("\n","").replace(" ","");
-                                System.out.print(barcodeNum);
+                                //System.out.print(barcodeNum);
 
 
 
@@ -1286,7 +1287,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -1297,7 +1298,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*10000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();
@@ -1312,7 +1313,7 @@ public class GoogleOcrController {
                                         try{
                                             int prePrice = Integer.parseInt(checkInt);
                                             price = prePrice*1000;
-                                            System.out.println(prePrice);
+                                            //System.out.println(prePrice);
                                         }
                                         catch (NumberFormatException ex){
                                             ex.printStackTrace();

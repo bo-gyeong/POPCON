@@ -263,7 +263,7 @@ public class LocationController {
                     ResponseBrandDto brandInfo = brandService.findBrand(brand);
 
 
-                    System.out.println(result);
+                    //System.out.println(result);
 
                     LocationResponse locationResponse = new LocationResponse(phone, placeName, xPos, yPos, brandInfo);
 

@@ -53,9 +53,9 @@ public class DataBucketUtil {
 
             File forDelete = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
             if(forDelete.delete()){
-                System.out.println("파일삭제 성공");
+                System.out.println(" ");
             }else{
-                System.out.println("파일삭제 실패");
+                System.out.println(" ");
             }
 
             InputStream inputStream = new ClassPathResource(gcpConfigFile).getInputStream();
