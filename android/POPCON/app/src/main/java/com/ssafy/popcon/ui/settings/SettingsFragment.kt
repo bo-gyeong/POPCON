@@ -154,6 +154,9 @@ class SettingsFragment : Fragment() {
     private fun settingsToLogin() {
         LoginFragment.fromSettingsFragment = true
         mainActivity.changeFragment(LoginFragment())
+
+        mainActivity.bottomNav.menu
+            .findItem(R.id.homeFragment).isChecked = true
     }
 
     // 시간 설정 text변경
