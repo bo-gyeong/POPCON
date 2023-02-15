@@ -102,9 +102,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
 
         if (checkLocationService()) {
             // GPS가 켜져있을 경우
-            mainActivity.checkPermissions()
             startTracking()
-
             DonateLocation.x = binding.mapView.mapCenterPoint.mapPointGeoCoord.longitude.toString()
             DonateLocation.y = binding.mapView.mapCenterPoint.mapPointGeoCoord.latitude.toString()
         } else {
@@ -442,7 +440,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
                 phone.text = storeMap[poiItem?.itemName]
             } else {//기부 핀
                 phone.isVisible = false
-                if (poiItem?.customImageResourceId == R.drawable.near) {
+                if (poiItem?.customImageResourceId == R.drawable.far) {
                     name.text = "줍기"
                 } else if (poiItem?.customImageResourceId == R.drawable.far) {
                     val view: CardView = mCalloutBalloon.findViewById(R.id.ballView)
