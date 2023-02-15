@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="20dp"
-        android:fitsSystemWindows="true"
-        android:paddingBottom="?attr/actionBarSize">
+        android:fitsSystemWindows="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/l_regi"
@@ -78,6 +77,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_coupon_img"
+                                        style="@style/Regular"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
@@ -123,6 +123,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_barcode_img"
+                                        style="@style/Regular"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
@@ -141,14 +142,14 @@
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btn_original_see"
                             style="@style/Bold.Brown"
-                            android:layout_marginHorizontal="24dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/shape_round_white_shadow"
+                            android:layout_marginHorizontal="24dp"
                             android:text="@string/original_see"
-                            android:textSize="16sp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/l_coupon_img" />
+                            android:textSize="14sp"
+                            android:background="@drawable/shape_round_white_shadow"
+                            app:layout_constraintTop_toBottomOf="@+id/l_coupon_img"
+                            app:layout_constraintLeft_toLeftOf="parent"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -161,23 +162,25 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_product_name"
+                            style="@style/AddEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="-24dp"
-                            android:layout_marginBottom="-14dp"
+                            android:layout_marginTop="-30dp"
                             android:layout_marginStart="-14dp"
                             android:layout_marginEnd="-14dp"
-                            style="@style/AddEditText">
+                            android:layout_marginBottom="-14dp">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_product_name"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingTop="30dp"
                                 android:hint="@string/product_name"
-                                android:text="@{gifticon.productName}"
+                                android:inputType="text"
                                 android:maxLength="80"
-                                android:inputType="text"/>
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
+                                android:text="@{gifticon.productName}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -193,15 +196,17 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_product_brand"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingTop="30dp"
                                 android:hint="@string/product_brand"
-                                android:text="@{gifticon.brand.brandName}"
                                 android:clickable="false"
                                 android:focusable="false"
+                                android:inputType="text"
                                 android:maxLength="80"
-                                android:inputType="text"/>
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
+                                android:text="@{gifticon.brand.brandName}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -217,15 +222,17 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_barcode"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingTop="30dp"
                                 android:hint="@string/barcode"
-                                android:text="@{gifticon.barcodeNum}"
                                 android:clickable="false"
                                 android:focusable="false"
+                                android:inputType="number"
                                 android:maxLength="30"
-                                android:inputType="number"/>
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
+                                android:text="@{gifticon.barcodeNum}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -241,13 +248,15 @@
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_date"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:paddingTop="30dp"
                                 android:hint="@string/date"
-                                android:text="@{gifticon.due.toString()}"
+                                android:inputType="number"
                                 android:maxLength="10"
-                                android:inputType="number"/>
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
+                                android:text="@{gifticon.due.toString()}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -270,11 +279,12 @@
                                 app:layout_constraintHorizontal_weight="0.2">
 
                                 <TextView
+                                    style="@style/Regular"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/price"
                                     android:textColor="@color/popcon_grey_01"
-                                    android:textSize="16sp"/>
+                                    android:textSize="12sp" />
 
                                 <CheckBox
                                     android:id="@+id/cb_price"
@@ -300,68 +310,75 @@
 
                                 <com.google.android.material.textfield.TextInputLayout
                                     android:id="@+id/til_price"
+                                    style="@style/AddEditText"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="-14dp"
-                                    android:layout_marginBottom="-14dp"
                                     android:layout_marginStart="-14dp"
+                                    android:layout_marginTop="-14dp"
                                     android:layout_marginEnd="-14dp"
-                                    app:layout_constraintTop_toTopOf="parent"
+                                    android:layout_marginBottom="-14dp"
+                                    app:layout_constraintHorizontal_weight="1.8"
                                     app:layout_constraintLeft_toLeftOf="parent"
                                     app:layout_constraintRight_toLeftOf="@+id/tv_won"
-                                    app:layout_constraintHorizontal_weight="1.8"
-                                    style="@style/AddEditText">
+                                    app:layout_constraintTop_toTopOf="parent">
 
                                     <com.google.android.material.textfield.TextInputEditText
                                         android:id="@+id/et_price"
+                                        style="@style/Regular"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:paddingTop="30dp"
-                                        android:text="@{gifticon.price==0? `` : String.valueOf(gifticon.price)}"
+                                        android:gravity="end"
+                                        android:inputType="number"
                                         android:maxLength="8"
-                                        android:inputType="number"/>
+                                        android:paddingTop="30dp"
+                                        android:textSize="12sp"
+                                        android:text="@{gifticon.price==0? `` : String.valueOf(gifticon.price)}" />
 
                                 </com.google.android.material.textfield.TextInputLayout>
 
                                 <TextView
                                     android:id="@+id/tv_won"
+                                    style="@style/Regular"
                                     android:layout_width="0dp"
                                     android:layout_height="fill_parent"
-                                    android:layout_marginTop="26dp"
                                     android:layout_marginStart="16dp"
+                                    android:layout_marginTop="26dp"
                                     android:layout_marginEnd="-10dp"
                                     android:text="@string/won"
                                     android:textColor="@color/popcon_grey_03"
-                                    android:textSize="18sp"
-                                    app:layout_constraintTop_toTopOf="parent"
+                                    android:textSize="14sp"
                                     app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintHorizontal_weight="0.2"
                                     app:layout_constraintLeft_toRightOf="@+id/til_price"
-                                    app:layout_constraintHorizontal_weight="0.2"/>
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
+                            style="@style/AddEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="-10dp"
                             android:layout_marginStart="-14dp"
+                            android:layout_marginTop="-10dp"
                             android:layout_marginEnd="-14dp"
                             app:counterEnabled="true"
                             app:counterMaxLength="100"
-                            app:endIconMode="clear_text"
-                            style="@style/AddEditText">
+                            app:endIconMode="clear_text">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_write_memo"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:paddingTop="30dp"
+                                android:gravity="top"
                                 android:hint="@string/memo"
-                                android:text="@{gifticon.memo}"
                                 android:maxLength="100"
-                                android:gravity="top"/>
+                                android:textSize="12sp"
+                                android:text="@{gifticon.memo}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -375,22 +392,22 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_edit"
+            style="@style/Bold.Brown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:elevation="2dp"
             android:text="@string/btn_edit"
-            style="@style/Regular.White"
-            android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:background="@drawable/btn_round_orange"
             android:stateListAnimator="@null"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/l_regi"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintVertical_weight="1"/>
+            app:layout_constraintTop_toBottomOf="@+id/l_regi"
+            app:layout_constraintVertical_weight="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

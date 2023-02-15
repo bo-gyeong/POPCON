@@ -8,4 +8,5 @@ interface UserDataSource {
     suspend fun signInKakao(user: User): User
     suspend fun withdraw(user: UserDeleteRequest)
     suspend fun updateUser(user: User): User
+    suspend fun getUserLv(): Int
 }
