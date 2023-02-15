@@ -15,7 +15,6 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -31,7 +30,6 @@ import com.ssafy.popcon.gallery.AddGalleryGifticon
 import com.ssafy.popcon.ui.add.AddFragment
 import com.ssafy.popcon.mms.MMSDialog
 import com.ssafy.popcon.mms.MMSJobService
-import com.ssafy.popcon.mms.MMSReceiver
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
 import com.ssafy.popcon.repository.fcm.FCMRepository
 import com.ssafy.popcon.ui.add.*
@@ -43,9 +41,8 @@ import com.ssafy.popcon.util.CheckPermission
 import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.SharedPreferencesUtil
-import com.ssafy.popcon.viewmodel.AddViewModel
-import com.ssafy.popcon.viewmodel.FCMViewModel
-import com.ssafy.popcon.viewmodel.ViewModelFactory
+
+private const val USER_KEY = "com.ssafy.popcon.key.user"
 
 private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity() {
@@ -87,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
         callMMSReceiver()
         chkNewMMSImg()
+
         // 스플레시 스크린 고려
 
         //자동로그인

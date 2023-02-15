@@ -131,14 +131,14 @@ class LoginFragment : Fragment() {
             if (sp.getUser().email != "") {
                 mainActivity.changeFragment(HomeFragment())
             }
-        } else{
+        } else {
             sp.deleteUser()
             fromSettingsFragment = false
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun successLogin(userResponse: UserResponse){
+    private fun successLogin(userResponse: UserResponse) {
         fcmToken = fcmViewModel.token
 
         val newUser = User(
@@ -201,8 +201,8 @@ class LoginFragment : Fragment() {
 
     // 카카오 계정 웹 로그인
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun loginWithKakaoAccount(){
-        UserApiClient.instance.loginWithKakaoAccount(mainActivity){ token, error ->
+    private fun loginWithKakaoAccount() {
+        UserApiClient.instance.loginWithKakaoAccount(mainActivity) { token, error ->
             if (error != null) {
                 Log.e(TAG, "kakaoLogin_error: ${error}")
             } else if (token != null) {
@@ -214,7 +214,7 @@ class LoginFragment : Fragment() {
 
     // 카카오 로그인 성공
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun successKakaoLogin(){
+    private fun successKakaoLogin() {
         UserApiClient.instance.me { meUser, error ->
             val email = meUser?.kakaoAccount?.email.toString()
 
@@ -262,9 +262,7 @@ class LoginFragment : Fragment() {
                         @RequiresApi(Build.VERSION_CODES.Q)
                         override fun onSuccess(result: NidProfileResponse) {
                             val email = result.profile?.email.toString()
-
                             user = User(email, "네이버", fcmToken)
-                            //user = User("abc@naver.com", "카카오")
                             sp.addUser(user)
                             sp.setGalleryInfo(
                                 Gallery(System.currentTimeMillis(), 0)
@@ -313,18 +311,6 @@ class LoginFragment : Fragment() {
 
             NaverIdLoginSDK.authenticate(requireContext(), oAuthLoginCallback)
         }
-    }
-
-    // 비회원 로그인 : UUID 생성 후 리텅
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun nonMemberLogin() {
-        if (userUUID == "")
-            userUUID = UUID.randomUUID().toString()
-        // 서버에게 생성한 UUID 전송할 레트로핏 코드
-        Log.d(TAG, "nonMemberLogin: $userUUID")
-        val user = User(userUUID, "비회원", fcmToken)
-        sp.addUser(user)
-        //successLogin(user)
     }
 
     // 토큰 보내기
