@@ -228,9 +228,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="-30dp"
-                            android:layout_marginBottom="-14dp"
                             android:layout_marginStart="-14dp"
-                            android:layout_marginTop="-24dp"
                             android:layout_marginEnd="-14dp"
                             android:layout_marginBottom="-14dp">
 
@@ -446,9 +444,6 @@
             android:textSize="16sp"
             android:background="@drawable/btn_round_orange"
             android:stateListAnimator="@null"
-            android:text="@string/regi"
-            android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
