@@ -16,4 +16,8 @@ class UserRepository(private val remoteDataSource: UserRemoteDataSource) {
     suspend fun updateUser(user: User): User {
         return remoteDataSource.updateUser(user)
     }
+
+    suspend fun getUserLv(): Int{
+        return remoteDataSource.getUserLv()
+    }
 }

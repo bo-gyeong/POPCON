@@ -10,27 +10,24 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentSettingsBinding
-import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
-import kotlin.math.log
 
 private const val TAG = "SettingsFragment_싸피"
-/** 추후 로그 지우기 **/
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel: UserViewModel by activityViewModels { ViewModelFactory(requireContext()) }
@@ -64,7 +61,7 @@ class SettingsFragment : Fragment() {
             user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
-            shardPreference.getInt("manner_temp", 1),
+            shardPreference.getInt("manner_temp", 0),
             shardPreference.getInt("noti_interval", 1),
             shardPreference.getInt("noti_time", 1),
             fcmToken
@@ -76,6 +73,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getLevel()
         switchClick()
         showSettingTime()
         settingVisibility()
@@ -118,6 +116,47 @@ class SettingsFragment : Fragment() {
                 settingsToLogin()
             }
         }
+    }
+
+    // user의 level 받아오기
+    private fun getLevel(){
+        viewModel.getUserLv()
+        viewModel.userLv.observe(viewLifecycleOwner, EventObserver{
+            when(it){
+                0 -> Glide.with(requireContext()).load(R.drawable.lv0).circleCrop().into(binding.ivLevel)
+                1 -> Glide.with(requireContext()).load(R.drawable.lv1).circleCrop().into(binding.ivLevel)
+                2 -> Glide.with(requireContext()).load(R.drawable.lv2).circleCrop().into(binding.ivLevel)
+                3 -> Glide.with(requireContext()).load(R.drawable.lv3).circleCrop().into(binding.ivLevel)
+                4 -> Glide.with(requireContext()).load(R.drawable.lv4).circleCrop().into(binding.ivLevel)
+                5 -> Glide.with(requireContext()).load(R.drawable.lv5).circleCrop().into(binding.ivLevel)
+            }
+            setSpMannerTmp(it)
+        })
+    }
+
+    // sp의 user update
+    private fun setSpMannerTmp(userLv : Int){
+        var userTmp = 0
+        when(userLv){
+            1 -> userTmp = 1
+            2 -> userTmp = 3
+            3 -> userTmp = 6
+            4 -> userTmp = 9
+            5 -> userTmp = 12
+        }
+
+        // sp user update
+        val newUser = User(
+            user.email,
+            user.social,
+            shardPreference.getInt("noti_first", 1),
+            shardPreference.getInt("alarm", 1),
+            userTmp,
+            shardPreference.getInt("noti_interval", 1),
+            shardPreference.getInt("noti_time", 1),
+            user.token
+        )
+        SharedPreferencesUtil(requireContext()).updateUser(newUser)
     }
 
     // 알림 다이얼로그 생성

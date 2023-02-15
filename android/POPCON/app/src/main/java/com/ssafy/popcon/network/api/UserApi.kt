@@ -3,6 +3,7 @@ package com.ssafy.popcon.network.api
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST
 
@@ -21,4 +22,8 @@ interface UserApi {
     // 회원정보 변경
     @POST("user/update")
     suspend fun updateUser(@Body user: User): User
+
+    // user level 받아오기
+    @GET("user/getlevel")
+    suspend fun getUserLv(): Int
 }
