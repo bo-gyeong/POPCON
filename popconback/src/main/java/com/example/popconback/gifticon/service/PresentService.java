@@ -85,7 +85,7 @@ public class PresentService {
 
         // 문자보내기
         try {
-            String title = "기프티콘 선물이 전달되었어요. 감사인사를 확인해보세요!";
+            String title = "선물이 누군가에게 전달되었어요. 감사인사를 확인해보세요!";
 
             tokenController.sendMessageTo(gifticon.getUser().getToken(), title, getPresentDto.getMessage());
             System.out.println("감사합니다"+getPresentDto.getMessage());

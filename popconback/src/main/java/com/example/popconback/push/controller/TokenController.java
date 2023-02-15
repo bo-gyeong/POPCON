@@ -99,7 +99,7 @@ public class TokenController {
                 long diffsec = (date.getTime() - Ddate.getTime())/1000+(60*60*9l);// 둘의 차이를 뺀다
                 long diffday = diffsec/(24*60*60);// 얼만큼 지나갔는지 확인하기 위해서 일 수를 구하고
                 if(diffday%user.getTerm() == 0){// 해당 일수를 알람 주기로 나눠서 나머지가 0이면 해당되는 날에 알림을 보낸다.
-                    service.sendMessageTo(Token, "유효기간 임박한 기프   티콘 있어요", "빨리쓰세요");
+                    service.sendMessageTo(Token, "쿠폰 유효기간 알림", "유효기간이 임박한 기프티콘 있어요!");
                     System.out.println("hihi");
                     break;// 문자 여러개 보낼 필요 없으니까
                 }
