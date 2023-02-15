@@ -86,7 +86,7 @@ class MapViewModel(
     //사용자의 기프티콘 목록 불러오기
     fun getGifticonByUser(user: User) {
         viewModelScope.launch {
-            val gifticons = gifticonRepository.getGifticonByUser(user)
+            val gifticons = gifticonRepository.getGifticonMapByUser(user)
 
             _mapGifticon.value = gifticons
         }

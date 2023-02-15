@@ -8,6 +8,10 @@ class GifticonRemoteDataSource(private val apiClient: GifticonApi) : GifticonDat
         return apiClient.getGifticonByUser(email, social)
     }
 
+    override suspend fun getGifticonMapByUser(email: String, social: String): List<Gifticon> {
+        return apiClient.getGifticonMapByUser(email, social)
+    }
+
     override suspend fun getGifticonByBarNum(barcodeNum: String): GifticonResponse {
         return apiClient.getGifticonByBarNum(barcodeNum)
     }

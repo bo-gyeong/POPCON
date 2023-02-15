@@ -42,9 +42,11 @@
 
                 <TextView
                     android:id="@+id/tv_account"
+                    style="@style/Regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{user.email}"
+                    android:textSize="12sp"
                     app:layout_constraintTop_toBottomOf="@+id/tv_title_account"
                     app:layout_constraintLeft_toLeftOf="@+id/tv_title_account" />
 
@@ -58,8 +60,6 @@
                     app:layout_constraintRight_toRightOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
             <TextView
                 android:id="@+id/tv_join"
@@ -133,11 +133,12 @@
 
                     <TextView
                         android:id="@+id/tv_noti_title_first"
+                        style="@style/Bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/noti_title_first"
-                        android:textColor="@color/popcon_black_03"
-                        android:textStyle="bold" />
+                        android:textSize="12sp"
+                        android:textColor="@color/popcon_black_03"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -146,14 +147,18 @@
 
                         <TextView
                             android:id="@+id/tv_noti_setting_first"
+                            style="@style/Regular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textSize="12sp"
                             android:text="@{String.valueOf(user.nday)}"/>
 
                         <TextView
                             android:id="@+id/tv_noti_setting_first_text"
+                            style="@style/Regular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textSize="12sp"
                             android:text="@string/first" />
 
                     </LinearLayout>
@@ -174,11 +179,12 @@
 
                     <TextView
                         android:id="@+id/tv_noti_title_interval"
+                        style="@style/Bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/noti_title_interval"
-                        android:textColor="@color/popcon_black_03"
-                        android:textStyle="bold" />
+                        android:textSize="12sp"
+                        android:textColor="@color/popcon_black_03"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -187,14 +193,18 @@
 
                         <TextView
                             android:id="@+id/tv_noti_setting_interval"
+                            style="@style/Regular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{String.valueOf(user.term)}"/>
+                            android:textSize="12sp"
+                            android:text="@{String.valueOf(user.term)}" />
 
                         <TextView
                             android:id="@+id/tv_noti_setting_interval_text"
+                            style="@style/Regular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textSize="12sp"
                             android:text="@string/interval" />
 
                     </LinearLayout>
@@ -215,16 +225,19 @@
 
                     <TextView
                         android:id="@+id/tv_noti_title_time"
+                        style="@style/Bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/noti_title_time"
-                        android:textColor="@color/popcon_black_03"
-                        android:textStyle="bold" />
+                        android:textSize="12sp"
+                        android:textColor="@color/popcon_black_03"/>
 
                     <TextView
                         android:id="@+id/tv_noti_setting_time"
+                        style="@style/Regular"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"/>
 
                 </LinearLayout>
 
@@ -234,6 +247,7 @@
 
         <TextView
             android:id="@+id/tv_logout"
+            style="@style/Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -243,11 +257,11 @@
             android:paddingBottom="16dp"
             android:background="@drawable/change_color_press_white"
             android:text="@string/logout"
-            style="@style/Bold"
             app:layout_constraintTop_toBottomOf="@+id/l_noti"/>
 
         <TextView
             android:id="@+id/tv_withdraw"
+            style="@style/Regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
@@ -257,6 +271,7 @@
             android:paddingBottom="16dp"
             android:background="@drawable/change_color_press_white"
             android:text="@string/withdraw"
+            android:textSize="12sp"
             android:textColor="@color/popcon_grey_06"
             app:layout_constraintTop_toBottomOf="@+id/tv_logout"/>
 
