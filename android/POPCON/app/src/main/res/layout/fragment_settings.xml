@@ -7,6 +7,9 @@
         <variable
             name="user"
             type="com.ssafy.popcon.dto.User" />
+        <variable
+            name="noti_time"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -255,7 +258,8 @@
                         style="@style/Regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp"
+                        android:text="@{noti_time}"/>
 
                 </LinearLayout>
 

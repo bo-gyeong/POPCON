@@ -56,6 +56,9 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        val timeZone = shardPreference.getInt("noti_time", 1)
+        changeTime(timeZone)
+
         user = User(
             user.email,
             user.social,
@@ -63,7 +66,7 @@ class SettingsFragment : Fragment() {
             shardPreference.getInt("alarm", 1),
             shardPreference.getInt("manner_temp", 0),
             shardPreference.getInt("noti_interval", 1),
-            shardPreference.getInt("noti_time", 1),
+            timeZone,
             fcmToken
         )
         binding.user = user
@@ -176,7 +179,10 @@ class SettingsFragment : Fragment() {
                         userInfo = User(user.email, user.social, selectValue, user.alarm, "the world",user.manner_temp, term, user.timezone, user.token)
                     }
                     1 -> userInfo = User(user.email, user.social, user.nday, user.alarm, "the world", user.manner_temp, selectValue, user.timezone, user.token)
-                    2 -> userInfo = User(user.email, user.social, user.nday, user.alarm, "the world", user.manner_temp, user.term, selectValue, user.token)
+                    2 -> {
+                        userInfo = User(user.email, user.social, user.nday, user.alarm, "the world", user.manner_temp, user.term, selectValue, user.token)
+                        changeTime(selectValue)
+                    }
                 }
                 SharedPreferencesUtil(requireContext()).updateUser(userInfo!!)
                 user = userInfo
@@ -187,6 +193,17 @@ class SettingsFragment : Fragment() {
                 }
             }
         })
+    }
+
+    // user의 timeZone을 시간 String으로 변경
+    private fun changeTime(timeZone: Int){
+        val timeList = arrayOf(
+            this.resources.getText(R.string.time_9) as String,
+            this.resources.getText(R.string.time_13) as String,
+            this.resources.getText(R.string.time_18) as String
+        )
+
+        binding.notiTime = timeList[timeZone]
     }
 
     // 설정에서 로그인화면으로 이동 및 로그인정보 삭제
