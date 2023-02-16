@@ -19,7 +19,7 @@ public class OcrService {
             BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
             int width = bufferedImage.getWidth();
             int height = bufferedImage.getHeight();
-            System.out.println(String.format("width = %d height = %d", width, height));
+            //System.out.println(String.format("width = %d height = %d", width, height));
 
             CheckImageSizeDto checkImageSizeDto = new CheckImageSizeDto();
             checkImageSizeDto.setWidth(width);

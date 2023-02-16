@@ -103,7 +103,7 @@ public class GifticonService {
         for (int i = 0; i < 3; i++){
             if(i == 1){continue;}
             if(i == 2){continue;}
-            List<Gifticon>list = gifticonRepository.findByUser_HashAndState(hash,i, Sort.by(asc("due")));
+            List<Gifticon>list = gifticonRepository.findByUser_HashAndStateAndIsVoucher(hash,i,0, Sort.by(asc("due")));
             for (Gifticon gifticon:list) {
                 ResponseListGifticonUserDto rgifticon = new ResponseListGifticonUserDto();
                 BeanUtils.copyProperties(gifticon,rgifticon);// 찾은 기프티콘 정보 복사
