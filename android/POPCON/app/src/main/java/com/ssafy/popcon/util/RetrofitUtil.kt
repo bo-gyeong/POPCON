@@ -10,5 +10,6 @@ class RetrofitUtil {
         val mapService = ApplicationClass.retrofit.create(MapApi::class.java)
         val addService = ApplicationClass.retrofit.create(AddApi::class.java)
         val fcmService = ApplicationClass.retrofit.create(FCMApi::class.java)
+        val authService = ApplicationClass.refreshRetrofit.create(AuthApi::class.java)
     }
 }

@@ -15,13 +15,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/edge_dialog"
-        android:padding="8dp">
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/tv_noBrand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="근처에 매장이 없어요"
+            android:layout_marginTop="200dp"
+            android:layout_marginBottom="200dp"
+            android:gravity="center"
+            android:text="사용 가능한 기프티콘이 없어요"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,8 +43,7 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vp_gifticon"
             android:layout_width="match_parent"
-            android:layout_height="560dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="500dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_brand_tab" />

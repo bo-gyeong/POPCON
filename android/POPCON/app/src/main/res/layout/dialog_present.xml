@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="badge"
+            type="com.ssafy.popcon.dto.Badge" />
+
+        <variable
+            name="gifticon"
+            type="com.ssafy.popcon.dto.Gifticon" />
+
+        <variable
+            name="viewModel"
+            type="com.ssafy.popcon.viewmodel.GifticonViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edge_dialog"
+        android:padding="20dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/popup_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="18dp">
+
+                    <ImageView
+                        android:id="@+id/iv_product_preview"
+                        imageUrl="@{gifticon.product_filepath}"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/product"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_barcode_img_title"
+                        style="@style/Bold.Grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
+                        android:text="바코드 정보"
+                        android:textSize="13dp"
+                        app:layout_constraintStart_toStartOf="@id/dv"
+                        app:layout_constraintTop_toBottomOf="@id/dv" />
+
+                    <ImageView
+                        android:id="@+id/iv_barcode_image"
+                        imageUrl="@{gifticon.barcode_filepath}"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginHorizontal="24dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/barcode"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_img_title" />
+
+                    <TextView
+                        android:id="@+id/tv_barcode_title"
+                        style="@style/Bold.Grey"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="바코드 번호"
+                        android:textSize="13dp"
+                        app:layout_constraintStart_toStartOf="@id/tv_barcode_img_title"
+                        app:layout_constraintTop_toBottomOf="@id/iv_barcode_image" />
+
+                    <TextView
+                        android:id="@+id/tv_bar_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="4dp"
+                        android:text="@{gifticon.barcodeNum}"
+                        app:layout_constraintStart_toStartOf="@id/tv_barcode_title"
+                        app:layout_constraintTop_toBottomOf="@id/tv_barcode_title" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cv_hide"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@color/popcon_white"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_bar_num"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/tv_barcode_img_title">
+
+                        <EditText
+                            android:id="@+id/et_message"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:hint="감사인사를 작성해주세요!"
+                            app:layout_constraintBottom_toTopOf="@id/btn_send"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <Button
+                            android:id="@+id/btn_send"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="전송"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/et_message" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/dv"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="#E9E9E9"
+                        app:layout_constraintTop_toBottomOf="@id/iv_product_preview" />
+
+                    <TextView
+                        android:id="@+id/tv_brand"
+                        style="@style/Bold.Brown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@{gifticon.brand.brandName}"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toEndOf="@id/iv_product_preview"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        style="@style/Regular"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{gifticon.productName}"
+                        android:textSize="15sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_brand"
+                        app:layout_constraintTop_toBottomOf="@id/tv_brand" />
+
+                    <TextView
+                        android:id="@+id/tv_due_title"
+                        style="@style/Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="유효기간"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_expDate"
+                        app:layout_constraintStart_toStartOf="@id/tv_brand"
+                        app:layout_constraintTop_toBottomOf="@id/tv_name" />
+
+                    <TextView
+                        android:id="@+id/tv_expDate"
+                        style="@style/Regular"
+                        date="@{gifticon.due}"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_product_preview"
+                        app:layout_constraintStart_toStartOf="@id/tv_brand"
+                        app:layout_constraintTop_toBottomOf="@id/tv_due_title"
+                        tools:text="2923-33-33 까지" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/cv_info"
+            app:layout_constraintTop_toTopOf="@id/cv_info">
+
+            <TextView
+                android:id="@+id/tv_date_badge"
+                style="@style/Regular.White"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="7dp"
+                android:background="@{badge.color}"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingTop="1dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="1dp"
+                android:text="@{badge.content}"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:background="@color/popcon_grey_02"
+                tools:text="D - 7" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

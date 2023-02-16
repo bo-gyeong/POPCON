@@ -17,6 +17,7 @@
 
         <TextView
             android:id="@+id/tv_input"
+            style="@style/Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="사용한 금액을 입력하세요"
@@ -28,7 +29,7 @@
 
         <EditText
             android:id="@+id/et_price"
-            style="@style/TextMedium"
+            style="@style/Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -39,7 +40,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_input" />
 
         <TextView
-            style="@style/TextMedium"
+            style="@style/Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" 원"
@@ -47,22 +48,13 @@
             app:layout_constraintStart_toEndOf="@id/et_price" />
 
         <Button
-            android:id="@+id/btn_100"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="100"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_price" />
-
-        <Button
             android:id="@+id/btn_500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="500"
-            app:layout_constraintBottom_toBottomOf="@id/btn_100"
-            app:layout_constraintStart_toEndOf="@id/btn_100" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_price" />
 
         <Button
             android:id="@+id/btn_1000"
@@ -70,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="1000"
-            app:layout_constraintBottom_toBottomOf="@id/btn_100"
+            app:layout_constraintBottom_toBottomOf="@id/btn_500"
             app:layout_constraintStart_toEndOf="@id/btn_500" />
 
         <Button
@@ -79,7 +71,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="5000"
-            app:layout_constraintBottom_toBottomOf="@id/btn_100"
+            app:layout_constraintBottom_toBottomOf="@id/btn_500"
             app:layout_constraintStart_toEndOf="@id/btn_1000" />
+
+        <Button
+            android:id="@+id/btn_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="전액"
+            app:layout_constraintBottom_toBottomOf="@id/btn_5000"
+            app:layout_constraintStart_toEndOf="@id/btn_5000" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

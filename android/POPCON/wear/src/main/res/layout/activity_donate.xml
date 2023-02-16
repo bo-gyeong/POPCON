@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/popcon_white">
+
+    <TextView
+        android:id="@+id/tv_donate"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/popcon_orange"
+        android:gravity="center"
+        android:text="여기에 기부!"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewpager_map_giftcon"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/tv_donate" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

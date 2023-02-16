@@ -8,14 +8,20 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ItemAddImgBinding
+import com.ssafy.popcon.dto.AddInfo
+import com.ssafy.popcon.dto.AddInfoNoImgBoolean
 import com.ssafy.popcon.dto.GifticonImg
+import com.ssafy.popcon.dto.OCRSend
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.home.HomeFragment
 
 class AddImgAdapter(
-    var OriginalImgUriList: ArrayList<GifticonImg>
+    var gifticonInfoList: ArrayList<AddInfo>
+    , var originalImgUriList: ArrayList<GifticonImg>
     , var cropXyImgUriList: ArrayList<GifticonImg>
     , var barcodeImgUriList: ArrayList<GifticonImg>
+    , var ocrSendList: ArrayList<OCRSend>
+    , var gifticonEffectiveness: ArrayList<AddInfoNoImgBoolean>
     , _onItemClick: onItemClick
 ):
     RecyclerView.Adapter<AddImgAdapter.AddImgViewHolder>() {
@@ -57,15 +63,22 @@ class AddImgAdapter(
 
             binding.gifticonImg = gifticonImg
             binding.btnRemove.setOnClickListener {
-                OriginalImgUriList.removeAt(bindingAdapterPosition)
+                gifticonInfoList.removeAt(bindingAdapterPosition)
+                originalImgUriList.removeAt(bindingAdapterPosition)
                 cropXyImgUriList.removeAt(bindingAdapterPosition)
                 barcodeImgUriList.removeAt(bindingAdapterPosition)
+                ocrSendList.removeAt(bindingAdapterPosition)
+                gifticonEffectiveness.removeAt(bindingAdapterPosition)
                 notifyItemRemoved(bindingAdapterPosition)
 
-                if (OriginalImgUriList.size == 0){
+                if (bindingAdapterPosition == nowClick){
+                    nowClick = bindingAdapterPosition+1
+                }
+
+                if (originalImgUriList.size == 0){
                     mainActivity.changeFragment(HomeFragment())
                 } else{
-                    onItemClick.onClick(0)
+                    onItemClick.onClick(nowClick)
                 }
             }
         }
@@ -80,11 +93,11 @@ class AddImgAdapter(
 
     override fun onBindViewHolder(holder: AddImgViewHolder, position: Int) {
         holder.apply {
-            bind(OriginalImgUriList[position])
+            bind(originalImgUriList[position])
         }
     }
 
     override fun getItemCount(): Int {
-        return OriginalImgUriList.size
+        return originalImgUriList.size
     }
 }

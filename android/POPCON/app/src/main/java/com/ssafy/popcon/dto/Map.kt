@@ -8,7 +8,7 @@ data class MapNowPos(
     val radius: String
 )
 
-data class MapBrandLogo(
+data class Store(
 //    phone, placeName, xPos, yPos, brand
     val phone: String,
     val placeName: String,

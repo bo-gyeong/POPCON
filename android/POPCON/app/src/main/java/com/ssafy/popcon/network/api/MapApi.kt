@@ -1,19 +1,24 @@
 package com.ssafy.popcon.network.api
 
-import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.dto.MapBrandLogo
-import com.ssafy.popcon.dto.MapNowPos
-import com.ssafy.popcon.dto.User
-import net.daum.mf.map.api.MapPoint
-import org.intellij.lang.annotations.JdkConstants.TitledBorderTitlePosition
+import com.ssafy.popcon.dto.*
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.QueryMap
 
 interface MapApi {
-    // 현재 위치 보내기  --> DataClass 만들어서 하나의 객체만 Body로 보내야하는듯
-    @GET("local")
-    suspend fun sendUserPosition(@QueryMap nowPos: Map<String, String>):  List<MapBrandLogo>
+    //현재위치에서 매장 검색
+    @POST("local/search")
+    suspend fun getStoreByLocation(@Body storeRequest : StoreRequest):  List<Store>
+
+    //현재위치에서
+    @POST("local/search/byBrand")
+    suspend fun getStoreByBrand(@Body storeRequest: StoreByBrandRequest) : List<Store>
+
+    @POST("presents/possible_list")
+    suspend fun getPresents(@Body findPresentRequest: FindPresentRequest) : FindDonateResponse
+
+    @POST("presents/give_present")
+    suspend fun givePresent(@Body request: DonateRequest)
+
+    @POST("presents/get_present")
+    suspend fun getPresent(@Body request : GetPresentRequest)
 }

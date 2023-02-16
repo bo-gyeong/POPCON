@@ -1,6 +1,8 @@
 package com.ssafy.popcon.ui.common
 
+import android.util.Log
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.ssafy.popcon.R
 import java.text.DecimalFormat
@@ -14,7 +16,11 @@ fun applyPriceFormat(view: TextView, price: Int) {
 
 //날짜에 까지 넣기
 @BindingAdapter("date")
-fun applyDateFormat(view: TextView, date: String) {
-    val due = date.split(" ")[0]
-    view.text = view.context.getString(R.string.due_date, due)
+fun applyDateFormat(view: TextView, date: String?) {
+    if (date.isNullOrEmpty()) {
+        view.isVisible = false
+    } else {
+        val due = date.split(" ")[0]
+        view.text = view.context.getString(R.string.due_date, due)
+    }
 }

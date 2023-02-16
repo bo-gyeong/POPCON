@@ -6,13 +6,13 @@ data class User(
     val nday: Int = 1,
     val alarm: Int = 1,
     val secret: String?,
-    val manner_temp: Int = 1,
+    val manner_temp: Int = 0,
     val term: Int = 1,
     val timezone: Int = 1,
-    var token: String?
+    var token: String
 ) {
-    constructor(email: String?, social: String) : this(email, social, 1, 1, "the world",1, 1, 1, "")
-    constructor(email: String?, social: String, nday: Int, alarm: Int, term: Int, timezone: Int): this(
-        email, social, nday,  alarm,"the world", 1, term, timezone, ""
+    constructor(email: String?, social: String, token: String) : this(email, social, 1, 1, "the world",0, 1, 1, token)
+    constructor(email: String?, social: String, nday: Int, alarm: Int, manner_temp: Int, term: Int, timezone: Int, token: String): this(
+        email, social, nday,  alarm,"the world", manner_temp, term, timezone, token
     )
 }

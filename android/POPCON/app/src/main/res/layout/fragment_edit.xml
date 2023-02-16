@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="gifticon"
             type="com.ssafy.popcon.dto.Gifticon" />
@@ -12,14 +11,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="12dp"
-        android:fitsSystemWindows="true"
-        android:paddingBottom="?attr/actionBarSize">
+        android:layout_margin="20dp"
+        android:fitsSystemWindows="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/l_regi"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="15dp"
             app:layout_constraintBottom_toTopOf="@id/btn_edit"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_weight="9">
@@ -78,6 +77,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_coupon_img"
+                                        style="@style/Regular"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
@@ -123,6 +123,7 @@
 
                                     <TextView
                                         android:id="@+id/tv_barcode_img"
+                                        style="@style/Regular"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
@@ -140,189 +141,246 @@
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/btn_original_see"
+                            style="@style/Bold.Brown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/shape_round_grey"
+                            android:layout_marginHorizontal="24dp"
                             android:text="@string/original_see"
-                            android:textSize="16sp"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/l_coupon_img" />
+                            android:textSize="14sp"
+                            android:background="@drawable/shape_round_white_shadow"
+                            app:layout_constraintTop_toBottomOf="@+id/l_coupon_img"
+                            app:layout_constraintLeft_toLeftOf="parent"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:orientation="vertical"
+                        android:layout_marginTop="20dp"
                         app:layout_constraintTop_toBottomOf="@+id/l_add_coupon">
 
-                        <LinearLayout
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_product_name"
+                            style="@style/AddEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:orientation="vertical">
+                            android:layout_marginTop="-30dp"
+                            android:layout_marginStart="-14dp"
+                            android:layout_marginEnd="-14dp"
+                            android:layout_marginBottom="-14dp">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/product_name"
-                                android:textColor="@color/popcon_black_03"
-                                android:textSize="15sp" />
-
-                            <EditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_product_name"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:backgroundTint="@color/popcon_grey_09"
+                                android:hint="@string/product_name"
+                                android:inputType="text"
+                                android:maxLength="80"
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{gifticon.productName}" />
 
-                        </LinearLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <LinearLayout
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_product_brand"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:orientation="vertical">
+                            android:layout_marginTop="-14dp"
+                            android:layout_marginBottom="-14dp"
+                            android:layout_marginStart="-14dp"
+                            android:layout_marginEnd="-14dp"
+                            style="@style/AddEditText">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/product_brand"
-                                android:textColor="@color/popcon_black_03"
-                                android:textSize="15sp" />
-
-                            <EditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_product_brand"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:backgroundTint="@color/popcon_grey_09"
+                                android:hint="@string/product_brand"
+                                android:clickable="false"
+                                android:focusable="false"
+                                android:inputType="text"
+                                android:maxLength="80"
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{gifticon.brand.brandName}" />
 
-                        </LinearLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <LinearLayout
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_barcode"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:orientation="vertical">
+                            android:layout_marginTop="-14dp"
+                            android:layout_marginBottom="-14dp"
+                            android:layout_marginStart="-14dp"
+                            android:layout_marginEnd="-14dp"
+                            style="@style/AddEditText">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/barcode"
-                                android:textColor="@color/popcon_black_03"
-                                android:textSize="15sp" />
-
-                            <EditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_barcode"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:backgroundTint="@color/popcon_grey_09"
+                                android:hint="@string/barcode"
+                                android:clickable="false"
+                                android:focusable="false"
+                                android:inputType="number"
+                                android:maxLength="30"
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{gifticon.barcodeNum}" />
 
-                        </LinearLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <LinearLayout
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:orientation="vertical">
+                            android:layout_marginTop="-14dp"
+                            android:layout_marginBottom="-14dp"
+                            android:layout_marginStart="-14dp"
+                            android:layout_marginEnd="-14dp"
+                            style="@style/AddEditText">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/date"
-                                android:textColor="@color/popcon_black_03"
-                                android:textSize="15sp" />
-
-                            <EditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_date"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:backgroundTint="@color/popcon_grey_09"
-                                android:inputType="datetime"
+                                android:hint="@string/date"
+                                android:inputType="number"
                                 android:maxLength="10"
+                                android:paddingTop="30dp"
+                                android:textSize="12sp"
                                 android:text="@{gifticon.due.toString()}" />
 
-                        </LinearLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:orientation="vertical">
+                            android:layout_height="wrap_content">
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:id="@+id/l_price_chk"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:layout_marginTop="26dp"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginEnd="10dp"
+                                android:orientation="horizontal"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toLeftOf="@+id/l_price"
+                                app:layout_constraintHorizontal_weight="0.2">
 
                                 <TextView
+                                    style="@style/Regular"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/price"
-                                    android:textColor="@color/popcon_black_03"
-                                    android:textSize="15sp" />
+                                    android:textColor="@color/popcon_grey_01"
+                                    android:textSize="12sp" />
 
                                 <CheckBox
                                     android:id="@+id/cb_price"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:buttonTint="@color/popcon_orange"
-                                    android:checked="@{gifticon.price == -1? false : true}"
                                     android:minWidth="0dp"
-                                    android:minHeight="0dp" />
+                                    android:minHeight="0dp"
+                                    android:checked="@{gifticon.price == -1? false : true}"
+                                    android:buttonTint="@color/popcon_orange"/>
+
                             </LinearLayout>
 
-                            <LinearLayout
+                            <androidx.constraintlayout.widget.ConstraintLayout
                                 android:id="@+id/l_price"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:visibility="gone">
+                                android:visibility="gone"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintLeft_toRightOf="@+id/l_price_chk"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintHorizontal_weight="0.7">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:id="@+id/til_price"
+                                    style="@style/AddEditText"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="-14dp"
+                                    android:layout_marginTop="-14dp"
+                                    android:layout_marginEnd="-14dp"
+                                    android:layout_marginBottom="-14dp"
+                                    app:layout_constraintHorizontal_weight="1.8"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintRight_toLeftOf="@+id/tv_won"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/et_price"
+                                        style="@style/Regular"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="end"
+                                        android:inputType="number"
+                                        android:maxLength="8"
+                                        android:paddingTop="30dp"
+                                        android:textSize="12sp"
+                                        android:text="@{gifticon.price==0? `` : String.valueOf(gifticon.price)}" />
+
+                                </com.google.android.material.textfield.TextInputLayout>
 
                                 <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:id="@+id/tv_won"
+                                    style="@style/Regular"
+                                    android:layout_width="0dp"
+                                    android:layout_height="fill_parent"
+                                    android:layout_marginStart="16dp"
+                                    android:layout_marginTop="26dp"
+                                    android:layout_marginEnd="-10dp"
                                     android:text="@string/won"
-                                    android:textColor="@color/popcon_black_03"
-                                    android:textSize="20sp" />
+                                    android:textColor="@color/popcon_grey_03"
+                                    android:textSize="14sp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintHorizontal_weight="0.2"
+                                    app:layout_constraintLeft_toRightOf="@+id/til_price"
+                                    app:layout_constraintRight_toRightOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
 
-                                <EditText
-                                    android:id="@+id/et_price"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:backgroundTint="@color/popcon_grey_09"
-                                    android:inputType="number"
-                                    android:text="@{gifticon.price==0? `` : String.valueOf(gifticon.price)}" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                            </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/AddEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:orientation="vertical">
+                            android:layout_marginStart="-14dp"
+                            android:layout_marginTop="-10dp"
+                            android:layout_marginEnd="-14dp"
+                            app:counterEnabled="true"
+                            app:counterMaxLength="100"
+                            app:endIconMode="clear_text">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/memo"
-                                android:textColor="@color/popcon_black_03"
-                                android:textSize="15sp" />
-
-                            <EditText
+                            <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/et_write_memo"
+                                style="@style/Regular"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:backgroundTint="@color/popcon_grey_09"
-                                android:hint="@string/write_memo"
+                                android:paddingTop="30dp"
+                                android:gravity="top"
+                                android:hint="@string/memo"
+                                android:maxLength="100"
+                                android:textSize="12sp"
                                 android:text="@{gifticon.memo}" />
 
-                        </LinearLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 
@@ -334,13 +392,17 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_edit"
-            android:layout_width="250dp"
+            style="@style/Bold.Brown"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@drawable/shape_round_orange"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:elevation="2dp"
             android:text="@string/btn_edit"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:textSize="14sp"
+            android:background="@drawable/btn_round_orange"
+            android:stateListAnimator="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

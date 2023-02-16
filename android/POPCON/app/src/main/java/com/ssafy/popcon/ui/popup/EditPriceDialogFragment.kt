@@ -9,13 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.ssafy.popcon.databinding.DialogEditPriceBinding
 import com.ssafy.popcon.databinding.DialogUseBinding
 import com.ssafy.popcon.dto.Gifticon
+import com.ssafy.popcon.dto.UpdateRequest
+import com.ssafy.popcon.util.SharedPreferencesUtil
+import com.ssafy.popcon.util.Utils
+import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.viewmodel.PopupViewModel
+import com.ssafy.popcon.viewmodel.ViewModelFactory
 
 class EditPriceDialogFragment : DialogFragment() {
     private lateinit var binding: DialogEditPriceBinding
     private lateinit var gifticon: Gifticon
+    private val viewModel: PopupViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,14 +53,6 @@ class EditPriceDialogFragment : DialogFragment() {
 
     //가격버튼
     private fun priceBtnCilckListener() {
-        binding.btn100.setOnClickListener {
-            var price = "0"
-            if (binding.etPrice.text.toString() != "") {
-                price = binding.etPrice.text.toString()
-            }
-            val temp: Int = price.toInt()
-            binding.etPrice.setText((temp + 100).toString())
-        }
 
         binding.btn500.setOnClickListener {
             var price = "0"
@@ -79,5 +80,27 @@ class EditPriceDialogFragment : DialogFragment() {
             val temp: Int = price.toInt()
             binding.etPrice.setText((temp + 5000).toString())
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        viewModel.updateGifticon(setGifticon(), SharedPreferencesUtil(requireContext()).getUser())
+    }
+
+    private fun setGifticon(): UpdateRequest {
+        gifticon.price = gifticon.price!!.toInt() - binding.etPrice.text.toString().toInt()
+
+        return UpdateRequest(
+            gifticon.barcodeNum,
+            gifticon.brand!!.brandName,
+            gifticon.due,
+            gifticon.memo,
+            gifticon.price ?: -1,
+            gifticon.productName,
+            SharedPreferencesUtil(requireContext()).getUser().email!!,
+            SharedPreferencesUtil(requireContext()).getUser().social,
+            gifticon.state
+        )
     }
 }

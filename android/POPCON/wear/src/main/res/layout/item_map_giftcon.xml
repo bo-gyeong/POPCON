@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="gifticon"
+            type="com.ssafy.popcon.dto.Gifticon" />
+
+        <variable
+            name="badge"
+            type="com.ssafy.popcon.dto.Badge" />
+    </data>
+
+    <androidx.wear.widget.BoxInsetLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/popcon_white">
+
+        <ImageView
+            android:id="@+id/iv_product_preview_map"
+            imageUrl="@{gifticon.product_filepath}"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="100dp"
+            android:background="@color/popcon_white"
+            android:scaleType="centerInside"
+            app:boxedEdges="right|all" />
+
+        <TextView
+            android:id="@+id/tv_brand_map"
+            style="@style/Bold.Brown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@{gifticon.brand.brandName}"
+            android:textSize="15sp"
+            app:boxedEdges="left|all"
+            app:layout_constraintVertical_chainStyle="spread"
+            tools:text="스타벅스" />
+
+        <TextView
+            android:id="@+id/tv_name_map"
+            style="@style/Regular"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{gifticon.productName}"
+            android:textSize="12sp"
+            app:boxedEdges="right|all"
+            tools:text="아메리카노 + 블루베리" />
+
+        <TextView
+            android:id="@+id/tv_date_map"
+            style="@style/Regular.Grey"
+            date="@{gifticon.due}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:maxLines="1"
+            android:textSize="11sp"
+            app:boxedEdges="right|all"
+            tools:text="2022.11.24 까지" />
+
+        <TextView
+            android:id="@+id/tv_banner_badge_map"
+            style="@style/Regular.White"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@{badge.color}"
+            android:paddingStart="7dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="7dp"
+            android:paddingBottom="1dp"
+            android:text="@{badge.content}"
+            app:boxedEdges="top|left"
+            tools:background="@color/popcon_grey_02"
+            tools:text="D-DAY"
+            tools:textColor="@color/popcon_white" />
+    </androidx.wear.widget.BoxInsetLayout>
+
+</layout>

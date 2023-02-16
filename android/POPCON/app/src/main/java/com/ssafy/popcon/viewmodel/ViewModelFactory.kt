@@ -3,6 +3,7 @@ package com.ssafy.popcon.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.ssafy.popcon.config.ApplicationClass
 import com.ssafy.popcon.repository.add.AddRemoteDataSource
 import com.ssafy.popcon.repository.add.AddRepository
 import com.ssafy.popcon.repository.fcm.FCMRemoteDataSource
@@ -16,7 +17,7 @@ import com.ssafy.popcon.repository.user.UserRepository
 import com.ssafy.popcon.ui.edit.EditViewModel
 import com.ssafy.popcon.util.RetrofitUtil
 
-class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
+class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(UserViewModel::class.java) -> {
@@ -51,6 +52,9 @@ class ViewModelFactory(context: Context) : ViewModelProvider.Factory {
                 val gifticonRepo =
                     GifticonRepository(GifticonRemoteDataSource(RetrofitUtil.gifticonService))
                 PopupViewModel(gifticonRepo) as T
+            }
+            modelClass.isAssignableFrom(MMSViewModel::class.java) ->{
+                MMSViewModel(ApplicationClass().provideMMSRepository(context)) as T
             }
             else -> {
                 throw IllegalArgumentException("Failed to create ViewModel: ${modelClass.name}")

@@ -10,38 +10,37 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.FragmentSettingsBinding
-import com.ssafy.popcon.dto.Gifticon
 import com.ssafy.popcon.dto.User
 import com.ssafy.popcon.dto.UserDeleteRequest
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.ui.common.MainActivity
 import com.ssafy.popcon.ui.login.LoginFragment
 import com.ssafy.popcon.ui.popup.GifticonDialogFragment
 import com.ssafy.popcon.util.SharedPreferencesUtil
 import com.ssafy.popcon.viewmodel.UserViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
-import kotlin.math.log
 
 private const val TAG = "SettingsFragment_싸피"
-/** 추후 로그 지우기 **/
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel: UserViewModel by activityViewModels { ViewModelFactory(requireContext()) }
 
     private lateinit var mainActivity: MainActivity
     private lateinit var user: User
+    private lateinit var fcmToken: String
     private lateinit var shardPreference:SharedPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         user = SharedPreferencesUtil(requireContext()).getUser()
+        fcmToken = SharedPreferencesUtil(requireContext()).getFCMToken()
         shardPreference = SharedPreferencesUtil(requireContext()).preferences
         mainActivity = context as MainActivity
     }
@@ -62,8 +61,10 @@ class SettingsFragment : Fragment() {
             user.social,
             shardPreference.getInt("noti_first", 1),
             shardPreference.getInt("alarm", 1),
+            shardPreference.getInt("manner_temp", 0),
             shardPreference.getInt("noti_interval", 1),
-            shardPreference.getInt("noti_time", 1)
+            shardPreference.getInt("noti_time", 1),
+            fcmToken
         )
         binding.user = user
 
@@ -72,6 +73,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getLevel()
         switchClick()
         showSettingTime()
         settingVisibility()
@@ -116,6 +118,47 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    // user의 level 받아오기
+    private fun getLevel(){
+        viewModel.getUserLv()
+        viewModel.userLv.observe(viewLifecycleOwner, EventObserver{
+            when(it){
+                0 -> Glide.with(requireContext()).load(R.drawable.lv0).circleCrop().into(binding.ivLevel)
+                1 -> Glide.with(requireContext()).load(R.drawable.lv1).circleCrop().into(binding.ivLevel)
+                2 -> Glide.with(requireContext()).load(R.drawable.lv2).circleCrop().into(binding.ivLevel)
+                3 -> Glide.with(requireContext()).load(R.drawable.lv3).circleCrop().into(binding.ivLevel)
+                4 -> Glide.with(requireContext()).load(R.drawable.lv4).circleCrop().into(binding.ivLevel)
+                5 -> Glide.with(requireContext()).load(R.drawable.lv5).circleCrop().into(binding.ivLevel)
+            }
+            setSpMannerTmp(it)
+        })
+    }
+
+    // sp의 user update
+    private fun setSpMannerTmp(userLv : Int){
+        var userTmp = 0
+        when(userLv){
+            1 -> userTmp = 1
+            2 -> userTmp = 3
+            3 -> userTmp = 6
+            4 -> userTmp = 9
+            5 -> userTmp = 12
+        }
+
+        // sp user update
+        val newUser = User(
+            user.email,
+            user.social,
+            shardPreference.getInt("noti_first", 1),
+            shardPreference.getInt("alarm", 1),
+            userTmp,
+            shardPreference.getInt("noti_interval", 1),
+            shardPreference.getInt("noti_time", 1),
+            user.token
+        )
+        SharedPreferencesUtil(requireContext()).updateUser(newUser)
+    }
+
     // 알림 다이얼로그 생성
     private fun makeDialog(notiListPosition: Int){
         val dialog = NotiDialogFragment(notiListPosition)
@@ -138,7 +181,7 @@ class SettingsFragment : Fragment() {
                 SharedPreferencesUtil(requireContext()).updateUser(userInfo!!)
                 user = userInfo
 
-                viewModel.updateUser(user, -308222648)
+                viewModel.updateUser(user)
                 viewModel.user.observe(viewLifecycleOwner){
                     binding.user = it
                 }
@@ -148,9 +191,11 @@ class SettingsFragment : Fragment() {
 
     // 설정에서 로그인화면으로 이동 및 로그인정보 삭제
     private fun settingsToLogin() {
-        SharedPreferencesUtil(requireContext()).deleteUser()
-        mainActivity.onBackPressed()
+        LoginFragment.fromSettingsFragment = true
         mainActivity.changeFragment(LoginFragment())
+
+        mainActivity.bottomNav.menu
+            .findItem(R.id.homeFragment).isChecked = true
     }
 
     // 시간 설정 text변경
@@ -201,7 +246,7 @@ class SettingsFragment : Fragment() {
             SharedPreferencesUtil(requireContext()).updateUser(userInfo)
             user = userInfo
 
-            viewModel.updateUser(user, 177784539)
+            viewModel.updateUser(user)
         }
     }
 
@@ -235,7 +280,19 @@ class SettingsFragment : Fragment() {
                 R.color.popcon_grey_04
             )
         )
+        binding.tvNotiSettingFirstText.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
         binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_grey_04
+            )
+        )
+        binding.tvNotiSettingIntervalText.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.popcon_grey_04
@@ -279,7 +336,19 @@ class SettingsFragment : Fragment() {
                 R.color.popcon_transparent_grey_07
             )
         )
+        binding.tvNotiSettingFirstText.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
         binding.tvNotiSettingInterval.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.popcon_transparent_grey_07
+            )
+        )
+        binding.tvNotiSettingIntervalText.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.popcon_transparent_grey_07
@@ -318,7 +387,6 @@ class SettingsFragment : Fragment() {
                     viewModel.withdraw(UserDeleteRequest(user.email!!, user.social))
                     Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                 }
-                SharedPreferencesUtil(requireContext()).deleteUser()
                 settingsToLogin()
             }
         }
@@ -343,7 +411,6 @@ class SettingsFragment : Fragment() {
                         //서버에서 토큰 삭제에 성공한 상태입니다.
 
                         viewModel.withdraw(UserDeleteRequest(user.email!!, user.social.toString()))
-                        SharedPreferencesUtil(requireContext()).deleteUser()
                         settingsToLogin()
                     }
 

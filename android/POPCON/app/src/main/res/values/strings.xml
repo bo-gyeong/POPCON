@@ -18,9 +18,9 @@
     <string name="memo">메모</string>
     <string name="write_memo">메모를 남겨보세요.</string>
     <string name="regi">등록하기</string>
-    <string name="sign_naver">네이버로 시작하기</string>
-    <string name="btn_finish_use">사용완료</string>
-    <string name="btn_revert">사용취소</string>
+    <string name="sign_naver">네이버 로그인 </string>
+    <string name="btn_finish_use">사용하기</string>
+    <string name="btn_revert">사용완료</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--    fragment_settings-->
@@ -46,4 +46,11 @@
     <string name="interval">일 마다</string>
     <string name="complete">완료</string>
     <string name="btn_edit">수정완료</string>
+
+    <!--  dialog_progress  -->
+    <string name="progress">Loading..</string>
+
+    <!--  dialog_mms  -->
+    <string name="ask_add">새로운 기프티콘을 등록하시겠습니까?</string>
+    <string name="go_to_add">등록</string>
 </resources>

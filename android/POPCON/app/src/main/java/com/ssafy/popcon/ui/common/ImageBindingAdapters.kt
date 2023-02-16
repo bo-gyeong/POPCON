@@ -9,13 +9,19 @@ import android.widget.ImageView
 import androidx.core.view.isGone
 import androidx.databinding.BindingAdapter
 import androidx.databinding.BindingConversion
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestListener
+import com.ssafy.popcon.R
+import java.net.URL
 
 //이미지 url -> view
 @BindingAdapter("imageUrl")
 fun loadImage(view: ImageView, imageUrl: String?) {
     if (!imageUrl.isNullOrEmpty()) {
-        GlideApp.with(view)
+        view.isGone = false
+        Glide.with(view)
             .load(imageUrl)
+            .error(R.drawable.popcon)
             .into(view)
     } else {
         view.isGone = true

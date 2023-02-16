@@ -1,0 +1,100 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.android'
+}
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def kakaoApiKey = properties.getProperty('kakao_map_key')
+android {
+    namespace 'com.ssafy.popcon'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.ssafy.popcon"
+        minSdk 30
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+        manifestPlaceholders["kakao"] = kakaoApiKey
+        manifestPlaceholders["KAKAO_API_KEY"] = "kakao_api_key"
+
+        buildConfigField "String", "naverClientID", properties["naver_client_id"]
+        buildConfigField "String", "naverClientSecret", properties["naver_client_secret"]
+        buildConfigField "String", "FIREBASE_GOOGLE_CLOUD_KEY", properties['firebase_google_cloud_key']
+        buildConfigField "String", "BASE_URL", properties['base_url']
+        buildConfigField "String", "KAKAO_API_KEY", properties['kakao_api_key']
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    viewBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'com.google.android.gms:play-services-wearable:18.0.0'
+    implementation 'androidx.percentlayout:percentlayout:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.wear:wear:1.2.0'
+
+    // Kakao Login
+    implementation 'com.kakao.sdk:v2-user:2.12.1'
+
+    //Naver Login
+    implementation 'com.navercorp.nid:oauth:5.4.0'
+
+    // RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+
+    //indicator
+    implementation 'me.relex:circleindicator:2.1.6'
+
+    // FCM 사용 위한 plugins
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+
+    // https://github.com/square/retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
+    // https://github.com/square/okhttp
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+
+    // https://github.com/square/retrofit/tree/master/retrofit-converters/gson
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+
+    // Glide 사용
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.github.bumptech.glide:compiler:4.12.0'
+
+    //coroutine
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+
+    //LiveData, ViewModel
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    //dependency 추가
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    //framework ktx dependency 추가
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
+
+    //viewpager
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+}

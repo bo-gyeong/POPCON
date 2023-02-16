@@ -1,5 +1,6 @@
 package com.ssafy.popcon.ui.popup
 
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Point
@@ -9,19 +10,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import androidx.viewpager.widget.ViewPager.PageTransformer
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.DialogUseBinding
-import com.ssafy.popcon.dto.Brand
 import com.ssafy.popcon.dto.Gifticon
-import com.ssafy.popcon.viewmodel.GifticonViewModel
+import com.ssafy.popcon.ui.common.EventObserver
 import com.ssafy.popcon.viewmodel.PopupViewModel
 import com.ssafy.popcon.viewmodel.ViewModelFactory
 
@@ -30,15 +27,27 @@ class GifticonDialogFragment : DialogFragment() {
     private val viewModel: PopupViewModel by activityViewModels { ViewModelFactory(requireContext()) }
     private lateinit var binding: DialogUseBinding
     private var prevIndex = 0
+    val TAG = "SHAKE"
 
     //팝업창 떠있는지 확인하는 변수
     companion object {
         var isShow = false;
     }
 
-    override fun onStart() {
-        super.onStart()
-        isShow = true
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return super.onCreateDialog(savedInstanceState)
+
+    }
+
+    override fun onAttach(context: Context) {
+        if (isShow) {
+            dismiss()
+        } else {
+            isShow = true
+        }
+        super.onAttach(context)
+
+        Log.d(TAG, "onAttach: ")
     }
 
     override fun onResume() {
@@ -78,16 +87,30 @@ class GifticonDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setList()
+        setBrandTab()
+        setViewPager()
     }
 
     //상품이미지 미리보기, 기프티콘 사용화면
-    private fun setViewPager(useList: List<Gifticon>) {
-        val previewAdapter =
-            PreviewAdapter(childFragmentManager, useList, binding.vpGifticon, binding.vpPreview)
-        val gifticonViewAdapter = GifticonViewAdapter(childFragmentManager, useList)
+    private fun setViewPager() {
+        viewModel.gifticons.observe(viewLifecycleOwner, EventObserver { useList ->
+            val previewAdapter =
+                PreviewAdapter(
+                    childFragmentManager,
+                    useList as MutableList<Gifticon>, binding.vpGifticon, binding.vpPreview
+                )
+            val gifticonViewAdapter = GifticonViewAdapter(
+                childFragmentManager,
+                useList as MutableList<Gifticon>
+            )
 
-        binding.vpPreview.adapter = previewAdapter
+            binding.vpGifticon.adapter = gifticonViewAdapter
+            binding.vpGifticon.offscreenPageLimit = previewAdapter.sidePreviewCount * 2 + 1
+
+            binding.vpPreview.adapter = previewAdapter
+
+        })
+
         binding.vpPreview.addOnPageChangeListener(
             OnSyncPageChangeListener(
                 binding.vpGifticon,
@@ -95,8 +118,6 @@ class GifticonDialogFragment : DialogFragment() {
             )
         )
 
-        binding.vpGifticon.adapter = gifticonViewAdapter
-        binding.vpGifticon.offscreenPageLimit = previewAdapter.sidePreviewCount * 2 + 1
         binding.vpGifticon.addOnPageChangeListener(
             OnSyncPageChangeListener(
                 binding.vpPreview,
@@ -104,9 +125,9 @@ class GifticonDialogFragment : DialogFragment() {
             )
         )
 
-        binding.vpPreview.setPageTransformer(false
+        binding.vpPreview.setPageTransformer(
+            false
         ) { page, position ->
-            Log.d("TAG", "transformPage: $position")
             page.translationX = position * -40
         }
 
@@ -120,28 +141,40 @@ class GifticonDialogFragment : DialogFragment() {
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
+
                 }
 
                 override fun onPageSelected(position: Int) {
-                    Log.d("TAG", "onPageSelected: $position")
-                    val v: View = binding.vpPreview.getChildAt(position)
-                    v.findViewById<ImageView>(R.id.bg_black).isVisible = false
-                    v.findViewById<ImageView>(R.id.edge_preview).isVisible = true
+                    val count = binding.vpPreview.adapter!!.count - 4
+                    if (count != 1) {
+                        if (position >= count) {
+                            currentItem = count - 1
+                            prevIndex = currentItem - 1
+                        }
 
-                    val oldV: View = binding.vpPreview.getChildAt(prevIndex)
-                    oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
-                    oldV.findViewById<ImageView>(R.id.edge_preview).isVisible = false
+                        if (currentItem != prevIndex) {
 
-                    prevIndex = position
+                            val v: View = binding.vpPreview.getChildAt(currentItem)
+
+                            v.findViewById<ImageView>(R.id.bg_black).isVisible = false
+                            v.findViewById<ImageView>(R.id.edge_preview).isVisible = true
+
+                            val oldV: View = binding.vpPreview.getChildAt(prevIndex)
+                            oldV.findViewById<ImageView>(R.id.bg_black).isVisible = true
+                            oldV.findViewById<ImageView>(R.id.edge_preview).isVisible = false
+
+                            prevIndex = currentItem
+                        }
+                    }
                 }
             })
         }
     }
 
     //기프티콘 리스트 추가
-    private fun setList() {
+    private fun setBrandTab() {
         viewModel.brands.observe(viewLifecycleOwner) {
-            if (it.size == 0) {//근처에 매장 없음
+            if (it.isEmpty()) {//근처에 매장 없음
                 binding.cvBrandTab.isVisible = false
                 binding.vpGifticon.isVisible = false
                 binding.vpPreview.isVisible = false
@@ -158,99 +191,11 @@ class GifticonDialogFragment : DialogFragment() {
                 binding.tvNoBrand.isVisible = false
             }
         }
-
-        viewModel.gifticons.observe(viewLifecycleOwner) {
-            setViewPager(it)
-        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         isShow = false
-
-        /*for(gifticon : Gifticon in useList){
-
-          viewModel.updateGifticon(gifticon)
-        }*/
     }
 }
 
-
-/*useList.add(
-    Gifticon(
-        "1234",
-        Brand("스타벅스", ""),
-        "아메리카노 T",
-        null,
-        "https://user-images.githubusercontent.com/33195517/213049326-7f10ea87-0094-46ac-9f81-bd136e9ca5f3.png",
-        "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
-        "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-        "2023.01.12",
-        Badge("D-23", "#FF7D22FF")
-    )
-)
-useList.add(
-    Gifticon(
-        "1234",
-        Brand("이디야", ""),
-        "아메리카노 T",
-        30000,
-        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-        "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
-        "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-        "2023.01.12",
-        Badge("D-23", "#FF7D22FF")
-    )
-)
-useList.add(
-    Gifticon(
-        "1234",
-        Brand("이디야", ""),
-        "아메리카노 T",
-        null,
-        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-        "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
-        "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-        "2023.01.12",
-        Badge("D-23", "#FF7D22FF")
-    )
-)
-useList.add(
-    Gifticon(
-        "1234",
-        Brand("스타벅스", ""),
-        "아메리카노 T",
-        30000,
-        "https://user-images.githubusercontent.com/33195517/213049326-7f10ea87-0094-46ac-9f81-bd136e9ca5f3.png",
-        "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
-        "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-        "2023.01.12",
-        Badge("D-23", "#FF7D22FF")
-    )
-)
-useList.add(
-    Gifticon(
-        "1234",
-        Brand("이디야", ""),
-        "아메리카노 T",
-        30000,
-        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-        "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
-        "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-        "2023.01.12",
-        Badge("D-23", "#FF7D22FF")
-    )
-)
-useList.add(
-    Gifticon(
-        "1234",
-        Brand("스타벅스", ""),
-        "아메리카노 T",
-        30000,
-        "https://user-images.githubusercontent.com/33195517/211953130-74830fe3-a9e1-4faa-a4fd-5c4dac0fcb63.png",
-        "https://user-images.githubusercontent.com/33195517/212611690-cb2b4fb2-09aa-41ca-851b-c4f51f29153e.png",
-        "https://user-images.githubusercontent.com/33195517/214460267-7db6d578-3779-4f12-91b4-6deaf2ff82d2.png",
-        "2023.01.12",
-        Badge("D-23", "#FF7D22FF")
-    )
-)*/
