@@ -83,22 +83,25 @@ public class PresentService {
         userRepository.save(tuser.toEntity());// 온도 올려주고
 
 
+
         // 문자보내기
-        try {
-            String title = "기프티콘 선물이 전달되었어요. 감사인사를 확인해보세요!";
-
-            tokenController.sendMessageTo(gifticon.getUser().getToken(), title, getPresentDto.getMessage());
+//        try {
+//            if(updatedTemp%3 == 0){
+//                int level = (updatedTemp/3+1);
+//                tokenController.sendMessageTo(gifticon.getUser().getToken(), "level"+level+"달성을 축하드립니다.", getPresentDto.getMessage());
+//            }
+//            if(updatedTemp == 1){
+//                int level = 1;
+//                tokenController.sendMessageTo(gifticon.getUser().getToken(), "level"+level+"달성을 축하드립니다.", getPresentDto.getMessage());
+//            }
+//        }catch(IOException e){
+//
+//        }
+        try{
+            tokenController.sendMessageTo(gifticon.getUser().getToken(), "기프티콘 선물이 전달되었어요. 감사인사를 확인해보세요!", getPresentDto.getMessage());
             System.out.println("감사합니다"+getPresentDto.getMessage());
-
-            if(updatedTemp%3 == 0){
-                int level = (updatedTemp/3+1);
-                tokenController.sendMessageTo(gifticon.getUser().getToken(), "level"+level+"달성을 축하드립니다.", getPresentDto.getMessage());
-            }
-            if(updatedTemp == 1){
-                int level = 1;
-                tokenController.sendMessageTo(gifticon.getUser().getToken(), "level"+level+"달성을 축하드립니다.", getPresentDto.getMessage());
-            }
-        }catch(IOException e){
+        }
+        catch (IOException e){
 
         }
 

@@ -33,8 +33,8 @@ import java.util.Optional;
 @RestController
 @CrossOrigin("*")
 public class TokenController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(TokenController.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenController.class);
 
     @Autowired
     FirebaseCloudMessageService service;
@@ -49,7 +49,7 @@ public class TokenController {
     @ApiOperation(value = "registToken", notes = "토큰을 받는 Method", httpMethod = "POST")
     @PostMapping("/token")
     public String registToken(String token) {
-    	logger.info("registToken : token:{}", token);
+        logger.info("registToken : token:{}", token);
         service.addToken(token);
         return "'"+token+"'" ;
     }
@@ -57,14 +57,14 @@ public class TokenController {
     @ApiOperation(value = "broadCast", notes = "전체 메세지를 전송하는 Method", httpMethod = "POST")
     @PostMapping("/broadcast")
     public Integer broadCast(String title, String body) throws IOException {
-    	logger.info("broadCast : title:{}, body:{}", title, body);
-    	return service.broadCastMessage(title, body);
+        logger.info("broadCast : title:{}, body:{}", title, body);
+        return service.broadCastMessage(title, body);
     }
 
     // test용
     @PostMapping("/sendMessageTo")
     public void sendMessageTo(String token, String title, String body) throws IOException {
-    	logger.info("sendMessageTo : token:{}, title:{}, body:{}", token, title, body);
+        logger.info("sendMessageTo : token:{}, title:{}, body:{}", token, title, body);
         service.sendMessageTo(token, title, body);
     }
     // test용
@@ -99,7 +99,7 @@ public class TokenController {
                 long diffsec = (date.getTime() - Ddate.getTime())/1000+(60*60*9l);// 둘의 차이를 뺀다
                 long diffday = diffsec/(24*60*60);// 얼만큼 지나갔는지 확인하기 위해서 일 수를 구하고
                 if(diffday%user.getTerm() == 0){// 해당 일수를 알람 주기로 나눠서 나머지가 0이면 해당되는 날에 알림을 보낸다.
-                    service.sendMessageTo(Token, "유효기간 임박한 기프   티콘 있어요", "빨리쓰세요");
+                    service.sendMessageTo(Token, "쿠폰 유효기간 알림", "유효기간이 임박한 기프티콘 있어요!");
                     System.out.println("hihi");
                     break;// 문자 여러개 보낼 필요 없으니까
                 }
@@ -108,10 +108,10 @@ public class TokenController {
         }
 
     }
-   @Scheduled(cron="0 0 09 * * ?")
-   @GetMapping("/push/pushtest/")
+    @Scheduled(cron="0 0 09 * * ?")
+    @GetMapping("/push/pushtest/")
     public void morning_pushmessage() throws IOException {
-       pushmessage(0);
+        pushmessage(0);
     }
 
     @Scheduled(cron="0 0 13 * * ?")
@@ -130,4 +130,3 @@ public class TokenController {
     }
 
 }
-
