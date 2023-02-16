@@ -26,17 +26,18 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkPermissions()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        checkPermissions()
         WearApplicationClass.makeRetrofit(WearApplicationClass.SERVER_URL)
 
         //자동로그인
         if (SharedPreferencesUtil(this).getUser().email != "") {
             Log.d(TAG, "onCreate: 로그인됨")
             val intent = Intent(this, DonateActivity::class.java)
+            //val intent = Intent(this, LoginActivity::class.java)
+
             startActivity(intent)
             finish()
         } else {
@@ -52,7 +53,7 @@ class MainActivity : Activity() {
         Manifest.permission.ACCESS_COARSE_LOCATION,
     )
 
-    // 위치, 갤러리, 전화 권한
+    // 위치 권한
     fun checkPermissions() {
         checkPermission = CheckPermission(this)
 

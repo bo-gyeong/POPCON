@@ -14,26 +14,27 @@ class TokenAuthenticator: Authenticator {
     }
 
     override fun authenticate(route: Route?, response: Response): Request? {
-        Log.d(TAG, "authenticatedddd: ${response.code}")
-        /*if (response.code == 401) {
-            if (!ApplicationClass.sharedPreferencesUtil.refreshToken.isNullOrEmpty()) {
-                val authRepo = AuthRepository(AuthRemoteDataSource(RetrofitUtil.authService))
+        //Log.d(TAG, "authenticatedddd: ${response.code}")
+        if (response.code == 401) {
+            if (!WearApplicationClass.sharedPreferencesUtil.refreshToken.isNullOrEmpty()) {
+                val authRepo = WearRepository(WearRemoteDataSource(WearRetrofitUtil.userService))
 
-                Log.d(TAG, "authenticate: ${ApplicationClass.sharedPreferencesUtil.refreshToken}")
                 runBlocking {
-                    val res = authRepo.refreshToken(ApplicationClass.sharedPreferencesUtil.refreshToken!!)
-                    ApplicationClass.sharedPreferencesUtil.accessToken = res.acessToken
-                    ApplicationClass.sharedPreferencesUtil.refreshToken = res.refreshToekn
+                    val res = authRepo.refreshToken("Bearer" + WearApplicationClass.sharedPreferencesUtil.refreshToken!!)
+                    Log.d(TAG, "authenticatedddd: $res")
+                    WearApplicationClass.sharedPreferencesUtil.accessToken = res.acessToken
+                    WearApplicationClass.sharedPreferencesUtil.refreshToken = res.refreshToekn
                 }
             }
-        }*/
-        val authRepo = WearRepository(WearRemoteDataSource(WearRetrofitUtil.userService))
+        }
+        /*val authRepo = WearRepository(WearRemoteDataSource(WearRetrofitUtil.userService))
         runBlocking {
-            Log.d(TAG, "authenticatedddd: ")
             val res = authRepo.refreshToken(WearApplicationClass.sharedPreferencesUtil.refreshToken!!)
+            Log.d(TAG, "authenticatedddd: $res")
+        }
             WearApplicationClass.sharedPreferencesUtil.accessToken = res.acessToken
             WearApplicationClass.sharedPreferencesUtil.refreshToken = res.refreshToekn
-        }
+        */
 
         return response.request.newBuilder()
             .header("Authorization", "Bearer ${WearApplicationClass.sharedPreferencesUtil.accessToken?:""}")
