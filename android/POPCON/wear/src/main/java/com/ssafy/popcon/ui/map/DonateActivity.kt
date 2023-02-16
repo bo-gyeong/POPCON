@@ -5,16 +5,15 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.ssafy.popcon.MainActivity
 import com.ssafy.popcon.R
 import com.ssafy.popcon.databinding.ActivityDonateBinding
@@ -38,6 +37,13 @@ class DonateActivity : AppCompatActivity() {
     var mainActivity = MainActivity()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val viewModel: WearViewModel by viewModels { ViewModelFactoryWear(this) }
+
+    private val requestCallback = object : LocationCallback() {
+        override fun onLocationResult(p0: LocationResult) {
+            //Timber.d("Update Latitude : ${p0.lastLocation.latitude} \nUpdate Longitude : ${p0.lastLocation.longitude}")
+            fusedLocationProviderClient.removeLocationUpdates(this)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,21 +98,22 @@ class DonateActivity : AppCompatActivity() {
                         Manifest.permission.ACCESS_COARSE_LOCATION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return
                 }
+
+
                 fusedLocationClient.lastLocation
                     .addOnSuccessListener { location: Location? ->
                         // Got last known location. In some rare situations this can be null.
 
                         DonateLocation.x = location?.longitude.toString()
                         DonateLocation.y = location?.latitude.toString()
+                    }.addOnFailureListener { e ->
+                        fusedLocationClient.requestLocationUpdates(
+                            locationRequest,
+                            requestCallback,
+                            Looper.getMainLooper()
+                        )
                     }
 
                 val item = ClipData.Item(v.tag as? CharSequence)
@@ -144,6 +151,18 @@ class DonateActivity : AppCompatActivity() {
                     submitList(it)
                 }
             }
+        }
+    }
+
+    private val fusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    private val locationRequest by lazy {
+        LocationRequest.create().apply {
+            interval = 5 * 1000L
+            fastestInterval = 1 * 1000L
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }
 }
