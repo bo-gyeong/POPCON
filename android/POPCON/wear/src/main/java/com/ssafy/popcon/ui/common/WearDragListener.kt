@@ -41,13 +41,15 @@ open class WearDragListener(
                 targetView.visibility = View.INVISIBLE
                 if (v == targetView) {
                     Log.d("TAG", "onDrag: ${DonateLocation.x} ${DonateLocation.y}")
-                    viewModel.donate(
-                        DonateRequest(
-                            barNum, DonateLocation.x,
-                            DonateLocation.y
-                        ),
-                        user
-                    )
+                    if (!DonateLocation.x.isNullOrBlank() && !DonateLocation.x.isNullOrBlank()) {
+                        viewModel.donate(
+                            DonateRequest(
+                                barNum, DonateLocation.x,
+                                DonateLocation.y
+                            ),
+                            user
+                        )
+                    }
                 }
                 // Invalidates the view to force a redraw.
                 v.invalidate()
