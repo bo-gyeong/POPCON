@@ -44,9 +44,8 @@ import com.ssafy.popcon.util.RetrofitUtil
 import com.ssafy.popcon.util.ShakeDetector
 import com.ssafy.popcon.util.SharedPreferencesUtil
 
-private const val USER_KEY = "com.ssafy.popcon.key.user"
-
 private const val TAG = "MainActivity_싸피"
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sensorManager: SensorManager
@@ -81,7 +80,6 @@ class MainActivity : AppCompatActivity() {
         bottomNav = binding.bottomNav
         Log.d(TAG, "keyhash : ${Utility.getKeyHash(this)}")
 
-        //SharedPreferencesUtil(this).deleteUser()
         setNavBar()
         checkPermissions()
         callMMSReceiver()
@@ -104,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     fun makeGalleryDialogFragment(
         appliContext: Context,
         cResolver: ContentResolver
-    ){
+    ) {
         val addGalleryGifticon = AddGalleryGifticon(
             this, appliContext, cResolver
         )
@@ -128,7 +126,6 @@ class MainActivity : AppCompatActivity() {
         sendMessageTask.addOnCompleteListener {
             if (it.isSuccessful) {
                 Log.d("send1", "Message sent successfully")
-
             } else {
                 Log.d("send1", "Message failed.")
             }
@@ -136,10 +133,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     // MMS BroadcastReceiver 호출위한 JobScheduler
-    private fun callMMSReceiver(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    private fun callMMSReceiver() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
-        } else{
+        } else {
             startService(intent)
         }
 
@@ -155,8 +152,8 @@ class MainActivity : AppCompatActivity() {
         jobScheduler.schedule(job)
     }
 
-    private fun chkNewMMSImg(){
-        if (fromMMSReceiver != null){
+    private fun chkNewMMSImg() {
+        if (fromMMSReceiver != null) {
             supportFragmentManager.beginTransaction()
                 .add(MMSDialog(this), "mmsDialog")
                 .commitAllowingStateLoss()
@@ -313,12 +310,15 @@ class MainActivity : AppCompatActivity() {
 
     // 알림 관련 메시지 전송
     suspend fun sendMessageTo(token: String, title: String, body: String) {
-        FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService)).sendMessageTo(token, title, body)
-        //mainActivity.sendMessageTo(fcmViewModel.token, "title", "texttttttbody") 이렇게 호출
+        FCMRepository(FCMRemoteDataSource(RetrofitUtil.fcmService)).sendMessageTo(
+            token,
+            title,
+            body
+        )
     }
-    
+
     override fun onRestart() {
         super.onRestart()
-        // checkPermissions()
+        //checkPermissions()
     }
 }
