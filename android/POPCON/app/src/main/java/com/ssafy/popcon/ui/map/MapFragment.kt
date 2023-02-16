@@ -546,7 +546,7 @@ class MapFragment : Fragment(), CalloutBalloonAdapter, MapViewEventListener,
     override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
         if (mode == 1) {
             var intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:" + ballBinding.tvPhone.text)
+            intent.data = Uri.parse("tel:" + storeMap[p1?.itemName])
             if (intent.resolveActivity(requireActivity().packageManager) != null) {
                 startActivity(intent)
             }
