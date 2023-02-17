@@ -2,8 +2,8 @@ spring:
   datasource:
 #    url: jdbc:mariadb://i8d201.p.ssafy.io:3306/popcon
     url: jdbc:mariadb://127.0.0.1:3306/popcon
-    username: root
-    password: ssafy
+    username:
+    password:
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,8 +24,8 @@ spring:
 cloud:
   aws:
     credentials:
-        accessKey: AKIAQIDXSJQ7NXNKPWHP
-        secretKey: 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
+        accessKey: 
+        secretKey: 
     s3:
       bucket: popconbucket
     region:
@@ -52,9 +52,9 @@ gcp:
     name: images
 
 jwt :
-  secret : "token.server.secret.key"
+  secret : 
 app :
-  sec : "the world"
+  sec : 
 
 server:
   error:
