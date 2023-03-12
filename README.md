@@ -110,207 +110,117 @@
     | POST | /api/v1/user/update | 사용자정보 변경 |
     | DELETE | /api/v1/user/withdrawal | 사용자정보 삭제 |
 
-POST
-/api/v1/files/register_gifticon
-등록하기 버튼 누른 후 상품,바코드 이미지 저장 및 db 업데이트
 
-Gifticon controller
-PUT
-/api/v1/gifticons
-기프티콘 수정
+- Gifticon controller
+  
+    PUT
+    /api/v1/gifticons
+    기프티콘 수정
 
-POST
-/api/v1/gifticons
-기프티콘 저장
+    POST
+    /api/v1/gifticons
+    기프티콘 저장
 
-DELETE
-/api/v1/gifticons
-기프티콘 삭제
+    DELETE
+    /api/v1/gifticons
+    기프티콘 삭제
 
-GET
-/api/v1/gifticons/{barcode_num}
-기프티콘 조회
+    GET
+    /api/v1/gifticons/{barcode_num}
+    기프티콘 조회
 
-GET
-/api/v1/gifticons/{email}/{social}
-유저가 가지고 있는 기프티콘 조회
+    GET
+    /api/v1/gifticons/{email}/{social}
+    유저가 가지고 있는 기프티콘 조회
 
-GET
-/api/v1/gifticons/{email}/{social}/map
-지도에서 띄우는 기프티콘 리스트
+    GET
+    /api/v1/gifticons/{email}/{social}/map
+    지도에서 띄우는 기프티콘 리스트
 
-POST
-/api/v1/gifticons/brand
-기프티콘 브랜드별 정렬
+    POST
+    /api/v1/gifticons/brand
+    기프티콘 브랜드별 정렬
 
-GET
-/api/v1/gifticons/brandsort/{email}/{social}
-브랜드 기프티콘 순으로 정렬
+    GET
+    /api/v1/gifticons/brandsort/{email}/{social}
+    브랜드 기프티콘 순으로 정렬
 
-GET
-/api/v1/gifticons/check
-기프티콘 유호기간 체크 후 상태 변경 / 서버용 API
+    GET
+    /api/v1/gifticons/check
+    기프티콘 유호기간 체크 후 상태 변경 / 서버용 API
 
-POST
-/api/v1/gifticons/history
-기프티콘 히스토리
+    POST
+    /api/v1/gifticons/history
+    기프티콘 히스토리
 
-Location Controller
+- Location Controller
 
-- 
 
-POST
-/api/v1/local/search
-현위치 기반 기프티콘 사용가능 한 모든 매장
+    POST
+    /api/v1/local/search
+    현위치 기반 기프티콘 사용가능 한 모든 매장
 
-POST
-/api/v1/local/search/byBrand
-현위치 기반 기프티콘 사용가능 한 지정 브랜드 매장
+    POST
+    /api/v1/local/search/byBrand
+    현위치 기반 기프티콘 사용가능 한 지정 브랜드 매장
 
-POST
-/api/v1/local/shake
-흔들었을때 사용가능한 주변 매장 브랜드
+    POST
+    /api/v1/local/shake
+    흔들었을때 사용가능한 주변 매장 브랜드
 
-Present Controller
-POST
-/api/v1/presents/get_present
-기부 줍기
+- Present Controller
+  
+    POST
+    /api/v1/presents/get_present
+    기부 줍기
 
-POST
-/api/v1/presents/give_present
-기부 버리기
+    POST
+    /api/v1/presents/give_present
+    기부 버리기
 
-POST
-/api/v1/presents/possible_list
-가까운 선물 리스트, 줍기가능한 선물 리스트
+    POST
+    /api/v1/presents/possible_list
+    가까운 선물 리스트, 줍기가능한 선물 리스트
 
-User Controller
+- User Controller
 
-GET
-/api/v1/user/getlevel
-사용자레벨
+    GET
+    /api/v1/user/getlevel
+    사용자레벨
 
-POST
-/api/v1/user/login
-로그인
+    POST
+    /api/v1/user/login
+    로그인
 
-GET
-/api/v1/user/refresh
-토크재발급
+    GET
+    /api/v1/user/refresh
+    토크재발급
 
-POST
-/api/v1/user/update
-사용자정보 변경
+    POST
+    /api/v1/user/update
+    사용자정보 변경
 
-DELETE
-/api/v1/user/withdrawal
-탈퇴
+    DELETE
+    /api/v1/user/withdrawal
+    탈퇴
 
-Brand controller
-Get
-/api/v1/brands/orderby_gifticon
-기프티콘 개수 많은 순서대로 정렬된 브랜드 리스트
+- Brand controller
+  
+    Get
+    /api/v1/brands/orderby_gifticon
+    기프티콘 개수 많은 순서대로 정렬된 브랜드 리스트
 
-### 
 
-File controller
-POST
-/api/v1/files/add_origin
-기프티콘 등록위해 원본 이미지 리스트 업로드
+- File controller
+  
+    POST
+    /api/v1/files/add_origin
+    기프티콘 등록위해 원본 이미지 리스트 업로드
 
-POST
-/api/v1/files/register_gifticon
-등록하기 버튼 누른 후 상품,바코드 이미지 저장 및 db 업데이트
+    POST
+    /api/v1/files/register_gifticon
+    등록하기 버튼 누른 후 상품,바코드 이미지 저장 및 db 업데이트
 
-Gifticon controller
-PUT
-/api/v1/gifticons
-기프티콘 수정
-
-POST
-/api/v1/gifticons
-기프티콘 저장
-
-DELETE
-/api/v1/gifticons
-기프티콘 삭제
-
-GET
-/api/v1/gifticons/{barcode_num}
-기프티콘 조회
-
-GET
-/api/v1/gifticons/{email}/{social}
-유저가 가지고 있는 기프티콘 조회
-
-GET
-/api/v1/gifticons/{email}/{social}/map
-지도에서 띄우는 기프티콘 리스트
-
-POST
-/api/v1/gifticons/brand
-기프티콘 브랜드별 정렬
-
-GET
-/api/v1/gifticons/brandsort/{email}/{social}
-브랜드 기프티콘 순으로 정렬
-
-GET
-/api/v1/gifticons/check
-기프티콘 유호기간 체크 후 상태 변경 / 서버용 API
-
-POST
-/api/v1/gifticons/history
-기프티콘 히스토리
-
-Location Controller
-
-POST
-/api/v1/local/search
-현위치 기반 기프티콘 사용가능 한 모든 매장
-
-POST
-/api/v1/local/search/byBrand
-현위치 기반 기프티콘 사용가능 한 지정 브랜드 매장
-
-POST
-/api/v1/local/shake
-흔들었을때 사용가능한 주변 매장 브랜드
-
-Present Controller
-POST
-/api/v1/presents/get_present
-기부 줍기
-
-POST
-/api/v1/presents/give_present
-기부 버리기
-
-POST
-/api/v1/presents/possible_list
-가까운 선물 리스트, 줍기가능한 선물 리스트
-
-User Controller
-
-GET
-/api/v1/user/getlevel
-사용자레벨
-
-POST
-/api/v1/user/login
-로그인
-
-GET
-/api/v1/user/refresh
-토크재발급
-
-POST
-/api/v1/user/update
-사용자정보 변경
-
-DELETE
-/api/v1/user/withdrawal
-탈퇴
 
 ---
 
@@ -380,8 +290,8 @@ DELETE
 
 ![_EB_A0_88_EB_B2_A8_EB_B3_84__EC_9D_B4_EB_AF_B8_EC_A7_80](/uploads/2dc689fe3ec21d3fd968fd581c3be397/_EB_A0_88_EB_B2_A8_EB_B3_84__EC_9D_B4_EB_AF_B8_EC_A7_80.gif)
 
-유효기간 만료전 푸시알림
+### 유효기간 만료전 푸시알림
 
-감사메세지 알림
+### 감사메세지 알림
 
 ---
