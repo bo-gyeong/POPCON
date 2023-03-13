@@ -1,6 +1,5 @@
 spring:
   datasource:
-#    url: jdbc:mariadb://i8d201.p.ssafy.io:3306/popcon
     url: jdbc:mariadb://127.0.0.1:3306/popcon
     username:
     password:
